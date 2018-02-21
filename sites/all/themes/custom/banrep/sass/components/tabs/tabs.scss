@@ -1,0 +1,54 @@
+.ui-tabs{
+    position: relative;
+    padding: 0px;
+    border: 0px;
+    border-radius: 0px;
+    margin-bottom: 20px;
+    .ui-tabs-panel{
+	    background: color('grey-extra-light');
+	    padding: 1.2em 0.7em 0.1em 0.7em;
+	    .tabs-wrapper {
+				background-color: white;
+				padding: 10px;
+				margin-bottom: 10px;
+				&.ui-accordion {
+					.ui-accordion-content {
+						font-size: 13px;
+					}
+				}
+			}
+    }
+	.ui-tabs-nav {
+		margin: 0;
+		background: transparent;
+		border: 0px;
+		border-bottom: none;
+		border-radius: 0px;
+		padding: 0px;
+		li{
+			background: color('azul-oscuro-brc');
+			border: none;
+			border-radius: 0px;
+			margin: 1px .5em 0 0;
+			&.ui-state-active{
+				background: color('grey-extra-light');
+				color: color('azul-oscuro-brc');
+				a{
+					color: color('azul-oscuro-brc');
+				}
+			}
+			a{
+			    padding: .5em 0.8em;
+			    text-decoration: none;
+			    font-size: 14px;
+			    color: white;
+			}
+			&:hover {
+				background: color('grey-extra-light');
+				a {
+					color: color('azul-oscuro-brc');
+				}
+			}
+		}
+	}
+}

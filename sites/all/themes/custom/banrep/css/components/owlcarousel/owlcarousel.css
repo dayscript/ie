@@ -1,0 +1,119 @@
+/*
+ * 	Core Owl Carousel CSS File
+ *	v1.3.3
+ */
+/* clearfix */
+.owl-carousel .owl-wrapper:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+/* display none until init */
+.owl-carousel {
+  display: none;
+  position: relative;
+  width: 100%;
+  -ms-touch-action: pan-y;
+}
+
+.owl-carousel .owl-wrapper {
+  display: none;
+  position: relative;
+  -webkit-transform: translate3d(0px, 0px, 0px);
+}
+
+.owl-carousel .owl-wrapper-outer {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.owl-carousel .owl-wrapper-outer.autoHeight {
+  -webkit-transition: height 500ms ease-in-out;
+  transition: height 500ms ease-in-out;
+}
+
+.owl-carousel .owl-item {
+  float: left;
+}
+
+.owl-controls .owl-page,
+.owl-controls .owl-buttons div {
+  cursor: pointer;
+}
+
+.owl-controls {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* mouse grab icon */
+.grabbing {
+  cursor: url(grabbing.png) 8 8, move;
+}
+
+/* fix */
+.owl-carousel .owl-wrapper,
+.owl-carousel .owl-item {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+}
+
+.revistas-recientes {
+  background-color: #f2f2f1;
+  padding: 30px 20px;
+  margin-bottom: 30px;
+}
+
+.revistas-recientes .owl-wrapper-outer .owl-item {
+  text-align: center;
+}
+
+.revistas-recientes .owl-wrapper-outer .owl-item h4 {
+  font-weight: normal;
+}
+
+.revistas-recientes .owl-wrapper-outer .owl-item h4 a {
+  color: #004677;
+  display: block;
+  position: relative;
+  font-size: 12px;
+  text-decoration: none;
+  line-height: 17px;
+}
+
+.revistas-recientes .owl-controls .owl-buttons .owl-prev {
+  width: 15px;
+  height: 28px;
+  display: block;
+  text-indent: -999999px;
+  background-image: url(../images/arrow-left.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 23%;
+}
+
+.revistas-recientes .owl-controls .owl-buttons .owl-next {
+  width: 15px;
+  height: 28px;
+  display: block;
+  text-indent: -999999px;
+  background-image: url(../images/arrow-right.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 23%;
+  right: 0px;
+}

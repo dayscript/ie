@@ -1,0 +1,16 @@
+diff --git a/sites/all/modules/contrib/webform_workflow/webform_workflow.module b/sites/all/modules/contrib/webform_workflow/webform_workflow.module
+index 7256a13..0ac5f4b 100644
+--- a/sites/all/modules/contrib/webform_workflow/webform_workflow.module
++++ b/sites/all/modules/contrib/webform_workflow/webform_workflow.module
+@@ -777,10 +777,9 @@ function webform_workflow_notify_users($submission, array $transition = array())
+   if ($transition) {
+     $token_data += array('webform-workflow-transition' => $transition);
+   }
+-
+   $token_options = array('clear' => TRUE, 'sanitize' => FALSE);
+   $params = array(
+-    'subject' => token_replace($email_templates['subject'], $token_data, $token_options),
++    'subject' => _banrep_get_name_tipo_solicitud($token_data) . ' Solicitud Nro: ID #' . $submission->sid,
+     'body' => token_replace($email_templates['body'], $token_data, $token_options),
+   );
+ 

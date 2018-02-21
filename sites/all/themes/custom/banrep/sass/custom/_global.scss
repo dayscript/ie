@@ -1,0 +1,61 @@
+.btn {
+  -moz-user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  margin-bottom: 0;
+  padding: 4px 10px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  &.btn-sm{
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+}
+
+.btn-blue{
+    background-color: #0079c1;
+    color: #fff;
+    border: 1px solid #0e5b90;
+    font-weight: 300;
+    &:hover{
+      color: #fff;
+    }
+}
+
+.form-submit {
+
+}
+
+.text-center {
+  text-align: center;
+}
+.pull-right{
+  float: right!important;
+}
+
+a.read-more{
+  color: #004677;
+}
+
+.slideToggle{
+  cursor: pointer;
+  margin: auto;
+  text-align: center;
+  display: block;
+}
+
+.arrow-top{
+    width: 0px;
+    height: 0px;
+    border-left: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+}

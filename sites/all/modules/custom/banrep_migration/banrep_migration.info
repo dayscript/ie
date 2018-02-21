@@ -1,0 +1,15 @@
+name = Banrep Migrador De Contenido y Usuarios
+description = Controla el proceso de Migración-Cargue de Contenido y Usuarios
+core = 7.x
+package = E SINERGIA
+
+dependencies[] = migrate
+dependencies[] = migrate_ui
+files[] = adc_migration.migrate.inc
+files[] = adc_migration_helper.inc
+;files[] = migration/jel.inc
+;files[] = migration/externos.inc
+files[] = migration/seminario.inc
+;files[] = migration/concepto.inc
+;files[] = migration/publicaciones.inc
+;files[] = migration/users.inc

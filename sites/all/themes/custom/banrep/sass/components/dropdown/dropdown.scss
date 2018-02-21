@@ -1,0 +1,220 @@
+.dropup, .dropdown {
+  position: relative;
+}
+
+.dropdown-toggle:focus {
+  outline: 0;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 116%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid #e57b1c;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+&.pull-right {
+    right: 0;
+    left: auto;
+  }
+  .divider {
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+  }
+  > {
+    li > a {
+      display: block;
+      padding: 3px 20px;
+      clear: both;
+      font-weight: normal;
+      line-height: 1.42857143;
+      color: #333333;
+      white-space: nowrap;
+      &:hover, &:focus {
+        text-decoration: none;
+        color: #262626;
+        background-color: #f5f5f5;
+      }
+    }
+    .active > a {
+      color: #ffffff;
+      text-decoration: none;
+      outline: 0;
+      background-color: #337ab7;
+      &:hover, &:focus {
+        color: #ffffff;
+        text-decoration: none;
+        outline: 0;
+        background-color: #337ab7;
+      }
+    }
+    .disabled > a {
+      color: #777777;
+      &:hover, &:focus {
+        color: #777777;
+      }
+      &:hover, &:focus {
+        text-decoration: none;
+        background-color: transparent;
+        background-image: none;
+        filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.open > {
+  .dropdown-menu {
+    display: block;
+  }
+  a {
+    outline: 0;
+  }
+}
+
+.dropdown-menu-right {
+  left: auto;
+  right: 0;
+}
+
+.dropdown-menu-left {
+  left: 0;
+  right: auto;
+}
+
+.dropdown-header {
+  display: block;
+  padding: 3px 20px;
+  font-size: 12px;
+  line-height: 1.42857143;
+  color: #777777;
+  white-space: nowrap;
+}
+
+.dropdown-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 990;
+}
+
+.pull-right > .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+.dropup .caret, .navbar-fixed-bottom .dropdown .caret {
+  border-top: 0;
+  border-bottom: 4px dashed;
+  border-bottom: 4px solid \9;
+  content: "";
+}
+
+.dropup .dropdown-menu, .navbar-fixed-bottom .dropdown .dropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: 2px;
+}
+
+@media (min-width: 768px) {
+  .navbar-right {
+    .dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+    .dropdown-menu-left {
+      left: 0;
+      right: auto;
+    }
+  }
+}
+
+.dropdown-user{
+    margin: 0px;
+    padding: 0px 4px;
+    height: 46px;
+    display: inline-block;
+    position: relative;
+    .dropdown-menu{
+      background-color: #e57b1c;
+      border-radius: 0px;
+      &:before {
+        position: absolute;
+        top: -7px;
+        right: 9px;
+        display: inline-block !important;
+        border-right: 7px solid transparent;
+        border-bottom: 7px solid #e57b1c;
+        border-left: 7px solid transparent;
+        border-bottom-color: #e57b1c;
+        content: '';
+      }
+      li{
+        &:last-child {
+          a{
+            border-bottom: none;
+          }
+        }
+        a{
+          display: block;
+          padding: 5px 14px;
+          clear: both;
+          font-weight: 300;
+          line-height: 1.42857143;
+          color: #fff;
+          white-space: nowrap;
+          text-decoration: none;
+          font-size: 13px;
+          border-bottom: 1px solid #f2f2f2;
+          margin: 0px 16px;
+          i{
+             margin-right: 10px;
+          }
+          &:hover{
+            background-color: #e06c04;
+          }
+        }
+      }
+    }
+    a.dropdown-toggle{
+      padding: 10px 6px 12px 8px;
+      display: block;
+      position: relative;
+      text-decoration: none;
+      font-size: 0.8rem;
+      line-height: 1.5rem;
+      vertical-align: middle;
+      .username{
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        vertical-align: middle;
+        padding: 0px;
+        margin: 0px;
+      }
+      img{
+        float: right;
+        margin-top: -2px;
+        margin-left: 10px;
+        height: 29px;
+        display: inline-block;
+      }
+    }
+}

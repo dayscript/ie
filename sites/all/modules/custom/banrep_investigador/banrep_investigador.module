@@ -1,0 +1,304 @@
+<?php
+
+/**
+ * Implements hook_init().
+ */
+function banrep_investigador_init() {
+  if(arg(0) == 'researchers' && !empty(arg(1))){
+    global $language;
+    if($language->language == 'es') {
+      drupal_goto('investigadores/' . arg(1));
+    }
+  }
+  if(arg(0) == 'investigadores' && !empty(arg(1))){
+    global $language;
+    if($language->language == 'en') {
+      drupal_goto('researchers/' . arg(1));
+    }
+  }
+}
+/**
+ * Implements hook_permission().
+ */
+function banrep_investigador_permission() {
+  return array(
+    'publicar contenido investigador' =>  array(
+      'title' => t('Publicar contenido como investigador'),
+      'description' => t(''),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function banrep_investigador_menu() {
+  $items['perfil/%'] = array(
+    'title' => 'Perfil',
+    'page callback' => 'banrep_investigador_perfil_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'file' => 'banrep_investigador.pages.inc',
+  );
+
+  $items['profile/activities/add'] = array(
+    'title' => t('Create activity'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('activities_add_form'),
+    'access arguments' => array('publicar contenido investigador'),
+    'file' => 'banrep_investigador.forms.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['term/get/ajax/%'] = array(
+    'page callback' => 'banrep_investigador_ajax_get_ajax', // Render HTML.
+    'page arguments' => array(3),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'delivery callback' => 'banrep_investigador_ajax_callback',  // Magic goes here.
+  );
+
+  $items['user/get/ajax/%'] = array(
+    'page callback' => 'banrep_investigador_user_ajax_get_ajax', // Render HTML.
+    'page arguments' => array(3),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'delivery callback' => 'banrep_investigador_user_ajax_callback',  // Magic goes here.
+  );
+
+  $items['proceso/ejecutar-update'] = array(
+    'title' => 'Update',
+    'page callback' => 'banrep_investigador_update_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'file' => 'banrep_investigador.pages.inc',
+  );
+
+  return $items;
+}
+
+function banrep_investigador_ajax_get_ajax($tid) {
+  $term = taxonomy_term_load($tid);
+  $term->field_likes['und'][0]['value'] = $term->field_likes['und'][0]['value'] + 1;
+  taxonomy_term_save($term);
+  return $term->field_likes['und'][0]['value'];
+}
+
+function banrep_investigador_ajax_callback($page_callback_result) {
+  print $page_callback_result;
+}
+
+function banrep_investigador_user_ajax_get_ajax($uid) {
+  $user_data = user_load($uid);
+  $user_data->field_likes['und'][0]['value'] = $user_data->field_likes['und'][0]['value'] + 1;
+  user_save($user_data);
+  return $user_data->field_likes['und'][0]['value'];
+}
+
+function banrep_investigador_user_ajax_callback($page_callback_result) {
+  print $page_callback_result;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function banrep_investigador_theme($existing, $type, $theme, $path) {
+  return array(
+    'banrep_investigador_perfil' => array(
+      'template' => 'templates/perfil',
+      'variables' => array(
+        'usuario' => NULL,
+      ),
+    ),
+    'banrep_pubs_teaser' => array(
+      'template' => 'templates/pubs-teaser',
+      'variables' => array(
+        'pubs' => NULL,
+      ),
+    ),
+  );
+}
+/**
+ * Implements hook_block_info().
+ */
+function banrep_investigador_block_info() {
+  $blocks['widgets_profile'] = array(
+    'info' => t('Widgets Profile'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  $blocks['widgets_plumx'] = array(
+    'info' => t('Widgets Plumx Global'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  $blocks['user_favorites'] = array(
+    'info' => t('Dashboard - Mis Favoritos'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  $blocks['bi_home_pubs'] = array(
+    'info' => t('Home - Publications'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function banrep_investigador_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'widgets_profile':
+      global $language;
+      $user_load = user_load_by_name(arg(1));
+      $output = '';
+      // Scopus
+      if(isset($user_load->field_scopus_author_author_id['und'][0]['value'])) {
+        $author_id = $user_load->field_scopus_author_author_id['und'][0]['value'];
+        $api_key = '933e9e90b2adcb997611146810dbbeb0';
+        $url = url('https://api.elsevier.com/content/author/author_id/' . $author_id, array('query' => array('view' => 'METRICS', 'apiKey' => $api_key, 'httpAccept' => 'application/json')));
+        $request = drupal_http_request($url);
+        $response = drupal_json_decode($request->data);
+        module_load_include('inc', 'banrep_core', 'banrep_core.functions');
+        // $response = _banrep_open_json('public://scopus.json');
+        if(!empty($response['author-retrieval-response'])) {
+          $output .= '<div class="col-lg-2"><div class="scopus-widget"><div class="titulo">Scopus</div><div class="contenido">
+          <div class="document-count"><strong>'. t("Documents").':</strong> ' .$response["author-retrieval-response"][0]["coredata"]["document-count"] .'</div>
+          <div class="cited-by-count "><strong>'. t("Citations").':</strong> ' .$response["author-retrieval-response"][0]["coredata"]["citation-count"] .' '. t("total citations by") . ' ' . $response["author-retrieval-response"][0]["coredata"]["cited-by-count"] . ' ' . t('documents') . '</div>
+          <div class="index-h-count"><strong>'. t("h-index").':</strong> ' .$response["author-retrieval-response"][0]["h-index"] .'</div>
+          <div class="coauthors-count"><strong>'. t("Co-authors").':</strong> ' .$response["author-retrieval-response"][0]["coauthor-count"] .'</div></div></div></div>';
+
+        }
+      }
+
+      //Repec
+      $rep = entity_load('field_collection_item', array($user_load->field_repec['und'][0]['value']));
+      $rep = reset($rep);
+      if($rep) {
+        $output .= '<div class="col-lg-3"><div class="repec-widget"><div class="titulo">Repec</div><div class="contenido"><a href="http://citec.repec.org/'.$rep->field_repec_id['und'][0]['value'].'" target="_blank">'.theme('image_style', array('style_name' => '364x160', 'path' => $rep->field_repec_img['und'][0]['uri'])) . '</a></div><div class="fecha"> <strong>Fecha de captura: </strong>'.format_date(strtotime($rep->field_repec_fecha_ingreso['und'][0]['value']), "custom", "d/m/Y").'</div></div></div>';
+      }
+
+      // Google academico
+      $d = entity_load('field_collection_item', array($user_load->field_google_scholar['und'][0]['value']));
+      $d = reset($d);
+      if(!empty($d->field_gs_image)) {
+        $output .= '<div class="col-lg-3"><div class="google-academico-widget"><div class="field-name-field-gs-image"><a href="'.$d->field_gs_url['und'][0]['value'].'" target="_blank">'.theme('image_style', array('style_name' => '364x210', 'path' => $d->field_gs_image['und'][0]['uri'])) . '</a></div><div class="fecha"> <strong>Fecha de captura: </strong>'.format_date(strtotime($d->field_gs_fecha['und'][0]['value']), "custom", "d/m/Y").'</div></div></div>';
+      }
+
+      // Plumx
+      if(isset($user_load->field_plumx_author['und'][0]['value'])) {
+        $lg = ($language->language == 'es') ? 'data-lang="es"' : "";
+        drupal_add_js('//d39af2mgp1pqhg.cloudfront.net/widget-person.js', 'external');
+        $url_plumx = $user_load->field_plumx_author['und'][0]['value'];
+        $output .= '<div class="col-lg-4"><div class="plumx-widget"><a href="'.$url_plumx.'" class="plumx-person" data-no-name="true" data-no-description="true" data-no-artifacts="true" data-site="banrep" data-num-artifacts="5" data-no-thumbnail="true" '.$lg.'>'.$user_load->field_full_name['und'][0]['value'].'</a></div></div>';
+      }
+
+      $block['subject'] = t('Bibliometric Indicators');
+      $block['content'] = $output;
+      break;
+
+    case 'widgets_plumx':
+      global $language;
+      $lg = ($language->language == 'es') ? 'data-lang="es"' : "";
+      drupal_add_js('//d39af2mgp1pqhg.cloudfront.net/widget-group.js', 'external');
+      switch (arg(0)) {
+        case 'grupos-de-investigacion':
+        case 'research-groups':
+          $output = '<a href="https://plu.mx/banrep/g/investigadores/gdi1" class="plumx-group" data-no-name="true" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1"  '.$lg.'></a>';
+          break;
+
+        case 'taxonomy':
+          switch (arg(2)) {
+            case 1:
+            case 1113:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/ceer1" class="plumx-group" data-site="banrep" data-num-artifacts="5"data-gp="banrep/investigadores/gdi1/ceer1" '.$lg.'>Centro de Estudios Económicos Regionales (CEER) Profile on PlumX</a></div>';
+              break;
+            case 182:
+            case 1119:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/ceea1" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/ceea1" '.$lg.'>Centro de Economía Agrícola y Recursos Naturales (CEARN) Profile on PlumX</a></a></div>';
+              break;
+            case 181:
+            case 1115:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/ceei1" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/ceei1" '.$lg.'>Centro de Estudios sobre Economía Industrial e Internacional (CEEII) Profile on PlumX</a></div>';
+              break;
+            case 2:
+            case 1117:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/gaml1" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/gaml1" '.$lg.'>Grupo de Análisis del Mercado Laboral Profile on PlumX</a></div>';
+              break;
+            case 231:
+            case 1118:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/ges1" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/ges1" '.$lg.'>Grupo de Economía Social Profile on PlumX</a></div>';
+              break;
+            case 200:
+            case 1122:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/dmm" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/dmm" '.$lg.'>Grupo de Modelos Macroeconómicos Profile on PlumX</a></div>';
+              break;
+            case 232:
+            case 1121:
+              $output = '<div class="plumx-widget"><a href="https://plu.mx/banrep/g/investigadores/gdi1/gsif1" class="plumx-group" data-site="banrep" data-num-artifacts="5" data-gp="banrep/investigadores/gdi1/gsif1" '.$lg.'>Grupo de Seguimiento a la Infraestructura Financiera Profile on PlumX</a></div>';
+              break;
+
+            default:
+              break;
+          }
+          break;
+
+        default:
+          # code...
+          break;
+      }
+      $block['subject'] = t('Bibliometric Indicators');
+      $block['content'] = $output;
+      break;
+
+    case 'user_favorites':
+      $type_link = (arg(0) == 'dashboard') ? 'privado' : 'publico';
+      global $user;
+      $user_data = user_load($user->uid);
+      foreach ($user_data->field_enlaces_recomendados['und'] as $key => $item) {
+        $enlaces[] = $item['value'];
+      }
+      $items = field_collection_item_load_multiple($enlaces);
+      $favorits = array();
+      foreach ($items as $key => $item) {
+        if($item->field_status['und'][0]['value'] == $type_link){
+          $favoritos[]['data'] = l($item->field_url_recomendado['und'][0]['title'], $item->field_url_recomendado['und'][0]['url']);
+        }
+      }
+
+      $block['subject'] = '';
+      $block['content'] =
+        '<div class="mis-enlaces-recomendados">' .
+          theme_item_list(
+            array(
+              'items' => (isset($favoritos) ? $favoritos : array()),
+              'title' => '',
+              'type' => 'ul',
+              'attributes' => array('id' => 'mis-favoritos','class' => 'mis-favoritos'),
+            )
+          ) .
+        '</div>'
+      ;
+      break;
+
+    case 'bi_home_pubs':
+      module_load_include('inc', 'banrep_investigador', 'banrep_investigador.functions');
+      $qid = 5;
+      $query = db_select('nodequeue_nodes', 'nq');
+      $query->fields('nq', array('nid'));
+      $query->condition('nq.qid', $qid);
+      $nids = $query->execute()->fetchAll();
+      $pubs = _banrep_investigador_pubs_teaser($nids);
+      $block['subject'] = t('Last Publications');
+      $block['content'] = theme('banrep_pubs_teaser', array('pubs' => $pubs));
+      break;
+
+  }
+  return $block;
+}
+

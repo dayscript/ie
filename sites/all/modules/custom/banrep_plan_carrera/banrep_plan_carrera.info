@@ -1,0 +1,5 @@
+name = Planes de carrera
+description = "Funcionalidades de planes de carrera"
+package = E SINERGIA
+version = "7.x-1.0"
+core = "7.x"

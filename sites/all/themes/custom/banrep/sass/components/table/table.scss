@@ -1,0 +1,41 @@
+.manage-publications{
+	.btn-add-publication{
+		margin-bottom: 15px;
+	}
+	table.views-table{
+		font-size: 14px;
+		line-height: 1.42857143;
+		thead {
+		    color: #999;
+		    tr {
+				th {
+				    font-size: 14px;
+				    font-weight: 400;
+				    white-space: nowrap;
+				    padding: 8px;
+				    line-height: 1.42857143;
+				    vertical-align: top;
+				    background-color: #0079c1;
+				    color: #fff;
+				    border: 1px solid #056fb9;
+				}
+		    }
+		}
+		tbody{
+			tr{
+				&:nth-child(odd) {
+				    background-color: #f9f9f9;
+				}
+				td{
+				    border: 1px solid #ddd;
+				    padding: 8px;
+				    line-height: 1.42857143;
+				    vertical-align: middle;
+				    &.views-field-field-image{
+				    	text-align: center;
+				    }
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,121 @@
+// sass-lint:disable indentation, no-color-keywords
+
+// Colors
+//
+// Use the `color()` function to add colors to CSS properties. To learn more,
+// [read the Chroma documentation](http://johnalbin.github.io/chroma/).
+//
+// Markup: chroma.twig
+//
+// Weight: -1
+//
+// Style guide: sass.colors
+
+// Define the default color scheme's color names.
+$chroma: define-default-color-scheme('branding', 'The site\'s main colors. Can be used to define colors in other color schemes.');
+
+$chroma: add-colors((
+  black:                  #231f20,
+  grey-dark:              ('black' lighten 20%),
+  'grey':                 #8e9295,
+  grey-light:             #d9d9d9,
+  grey-extra-light:       #f2f2f2,
+  white:                  #fff,
+
+  blue:                   #0079c1,
+  red:                    #d21034,
+  yellow:                 #fae600,
+  negro-brc:              #231f20,
+  plata-brc:              #8e9295,
+  azul-oscuro-brc:        #004677,
+  azul-brc:               #0079c1,
+  azul-claro-brc:         #559dc5,
+  verde-azul-brc:         #0097ac,
+  verde-oscuro-brc:       #004027,
+  verde-brc:              #009543,
+  verde-agua-brc:         #006469,
+  verde-oliva-brc:        #b6b97d,
+  dorado-brc:             #bc9b6a,
+  ocre-brc:               #eab010,
+  naranja-brc:            #e57b1c,
+
+  bogota:                 #D93600,
+  cali:                   #3395D5,
+  medellin:               #f28d27,
+  bucaramanga:            #7BBB10,
+  cartagena:              #734293,
+
+  linkedin:               #0079BB,
+  youtube:                #BB1A19,
+  twitter:                #1DB4FF,
+  facebook:               #265198,
+));
+
+// Define color names for functional uses.
+$chroma: define-color-scheme('functional', 'Colors used by functional parts of the design.');
+$chroma: add-colors('functional', (
+  // Colors used in the main content area.
+  text:                   'negro-brc',
+  text-bg:                'white',
+
+  link:                   'azul-brc',
+  link-visited:           ('azul-oscuro-brc'),
+  link-active:            'azul-oscuro-brc',
+
+  border:                 'grey-light',
+
+  autocomplete:           'text',
+  autocomplete-bg:        'text-bg',
+  autocomplete-select:    'white',
+  autocomplete-select-bg: 'blue',
+
+  body-bg:                'text-bg',
+
+  button:                 'text',
+  button-disabled:        'grey',
+
+  fieldset-summary:       'grey',
+  form-error:             'red',
+
+  mark-highlight:         'red',
+  mark-bg:                'yellow',
+
+  menu-active:            'text',
+
+  preview-bg:             ('yellow' lighten 43%),
+
+  progress-bar:           'azul-brc',
+  progress-bar-bg:        'grey-light',
+  progress-bar-border:    'grey-dark',
+
+  resizable-grippie:      'grey-extra-light',
+
+  row-stripe:             'grey-extra-light',
+  row-disabled:           'grey-light',
+
+  skip-link:              'white',
+  skip-link-bg:           'grey-dark',
+
+  status:                 'azul-brc',
+  status-bg:              (status lighten 62%),
+  status-highlight:       text,
+  warning:                text,
+  warning-bg:             ('yellow' lighten 45%),
+  warning-border:         'yellow',
+  error:                  'red',
+  error-bg:               (error lighten 57%),
+
+  tabs-border:            'border',
+  tabs-bg:                'text-bg',
+  tab:                    'text',
+  tab-text-shadow:        'white',
+  tab-bg:                 ('grey-light' lighten 6.66%),
+  tab-secondary:          'grey-dark',
+
+  table-drag:             ('yellow' lighten 43%),
+  table-select:           ('yellow' lighten 47%),
+
+  watermark:              'grey-extra-light',
+));
+
+$chroma-active-scheme: 'functional';

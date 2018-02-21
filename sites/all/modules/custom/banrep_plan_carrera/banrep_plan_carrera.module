@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Defines banrep_core module functionality.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function banrep_plan_carrera_menu() {
+  $items['admin/config/banrep/plan_carrera'] = array(
+    'title' => 'Planes de carrera',
+    'description' => 'Configuración de los planes de carrera',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('banrep_plan_carrera_settings_form'),
+    'access arguments' => array('administer settings'),
+    'file' => 'banrep_plan_carrera.admin.inc',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['profile/plan/carrera/%'] = array(
+    'title' => '',
+    'page callback' => 'banrep_plan_carrera_page',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+    'file' => 'banrep_plan_carrera.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}

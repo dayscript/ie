@@ -1,0 +1,135 @@
+.filtros-vista {
+  padding: 20px 20px 10px;
+  margin-bottom: 10px;
+}
+
+.filtros-vista .views-exposed-form .views-exposed-widget {
+  float: none;
+  display: block;
+  padding-right: 0;
+}
+
+.filtros-vista .form-text {
+  width: 100%;
+}
+
+.filtros-vista .form-select {
+  width: 100%;
+}
+
+.filtros-vista .form-submit {
+  background-color: color("naranja-brc");
+  color: white;
+}
+
+.filtros-vista label {
+  display: block;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.item-grupo {
+  display: block;
+  position: relative;
+  margin-bottom: 30px;
+  border-bottom: 2px dotted #e6e6e6;
+  padding-bottom: 25px;
+}
+
+.item-grupo img {
+  display: block;
+  vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 19px 0px;
+  padding: 2px;
+  border: 1px solid color("grey");
+}
+
+.item-grupo .titulo {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  text-transform: inherit;
+}
+
+.item-grupo .titulo a {
+  color: #284874;
+  font-weight: 600;
+  line-height: 21px;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.item-grupo .titulo a:hover {
+  text-decoration: underline;
+}
+
+.item-grupo .box-color-group {
+  color: #fff;
+  text-align: center;
+  font-weight: 300;
+  line-height: 21px;
+  font-size: 13px;
+}
+
+.item-grupo p {
+  font-size: 12px;
+  margin: 0.6rem 0;
+  line-height: 17px;
+}
+
+.item-grupo.views-row-last {
+  border-bottom: none;
+}
+
+.blog-grupo {
+  background: color("grey-extra-light");
+  padding-bottom: 10px !important;
+}
+
+.blog-grupo .block__title {
+  background-color: color("azul-oscuro-brc");
+  color: white;
+  border: none;
+  padding: 5px 10px;
+}
+
+.blog-grupo .pd-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.item-blog {
+  margin-bottom: 20px;
+  border-left: 3px solid color("naranja-brc");
+  padding: 0 10px;
+  margin-left: 10px;
+}
+
+.item-blog .fecha {
+  font-size: 11px;
+  color: color("grey");
+}
+
+.item-blog .titulo {
+  margin: 0;
+  padding: 0;
+}
+
+.item-blog .titulo a {
+  color: color("azul-oscuro-brc");
+  text-decoration: none;
+}
+
+.item-blog .titulo a:hover {
+  text-decoration: underline;
+}
+
+.item-blog .titulo a:visited {
+  color: color("azul-oscuro-brc");
+}
+
+.item-blog.views-row-last {
+  border-bottom: none;
+}
