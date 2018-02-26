@@ -18,7 +18,7 @@
 	<div class="col-lg-12">
 		<?php echo theme('banrep_core_profile_profile-info', array('user_data' => $user_data)); ?>
 <?php if (!isset($user_data['only_personal_information'])) {?>
-		
+
 		<div id="tabs">
 			<ul>
 					<li><a href="#tabs-1"><?php echo t('Publications'); ?></a></li>

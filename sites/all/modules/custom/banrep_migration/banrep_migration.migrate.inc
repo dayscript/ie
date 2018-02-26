@@ -7,6 +7,9 @@
  * loaded - thus, you don't need to implement your hook in the .module file.
  */
 
+/**
+ * Implements of hook migrate_api().
+ */
 function banrep_migration_migrate_api() {
   $translate_mapping = new MigrateFieldMapping('translate', NULL);
   $translate_mapping->defaultValue(0);

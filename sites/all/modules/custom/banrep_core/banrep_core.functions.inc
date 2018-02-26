@@ -1,46 +1,13 @@
 <?php
 
 /**
- * @file(banrep_core.functions.inc)
- * Used for functions conection services user
+ * @file
+ * Funciones de ayuda del módulo banrep core.
  */
 
-/*
-* Get Seminario most recent to be done!.
-*/
-function get_seminario(){
-  $node_id = FALSE;
-	$query = new EntityFieldQuery;
-	$result = $query->entityCondition('entity_type', 'node')
-		->entityCondition('bundle', 'event')
-		->propertyCondition('status', NODE_PUBLISHED) // Getting published nodes only.
-		->fieldCondition('field_event_date', 'value', time(), '>=') // end date before today
-		->fieldOrderBy('field_event_date', 'value', 'ASC')
-		->range(0, 1)
-		->execute();
-	if (isset($result['node'])) {
-		$nodes = array_keys($result['node']);
-		$node_id = reset($nodes);
-	} else {
-    $query = db_select('node', 'n');
-    $query->join('field_data_field_serie_de_evento', 's', 'n.nid = s.entity_id');
-    $query->join('field_data_field_tipo_de_evento', 't', 'n.nid = t.entity_id');
-    $query->condition('n.type', 'event');
-    $query->condition('n.status', NODE_PUBLISHED);
-    $query->condition('s.field_serie_de_evento_target_id', 54, '=');
-    $query->condition('t.field_tipo_de_evento_tid', 191, '=');
-    $query->fields('n', array('nid'));
-    $query->orderBy('n.created', 'desc');
-    $node_id = $query->execute()->fetchField();
-  }
-
-	return $node_id;
-}
-
-/*
-* Returns a renderable array for a single field value.
-*/
-
+/**
+ * Obtiene una matriz renderizable para un solo valor de campo.
+ */
 function get_user_field_value($entity, $field_name){
   $value = FALSE;
   $entity_type = 'user';
@@ -72,10 +39,11 @@ function get_user_field_value($entity, $field_name){
   }
   return $value;
 }
-/*
-* Returns a renderable array for a single field collections value.
-*/
 
+/**
+ * Obtiene una matriz renderizable para un valor de campo
+ * de una colección de campos.
+ */
 function get_user_field_collections_fields_values($field_collection_id, $fields){
 	$entity_type = 'field_collection_item';
 	$entity = field_collection_item_load($field_collection_id['value']);
@@ -89,10 +57,10 @@ function get_user_field_collections_fields_values($field_collection_id, $fields)
 	}
 	return $value;
 }
-/*
-* Returns a renderable array for a single field collections value.
-*/
 
+/**
+ * Obtiene colección de campos del usuario.
+ */
 function get_user_field_collections_value($entity, $field_name, $fields){
 	$value = FALSE;
 	$entity_type = 'user';
@@ -108,6 +76,9 @@ function get_user_field_collections_value($entity, $field_name, $fields){
 	return $value;
 }
 
+/**
+ * Obtiene valores de campos de usuarios.
+ */
 function get_user_fields_values($fields_name, $entity){
 	$user_data = array();
 	$field_collections = array(
@@ -128,7 +99,7 @@ function get_user_fields_values($fields_name, $entity){
 }
 
 /**
- * Function for get current user data for dashboard page
+ * Obtiene info del usuario a partir del uid.
  */
 function get_current_user_data($uid = ''){
 
@@ -174,6 +145,9 @@ function get_current_user_data($uid = ''){
 	return $user_data;
 }
 
+/**
+ * Obtiene coauthores por usuario.
+ */
 function get_co_authors_for_user($uid) {
   $co_authors = array(
     'internal' => array(),
@@ -251,7 +225,7 @@ function get_co_authors_for_user($uid) {
 }
 
 /**
- * Function get user otros coautores
+ * Obtiene otros coauthores relacionados al usuario.
  */
 function get_user_otros_coautores($uid = ''){
 
@@ -279,7 +253,7 @@ function get_user_otros_coautores($uid = ''){
 }
 
 /**
- * Function get user coautores
+ * Obtiene otras publicaciones.
  */
 function get_other_publications($uid = ''){
   $query = db_select('node', 'n');
@@ -303,7 +277,7 @@ function get_other_publications($uid = ''){
 }
 
 /**
- * Function get user coautores
+ * Obtiene user coautores.
  */
 function get_user_coautores($uid = ''){
 	$query = db_select('field_data_field_co_author', 'co_author');
@@ -330,6 +304,9 @@ function get_user_coautores($uid = ''){
 	return FALSE;
 }
 
+/**
+ * Obtener UID.
+ */
 function get_uid($username){
   $uid = db_select('users', 'u')
   ->fields('u',array('uid'))
@@ -345,6 +322,9 @@ function get_uid($username){
   }
 }
 
+/**
+ * Obtener nombre co autor.
+ */
 function get_other_co_author_name($tid){
 	$term = taxonomy_term_load($tid);
 	if(isset($term->name)){
@@ -353,6 +333,9 @@ function get_other_co_author_name($tid){
 	return FALSE;
 }
 
+/**
+ * Obtener nombre de usuario.
+ */
 function get_username($uid){
   $name = db_select('users', 'u')
   ->fields('u',array('name'))
@@ -368,6 +351,9 @@ function get_username($uid){
   }
 }
 
+/**
+ * Abrir un archivo JSON.
+ */
 function _banrep_open_json($file) {
    if(file_exists($file)) {
      $str_data = file_get_contents($file);
@@ -378,6 +364,9 @@ function _banrep_open_json($file) {
    return FALSE;
 }
 
+/**
+ * Valida coauthores externos de un nodo.
+ */
 function _banrep_core_validate_external_authors($node) {
   $co_authors = array();
   if (!empty($node->field_main_author_reference[LANGUAGE_NONE])) {
@@ -419,6 +408,9 @@ function _banrep_core_validate_external_authors($node) {
   }
 }
 
+/**
+ * Actualizar taxonomia JEL.
+ */
 function _banrep_core_update_taxonomy_jel($vid){
 	//load all the tids under the vocabulary specified as an argument
 	$terms = entity_load('taxonomy_term', FALSE, array('vid' => $vid));
@@ -451,6 +443,9 @@ function _banrep_core_update_taxonomy_jel($vid){
 	return $output;
 }
 
+/**
+ * Traduce taxonomia soluciones caie.
+ */
 function _banrep_core_translate_taxonomy($vid)
 {
 	global $language;
@@ -476,7 +471,7 @@ function _banrep_core_translate_taxonomy($vid)
 
 
 /**
- * Function codigos jel en uso
+ * Obtiene codigos jel en uso.
  */
 function _banrep_obtener_codigos_jel_en_uso($idioma){
 
@@ -515,6 +510,9 @@ function _banrep_obtener_codigos_jel_en_uso($idioma){
 
 }
 
+/**
+ * Obtiene nombre tipo de solicitud.
+ */
 function _banrep_get_name_tipo_solicitud($token_data){
   $nid = $token_data['node']->nid;
   $submission = $token_data['webform-submission'];
@@ -599,9 +597,7 @@ $array = array(
 /**
  * Cambia el nombre de todos los términos de un vocabulario de manera que sólo
  * la primera letra sea mayúscula y el resto minúscula
- * Ejemplo: Prueba UNO -> Prueba uno
- * @param $vocabulary_name string indicando el nombre del vocabulario cuyos
- *        términos serán afectados
+ * ejemplo: Prueba UNO -> Prueba uno.
  */
 function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
   $terms = entity_load(
@@ -620,9 +616,9 @@ function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
   }
 }
 
-/*
-* Get concept type.
-*/
+/**
+ * Obtener concept type.
+ */
 function _banrep_core_get_concept_type($nid){
   $query = db_select('field_data_field_concept_category', 'c');
   $query->condition('c.entity_id', $nid);
@@ -634,9 +630,9 @@ function _banrep_core_get_concept_type($nid){
   return $concept_type;
 }
 
-/*
-* Get user by autor term.
-*/
+/**
+ * Obtener usuario desde un nid.
+ */
 function _banrep_core_get_user_by_author_term($nid){
   $query = db_select('field_data_field_user_reference', 'u');
   $query->condition('u.entity_id', $nid);
@@ -646,6 +642,9 @@ function _banrep_core_get_user_by_author_term($nid){
   return $user_id;
 }
 
+/**
+ * Obtener username por UID.
+ */
 function _banrep_core_get_username_by_uid($uid){
   $name = db_select('users', 'u')
   ->fields('u',array('name'))
@@ -659,4 +658,12 @@ function _banrep_core_get_username_by_uid($uid){
   else {
     return NULL;
   }
+}
+
+/**
+ * Vaida si es privado.
+ */
+function field_can_be_private($field_name){
+   $name = 'profile_setting_'.$field_name;
+   return ((bool) variable_get($name, FALSE));
 }

@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * @file
+ * Funcionalidades relacionadas a sección seminarios.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function banrep_seminarios_menu() {
+  $items['seminarios'] = array(
+    'title' => '',
+    'page callback' => 'banrep_seminarios_page',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+    'file' => 'banrep_seminarios.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+/**
  * Implements hook_theme().
  */
 function banrep_seminarios_theme($existing, $type, $theme, $path) {

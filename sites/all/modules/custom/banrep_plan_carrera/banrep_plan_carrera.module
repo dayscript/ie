@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Defines banrep_core module functionality.
@@ -19,14 +18,191 @@ function banrep_plan_carrera_menu() {
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
   );
+
   $items['profile/plan/carrera/%'] = array(
     'title' => '',
     'page callback' => 'banrep_plan_carrera_page',
     'page arguments' => array(3),
-    'access callback' => TRUE,
+    'access callback' => true,
     'file' => 'banrep_plan_carrera.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_mail().
+ */
+function banrep_plan_carrera_mail($key, &$message, $params) {
+  $message['headers'] = array_merge(
+    $message['headers'],
+    array(
+      'MIME-Version' => '1.0',
+      'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+      'Content-Transfer-Encoding' => '8Bit',
+      'X-Mailer' => 'Drupal'
+    )
+  );
+  $options = array(
+    'langcode' => $message['language']->language,
+    );
+  switch ($key) {
+    case 'plan_carrera':
+      $message['subject'] = 'Mensaje directo desde portal Investigaciones económicas';
+      $message['body'][] = '<h3>Estimado Usuario,</h3>';
+      $message['body'][] = '<p>Le informamos que su solicitud de ascenso a sido aprobada y se encuentra en estado: APROBADO PARA CAMBIO DE CARGO';
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function banrep_plan_carrera_node_presave($node) {
+
+  global $user;
+
+  switch($node->type){
+  	case 'pub_user':
+
+ 		//Capturando el id del estado
+		$estado_publica = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+		if( $estado_publica == 3 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles) ) )
+    {
+
+      //Sacando el puntaje actual
+      $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+
+      //Sacando información de la publicación (Tipo de publicación)
+      $pub_id  = $node->field_publicacion[LANGUAGE_NONE][0]['target_id'];
+      $nodePub = node_load($pub_id);
+			$tip_pub = end($nodePub->field_concept_type[LANGUAGE_NONE]);
+
+			//Consultando los puntajes del tipo de publicación.
+	    $termTax = taxonomy_term_load($tip_pub['tid']);
+	    foreach($termTax->field_puntajes[LANGUAGE_NONE] as $idpuntaje)
+	    {
+	     	$arpuntajes[] = field_collection_item_load($idpuntaje['value']);
+	    }
+
+			//Generando vector de comparacion,sacando las rutas y su puntaje por tipo de publicacion
+	  	foreach($arpuntajes as $puntaje)
+	  	{
+	  		$id_ruta = $puntaje->field_ruta[LANGUAGE_NONE][0]['target_id'];
+	  		$ruta_puntaje[$id_ruta] =  $puntaje->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+	  	}
+
+			//Consultando la ruta del usuario.
+	  	$uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
+	  	$userPub = user_load($uid);
+      $ruta_usuario = $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'];
+
+			//Guardando puntaje acumulado
+      $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
+      $puntaje_digitado = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+      if(in_array('Admin GT', $user->roles) && $puntaje_anterior != $puntaje_digitado )
+      {
+        $puntaje_actual = $puntaje_digitado;
+      } else {
+        $puntaje_actual = $ruta_puntaje[$ruta_usuario];
+      }
+
+      $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
+      $puntaje += $puntaje_actual;
+      $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
+      user_save($userPub);
+
+			//Guardando puntaje especifico
+	  	$node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
+
+      //Historico
+      if(in_array('Admin GT', $user->roles))
+      {
+        $datelog = date('d/m/Y h:i:s');
+        $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+        $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
+        $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo );
+      }
+    }
+	break;
+    case 'activity':
+
+		$estado_publica = $node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+		if( $estado_publica == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles) ) )
+    {
+     	 //Consultando la ruta del usuario.
+	     $userPub = user_load($node->uid);
+	  	 //$ruta_usuario = $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'];
+
+			 //Guardando puntaje acumulado
+       $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
+       $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+       $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
+       $puntaje += $puntaje_actual;
+       $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
+	  	 user_save($userPub);
+
+       if(in_array('Admin GT', $user->roles))
+       {
+         $datelog = date('d/m/Y h:i:s');
+         $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+         $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
+         $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo );
+       }
+  		}
+	break;
+  }
+}
+
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function banrep_plan_carrera_form_alter(&$form, &$form_state, $form_id)
+{
+  global $user;
+
+  switch ($form_id)
+  {
+    case 'pub_user_node_form':
+
+      if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
+      {
+
+          $form['field_puntaje']['#states'] = array(
+           'required' => array( 'select[name="field_estado_publicaci_n[und][0][workflow][workflow_sid]"]' => array('value' => '3') ),
+           'enabled' => array( 'select[name="field_estado_publicaci_n[und][0][workflow][workflow_sid]"]' => array('value' => '3') )
+          );
+      } else {
+        $form['field_puntaje']['#disabled'] = TRUE;
+      }
+
+    break;
+    case 'activity_node_form':
+
+      if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
+      {
+
+          $form['field_puntaje']['#states'] = array(
+           'required' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') ),
+           'enabled' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') )
+          );
+
+      } else {
+
+        if(in_array('caie', $user->roles) && empty($form['#entity']->field_puntaje))
+        {
+              $form['field_puntaje']['#states'] = array(
+               'required' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') ),
+               'enabled' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') )
+              );
+        } else {
+
+          $form['field_puntaje']['#disabled'] = TRUE;
+        }
+      }
+    break;
+  }
 }

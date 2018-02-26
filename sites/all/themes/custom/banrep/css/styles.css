@@ -5435,7 +5435,7 @@ h1.page-title span.edit-group a:hover {
   margin-bottom: 0;
   padding: 0;
   display: block;
-  border: 1px solid #004677;
+  border: 1px dotted #625e58;
   text-align: center;
 }
 
@@ -9576,6 +9576,15 @@ a.show-formulario {
   background-image: url("../images/iconos/orcid.png");
 }
 
+.page-profile .icono.ssrn {
+  background-image: url("../images/iconos/ssrn.png");
+  color: transparent;
+}
+
+.page-profile .icono.ssrn:hover {
+  color: transparent;
+}
+
 .page-profile .icono.redalyc {
   background-image: url("../images/iconos/redalyc.png");
   color: transparent;
@@ -10332,6 +10341,28 @@ form .form-textarea {
   border-bottom: none;
 }
 
+#banrep-plan-carrera-form .group-requirements-publications {
+  border: 1px dashed;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+#banrep-plan-carrera-form textarea {
+  border: 1px solid lightgray;
+  width: 100%;
+  margin-top: 5px;
+}
+
+#banrep-plan-carrera-form .comment {
+  padding: 10px;
+  border-bottom: 3px solid #d9d9d9;
+  font-style: italic;
+}
+
+#banrep-plan-carrera-form .form-text {
+  margin-left: 10px;
+}
+
 .bg-gris-extra-claro {
   background: #f2f2f2;
 }
@@ -10568,6 +10599,10 @@ form .form-textarea {
 
 .footer-nuevo .cl-1 {
   font-weight: 100;
+}
+
+.footer-nuevo .cl-2 {
+  line-height: 20px;
 }
 
 .footer-nuevo .divisor {

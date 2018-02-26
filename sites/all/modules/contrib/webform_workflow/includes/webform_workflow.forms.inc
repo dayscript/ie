@@ -274,7 +274,7 @@ function webform_workflow_submission_state_form($form, &$form_state, $submission
     ':input[name="new_state"]' => array('!value' => ''),
   );
   $form['workflow']['message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Log message'),
     '#description' => t('Describe why you are making this change.'),
     '#states' => array('visible' => $new_state_trigger),

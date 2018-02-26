@@ -168,11 +168,6 @@
     </div>
 
     <footer id="footer" class="site-footer">
-      <div class="footer__prefooter">
-        <div class="container">
-          <?php print render($page['prefooter']); ?>
-        </div>
-      </div>
       <div class="footer__footer">
         <div class="container">
           <?php print render($page['footer']); ?>

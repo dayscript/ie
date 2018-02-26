@@ -22,9 +22,9 @@ files[] = tests/webform_workflow_permissions.test
 
 stylesheets[all][] = includes/webform_workflow.css
 
-; Information added by Drupal.org packaging script on 2016-09-22
-version = "7.x-1.0-alpha2+7-dev"
+; Information added by Drupal.org packaging script on 2018-02-16
+version = "7.x-1.0-alpha2+10-dev"
 core = "7.x"
 project = "webform_workflow"
-datestamp = "1474549472"
+datestamp = "1518793983"
 

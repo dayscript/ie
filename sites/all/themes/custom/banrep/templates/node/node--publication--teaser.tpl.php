@@ -91,7 +91,6 @@
  */
 
 module_load_include('inc', 'banrep_investigador', 'banrep_investigador.functions');
-//$publication = _banrep_investigador_pubs_teaser($node->nid);
 hide($content['comments']);
 hide($content['links']);
 /**
@@ -108,22 +107,6 @@ $concept_name = NULL;
 if(isset($node->field_concept['und'][0]['target_id'])){
   $concept_name = get_node_title($node->field_concept['und'][0]['target_id']);
 }
-
-// Código anterior
-// if($node->field_other_co_authors['und'] && $node->field_main_author_reference['und']){
-//   $co_authors_id = array_merge($node->field_main_author_reference['und'], $node->field_other_co_authors['und']);
-// }
-// elseif($node->field_main_author_reference['und']){
-//   $co_authors_id = $node->field_main_author_reference['und'];
-// }
-// elseif($node->field_other_co_authors['und']){
-//   $co_authors_id = $node->field_other_co_authors['und'];
-// }
-// foreach ($co_authors_id as $key => $co_author) {
-//   $co_authors[$key]['names'] = _banrep_core_obtener_nombres_autor($co_author['tid']);
-//   $co_authors[$key]['surnames'] = _banrep_core_obtener_apellidos_autor($co_author['tid']);
-// }
-
 
 if (!empty($node->field_role_within_publication[LANGUAGE_NONE])) {
   $tid_role_edition = $node->field_role_within_publication[LANGUAGE_NONE][0]['tid'];
@@ -162,38 +145,7 @@ if ($node->field_other_co_authors['und'] && $tid_role_edition) {
     <?php print $attributes; ?>
 >
   <?php
-  // Código anterior
-  // $limit = 3;
-  // $visible_authors =
-  //   banrep_investigador_authors_to_apa(
-  //     array_slice($co_authors, 0, $limit)
-  //   )
-  // ;
-  // $hidden_authors = '';
-  // if (count($co_authors) > $limit) {
-  //   $hidden_authors =
-  //     banrep_investigador_authors_to_apa(
-  //       array_slice($co_authors, $limit)
-  //     )
-  //   ;
-  //   $hidden_authors =
-  //     '<a href="#last-coauthors-'.$node->nid.'" class="show-more">' .
-  //       'Ver más' .
-  //     '</a> ' .
-  //     '<span id="last-coauthors-'.$node->nid.'" class="hidden">' .
-  //       $hidden_authors .
-  //     '</span>'
-  //   ;
-  // }
-  // $authors =
-  //   '<span class="coauthors">' .
-  //     $visible_authors .
-  //     ($hidden_authors?' '.$hidden_authors:'') .
-  //   '</span>'
-  // ;
 
-
-  // Nuevo código
   $limit = 3;
   $visible_authors = '';
   foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
@@ -314,41 +266,6 @@ if ($node->field_other_co_authors['und'] && $tid_role_edition) {
       }
 
       if(count($book_data)){
-
-        // Código anterior
-        // $limit = 3;
-        // $visible_authors_book =
-        //   banrep_investigador_authors_to_apa(
-        //     array_slice($book_data['coauthors'], 0, $limit)
-        //   )
-        // ;
-        // $hidden_authors_book = '';
-        // if (count($book_data['coauthors']) > $limit) {
-        //   $hidden_authors_book =
-        //     banrep_investigador_authors_to_apa(
-        //       array_slice($book_data['coauthors'], $limit)
-        //     )
-        //   ;
-        //   $hidden_authors_book =
-        //     '<a href="#last-coauthors-'.$book_id.'" class="show-more">' .
-        //       'Ver más' .
-        //     '</a> ' .
-        //     '<span id="last-coauthors-'.$book_id.'" class="hidden">' .
-        //       $hidden_authors_book .
-        //     '</span>'
-        //   ;
-        // }
-        // $authors_book =
-        //   '<span class="coauthors">' .
-        //     $visible_authors_book .
-        //     ($hidden_authors_book?' '.$hidden_authors_book:'') .
-        //   '</span>'
-        // ;
-
-
-
-
-        // Nuevo código
         $limit = 3;
         $visible_authors_book = '';
         foreach (array_slice($book_data['authors_role_edition'], 0, $limit) as $key_vis_book => $info_autor_vis_book) {

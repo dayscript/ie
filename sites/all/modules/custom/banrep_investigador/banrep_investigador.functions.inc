@@ -1,54 +1,9 @@
 <?php
 
-function _banrep_investigador_pubs_teaser($nid){
-  $publication = new stdClass();
-  $authors = array();
-  $node = node_load($nid);
-  $main_author_reference = field_get_items('node', $node, 'field_main_author_reference');
-  if ($main_author_reference) {
-    $taxonomy = taxonomy_term_load($main_author_reference[0]['tid']);
-    $authors[] = array(
-      'names' => field_get_items('taxonomy_term', $taxonomy, 'field_names')[0]['safe_value'],
-      'surnames' => field_get_items('taxonomy_term', $taxonomy, 'field_surnames')[0]['safe_value'],
-    );
-  }
-  $query = new EntityFieldQuery();
-  $pub_user_nids =
-    array_keys(
-      $query
-      ->entityCondition('entity_type', 'node')
-      ->entityCondition('bundle', 'pub_user')
-      ->fieldCondition('field_publicacion', 'target_id', $nid)
-      ->fieldOrderBy('field_main_author', 'value', 'DESC')
-      ->execute()
-      ['node']
-    )
-  ;
-  foreach ($pub_user_nids as $pub_user_nid) {
-    $pub_user = node_load($pub_user_nid);
-    $user = entity_metadata_wrapper('node', $pub_user)->field_user_reference->value();
-    $authors[] = array(
-      'names' => field_get_items('user', $user, 'field_names')[0]['safe_value'],
-      'surnames' => field_get_items('user', $user, 'field_surnames')[0]['safe_value'],
-    );
-  }
-  $query = db_select('field_data_field_other_co_authors', 'oca');
-  $query->leftJoin('field_data_field_names','n','n.entity_id = oca.field_other_co_authors_tid');
-  $query->leftJoin('field_data_field_surnames','s','s.entity_id = oca.field_other_co_authors_tid');
-  $query->addField('n', 'field_names_value', 'names');
-  $query->addField('s', 'field_surnames_value', 'surnames');
-  $query->condition('oca.entity_id', $nid);
-  $other_coauthors = $query->execute();
-  foreach ($other_coauthors as $other_coauthor) {
-    $authors[] = array(
-      'names' => $other_coauthor->names,
-      'surnames' => $other_coauthor->surnames,
-    );
-  }
-  $publication->authors = $authors;
-  $publication->field_editorial = $node->field_editorial;
-  return $publication;
-}
+/**
+ * @file
+ * Funciones de ayuda para el módulo investigador.
+ */
 
 /**
  * Recibe un arreglo de autores con nombres y apellidos, y lo convierte en una
@@ -112,7 +67,9 @@ function banrep_investigador_authors_with_role_editor_to_apa($authors, $tid) {
   return $text;
 }
 
-
+/**
+ * Retorna el nombre del autor a partir de un tid de la tax. autores.
+ */
 function _banrep_core_obtener_nombres_autor($tid){
   $query = db_select('taxonomy_term_data', 't');
   $query->leftJoin('field_data_field_names','n','t.tid = n.entity_id');
@@ -123,6 +80,9 @@ function _banrep_core_obtener_nombres_autor($tid){
   return $names;
 }
 
+/**
+ * Retorna apellidos del autor a partir de un tid de la tax. autores.
+ */
 function _banrep_core_obtener_apellidos_autor($tid){
   $query = db_select('taxonomy_term_data', 't');
   $query->leftJoin('field_data_field_surnames','n','t.tid = n.entity_id');
@@ -133,6 +93,9 @@ function _banrep_core_obtener_apellidos_autor($tid){
   return $surnames;
 }
 
+/**
+ * Retorna información completa del libro.
+ */
 function _banrep_core_obtener_libro_de_capitulo($book_id){
   $book_data = array();
   $query = db_select('node','n');
@@ -174,7 +137,7 @@ function _banrep_core_obtener_libro_de_capitulo($book_id){
           if($key == 0){
             $book_data['coauthors'][$key]['names'] = _banrep_core_obtener_nombres_autor($book_info[0]->field_main_author_reference_tid);
             $book_data['coauthors'][$key]['surnames'] = _banrep_core_obtener_apellidos_autor($book_info[0]->field_main_author_reference_tid);
-            
+
             // Role edition
             $tid_main_author = $book_info[0]->field_main_author_reference_tid;
             $full_name_main = array(
@@ -220,6 +183,9 @@ function _banrep_core_obtener_libro_de_capitulo($book_id){
   return $book_data;
 }
 
+/**
+ * Migra usuarios drupal a taxonomia autores.
+ */
 function _banrep_migrar_usuarios_a_taxonomia(){
   $query = db_select('users', 'u');
   $query->join('users_roles', 'ur', 'u.uid = ur.uid');
@@ -249,4 +215,37 @@ function _banrep_migrar_usuarios_a_taxonomia(){
         }
     }
   }
+}
+
+/**
+ * Consulta el nombre de un término.
+ */
+function _banrep_obtener_nombre_tid($tid) {
+  return db_select('taxonomy_term_data', 't')
+    ->fields('t', array('name'))
+    ->condition('tid', $tid)
+    ->execute()
+    ->fetchField();
+}
+
+/**
+ * Consulta el tid de un término.
+ */
+function _banrep_obtener_tid_nombre($nombre) {
+  return db_select('taxonomy_term_data', 't')
+    ->fields('t', array('tid'))
+    ->condition('name', '%' . db_like($nombre) . '%', 'LIKE')
+    ->execute()
+    ->fetchField();
+}
+
+/**
+ * Consulta el uid a partir del email.
+ */
+function _banrep_obtener_uid_por_email($email) {
+  return db_select('users', 'u')
+    ->fields('u', array('uid'))
+    ->condition('mail', '%' . db_like($email) . '%', 'LIKE')
+    ->execute()
+    ->fetchField();
 }

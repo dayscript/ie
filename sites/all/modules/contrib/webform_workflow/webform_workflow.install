@@ -145,8 +145,7 @@ function webform_workflow_schema() {
       ),
       'message' => array(
         'description' => 'A log message.',
-        'type' => 'varchar',
-        'length' => 255,
+        'type' => 'text',
         'not null' => FALSE,
       ),
     ),
@@ -209,4 +208,16 @@ function webform_workflow_uninstall() {
   foreach (array_keys(_webform_workflow_field_bases()) as $field_name) {
     field_delete_field($field_name);
   }
+}
+
+/**
+ * Changes database field configurations to allow longer state transition messages.
+ */
+function webform_workflow_update_7000() {
+  $spec = array(
+    'description' => 'A log message.',
+    'type' => 'text',
+    'not null' => FALSE,
+  );
+  db_change_field('webform_workflow_transition', 'message', 'message', $spec);
 }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Formulario de creación de actividad.
+ */
 function activities_add_form($form, &$form_state){
 
   $form_state['step'] = isset($form_state['step']) ? $form_state['step'] : 1;

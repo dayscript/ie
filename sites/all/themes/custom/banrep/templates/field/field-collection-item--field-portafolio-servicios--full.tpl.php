@@ -31,6 +31,7 @@
 $field_caie_description = isset($content['field_caie_description'][0]['#markup']) ? $content['field_caie_description'][0]['#markup'] : '' ;
 $field_titulo = isset($content['field_titulo'][0]['#markup']) ? $content['field_titulo'][0]['#markup'] : '' ;
 
+module_load_include('inc', 'banrep_caie', 'banrep_caie.functions');
 $machine_service_name = human_to_machine($field_titulo);
 
 ?>

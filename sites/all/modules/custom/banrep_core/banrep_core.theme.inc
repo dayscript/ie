@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Proporciona plantillas a bloques del CMS.
+ */
+
+/**
+ * Plantilla bloque top user general.
+ */
 function theme_banrep_user_top_zone($variables) {
   global $user, $language;
   $output = '';
@@ -65,95 +73,64 @@ function theme_banrep_user_top_zone($variables) {
   return $output;
 }
 
-function theme_home_dspace_block($variables) {
-  $output = '<div class="articles ds-one">
-  <div class="article clearfix">
-    <div class="image-thumb">
-      <img src="/sites/all/themes/custom/banrep/images/home-dspace.jpg" alt="">
-    </div>
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <p class="lead">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</p>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <span class="date">09/10/2016</span>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <span class="date">09/10/2016</span>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <span class="date">09/10/2016</span>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <span class="date">09/10/2016</span>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-</div>';
-
-  return $output;
-}
-
-function theme_home_koha_block($variables) {
-  $output = '<div class="articles ds-two">
-  <div class="article clearfix">
-    <div class="image-thumb">
-      <img src="/sites/all/themes/custom/banrep/images/home-koha1.jpg" alt="">
-    </div>
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <p class="lead">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</p>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="image-thumb">
-      <img src="/sites/all/themes/custom/banrep/images/home-koha2.jpg" alt="">
-    </div>
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <p class="lead">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</p>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-  <div class="article clearfix">
-    <div class="information">
-      <h3 class="title">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos</h3>
-      <a href="#" title="" class="link-more"><i class="ico ico-plus"></i></a>
-    </div>
-  </div>
-</div>';
-
-  return $output;
-}
-
-function theme_home_most_views_block($variables) {
+/**
+ * Plantilla bloque soluciones CAIE.
+ */
+function theme_caie_solutions($variables) {
+  $items = $variables['items'];
   $output = '';
-
+  $output .= '<div class="soluciones-caie"><div class="row"><div class="col-lg-3"><h2>' . t('SOLUTIONS') . '</h2></div> <div class="col-lg-9"><ul class="solution-items">';
+  foreach ($items as $key => $item) {
+      $c = $key+1;
+      $iconclass = isset($item->field_icono_class['und'][0]['value'])?$item->field_icono_class['und'][0]['value']:'';
+      $icon = '<span class="' . $iconclass . '"></span>';
+      $url = url('taxonomy/term/' . $item->tid);
+      $output .= '<li class="item-'.$c.'"> <a href="' . $url . '" title="'. $item->name .'">' . $icon . '<strong class="item-title">'. $item->name .'</strong></a></li>';
+  }
+  $output .= '</ul></div></div></div>';
   return $output;
+}
+
+/**
+ * Plantilla bloque recursos CAIE.
+ */
+function theme_caie_resources($variables) {
+    $items = $variables['items'];
+    $output = '';
+    $output .= '<div class="recursos"><div class="row"><div class="col-lg-12"><ul class="recursos-items">';
+    foreach ($items as $key => $item) {
+        $c = $key+1;
+        $status_resources = FALSE;
+        if(isset($item->status) && ($item->status == '1')){
+            $status_resources = TRUE;
+        }
+        if($status_resources){
+            $iconclass = isset($item->field_icono_class['und'][0]['value'])?$item->field_icono_class['und'][0]['value']:'';
+            $icon = '<span class="' . $iconclass . '"></span>';
+            if(isset($item->field_url_recurso['und'][0]['url'])){
+                $url = $item->field_url_recurso['und'][0]['url'];
+            }else{
+                $url = url('taxonomy/term/' . $item->tid);
+            }
+            $output .= '<li class="item-'.$c.'"> <a href="' . $url . '" title="'. $item->name .'">' . $icon . '<strong class="item-title">'. $item->name .'</strong></a></li>';
+        }
+    }
+    $output .= '</ul></div></div></div>';
+    return $output;
+}
+
+/**
+ * Plantilla bloque colaboradores CAIE.
+ */
+function theme_caie_collaborators($variables) {
+    $items = $variables['items'];
+    $output = '<div class="colaboradores"><ul>';
+    foreach ($items as $key => $item) {
+        $output .= '<li><div class="profile-image">'.theme('image_style', array('style_name' => 'user_picture_60x60', 'path' => $item->field_imagen['und'][0]['uri'])).'</div>';
+        $output .= '<div class="user-info"><div class="full-name">'.$item->name.'</div>
+        <div class="position">'.$item->description.'</div></div></li>';
+    }
+    $output .= '</ul><div class="contact-email"><a href="mailto:caie-soluciones@banrep.gov.co"><i class="fa fa-envelope" aria-hidden="true"></i> caie-soluciones@banrep.gov.co</a></div>';
+    $output .= '</ul></div>';
+    return $output;
 }
