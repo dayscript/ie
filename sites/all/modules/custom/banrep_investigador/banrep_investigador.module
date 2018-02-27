@@ -176,8 +176,8 @@ function banrep_investigador_report_publications() {
     $is_create = phpexcel_export($header, $rows, $file_abs_excel);
 
     if ($is_create == 10) {
-      // $file_excel = file_create_url('public://reports/publications/excel/publications3.xlsx');
-      $link_excel = '<ul class="action-links"><li>' . l('Descargar Excel', 'http://banrep-ie.local/sites/default/files/reports/publications/excel/publications3.xlsx') . '</li>
+      $file_excel = file_create_url('public://reports/publications/excel/publications3.xlsx');
+      $link_excel = '<ul class="action-links"><li>' . l('Descargar Excel', $file_excel) . '</li>
 </ul>';
       $content = $link_excel . theme('table', array('header' => $header, 'rows' => $rows));
     }
