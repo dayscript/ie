@@ -33,7 +33,6 @@
 }
 
 .owl-carousel .owl-wrapper-outer.autoHeight {
-  -webkit-transition: height 500ms ease-in-out;
   transition: height 500ms ease-in-out;
 }
 
@@ -117,3 +116,5 @@
   top: 23%;
   right: 0px;
 }
+
+/*# sourceMappingURL=owlcarousel.css.map */
