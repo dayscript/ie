@@ -1,5 +1,7 @@
 <?php
 
+module_load_include('inc', 'banrep_migration', 'banrep_migration_helper');
+
 class EventsSeminarNodeMigration extends Migration {
 
   public function __construct($arguments) {
@@ -136,4 +138,3 @@ class EventsSeminarNodeMigration extends Migration {
   }
 
 }
-
