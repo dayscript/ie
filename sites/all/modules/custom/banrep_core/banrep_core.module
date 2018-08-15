@@ -1096,6 +1096,8 @@ function banrep_core_preprocess_views_view(&$vars) {
 
   if ($view->name == 'publicaciones' && $view->current_display == 'gestionar_publicaciones') {
     drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publicaciones_gestionar_publicaciones.js');
+    drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/masonry.pkgd.min.js');
+    drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/page_recursos.js');
   }
 
   if ($view->name == 'recursos_de_informacion') {
