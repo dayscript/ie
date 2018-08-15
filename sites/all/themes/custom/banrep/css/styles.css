@@ -212,7 +212,7 @@
 html {
   font-size: 100%;
   line-height: 1.5em;
-  font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
+  font-family: "Roboto", sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   min-height: 100%;
@@ -273,11 +273,11 @@ a {
 }
 
 :visited {
-  color: #004677;
+  color: #003E6C;
 }
 
 a:active {
-  color: #004677;
+  color: #003E6C;
 }
 
 a:active:not(.button) {
@@ -2776,7 +2776,7 @@ html.js .js-hide {
 .highlight-mark,
 .new,
 .update {
-  color: #d21034;
+  color: #860024;
   background-color: transparent;
 }
 
@@ -2899,8 +2899,8 @@ span.field-label {
 .messages--error,
 .messages.error,
 .error {
-  background-color: white;
-  color: #d21034;
+  background-color: #ffaac1;
+  color: #860024;
 }
 
 .messages--warning,
@@ -2914,11 +2914,11 @@ span.field-label {
 
 .messages--error,
 .messages.error {
-  border-color: #d21034;
+  border-color: #860024;
 }
 
 .messages--error path, .messages.error path {
-  fill: #d21034;
+  fill: #860024;
 }
 
 @media print {
@@ -3041,8 +3041,8 @@ span.field-label {
 
 .breadcrumb {
   padding: 0px;
-  border-top: 2px dotted #e6e6e6;
-  border-bottom: 2px dotted #e6e6e6;
+  /*border-top: 2px dotted #e6e6e6;
+    border-bottom: 2px dotted #e6e6e6;*/
   margin-bottom: 25px;
   border-radius: 0px;
   margin-top: 25px;
@@ -3228,7 +3228,7 @@ span.field-label {
 }
 
 .btn-warning {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
 }
 
@@ -3508,7 +3508,7 @@ span.field-label {
   text-align: left;
   background-color: #ffffff;
   border: 1px solid #cccccc;
-  border: 1px solid #e57b1c;
+  border: 1px solid #860024;
   border-radius: 4px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
@@ -3646,7 +3646,7 @@ span.field-label {
 }
 
 .dropdown-user .dropdown-menu {
-  background-color: #e57b1c;
+  background-color: #860024;
   border-radius: 0px;
 }
 
@@ -3656,9 +3656,9 @@ span.field-label {
   right: 9px;
   display: inline-block !important;
   border-right: 7px solid transparent;
-  border-bottom: 7px solid #e57b1c;
+  border-bottom: 7px solid #860024;
   border-left: 7px solid transparent;
-  border-bottom-color: #e57b1c;
+  border-bottom-color: #860024;
   content: '';
 }
 
@@ -3685,7 +3685,7 @@ span.field-label {
 }
 
 .dropdown-user .dropdown-menu li a:hover {
-  background-color: #e06c04;
+  background-color: #ce4f57;
 }
 
 .dropdown-user a.dropdown-toggle {
@@ -3748,7 +3748,7 @@ span.field-label {
 }
 
 .ui-tabs .ui-tabs-nav li {
-  background: #004677;
+  background: #003E6C;
   border: none;
   border-radius: 0px;
   margin: 1px .5em 0 0;
@@ -3756,11 +3756,11 @@ span.field-label {
 
 .ui-tabs .ui-tabs-nav li.ui-state-active {
   background: #f2f2f2;
-  color: #004677;
+  color: #003E6C;
 }
 
 .ui-tabs .ui-tabs-nav li.ui-state-active a {
-  color: #004677;
+  color: #003E6C;
 }
 
 .ui-tabs .ui-tabs-nav li a {
@@ -3775,7 +3775,7 @@ span.field-label {
 }
 
 .ui-tabs .ui-tabs-nav li:hover a {
-  color: #004677;
+  color: #003E6C;
 }
 
 .ui-accordion {
@@ -3793,7 +3793,7 @@ span.field-label {
   margin-bottom: 0rem;
   background: transparent;
   border: none;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   border-bottom: 1px solid #d9d9d9;
 }
@@ -4354,7 +4354,7 @@ form .form-actions .form-submit {
 
 .form-item__required,
 .form-required {
-  color: #d21034;
+  color: #860024;
 }
 
 .form-item__description,
@@ -4413,7 +4413,7 @@ label.option {
 .form-item input.error,
 .form-item textarea.error,
 .form-item select.error {
-  border: 1px solid #d21034;
+  border: 1px solid #860024;
 }
 
 .form-table__sticky-header,
@@ -4776,7 +4776,7 @@ a.read-more {
 
 .header__top {
   background-color: #d9d9d9;
-  border-bottom: 2px solid #e57b1c;
+  border-bottom: 2px solid #860024;
 }
 
 .header__brand .container .header__brand_wrapper {
@@ -4818,7 +4818,7 @@ a.read-more {
 }
 
 .header__navbar .navbar__menu {
-  background-color: #004677;
+  background-color: #003E6C;
 }
 
 @media (min-width: 999px) {
@@ -4958,7 +4958,7 @@ a.read-more {
 }
 
 .header__navbar .banrep-search-form [type='submit'], .header__navbar .banrep-search-form button.submit {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: #ffffff;
   font-family: 'icobanrep' !important;
   speak: none;
@@ -5010,7 +5010,7 @@ a.read-more {
 .header__navbar .banrep-search-form .form-item-source {
   position: relative;
   border-radius: 4px;
-  background: #e57b1c;
+  background: #860024;
   padding-bottom: 5px;
   padding-top: 1px;
   height: 33px;
@@ -5050,7 +5050,7 @@ a.read-more {
   padding: 4px 20px 0;
   margin: 0;
   border-radius: 4px;
-  background: #e57b1c;
+  background: #860024;
   border: 0;
   outline: 0;
   display: inline-block;
@@ -5105,7 +5105,7 @@ a.read-more {
 }
 
 .user-zone {
-  background-color: #e57b1c;
+  background-color: #860024;
 }
 
 .user-zone .btn-login {
@@ -5127,7 +5127,7 @@ a.read-more {
   line-height: 1.5rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
 }
 
@@ -5171,6 +5171,10 @@ a.read-more {
   padding-top: 2px;
 }
 
+.banrep-user-login-pass .form-actions .form-submit:hover {
+  background-color: #559dc5;
+}
+
 .banrep-user-login-pass .link {
   font-size: 0.75rem;
   line-height: 1.5rem;
@@ -5185,22 +5189,34 @@ a.read-more {
 
 h1.page-title {
   display: block;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  font-weight: 600;
-  border-top: 0px dotted #d9d9d9;
-  border-bottom: 2px dotted #d9d9d9;
+  /*@include type-layout(s, 1);*/
+  font-size: 28px;
+  line-height: 30px;
+  font-weight: normal;
+  /*border-top: 0px dotted color('grey-light');
+    border-bottom: 2px dotted color('grey-light');*/
   margin-top: 0px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   padding-top: 12px;
-  padding-bottom: 12px;
-  color: #004677;
-  text-transform: uppercase;
+  padding-bottom: 5px;
+  color: #594f51;
+  /*text-transform: uppercase;*/
+  position: relative;
+}
+
+h1.page-title:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 2px;
+  content: "";
+  background-color: #860024;
 }
 
 h1.page-title span.edit-group a {
   text-transform: initial;
-  color: #e57b1c;
+  color: #860024;
   font-size: 14px;
   text-decoration: none;
 }
@@ -5219,22 +5235,31 @@ h1.page-title span.edit-group a:hover {
 }
 
 .site-content .block__title {
+  position: relative;
   display: block;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  font-weight: 600;
-  border-top: 0px dotted #d9d9d9;
-  border-bottom: 2px dotted #d9d9d9;
+  /*@include type-layout(s, 1);*/
+  font-size: 21px;
+  line-height: 24px;
+  font-weight: normal;
   margin-top: 0px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   padding-top: 12px;
-  padding-bottom: 12px;
-  color: #004677;
-  text-transform: uppercase;
+  padding-bottom: 5px;
+  color: #594f51;
 }
 
 .site-content .block__title.color-white {
   color: white;
+}
+
+.site-content .block__title:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 2px;
+  content: "";
+  background-color: #860024;
 }
 
 .site-content .container {
@@ -5267,12 +5292,12 @@ h1.page-title span.edit-group a:hover {
 .site-content .pager .pager-previous a,
 .site-content .pager .pager-first a,
 .site-content .pager .pager-last a {
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
 .site-content .pager .pager-current {
-  background-color: #e57b1c;
+  background-color: #860024;
   padding: 4px 8px;
   color: white;
 }
@@ -5290,7 +5315,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .view-filters .form-submit {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
 }
 
@@ -5319,7 +5344,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .remodal .form-submit {
-  background: #e57b1c;
+  background: #860024;
   color: white;
   border: none;
 }
@@ -5329,11 +5354,11 @@ h1.page-title span.edit-group a:hover {
 }
 
 .remodal .remodal-close {
-  color: #e57b1c;
+  color: #860024;
 }
 
 .remodal .form-required {
-  color: #e57b1c;
+  color: #860024;
 }
 
 .remodal label {
@@ -5507,14 +5532,14 @@ h1.page-title span.edit-group a:hover {
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 15px;
   margin-left: 15px;
   position: relative;
 }
 
 .portlet.dark-portlet > .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .portlet.dark-portlet > .portlet-body .read-more {
@@ -5556,14 +5581,14 @@ h1.page-title span.edit-group a:hover {
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 15px;
   margin-left: 15px;
   position: relative;
 }
 
 .portlet.box-documentos-investigacion > .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .portlet.portlet-hidden {
@@ -5612,7 +5637,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .portlet-autores .user-info .position-name {
-  color: #004677;
+  color: #003E6C;
   font-weight: 500;
   line-height: 23px;
   font-size: 14px;
@@ -5638,15 +5663,15 @@ h1.page-title span.edit-group a:hover {
 }
 
 .list-item h3.items-title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
   font-size: 14px;
   line-height: 16px;
   font-weight: 600;
-  border-top: 2px dotted #d9d9d9;
-  border-bottom: 2px dotted #d9d9d9;
+  /*border-top: 2px dotted color('grey-light');
+    border-bottom: 2px dotted color('grey-light');*/
   margin-top: 0px;
   margin-bottom: 0.5rem;
   padding-top: 12px;
@@ -5660,7 +5685,7 @@ h1.page-title span.edit-group a:hover {
 .list-item .item {
   padding-bottom: 5px;
   margin-bottom: 7px;
-  border-bottom: 2px dotted #f2f2f2;
+  /*border-bottom: 2px dotted color('grey-extra-light');*/
 }
 
 .list-item .item.views-row-last {
@@ -5673,7 +5698,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .list-item .item .item-info .title {
-  color: #004677;
+  color: #003E6C;
   margin: 0px 0px 7px 0px;
   line-height: 17px;
   font-size: 13px;
@@ -5681,7 +5706,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .list-item .item .item-info h1 {
-  color: #004677;
+  color: #003E6C;
   margin: 0px 0px 7px 0px;
   line-height: 16px;
   font-size: 14px;
@@ -5689,7 +5714,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .list-item .item .item-info a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 17px;
   text-decoration: none;
@@ -5733,7 +5758,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .grey-box h3.items-title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -5764,7 +5789,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .grey-box .item-info .info-row a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   text-decoration: none;
@@ -5780,7 +5805,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .seminarios-home {
-  background: #004677;
+  background: #003E6C;
   padding: 30px 20px;
 }
 
@@ -5846,7 +5871,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .page-investigadores .grey-box .view-filters .views-exposed-form .form-submit {
-  background-color: #004677;
+  background-color: #003E6C;
   color: white;
 }
 
@@ -5886,7 +5911,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .page-investigadores .profile-teaser .lineas-de-investigacion {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   font-size: 13px;
@@ -5914,7 +5939,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .page-investigadores .profile-teaser .read-more {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   font-size: 13px;
@@ -5953,14 +5978,14 @@ h1.page-title span.edit-group a:hover {
 }
 
 .page-investigadores .profile-teaser .user-info .full-name {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
 }
 
 .page-investigadores .profile-teaser .user-info .full-name a {
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
 }
 
 .page-investigadores .profile-teaser .user-info .full-name a:hover {
@@ -5968,7 +5993,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .page-investigadores .profile-teaser .user-info .full-name a:visited {
-  color: #004677;
+  color: #003E6C;
 }
 
 .page-investigadores .profile-teaser .user-info .position {
@@ -6060,7 +6085,7 @@ h1.page-title span.edit-group a:hover {
 .landing-page .abecedario ul li a {
   font-size: 1rem;
   line-height: 1.35rem;
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
   font-weight: bold;
 }
@@ -6078,7 +6103,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .eventos-prefooter .view-eventos .views-row {
-  border-bottom: solid 1px #004677;
+  border-bottom: solid 1px #003E6C;
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
@@ -6105,7 +6130,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .site-content .node-event.node-teaser .item-info .info-left, .site-content .node-event.view-mode-resumen_seminario .item-info .info-left {
-  background-color: #e57b1c;
+  background-color: #860024;
 }
 
 .node-event.node-teaser, .node-event.view-mode-resumen_seminario {
@@ -6215,7 +6240,7 @@ h1.page-title span.edit-group a:hover {
 }
 
 .node-event.view-mode-resumen_seminario .item-info .info-right h1 a {
-  color: #004677;
+  color: #003E6C;
 }
 
 .node-event.view-mode-resumen_seminario .item-info .info-right h3.expositores {
@@ -6250,7 +6275,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .view-eventos .view-content .views-row .node-event.node-teaser .item-info .info-right h1, .view-eventos .view-content .views-row .node-event.node-teaser .item-info .info-right a {
-  color: #004677;
+  color: #003E6C;
 }
 
 .block-views-eventos-block .icon-calendario {
@@ -6275,25 +6300,33 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a {
-  font-size: 34px;
+  font-size: 24px;
   color: #594f51;
   text-decoration: none;
+  -webkit-filter: brightness(100);
+          filter: brightness(100);
+  opacity: 0.5;
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a.icon-facebook {
-  color: #265198;
+  /* color: color('facebook');*/
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a.icon-twitter {
-  color: #1DB4FF;
+  /* color: color('twitter');*/
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a.icon-youtube {
-  color: #BB1A19;
+  /*color: color('youtube');*/
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a.icon-linkedin {
-  color: #0079BB;
+  /*color: color('linkedin');*/
+}
+
+.footer-redes-sociales-wrapper .footer-redes-sociales ul li a.ico-rss img {
+  margin-top: 2px !important;
+  width: 24px !important;
 }
 
 .footer-redes-sociales-wrapper .footer-redes-sociales ul li a img {
@@ -6315,7 +6348,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   font-size: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 1.5rem;
 }
@@ -6379,7 +6412,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .listing-page .view-content .views-table tbody tr td.views-field-title a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 500;
   text-decoration: none;
   font-size: 13px;
@@ -6397,7 +6430,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .otros_coautores .portlet-body h3.otro-coautor-item {
-  color: #004677;
+  color: #003E6C;
   font-weight: 500;
   line-height: 23px;
   font-size: 14px;
@@ -6422,14 +6455,14 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 8px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
 }
 
 .blog-entries .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .foros {
@@ -6446,14 +6479,14 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 8px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
 }
 
 .foros .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .foros .view-foros .views-field-name {
@@ -6462,7 +6495,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .foros .view-foros .views-field-name .field-content a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 500;
   line-height: 14px;
   text-decoration: none;
@@ -6487,7 +6520,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .node-serie-eventos .box-light-grey button.btn-warning {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: #fff;
 }
 
@@ -6535,14 +6568,14 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: 1px dotted #8e9295;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 5px;
   margin-left: 0px;
   position: relative;
 }
 
 .node-serie-eventos .portlet .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -6581,14 +6614,14 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: none;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 5px;
   margin-left: 0px;
   position: relative;
 }
 
 .node-article.node-teaser .box-light-grey .portlet .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
   border-bottom: 1px dotted #757474;
   margin-bottom: 10px;
@@ -6617,7 +6650,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .seminario-actual .seminario-actual-detail h3.header-title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -6657,7 +6690,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .seminario-actual .seminario-actual-detail .seminario-actual-content .field-type-link-field .field-item a {
-  background-color: #e67b1b;
+  background-color: #860024;
   color: #fff;
   border: 1px solid transparent;
   cursor: pointer;
@@ -6676,12 +6709,13 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .seminario-actual .seminario-actual-detail .seminario-actual-content h3.seminario-actual-title {
-  color: #e67b1b;
+  color: #594f51;
   padding: 5px 0;
   display: block;
   font-size: 20px;
   line-height: 27px;
   font-weight: 600;
+  position: relative;
 }
 
 .row-column-recursos, .row-column-recursos {
@@ -6710,14 +6744,14 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 15px;
   margin-left: 0px;
   position: relative;
 }
 
 .view-mode-resumen_carousel .box-light-grey .portlet .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .view-mode-resumen_carousel .box-light-grey .portlet .portlet-body {
@@ -6760,8 +6794,8 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .soluciones-caie .owl-controls .owl-page.active, .espacios-caie .owl-controls .owl-page.active {
-  background: #e57b1c;
-  border: 1px solid #e57b1c;
+  background: #860024;
+  border: 1px solid #860024;
 }
 
 .box-publicaciones {
@@ -6774,7 +6808,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   line-height: 1.5rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #004677;
+  color: #003E6C;
 }
 
 .box-publicaciones h3 {
@@ -6782,7 +6816,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   line-height: 1.5rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #004677;
+  color: #003E6C;
 }
 
 .box-publicaciones p {
@@ -6839,7 +6873,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 .form-add-publication .margin-fieldset .fieldset-legend {
   font-size: 14px;
   font-weight: bold;
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
@@ -6985,7 +7019,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   margin-bottom: 0.5rem;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -7003,10 +7037,12 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .view-publicaciones .view-footer p a {
-  color: #004677;
+  color: #594f51;
   font-weight: 600;
   line-height: 14px;
-  font-size: 14px;
+  font-size: 11px;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 .site-footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info .info-right h1 {
@@ -7014,7 +7050,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .contact-msg button .icon-mensaje:before {
-  color: #004677;
+  color: #003E6C;
 }
 
 .node-blog {
@@ -7045,7 +7081,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   margin-bottom: 0px;
   display: block;
   padding-top: 9px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
@@ -7066,7 +7102,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .node-blog .field-name-title h2 {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 26px;
   font-size: 21px;
@@ -7096,7 +7132,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 11px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
@@ -7112,13 +7148,13 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .node-blog .field-name-otras-entradas-de-blog .entrada-blogs .views-row .views-field-title {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
 }
 
 .node-blog .field-name-otras-entradas-de-blog .entrada-blogs .views-row .views-field-title a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 18px;
   font-size: 13px;
@@ -7146,7 +7182,7 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .block-promote-publications .block__title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7175,12 +7211,12 @@ footer .view-eventos .view-content .views-row .node-event.node-teaser .item-info
 }
 
 .block-promote-publications table td a {
-  color: #004677;
+  color: #003E6C;
   font-size: 14px;
 }
 
 h3.confirm-registered-information {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7201,7 +7237,7 @@ h3.confirm-registered-information {
   padding: 10px;
   color: #fff !important;
   font-weight: 300;
-  text-shadow: 1px 1px 2px #004677;
+  text-shadow: 1px 1px 2px #003E6C;
 }
 
 .confirm-registered-information-wrapper p.info .icon-revista {
@@ -7274,7 +7310,7 @@ h3.confirm-registered-information {
 }
 
 .vocabulary-recursos-de-informaci-n {
-  color: #004677;
+  color: #003E6C;
   font-size: 15px;
   text-decoration: none;
   line-height: 20px;
@@ -7303,7 +7339,7 @@ h3.confirm-registered-information {
   width: 100%;
   clear: both;
   position: relative;
-  color: #004677;
+  color: #003E6C;
   display: block;
   font-size: 14px;
   line-height: 20px;
@@ -7312,7 +7348,7 @@ h3.confirm-registered-information {
 }
 
 .node-recurso .box-light-grey .caption a, .view-mode-search .box-light-grey .caption a {
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
@@ -7408,7 +7444,7 @@ h3.confirm-registered-information {
 }
 
 .mis-enlaces-recomendados .item-list ul li a {
-  color: #004677;
+  color: #003E6C;
   padding: 8px 0px 8px 0px;
   text-decoration: blink;
   font-size: 12px;
@@ -7429,7 +7465,7 @@ h3.confirm-registered-information {
 .espacios-caie .slide-item .pie-foto {
   width: 100%;
   bottom: 0;
-  background: #004677;
+  background: #003E6C;
   color: white;
   padding: 5px 20px;
 }
@@ -7454,7 +7490,7 @@ h3.confirm-registered-information {
 }
 
 .espacios-caie .view-footer h2 {
-  color: #004677;
+  color: #003E6C;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   display: block;
@@ -7476,7 +7512,7 @@ h3.confirm-registered-information {
 }
 
 .cifras-caie .block__title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7495,11 +7531,11 @@ h3.confirm-registered-information {
   margin: 0px;
   padding: 0px;
   list-style: none;
-  color: #004677;
+  color: #003E6C;
 }
 
 .cifras-caie .cifras ul a {
-  color: #004677;
+  color: #003E6C;
 }
 
 .cifras-caie .cifras ul li {
@@ -7526,7 +7562,7 @@ h3.confirm-registered-information {
 }
 
 .soluciones-caie .col-lg-3 {
-  background: #004677;
+  background: #003E6C;
 }
 
 .soluciones-caie .col-lg-3 h2 {
@@ -7613,7 +7649,7 @@ h3.confirm-registered-information {
   position: relative;
   text-align: center;
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
   padding: 21px 0px 24px 0px;
   margin: auto;
   max-height: 118px;
@@ -7653,7 +7689,7 @@ h3.confirm-registered-information {
 }
 
 .recursos-caie .block__title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7702,7 +7738,7 @@ h3.confirm-registered-information {
   position: relative;
   text-align: center;
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
   padding: 14px 10px;
   max-width: 154px;
   margin: auto;
@@ -7710,7 +7746,7 @@ h3.confirm-registered-information {
 
 .recursos-caie .recursos ul li a:hover span {
   border: 1px solid #fff;
-  background: #004677;
+  background: #003E6C;
   color: #fff;
 }
 
@@ -7719,7 +7755,7 @@ h3.confirm-registered-information {
   position: relative;
   font-size: 34px;
   margin-bottom: 12px;
-  border: 1px solid #004677;
+  border: 1px solid #003E6C;
   padding: 13px;
   border-radius: 32px;
 }
@@ -7758,7 +7794,7 @@ h3.confirm-registered-information {
 }
 
 .collaborators-caie .block__title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7781,7 +7817,7 @@ h3.confirm-registered-information {
   margin: 0px;
   padding: 0px;
   list-style: none;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
 }
 
@@ -7937,7 +7973,7 @@ h3.confirm-registered-information {
 }
 
 .field_responsable .block__title {
-  color: #004677;
+  color: #003E6C;
   padding: 5px 0;
   float: none;
   display: block;
@@ -7953,7 +7989,7 @@ h3.confirm-registered-information {
 }
 
 .field_responsable .field-item {
-  color: #004677;
+  color: #003E6C;
   border-bottom: 1px dotted #cececc;
   padding: 10px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
@@ -7987,7 +8023,7 @@ h3.confirm-registered-information {
   font-weight: 100;
   font-size: 12px;
   line-height: 16px;
-  color: #004677;
+  color: #003E6C;
 }
 
 .field_responsable .field-item strong {
@@ -8034,7 +8070,7 @@ h3.confirm-registered-information {
 }
 
 .indicadores-impacto table thead tr {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
 }
 
@@ -8097,14 +8133,14 @@ h3.confirm-registered-information {
 }
 
 .section-grupos-de-investigacion .member-info .position-name .name {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
 }
 
 .section-grupos-de-investigacion .member-info .position-name .name a {
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 16px;
   font-size: 15px;
@@ -8151,14 +8187,14 @@ h3.confirm-registered-information {
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 5px;
   margin-left: 0px;
   position: relative;
 }
 
 .box-light-grey .portlet .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .box-light-grey .portlet .portlet-body span {
@@ -8171,7 +8207,7 @@ h3.confirm-registered-information {
 .box-light-grey .portlet .portlet-body a {
   font-size: 13px;
   line-height: 19px;
-  color: #004677;
+  color: #003E6C;
 }
 
 .box-light-grey .portlet .portlet-body .taxonomy-term-description {
@@ -8204,7 +8240,7 @@ h3.confirm-registered-information {
   margin-bottom: 0.5rem;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -8244,7 +8280,7 @@ h3.confirm-registered-information {
   margin-bottom: 0.5rem;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -8293,7 +8329,7 @@ h3.confirm-registered-information {
 }
 
 .page-search-researchers .search-api-page-results .profile-teaser .lineas-de-investigacion {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   font-size: 13px;
@@ -8403,14 +8439,14 @@ h3.confirm-registered-information {
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 4px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 5px;
   margin-left: 0px;
   position: relative;
 }
 
 .page-search-researchers .search-api-page-results .box-light-grey .portlet .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .page-search-researchers .search-api-page-results .box-light-grey .portlet .portlet-body span {
@@ -8422,7 +8458,7 @@ h3.confirm-registered-information {
 .page-search-researchers .search-api-page-results .box-light-grey .portlet .portlet-body a {
   font-size: 13px;
   line-height: 19px;
-  color: #004677;
+  color: #003E6C;
 }
 
 .page-search-researchers .search-api-page-results .box-light-grey .portlet .portlet-body .taxonomy-term-description {
@@ -8443,7 +8479,7 @@ h3.confirm-registered-information {
 }
 
 .page-search-researchers .user-info .full-name {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
 }
@@ -8476,7 +8512,7 @@ h3.confirm-registered-information {
   margin-bottom: 0.5rem;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -8503,7 +8539,7 @@ h3.confirm-registered-information {
 }
 
 .resultados-caie .view-content .views-row a {
-  color: #004677;
+  color: #003E6C;
   font-weight: bold;
   text-decoration: none;
 }
@@ -8518,14 +8554,14 @@ h3.confirm-registered-information {
 
 .ui-tooltip, .arrow:after {
   background: #0079c1;
-  border: 1px solid #004677;
+  border: 1px solid #003E6C;
 }
 
 .ui-tooltip {
   padding: 5px 20px;
   color: white;
   border-radius: 5px;
-  box-shadow: 0 0 7px #004677;
+  box-shadow: 0 0 7px #003E6C;
   font-size: 13px;
 }
 
@@ -8555,7 +8591,7 @@ h3.confirm-registered-information {
   top: -20px;
   width: 25px;
   height: 25px;
-  box-shadow: 6px 5px 9px -9px #004677;
+  box-shadow: 6px 5px 9px -9px #003E6C;
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
@@ -8580,7 +8616,7 @@ h3.confirm-registered-information {
 
 .ui-tab-profile-edit fieldset .fieldset-legend {
   font-size: 14px;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
 }
 
@@ -8618,12 +8654,12 @@ h3.confirm-registered-information {
 
 .ui-tab-profile-edit form .form-type-managed-file .form-managed-file .file a {
   font-size: 13px;
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
 .ui-tab-profile-edit h3.tab-title {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 26px;
   margin: 0px 0px 20px 0px;
@@ -8670,7 +8706,7 @@ h3.confirm-registered-information {
   margin-bottom: 0px;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
 }
 
 .form-request .node-formulario-servicios .links {
@@ -8719,7 +8755,7 @@ a.show-formulario {
 }
 
 .tablero-caie table thead th {
-  background: #004677;
+  background: #003E6C;
   font-weight: 400;
   text-align: left;
   text-transform: none;
@@ -8760,7 +8796,7 @@ a.show-formulario {
 }
 
 .tablero-caie table tbody tr td a.view-response {
-  background: #004677;
+  background: #003E6C;
   padding: 4px 10px;
   color: #fff;
   font-size: 12px;
@@ -8782,14 +8818,14 @@ a.show-formulario {
 }
 
 .tablero-caie table tbody tr td.views-field-ops a.unflag-action {
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
   padding: 2px 4px;
   text-decoration: none;
 }
 
 .tablero-caie table tbody tr td.views-field-ops a.flag-action:hover {
-  color: #004677;
+  color: #003E6C;
 }
 
 .tablero-caie table a {
@@ -8801,7 +8837,7 @@ a.show-formulario {
 }
 
 .view-tablero-caie .view-content .views-table thead th {
-  background: #004677;
+  background: #003E6C;
   font-weight: 400;
   text-align: center;
   text-transform: none;
@@ -8839,7 +8875,7 @@ a.show-formulario {
   margin-bottom: 0.5rem;
   padding-top: 12px;
   padding-bottom: 12px;
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
 }
 
@@ -8849,7 +8885,7 @@ a.show-formulario {
 }
 
 .repec-author-profile .field-content .item-list ul li {
-  color: #004677;
+  color: #003E6C;
   padding: 4px 0px 4px 0px;
   text-decoration: blink;
   font-size: 15px;
@@ -8858,7 +8894,7 @@ a.show-formulario {
 }
 
 .infraestructura.landing h3 {
-  color: #004677;
+  color: #003E6C;
   font-size: 14px;
   line-height: 19px;
   margin: 20px 0 10px;
@@ -8894,7 +8930,7 @@ a.show-formulario {
 }
 
 .confirmacion-solicitud-caie h2 {
-  color: #004677;
+  color: #003E6C;
 }
 
 .confirmacion-solicitud-caie ul {
@@ -8963,14 +8999,15 @@ a.show-formulario {
 }
 
 .publicacion-teaser {
-  padding-bottom: 5px;
+  /*padding-bottom: 5px;*/
   margin-bottom: 7px;
 }
 
 .publicacion-teaser .teaser {
-  margin: 10px 0;
-  font-size: 12px;
-  line-height: 19px;
+  margin: 10px 0 5px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: normal;
 }
 
 .publicacion-teaser .teaser .coauthors {
@@ -8978,7 +9015,8 @@ a.show-formulario {
 }
 
 .publicacion-teaser .teaser .titulo {
-  font-size: 12px;
+  font-size: 15px;
+  line-height: inherit;
 }
 
 .publicacion-teaser .teaser .serie {
@@ -8994,12 +9032,12 @@ a.show-formulario {
 .vocabulary-research-groups .contact-info {
   background: #f2f2f2;
   padding: 20px;
-  border-top: 2px solid #e57b1c;
+  border-top: 2px solid #860024;
   margin-bottom: 25px;
 }
 
 .vocabulary-research-groups .contact-info h3 {
-  color: #004677;
+  color: #003E6C;
   margin: 0 0 5px;
 }
 
@@ -9025,7 +9063,7 @@ a.show-formulario {
 }
 
 .vocabulary-research-groups .menu-info h3 {
-  color: #004677;
+  color: #003E6C;
   margin: 0 0 5px;
 }
 
@@ -9050,7 +9088,7 @@ a.show-formulario {
 }
 
 .page-dashboard .site-content .dark-blue-box, .page-caie .site-content .dark-blue-box {
-  background: #004677;
+  background: #003E6C;
 }
 
 .page-dashboard .site-content .dark-blue-box h2, .page-caie .site-content .dark-blue-box h2 {
@@ -9289,13 +9327,13 @@ a.show-formulario {
 }
 
 .page-profile .site-content .estudio strong {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
 }
 
 .page-profile .site-content a {
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
@@ -9418,14 +9456,14 @@ a.show-formulario {
 }
 
 .page-profile .site-content .user-info .right-data .position-name .name {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 25px;
   font-size: 18px;
 }
 
 .page-profile .site-content .user-info .right-data .position-name .name a {
-  color: #e57b1c;
+  color: #860024;
   font-size: 12px;
   font-weight: 100;
 }
@@ -9449,7 +9487,7 @@ a.show-formulario {
 }
 
 .page-profile .site-content .user-info .bottom-data h4 {
-  color: #004677;
+  color: #003E6C;
   margin: 10px 0 0;
 }
 
@@ -9474,7 +9512,7 @@ a.show-formulario {
 .page-profile .ver-prf {
   font-size: 12px;
   font-weight: bold;
-  color: #004677;
+  color: #003E6C;
   text-decoration: underline;
 }
 
@@ -9715,7 +9753,7 @@ a.show-formulario {
 
 .perfiles-academicos ul li a {
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
   margin-bottom: 5px;
 }
 
@@ -9839,7 +9877,7 @@ a.show-formulario {
 
 .contact-information ul li a {
   text-decoration: none;
-  color: #004677;
+  color: #003E6C;
   margin-bottom: 5px;
 }
 
@@ -9847,7 +9885,7 @@ a.show-formulario {
   font-size: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 1.5rem;
 }
@@ -9879,7 +9917,7 @@ a.show-formulario {
 }
 
 .publications-page .item .publication-info h1, .page-publications .item .publication-info h1 {
-  color: #004677;
+  color: #003E6C;
   margin: 0px 0px 10px 0px;
   line-height: 14px;
   font-size: 18px;
@@ -9887,7 +9925,7 @@ a.show-formulario {
 }
 
 .publications-page .item .publication-info a, .page-publications .item .publication-info a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   text-decoration: none;
@@ -9932,7 +9970,7 @@ a.show-formulario {
 }
 
 .publications-block .item .publication-info h1 {
-  color: #004677;
+  color: #003E6C;
   margin: 0px 0px 10px 0px;
   line-height: 14px;
   font-size: 18px;
@@ -9940,7 +9978,7 @@ a.show-formulario {
 }
 
 .publications-block .item .publication-info a {
-  color: #004677;
+  color: #003E6C;
   font-weight: 600;
   line-height: 14px;
   text-decoration: none;
@@ -10038,12 +10076,12 @@ a.show-formulario {
 
 .scopus-widget {
   margin-bottom: 20px;
-  border: 1px solid #e57b1c;
+  border: 1px solid #860024;
 }
 
 .scopus-widget .titulo {
   padding: 2px 5px;
-  background-color: #e57b1c;
+  background-color: #860024;
   color: white;
   margin-bottom: 10px;
   margin-top: 0;
@@ -10093,7 +10131,7 @@ a.show-formulario {
 }
 
 .view-mode-full .tags h4 {
-  color: #004677;
+  color: #003E6C;
   text-transform: uppercase;
   display: block;
   margin-bottom: 10px;
@@ -10113,13 +10151,13 @@ a.show-formulario {
 
 .view-mode-full .tags li a {
   padding: 5px 10px;
-  background-color: #004677;
+  background-color: #003E6C;
   color: white;
   text-decoration: none;
 }
 
 .view-mode-full .tags li a:hover {
-  background-color: #e57b1c;
+  background-color: #860024;
 }
 
 form .form-textarea {
@@ -10132,6 +10170,511 @@ form .form-textarea {
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   border-radius: 0px;
   padding: 6px 12px;
+}
+
+.view-publicaciones-home .views-row {
+  display: table;
+  margin-bottom: 20px;
+}
+
+.view-publicaciones-home .views-row:nth-child(2) .views-field-field-imagen, .view-publicaciones-home .views-row:nth-child(3) .views-field-field-imagen {
+  float: right;
+}
+
+.view-publicaciones-home .views-row:nth-child(2) .views-field-field-imagen .field-content, .view-publicaciones-home .views-row:nth-child(3) .views-field-field-imagen .field-content {
+  width: 100%;
+}
+
+.view-publicaciones-home .views-row .views-field-nothing {
+  background-color: #d9d9d9;
+  overflow: hidden;
+  min-height: 232px;
+}
+
+.view-publicaciones-home .views-row .views-field-nothing .info-investigacion {
+  padding: 20px 10px;
+}
+
+.view-publicaciones-home .views-row .views-field-field-imagen {
+  float: left;
+  padding: 0;
+}
+
+.view-publicaciones-home .views-row .views-field-field-imagen .field-content {
+  padding: 0;
+  background: #d9d9d9;
+}
+
+.view-publicaciones-home .views-row .views-field-field-imagen .field-content img {
+  display: block;
+  width: 100%;
+}
+
+.view-publicaciones-home .views-row .info-investigacion {
+  padding: 30px;
+}
+
+.view-publicaciones-home .views-row .info-investigacion a {
+  text-decoration: none;
+}
+
+.view-publicaciones-home .views-row .info-investigacion .investigacion-tags {
+  font-size: 10px;
+  line-height: 12px;
+  margin-bottom: 1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.view-publicaciones-home .views-row .info-investigacion .investigacion-title {
+  font-size: 20px;
+  line-height: 24px;
+  margin-bottom: 1em;
+}
+
+.view-publicaciones-home .views-row .info-investigacion .investigacion-title a {
+  color: #594f51;
+  text-decoration: none;
+}
+
+.view-publicaciones-home .views-row .info-investigacion .investigacion-autores {
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .views-field-field-imagen {
+  position: relative;
+  float: none;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .views-field-field-imagen:before {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  margin-left: -9px;
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 18px 18px 18px;
+  border-color: transparent transparent #003E6C transparent;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .views-field-nothing {
+  position: relative;
+  background-color: #003E6C;
+  min-height: 260px;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion {
+  /*background-color: color(azul-oscuro-brc);*/
+  padding: 30px;
+  color: #fff;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion .investigacion-tags {
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion .investigacion-title {
+  font-size: 28px;
+  line-height: 36px;
+  margin-bottom: 0.6em;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion .investigacion-autores {
+  font-size: 10px;
+}
+
+.header__navbar .banrep-search-form {
+  padding-top: 20px;
+}
+
+.container .header__navbar {
+  margin: 0 !important;
+}
+
+.view-publicaciones a {
+  color: #860024;
+}
+
+#block-views-eventos-home-block {
+  overflow: hidden;
+}
+
+#block-views-eventos-home-block .views-row {
+  border-right: solid 2px #d9d9d9;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento {
+  position: relative;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .foto-evento {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .foto-evento img {
+  display: block;
+  width: 100%;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .foto-evento a:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, transparent 43%, transparent 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 );
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .fecha-evento {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .fecha-evento .dia-evento {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+#block-views-eventos-home-block .view-eventos-home .foto-fecha-evento .fecha-evento .mes-evento {
+  font-size: 10px;
+  line-height: 10px;
+  text-transform: uppercase;
+}
+
+#block-views-eventos-home-block .view-eventos-home .views-field-field-tipo-de-evento {
+  font-size: 10px;
+  line-height: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #003E6C;
+}
+
+#block-views-eventos-home-block .view-eventos-home .views-field-title a {
+  font-size: 13px;
+  line-height: 19px;
+  display: inline-block;
+  font-weight: 600;
+  text-decoration: none;
+  color: #594f51;
+}
+
+#block-views-eventos-home-block .view-eventos-home .views-field-field-place {
+  font-size: 10px;
+  line-height: 12px;
+  color: #8e9295;
+}
+
+.indicadores-produccion-impacto td {
+  vertical-align: top;
+  padding: 0 2em 0 0;
+  line-height: 1.2em;
+  color: #003E6C;
+  position: relative;
+}
+
+.indicadores-produccion-impacto td p {
+  margin: 0;
+  text-align: left !important;
+}
+
+.indicadores-produccion-impacto td strong {
+  position: relative;
+  font-size: 40px;
+  line-height: 38px;
+  padding: 0 45px 0 30px;
+  font-weight: normal;
+  color: #231f20;
+  display: inline-block;
+}
+
+.indicadores-produccion-impacto td.sube strong:before {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 18px 10px;
+  border-color: transparent transparent #860024 transparent;
+}
+
+.indicadores-produccion-impacto td.sube strong:after {
+  /*position: absolute;
+        bottom: 6px;
+        right: -15px;
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 10px 18px 10px;
+        border-color: transparent transparent color(red) transparent;*/
+}
+
+.indicadores-produccion-impacto td.indicador-investigadores strong {
+  background: url(../images/persona.png) no-repeat right bottom;
+}
+
+.indicadores-produccion-impacto td.indicador-scopus strong {
+  background: url(../images/libros.png) no-repeat right bottom;
+}
+
+.indicadores-produccion-impacto td.indicador-sciences strong {
+  background: url(../images/pagina.png) no-repeat right bottom;
+}
+
+.node-type-publication .group-left {
+  width: 66%;
+  padding-right: 30px;
+}
+
+.node-type-publication .group-left .group-autores-destacado {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.node-type-publication .group-left .group-autores-destacado .field-name-field-main-author-reference {
+  position: relative;
+  float: left;
+  margin-right: 4px;
+  padding-right: 4px;
+}
+
+.node-type-publication .group-left .group-autores-destacado .field-name-field-main-author-reference:after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  content: ",";
+}
+
+.node-type-publication .group-left .field-name-body blockquote {
+  display: table;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  background: #FAFAFA;
+}
+
+.node-type-publication .group-left .field-name-body blockquote > * {
+  display: table-cell;
+}
+
+.node-type-publication .group-left .field-name-body blockquote h2 {
+  position: relative;
+  width: 23%;
+  padding-right: 20px;
+  padding-top: 5em;
+  text-align: right;
+  font-size: 1.2em;
+  line-height: 1.2em;
+  vertical-align: bottom;
+  border-right: solid 1px #545456;
+}
+
+.node-type-publication .group-left .field-name-body blockquote h2:before {
+  position: absolute;
+  top: 0;
+  right: 63px;
+  content: "“";
+  font-size: 7em;
+  line-height: 1em;
+  font-weight: normal;
+  color: #545456;
+}
+
+.node-type-publication .group-left .field-name-body blockquote h2:after {
+  position: absolute;
+  top: 30px;
+  right: 20px;
+  content: "”";
+  font-size: 7em;
+  line-height: 1em;
+  font-weight: normal;
+  color: #545456;
+}
+
+.node-type-publication .group-left .field-name-body blockquote p {
+  padding-left: 20px;
+  font-size: 1.2em;
+  line-height: 1.4em;
+  color: #545456;
+}
+
+.node-type-publication .group-right {
+  width: 33%;
+}
+
+.node-type-publication .group-right .group-autores {
+  background: #818284;
+  padding: 10px 20px;
+}
+
+.node-type-publication .group-right .group-autores .block {
+  padding: 0;
+}
+
+.node-type-publication .group-right .group-autores .block__title {
+  color: #fff;
+}
+
+.node-type-publication .group-right .group-autores p {
+  margin: 0;
+}
+
+.node-type-publication .group-right .group-autores a {
+  text-decoration: none;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row {
+  background: #fff;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  box-shadow: 1px 1px 2px #555;
+  overflow: hidden;
+  margin-bottom: 0.5em;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .field-name-ds-user-picture,
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .views-field-field-image {
+  float: left;
+  margin-right: 10px;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .field-name-ds-user-picture img,
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .views-field-field-image img {
+  display: block;
+  max-width: 100px;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .field-name-field-full-name-2,
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .views-field-name {
+  font-weight: bold;
+  color: #003E6C;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .field-name-field-position {
+  color: #8e9295;
+}
+
+.node-type-publication .group-right .group-autores .view-autor-investigacion .views-row .field-name-field-city {
+  color: #ce4f57;
+}
+
+.node-type-publication .group-right .group-autores .field-name-field-other-co-authors {
+  color: #fff;
+}
+
+.node-type-publication .group-right .group-autores .field-name-field-other-co-authors .field-label {
+  position: relative;
+  display: block;
+  font-size: 21px;
+  line-height: 24px;
+  font-weight: normal;
+  margin-top: 0px;
+  margin-bottom: 1rem;
+  padding-top: 12px;
+  padding-bottom: 5px;
+}
+
+.node-type-publication .group-right .group-autores .field-name-field-other-co-authors .field-label:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 2px;
+  content: "";
+  background-color: #860024;
+}
+
+.node-type-publication .group-right .group-autores .field-name-field-other-co-authors h3 {
+  margin: 0 0 1em 1em;
+  font-size: 0.9em;
+  line-height: 1em;
+  font-weight: normal;
+}
+
+.node-type-publication .group-right .field-name-field-url {
+  margin: 2em 0;
+  font-size: 1.2em;
+  line-height: 1.2em;
+}
+
+.node-type-publication .group-right .field-name-field-url a {
+  background: url(../images/iconoPDF.png) no-repeat left top;
+  display: inline-block;
+  min-height: 74px;
+  padding: 0 0 0 70px;
+  text-decoration: none;
+  color: #ce4f57;
+}
+
+.node-type-publication .group-right .view-le-puede-interesar .views-row {
+  margin-bottom: 1em;
+}
+
+.node-type-publication .group-right .view-le-puede-interesar .views-row a {
+  font-size: 0.9em;
+  line-height: 1.4em;
+  display: inline-block;
+  font-weight: bold;
+  color: #ce4f57;
+}
+
+.node-type-publication .group-right .view-le-puede-interesar .campo-autores-vista-lateral {
+  font-size: 0.8em;
+  line-height: 1.2em;
+}
+
+.node-type-publication .main-content .field-name-field-pub-type {
+  text-transform: uppercase;
+  font-size: 11px;
+  background: #860024;
+  display: inline-block;
+  padding: 5px 8px;
+  line-height: 12px;
+  color: #FFF;
+}
+
+.node-type-publication .main-content .field-name-field-date {
+  font-size: 13px;
+  line-height: 15px;
+  margin-bottom: 1em;
+}
+
+.view-publicaciones-search .views-row .autores {
+  font-size: 0.8em;
+  line-height: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+@media only screen and (max-width: 775px) {
+  .indicadores-produccion-impacto td {
+    display: block;
+    margin-bottom: 1em;
+  }
+  .node-type-publication .group-left,
+  .node-type-publication .group-right {
+    width: 100%;
+  }
 }
 
 .filtros-vista {
@@ -10225,7 +10768,7 @@ form .form-textarea {
 }
 
 .blog-grupo .block__title {
-  background-color: #004677;
+  background-color: #003E6C;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -10254,7 +10797,7 @@ form .form-textarea {
 }
 
 .item-blog .titulo a {
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
@@ -10263,7 +10806,7 @@ form .form-textarea {
 }
 
 .item-blog .titulo a:visited {
-  color: #004677;
+  color: #003E6C;
 }
 
 .item-blog.views-row-last {
@@ -10301,11 +10844,11 @@ form .form-textarea {
 }
 
 .bg-azul-oscuro {
-  background: #004677;
+  background: #003E6C;
 }
 
 .titulo {
-  color: #004677;
+  color: #003E6C;
   font-size: 14px;
   line-height: 19px;
   padding-bottom: 10px;
@@ -10345,14 +10888,14 @@ form .form-textarea {
   display: block;
   border-bottom: 1px dotted #757474;
   padding-top: 8px;
-  color: #004677;
+  color: #003E6C;
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
 }
 
 .calendario-eventos .portlet-title .caption {
-  color: #004677;
+  color: #003E6C;
 }
 
 .calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right h1, .calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right a, .calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right h3 {
@@ -10377,7 +10920,7 @@ form .form-textarea {
 }
 
 .item-seminario .titulo a {
-  color: #004677;
+  color: #003E6C;
   text-decoration: none;
 }
 
@@ -10387,7 +10930,7 @@ form .form-textarea {
 
 .item-seminario .fecha {
   font-size: 12px;
-  color: #004677;
+  color: #003E6C;
 }
 
 .site-footer .footer__prefooter {
@@ -10397,7 +10940,7 @@ form .form-textarea {
 .site-footer .footer__prefooter .container {
   padding-bottom: 1.5rem;
   padding-top: 1.5rem;
-  background-color: #004677;
+  background-color: #003E6C;
 }
 
 .site-footer .footer__prefooter .block__title {
@@ -10456,7 +10999,7 @@ form .form-textarea {
 .site-footer .footer__footer {
   padding-bottom: 1.5rem;
   padding-top: 1.5rem;
-  background-color: #4a4741;
+  background-color: #5A5A52;
   border-top: 3px solid #6a665d;
   padding-top: 30px;
   padding-bottom: 40px;
@@ -10485,19 +11028,31 @@ form .form-textarea {
   line-height: 0.75rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+
+.site-footer .footer__footer .menu {
+  padding: 0;
 }
 
 .site-footer .footer__footer .menu li {
-  color: #004677;
+  color: #d9d9d9;
   font-size: 0.75rem;
   line-height: 0.75rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-  font-weight: bold;
+  /*font-weight: weight(bold);*/
+  list-style: none;
 }
 
 .site-footer .footer__footer .menu li a {
   text-decoration: none;
+  color: #d9d9d9;
+}
+
+.site-footer .footer__footer .menu li a:visited {
+  color: #d9d9d9;
 }
 
 .footer-nuevo {

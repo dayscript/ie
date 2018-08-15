@@ -80,6 +80,9 @@ function banrep_preprocess_search_api_page_results(&$vars){
  */
 function banrep_preprocess_page(&$variables, $hook) {
 
+  drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/masonry.pkgd.min.js');
+  drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/seminars-and-caie-services.js');
+
   // Agregar JS por sección.
   if(arg(0) == 'seminarios'){
     if(arg(1) == 'resultados-busqueda' || arg(1) == 'historial') {

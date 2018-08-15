@@ -90,14 +90,14 @@
               <?php endif; ?>
             </div>
             <div class="col-lg-2 navbar__search_link">
-              <a href="#" title=""><?php echo t('Search'); ?></a>
+              <a href="#buscador" title=""><?php echo t('Search'); ?></a>
             </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="navbar__search_form col-lg-12">
                 <?php print render($page['navigation']); ?>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </header>
@@ -129,6 +129,11 @@
               <?php print render($page['highlighted']); ?>
             </div>
           <?php endif; ?>
+          <div class="row header__navbar" id="buscador">
+            <div class="navbar__search_form col-lg-12">
+                <?php print render($page['navigation']); ?>
+            </div>
+          </div>
           <div id="main-content" class="main-content">
             <?php if ($sidebar_first): ?>
               <aside class="<?php print $sidebar_first_class; ?>" role="complementary">

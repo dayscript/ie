@@ -64,7 +64,7 @@
   .footer__footer {
     @include padding-bottom(1, m);
     @include padding-top(1, m);
-    background-color: #4a4741;
+    background-color: #5A5A52;
     border-top: 3px solid #6a665d;
     padding-top: 30px;
     padding-bottom: 40px;
@@ -89,18 +89,26 @@
       @include type-layout(xs, .5);
       @include margin-top(.5, xs);
       @include margin-bottom(.5, xs);
+      font-weight: normal;
+      margin-bottom: 20px;
     }
 
     .menu {
+      padding: 0;
       li {
-        color: color(azul-oscuro-brc);
+        color: color(grey-light);
         @include type-layout(xs, .5);
         @include margin-top(.5, xs);
         @include margin-bottom(.5, xs);
-        font-weight: weight(bold);
+        /*font-weight: weight(bold);*/
+        list-style: none;
 
         a {
           text-decoration: none;
+          color: color(grey-light);
+          &:visited {
+            color: color(grey-light)
+          }
         }
       }
     }

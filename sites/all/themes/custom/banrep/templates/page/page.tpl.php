@@ -98,7 +98,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="navbar__search_form col-lg-12 hidden">
+            <div class="navbar__search_form col-lg-12">
                 <?php print render($page['navigation']); ?>
             </div>
           </div>

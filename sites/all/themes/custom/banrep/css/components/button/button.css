@@ -38,7 +38,7 @@
 }
 
 .btn-warning {
-  background-color: color("naranja-brc");
+  background-color: color(red);
   color: white;
 }
 

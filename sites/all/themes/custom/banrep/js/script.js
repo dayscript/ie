@@ -104,10 +104,10 @@
         $('.open-login').removeClass('hidden');
         $('.user-login-pass').slideUp('slow');
       });
-      $('.navbar__search_link a').click(function(e){
+      /*$('.navbar__search_link a').click(function(e){
         e.preventDefault();
         $('.navbar__search_form').slideToggle('slow');
-      });
+      });*/
       $('.like').click(function(e){
         e.preventDefault();
         $(this).removeAttr('onclick');
@@ -139,5 +139,14 @@ jQuery(document).ready(function(){
   if(jQuery().slicknav) {
     jQuery('nav.main-menu ul').slicknav({prependTo:'.header .header__navbar .container .row1'});
   }
+
+  if (jQuery('.page-caie').length) { 
+    jQuery(".header__navbar .banrep-search-form .form-item-source select").val(1);
+    jQuery("#tabs-8").hide();
+    jQuery("#tabs-1").show();
+
+  }
+
+
  });
 
