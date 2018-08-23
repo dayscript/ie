@@ -1,5 +1,4 @@
 @charset "UTF-8";
-/*! typey | GPLv2 License | https://github.com/jptaranto/typey */
 @font-face {
   font-family: 'icomoon';
   src: url("fonts/icomoon.eot?edx2hp");
@@ -2322,20 +2321,16 @@ html.remodal-is-locked {
 
 .remodal-overlay.remodal-is-opening,
 .remodal-overlay.remodal-is-closing {
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
 }
 
 .remodal-overlay.remodal-is-opening {
-  -webkit-animation-name: remodal-overlay-opening-keyframes;
-          animation-name: remodal-overlay-opening-keyframes;
+  animation-name: remodal-overlay-opening-keyframes;
 }
 
 .remodal-overlay.remodal-is-closing {
-  -webkit-animation-name: remodal-overlay-closing-keyframes;
-          animation-name: remodal-overlay-closing-keyframes;
+  animation-name: remodal-overlay-closing-keyframes;
 }
 
 /* Default theme styles of the wrapper */
@@ -2349,8 +2344,7 @@ html.remodal-is-locked {
   width: 100%;
   margin-bottom: 10px;
   padding: 35px;
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
   color: #2b2e38;
   background: #fff;
   text-align: left;
@@ -2364,27 +2358,22 @@ html.remodal-is-locked {
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   border-radius: 0px;
 }
 
 .remodal.remodal-is-opening,
 .remodal.remodal-is-closing {
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
 }
 
 .remodal.remodal-is-opening {
-  -webkit-animation-name: remodal-opening-keyframes;
-          animation-name: remodal-opening-keyframes;
+  animation-name: remodal-opening-keyframes;
 }
 
 .remodal.remodal-is-closing {
-  -webkit-animation-name: remodal-closing-keyframes;
-          animation-name: remodal-closing-keyframes;
+  animation-name: remodal-closing-keyframes;
 }
 
 /* Vertical align of the modal dialog */
@@ -2405,7 +2394,6 @@ html.remodal-is-locked {
   margin: 0;
   padding: 0;
   cursor: pointer;
-  -webkit-transition: color 0.2s;
   transition: color 0.2s;
   text-decoration: none;
   color: #95979c;
@@ -2442,7 +2430,6 @@ html.remodal-is-locked {
   margin: 0;
   padding: 12px 0;
   cursor: pointer;
-  -webkit-transition: background 0.2s;
   transition: background 0.2s;
   text-align: center;
   vertical-align: middle;
@@ -2481,63 +2468,25 @@ html.remodal-is-locked {
 
 /* Keyframes
    ========================================================================== */
-@-webkit-keyframes remodal-opening-keyframes {
-  from {
-    -webkit-transform: scale(1.05);
-            transform: scale(1.05);
-    opacity: 0;
-  }
-  to {
-    -webkit-transform: none;
-            transform: none;
-    opacity: 1;
-  }
-}
 @keyframes remodal-opening-keyframes {
   from {
-    -webkit-transform: scale(1.05);
-            transform: scale(1.05);
+    transform: scale(1.05);
     opacity: 0;
   }
   to {
-    -webkit-transform: none;
-            transform: none;
+    transform: none;
     opacity: 1;
-  }
-}
-
-@-webkit-keyframes remodal-closing-keyframes {
-  from {
-    -webkit-transform: scale(1);
-            transform: scale(1);
-    opacity: 1;
-  }
-  to {
-    -webkit-transform: scale(0.95);
-            transform: scale(0.95);
-    opacity: 0;
   }
 }
 
 @keyframes remodal-closing-keyframes {
   from {
-    -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     opacity: 1;
   }
   to {
-    -webkit-transform: scale(0.95);
-            transform: scale(0.95);
+    transform: scale(0.95);
     opacity: 0;
-  }
-}
-
-@-webkit-keyframes remodal-overlay-opening-keyframes {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -2547,15 +2496,6 @@ html.remodal-is-locked {
   }
   to {
     opacity: 1;
-  }
-}
-
-@-webkit-keyframes remodal-overlay-closing-keyframes {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
   }
 }
 
@@ -3202,7 +3142,6 @@ span.field-label {
 }
 
 .sort-action .switch-sort input:checked + .slider:before {
-  -webkit-transform: translateX(18px);
   -ms-transform: translateX(18px);
   transform: translateX(18px);
 }
@@ -3215,7 +3154,6 @@ span.field-label {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -3235,7 +3173,6 @@ span.field-label {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -3464,7 +3401,6 @@ span.field-label {
 }
 
 .owl-carousel .owl-wrapper-outer.autoHeight {
-  -webkit-transition: height 500ms ease-in-out;
   transition: height 500ms ease-in-out;
 }
 
@@ -3936,7 +3872,6 @@ form input.form-text {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   border-radius: 0px;
   height: 34px;
@@ -3951,7 +3886,6 @@ form select {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   height: 34px;
   padding: 6px 12px;
@@ -4197,7 +4131,6 @@ form .form-actions .form-submit {
   margin: 1.125rem 0 0;
   line-height: 1.875rem;
   border-bottom: 1px solid #d9d9d9 \0/ie;
-  background-image: -webkit-linear-gradient(bottom, #d9d9d9 1px, transparent 1px);
   background-image: linear-gradient(to top, #d9d9d9 1px, transparent 1px);
   padding: 0 2px;
   list-style: none;
@@ -4234,7 +4167,6 @@ form .form-actions .form-submit {
   padding: 0 1.5rem;
   display: block;
   text-decoration: none;
-  -webkit-transition: color .3s, background .3s, border .3s;
   transition: color .3s, background .3s, border .3s;
   text-shadow: #fff 0 1px 0;
   color: #231f20;
@@ -4267,7 +4199,6 @@ form .form-actions .form-submit {
 
 .tabs + .tabs--secondary {
   margin-top: 0;
-  background-image: -webkit-linear-gradient(bottom, #d9d9d9 1px, transparent 1px);
   background-image: linear-gradient(to top, #d9d9d9 1px, transparent 1px);
 }
 
@@ -8625,7 +8556,6 @@ h3.confirm-registered-information {
   width: 25px;
   height: 25px;
   box-shadow: 6px 5px 9px -9px #004677;
-  -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
@@ -10199,7 +10129,6 @@ form .form-textarea {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   border-radius: 0px;
   padding: 6px 12px;
@@ -10663,3 +10592,5 @@ form .form-textarea {
 .footer-nuevo .text-right {
   text-align: right;
 }
+
+/*# sourceMappingURL=styles.css.map */

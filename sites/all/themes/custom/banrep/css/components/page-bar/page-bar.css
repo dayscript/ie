@@ -141,7 +141,6 @@
 }
 
 .sort-action .switch-sort input:checked + .slider:before {
-  -webkit-transform: translateX(18px);
   -ms-transform: translateX(18px);
   transform: translateX(18px);
 }
@@ -154,7 +153,6 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -174,7 +172,6 @@
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -189,3 +186,5 @@
 .sort-action .action-link:hover {
   font-weight: 600;
 }
+
+/*# sourceMappingURL=page-bar.css.map */

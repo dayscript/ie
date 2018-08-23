@@ -15,7 +15,6 @@ form input.form-text {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   border-radius: 0px;
   height: 34px;
@@ -30,7 +29,6 @@ form select {
   background-color: #fff;
   border: 1px solid #e0e0e0;
   box-shadow: none;
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   height: 34px;
   padding: 6px 12px;
@@ -110,3 +108,5 @@ form .form-actions {
 form .form-actions .form-submit {
   margin-right: 15px;
 }
+
+/*# sourceMappingURL=form.css.map */
