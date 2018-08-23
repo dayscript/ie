@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Contains metatag_google_scholar.module.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function metatag_google_scholar_help($path, $arg) {
+  if ($path == 'admin/help#metatag_google_scholar') {
+    return '<p>' . t('The Metatag Google Scholar module provides number of meta tags to help with indexing of scholarly content/articles in Google Scholar.') . '</p>';
+  }
+}
