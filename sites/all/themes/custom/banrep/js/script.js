@@ -140,12 +140,33 @@ jQuery(document).ready(function(){
     jQuery('nav.main-menu ul').slicknav({prependTo:'.header .header__navbar .container .row1'});
   }
 
-  if (jQuery('.page-caie').length) { 
-    jQuery(".header__navbar .banrep-search-form .form-item-source select").val(1);
-    jQuery("#tabs-8").hide();
-    jQuery("#tabs-1").show();
+
+  jQuery('.navbar__search_link a').click(function(e) {
+      e.preventDefault();
+  });
+
+  if (!jQuery('.front').length) { 
+
+    if (jQuery('.page-caie').length) { 
+      jQuery(".header__navbar .banrep-search-form .form-item-source select").val(1);
+      jQuery("#tabs-8").hide();
+      jQuery("#tabs-1").show();
+
+    } else {
+
+      jQuery(".header__navbar .navbar__search_form").hide();
+
+      jQuery(".navbar__search_link").click(function() {
+        jQuery(".header__navbar .navbar__search_form").toggle("normal");
+      });
+      
+    }
+
+
 
   }
+
+
 
 
  });
