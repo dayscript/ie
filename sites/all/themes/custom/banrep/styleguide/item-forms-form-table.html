@@ -20,7 +20,7 @@
   <header class="kss-header">
     <h1 class="kss-doc-title">Zen 7.x-6.x Style Guide</h1>
   </header>
-  <nav class="kss-nav">
+  <nav class="kss-nav" aria-label="Style Guide">
     <ul class="kss-nav__menu">
       <li class="kss-nav__menu-item">
         <a class="kss-nav__menu-link" href="./">
@@ -61,7 +61,8 @@
         </ul>
   </nav>
 </div>
-<article role="main" class="kss-main">
+<main class="kss-main" aria-label="content">
+<article>
 
   
           <div id="kssref-forms-form-table" class="kss-section kss-section--depth-2 is-fullscreen">
@@ -81,7 +82,7 @@
                   <p class="kss-toolbar">
                         <a href="#kssref-forms-form-table" data-kss-guides="true">
               <span class="kss-toolbar__tooltip">Toggle example guides</span>
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+              <svg focusable="false" aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
                 <rect class="kss-toolbar__icon-fill" x="5" y="35" width="5" height="9"/>
                 <rect class="kss-toolbar__icon-fill" x="54" y="21" width="5" height="9"/>
                 <rect class="kss-toolbar__icon-fill" x="54" y="35" width="5" height="9"/>
@@ -102,7 +103,7 @@
             </a>
             <a href="#kssref-forms-form-table" data-kss-markup="true">
               <span class="kss-toolbar__tooltip">Toggle HTML markup</span>
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+              <svg focusable="false" aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
                 <path class="kss-toolbar__icon-fill" d="M37.555,46.239l6.103,6.103l20.342,-20.342l-20.342,-20.342l-6.103,6.103l14.24,14.239l-14.24,14.239Z"/>
                 <path class="kss-toolbar__icon-fill" d="M26.445,17.761l-6.103,-6.103l-20.342,20.342l20.342,20.342l6.103,-6.103l-14.24,-14.239l14.24,-14.239Z"/>
               </svg>
@@ -111,10 +112,11 @@
         
                   <div class="kss-description">
             <p>Complex forms that appear in html <code>&lt;table&gt;</code> elements.</p>
-<p>If your custom theme isn&#39;t used for Drupal&#39;s admin pages, you can safely
+<p>If your custom theme isn't used for Drupal's admin pages, you can safely
 delete this component to save file weight in the generated CSS.</p>
 
           </div>
+        
         
               </div>
 
@@ -238,112 +240,112 @@ delete this component to save file weight in the generated CSS.</p>
             <summary>
                               Markup: <code>forms/form-table/form-table.twig</code>
                           </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;table class=&quot;form-table__sticky-header&quot; style=&quot;position: fixed; visibility: visible;&quot;&gt;
-&lt;thead&gt;
-  &lt;tr&gt;
-    &lt;th&gt;Permission&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;anonymous user&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;authenticated user&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;administrator&lt;/th&gt;
-  &lt;/tr&gt;
-&lt;/thead&gt;
-&lt;/table&gt;
+            <pre class="hljs"><code class="language-twig">&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__sticky-header&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;style&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;position: fixed; visibility: visible;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;Permission&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;anonymous user&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;authenticated user&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;administrator&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;table&lt;/span&gt;&amp;gt;&lt;/span&gt;
 
-&lt;table class=&quot;form-table {{modifier_class}}&quot;&gt;
-&lt;thead&gt;
-  &lt;tr&gt;
-    &lt;th&gt;Permission&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;anonymous user&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;authenticated user&lt;/th&gt;
-    &lt;th class=&quot;form-table__narrow-column&quot;&gt;administrator&lt;/th&gt;
-  &lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-    &lt;td class=&quot;module&quot; colspan=&quot;4&quot;&gt;Block&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td class=&quot;permission&quot;&gt;
-      &lt;div class=&quot;form-item form-type-item&quot;&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;hljs-template-variable&quot;&gt;{{modifier_class}}&lt;/span&gt;&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&lt;span class=&quot;hljs-string&quot;&gt;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;Permission&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;anonymous user&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;authenticated user&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;administrator&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tbody&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;module&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;colspan&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Block&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;permission&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
         Administer blocks
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-1-administer-blocks&quot;&gt;anonymous user: Administer blocks &lt;/label&gt;
-        &lt;input class=&quot;form-checkbox&quot; id=&quot;edit-1-administer-blocks&quot; name=&quot;1[administer blocks]&quot; value=&quot;administer blocks&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-2-administer-blocks&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-2-administer-blocks&quot;&gt;authenticated user: Administer blocks &lt;/label&gt;
-        &lt;input class=&quot;rid-2 form-checkbox&quot; id=&quot;edit-2-administer-blocks&quot; name=&quot;2[administer blocks]&quot; value=&quot;administer blocks&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-3-administer-blocks&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-3-administer-blocks&quot;&gt;administrator: Administer blocks &lt;/label&gt;
-        &lt;input class=&quot;rid-3 form-checkbox real-checkbox&quot; id=&quot;edit-3-administer-blocks&quot; name=&quot;3[administer blocks]&quot; value=&quot;administer blocks&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;&lt;input style=&quot;display: none;&quot; title=&quot;This permission is inherited from the authenticated user role.&quot; class=&quot;dummy-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td class=&quot;module&quot; colspan=&quot;4&quot;&gt;Devel&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td class=&quot;permission&quot;&gt;
-      &lt;div id=&quot;edit-access-devel-information&quot; class=&quot;form-item form-type-item&quot;&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-administer-blocks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;anonymous user: Administer blocks &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-administer-blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;1[administer blocks]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;administer blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-2-administer-blocks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-administer-blocks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;authenticated user: Administer blocks &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-2 form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-administer-blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;2[administer blocks]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;administer blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-3-administer-blocks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-administer-blocks&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;administrator: Administer blocks &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-3 form-checkbox real-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-administer-blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;3[administer blocks]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;administer blocks&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;style&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;display: none;&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;title&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;This permission is inherited from the authenticated user role.&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;dummy-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;disabled&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;disabled&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;module&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;colspan&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Devel&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;permission&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-access-devel-information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
         Access developer information
-        &lt;div class=&quot;description&quot;&gt;View developer output like variable printouts, query log, etc. &lt;em class=&quot;permission-warning&quot;&gt;Warning: Give to trusted roles only; this permission has security implications.&lt;/em&gt;&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-1-access-devel-information&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-1-access-devel-information&quot;&gt;anonymous user: Access developer information &lt;/label&gt;
-        &lt;input class=&quot;rid-1 form-checkbox&quot; id=&quot;edit-1-access-devel-information&quot; name=&quot;1[access devel information]&quot; value=&quot;access devel information&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-2-access-devel-information&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-2-access-devel-information&quot;&gt;authenticated user: Access developer information &lt;/label&gt;
-        &lt;input class=&quot;rid-2 form-checkbox&quot; id=&quot;edit-2-access-devel-information&quot; name=&quot;2[access devel information]&quot; value=&quot;access devel information&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-3-access-devel-information&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-3-access-devel-information&quot;&gt;administrator: Access developer information &lt;/label&gt;
-        &lt;input class=&quot;rid-3 form-checkbox real-checkbox&quot; id=&quot;edit-3-access-devel-information&quot; name=&quot;3[access devel information]&quot; value=&quot;access devel information&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;&lt;input style=&quot;display: none;&quot; title=&quot;This permission is inherited from the authenticated user role.&quot; class=&quot;dummy-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td class=&quot;permission&quot;&gt;
-      &lt;div id=&quot;edit-execute-php-code&quot; class=&quot;form-item form-type-item&quot;&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;description&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;View developer output like variable printouts, query log, etc. &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;em&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;permission-warning&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Warning: Give to trusted roles only; this permission has security implications.&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;em&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-1-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;anonymous user: Access developer information &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-1 form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-access-devel-information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;1[access devel information]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;access devel information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-2-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;authenticated user: Access developer information &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-2 form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-access-devel-information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;2[access devel information]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;access devel information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-3-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-access-devel-information&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;administrator: Access developer information &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-3 form-checkbox real-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-access-devel-information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;3[access devel information]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;access devel information&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;style&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;display: none;&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;title&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;This permission is inherited from the authenticated user role.&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;dummy-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;disabled&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;disabled&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;permission&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-execute-php-code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
         Execute PHP code
-        &lt;div class=&quot;description&quot;&gt;Run arbitrary PHP from a block. &lt;em class=&quot;permission-warning&quot;&gt;Warning: Give to trusted roles only; this permission has security implications.&lt;/em&gt;&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-1-execute-php-code&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-1-execute-php-code&quot;&gt;anonymous user: Execute PHP code &lt;/label&gt;
-        &lt;input class=&quot;rid-1 form-checkbox&quot; id=&quot;edit-1-execute-php-code&quot; name=&quot;1[execute php code]&quot; value=&quot;execute php code&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-2-execute-php-code&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-2-execute-php-code&quot;&gt;authenticated user: Execute PHP code &lt;/label&gt;
-        &lt;input class=&quot;rid-2 form-checkbox&quot; id=&quot;edit-2-execute-php-code&quot; name=&quot;2[execute php code]&quot; value=&quot;execute php code&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-    &lt;td class=&quot;form-table__narrow-column&quot;&gt;
-      &lt;div class=&quot;form-item form-type-checkbox form-item-3-execute-php-code&quot;&gt;
-        &lt;label class=&quot;element-invisible&quot; for=&quot;edit-3-execute-php-code&quot;&gt;administrator: Execute PHP code &lt;/label&gt;
-        &lt;input class=&quot;rid-3 form-checkbox real-checkbox&quot; id=&quot;edit-3-execute-php-code&quot; name=&quot;3[execute php code]&quot; value=&quot;execute php code&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;&lt;input style=&quot;display: none;&quot; title=&quot;This permission is inherited from the authenticated user role.&quot; class=&quot;dummy-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; type=&quot;checkbox&quot;&gt;
-      &lt;/div&gt;
-    &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;</code></pre>
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;description&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Run arbitrary PHP from a block. &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;em&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;permission-warning&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Warning: Give to trusted roles only; this permission has security implications.&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;em&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-1-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;anonymous user: Execute PHP code &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-1 form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-1-execute-php-code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;1[execute php code]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;execute php code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-2-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;authenticated user: Execute PHP code &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-2 form-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-2-execute-php-code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;2[execute php code]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;execute php code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-table__narrow-column&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;form-item form-type-checkbox form-item-3-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;element-invisible&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-execute-php-code&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;administrator: Execute PHP code &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;rid-3 form-checkbox real-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;edit-3-execute-php-code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;3[execute php code]&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;value&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;execute php code&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;style&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;display: none;&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;title&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;This permission is inherited from the authenticated user role.&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;dummy-checkbox&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;disabled&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;disabled&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;checked&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checked&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;checkbox&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;tbody&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;table&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;</code></pre>
           </details>
               
               <div class="kss-source kss-style">
@@ -351,16 +353,15 @@ delete this component to save file weight in the generated CSS.</p>
         </div>
           </div>
   </article>
+</main>
 
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
-<script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
 <script src="kss-assets/kss-guides.js"></script>
 <script src="kss-assets/kss-markup.js"></script>
 <script>
-  prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'

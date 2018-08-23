@@ -4876,7 +4876,7 @@ form {
       }
 
       .views-field-nothing {
-    
+
         background-color: color(grey-light);
         overflow: hidden;
         min-height: 232px;
@@ -4956,7 +4956,7 @@ form {
 
 
       .views-field-nothing {
-        
+
         position: relative;
         background-color: color(azul-oscuro-brc);
         min-height: 260px;
@@ -5022,7 +5022,7 @@ form {
   .view-eventos-home {
     .foto-fecha-evento {
       position: relative;
-      
+
       .foto-evento {
         position: relative;
         margin-bottom: 15px;
@@ -5046,7 +5046,7 @@ form {
           }
         }
 
-           
+
       }
 
       .fecha-evento {
@@ -5246,7 +5246,7 @@ form {
       background: #818284;
       // color: #FFF;
       padding: 10px 20px;
- 
+
       .block {
         padding: 0;
       }
@@ -5274,7 +5274,8 @@ form {
           margin-bottom: 0.5em;
 
           .field-name-ds-user-picture,
-          .views-field-field-image {
+          .views-field-field-image,
+          .field-name-imagen-con-enlace-a-perfil {
             float: left;
             margin-right: 10px;
             img {
@@ -5283,7 +5284,7 @@ form {
             }
           }
 
-          .field-name-field-full-name-2,
+          .field--name-field-full-name2,
           .views-field-name {
             font-weight: bold;
             color: color(azul-oscuro-brc);
@@ -5345,7 +5346,7 @@ form {
         padding: 0 0 0 70px;
         text-decoration: none;
         color: color(rojo-claro);
-      } 
+      }
     }
 
     .view-le-puede-interesar {
@@ -5361,7 +5362,7 @@ form {
         }
       }
 
-      
+
       .campo-autores-vista-lateral {
         font-size: 0.8em;
         line-height: 1.2em;
@@ -5423,6 +5424,3 @@ form {
 
 
 }
-
-
-

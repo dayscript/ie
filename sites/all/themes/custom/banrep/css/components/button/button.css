@@ -10,8 +10,7 @@
   font-size: 14px;
   outline: none !important;
   background-image: none !important;
-  -webkit-filter: none;
-          filter: none;
+  filter: none;
   box-shadow: none;
   text-shadow: none;
   border-radius: 0px;
@@ -41,5 +40,3 @@
   background-color: color(red);
   color: white;
 }
-
-/*# sourceMappingURL=button.css.map */

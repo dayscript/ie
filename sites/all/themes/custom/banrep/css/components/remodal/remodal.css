@@ -57,6 +57,7 @@ html.remodal-is-locked {
   position: relative;
   outline: none;
   -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
           text-size-adjust: 100%;
 }
 
@@ -71,8 +72,7 @@ html.remodal-is-locked {
 /* Default theme styles for the background */
 .remodal-bg.remodal-is-opening,
 .remodal-bg.remodal-is-opened {
-  -webkit-filter: blur(3px);
-          filter: blur(3px);
+  filter: blur(3px);
 }
 
 /* Default theme styles of the overlay */
@@ -286,5 +286,3 @@ html.remodal-is-locked {
 .lt-ie9 .remodal {
   width: 700px;
 }
-
-/*# sourceMappingURL=remodal.css.map */
