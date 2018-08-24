@@ -8525,6 +8525,11 @@ h3.confirm-registered-information {
   margin: 0px 0px 15px 0px;
 }
 
+.resultados-seminarios .view-content,
+.resultados-caie .view-content {
+  height: auto !important;
+}
+
 .resultados-seminarios .view-filters,
 .resultados-caie .view-filters {
   display: none;
