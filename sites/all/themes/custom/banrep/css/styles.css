@@ -10239,8 +10239,8 @@ form .form-textarea {
 }
 
 .view-publicaciones-home .views-row .info-investigacion .investigacion-autores {
-  font-size: 10px;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 1.2em;
   font-weight: 600;
 }
 
@@ -10291,7 +10291,7 @@ form .form-textarea {
 }
 
 .view-publicaciones-home .view-header .view-publicaciones-home .info-investigacion .investigacion-autores {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .header__navbar .banrep-search-form {
@@ -10403,6 +10403,10 @@ form .form-textarea {
   font-weight: normal;
   color: #231f20;
   display: inline-block;
+}
+
+.indicadores-produccion-impacto td a {
+  text-decoration: none;
 }
 
 .indicadores-produccion-impacto td.sube strong:before {
@@ -10667,6 +10671,38 @@ form .form-textarea {
   font-size: 0.8em;
   line-height: 1.2em;
   margin-bottom: 0.5em;
+}
+
+.tabla-informacion table tr td {
+  padding: 1em;
+}
+
+.tabla-informacion table tr td .titulo {
+  margin: 0 0 10px;
+  padding-bottom: 0;
+  font-size: 16px;
+}
+
+.tabla-informacion table tr td .titulo a, .tabla-informacion table tr td .titulo a:visited {
+  text-decoration: none;
+}
+
+.tabla-informacion table tr td .autores {
+  font-size: 12px;
+  line-height: 1.2em;
+}
+
+.tabla-informacion table tr td.views-field-field-date {
+  width: 16%;
+  font-size: 12px;
+}
+
+.tabla-informacion table tr td.views-field-field-imagen {
+  width: 22%;
+}
+
+.tabla-informacion table tr:nth-child(even) {
+  background: #f2f2f2;
 }
 
 @media only screen and (max-width: 775px) {

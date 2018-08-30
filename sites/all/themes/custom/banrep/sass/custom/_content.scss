@@ -4931,8 +4931,8 @@ form {
           }
 
           .investigacion-autores {
-            font-size: 10px;
-            line-height: 12px;
+            font-size: 12px;
+            line-height: 1.2em;
             font-weight: 600;
           }
        }
@@ -4988,7 +4988,7 @@ form {
           }
 
           .investigacion-autores {
-            font-size: 10px;
+            font-size: 12px;
           }
 
        }
@@ -5121,6 +5121,9 @@ form {
       font-weight: normal;
       color: color(black);
       display: inline-block;
+    }
+    a {
+      text-decoration: none;
     }
 
   }
@@ -5399,6 +5402,38 @@ form {
       font-size: 0.8em;
       line-height: 1.2em;
       margin-bottom: 0.5em;
+    }
+  }
+}
+
+.tabla-informacion {
+  table {
+    tr {
+      td {
+        padding: 1em;
+        .titulo {
+          margin: 0 0 10px;
+          padding-bottom: 0;
+          font-size: 16px;
+          a, a:visited {
+            text-decoration: none;
+          }
+        }
+        .autores {
+          font-size: 12px;
+          line-height: 1.2em;
+        }
+      }
+      td.views-field-field-date {
+        width: 16%;
+        font-size: 12px;
+      }
+      td.views-field-field-imagen {
+        width: 22%;
+      }
+      &:nth-child(even) {
+        background: color('grey-extra-light');
+      }
     }
   }
 }
