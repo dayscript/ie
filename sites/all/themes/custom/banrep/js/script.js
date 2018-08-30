@@ -142,7 +142,9 @@ jQuery(document).ready(function(){
 
 
   jQuery('.navbar__search_link a').click(function(e) {
-      e.preventDefault();
+      if ( !jQuery('.front').length) {
+        e.preventDefault();
+      }
   });
 
   if (!jQuery('.front').length) { 
