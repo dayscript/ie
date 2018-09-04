@@ -10469,6 +10469,19 @@ form .form-textarea {
   content: ",";
 }
 
+.node-type-publication .group-left .group-autores-destacado .field-name-field-other-co-authors > .field-items > .field-item {
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.node-type-publication .group-left .group-autores-destacado .field-name-field-other-co-authors > .field-items > .field-item:after {
+  position: absolute;
+  bottom: 0;
+  right: -4px;
+  content: ",";
+}
+
 .node-type-publication .group-left .group-autores-destacado .field-name-field-names, .node-type-publication .group-left .group-autores-destacado .field-name-field-surnames {
   display: inline-block;
 }
