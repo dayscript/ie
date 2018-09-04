@@ -5413,14 +5413,21 @@ form {
       td {
         padding: 1em;
         .titulo {
-          margin: 0 0 10px;
+          margin: 0 0 5px;
           padding-bottom: 0;
-          font-size: 16px;
+          font-size: 18px;
           a, a:visited {
             text-decoration: none;
           }
         }
         .autores {
+          font-size: 13px;
+          font-weight: bold;
+          line-height: 1.2em;
+          margin-bottom: 1em;
+          color: #555;
+        }
+        .edicion, .fecha {
           font-size: 12px;
           line-height: 1.2em;
         }

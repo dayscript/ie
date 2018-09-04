@@ -10679,9 +10679,9 @@ form .form-textarea {
 }
 
 .tabla-informacion table tr td .titulo {
-  margin: 0 0 10px;
+  margin: 0 0 5px;
   padding-bottom: 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .tabla-informacion table tr td .titulo a, .tabla-informacion table tr td .titulo a:visited {
@@ -10689,6 +10689,14 @@ form .form-textarea {
 }
 
 .tabla-informacion table tr td .autores {
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1.2em;
+  margin-bottom: 1em;
+  color: #555;
+}
+
+.tabla-informacion table tr td .edicion, .tabla-informacion table tr td .fecha {
   font-size: 12px;
   line-height: 1.2em;
 }
