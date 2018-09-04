@@ -117,15 +117,15 @@ function searchPublications(number){
 
 					switch( filter[i].value ) {
 						case "1" :
-									window.location.href = "/publicaciones/resultados-busqueda?keywords="+text_val;
+									window.location.href = "/publicaciones/lista?keywords="+text_val;
 									break;
 
 						case "2" :
-									window.location.href = "/publicaciones/resultados-busqueda?titulo="+text_val;
+									window.location.href = "/publicaciones/lista?titulo="+text_val;
 									break;
 
 						case "3" :
-									window.location.href = "/publicaciones/resultados-busqueda?autor="+text_val;
+									window.location.href = "/publicaciones/lista?autor="+text_val;
 									break;
 					}
 
@@ -134,7 +134,7 @@ function searchPublications(number){
 			}
 		}
 		else {
-			window.location.href = "/publicaciones/resultados-busqueda?titulo="+text_val;
+			window.location.href = "/publicaciones/lista?titulo="+text_val;
 		}
 	}else{
 		return false;
