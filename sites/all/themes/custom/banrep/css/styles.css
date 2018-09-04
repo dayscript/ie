@@ -10469,6 +10469,14 @@ form .form-textarea {
   content: ",";
 }
 
+.node-type-publication .group-left .group-autores-destacado .field-name-field-names, .node-type-publication .group-left .group-autores-destacado .field-name-field-surnames {
+  display: inline-block;
+}
+
+.node-type-publication .group-left .group-autores-destacado .field-name-field-names {
+  margin-right: 4px;
+}
+
 .node-type-publication .group-left .field-name-body blockquote {
   display: table;
   width: 90%;

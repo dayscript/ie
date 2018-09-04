@@ -5190,6 +5190,13 @@ form {
           content: ",";
         }
       }
+      .field-name-field-names, .field-name-field-surnames {
+        display: inline-block;
+      }
+
+      .field-name-field-names { 
+        margin-right: 4px;
+      }
     }
 
     .field-name-body {
