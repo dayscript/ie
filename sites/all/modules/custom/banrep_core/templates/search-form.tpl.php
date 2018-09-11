@@ -12,7 +12,7 @@
       }
       ?>
       <option value="5"><?php echo t('Researchers'); ?></option>
-      <option value="6"><?php echo t('CAIE'); ?></option>
+      
       <option value="7"><?php echo t('Seminars'); ?></option>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
