@@ -1,6 +1,6 @@
 <?php
 
-$data = json_decode(file_get_contents('http://investiga.local/nodes-list.json'));
+$data = json_decode(file_get_contents('http://investigaciones.demodayscript.com/nodes-list.json'));
 
 $fields = array(
   "Título destacado" => 'field_titulo' ,
