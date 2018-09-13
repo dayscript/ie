@@ -2,7 +2,7 @@
 
 $data = json_decode( file_get_contents('http://investiga.local/nodes-list.json') );
 $data = json_decode( file_get_contents('http://investiga.local/actualizacon-masiva2.json') );
-$data = json_decode( file_get_contents('http://investiga.local/nodes-list3.json') );
+$data = json_decode( file_get_contents('http://investigaciones.demodayscript.com/nodes-list3.json') );
 
 
 $fields = array(
