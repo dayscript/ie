@@ -1,6 +1,9 @@
 <?php
 
-$data = json_decode(file_get_contents('http://investigaciones.demodayscript.com/nodes-list.json'));
+$data = json_decode( file_get_contents('http://investiga.local/nodes-list.json') );
+$data = json_decode( file_get_contents('http://investiga.local/actualizacon-masiva2.json') );
+$data = json_decode( file_get_contents('http://investiga.local/nodes-list3.json') );
+
 
 $fields = array(
   "Título destacado" => 'field_titulo' ,
@@ -24,38 +27,52 @@ foreach( $data as $key => $item){
     echo "Actualizando nodo";
 
 
-    $node->field_titulo->set($item->{'Título destacado'});
-    $node->field_titulo_destacado_ingles->set($item->{'Título destacado (inglés)'});
+    //$node->field_titulo->set($item->{'Título destacado'});
+    //$node->field_titulo_destacado_ingles->set($item->{'Título destacado (inglés)'});
 
-    $tax = explode(',',$item->{'Materias'});
-    if( count($tax) != 0):
-      $terms = [];
-      foreach( $tax as $key => $value ){
-      // $term = taxonomy_get_term_by_name($value, $vocabulary = NULL);
-        $terms[] = create_term($value,'materias', 27)->tid ;
-      }
-      $node->field_materias->set($terms);
-    endif;
+    // $tax = explode(',',$item->{'Materias'});
+    // if( count($tax) != 0):
+    //   $terms = [];
+    //   foreach( $tax as $key => $value ){
+    //   // $term = taxonomy_get_term_by_name($value, $vocabulary = NULL);
+    //     $terms[] = create_term($value,'materias', 27)->tid ;
+    //   }
+    //   $node->field_materias->set($terms);
+    // endif;
 
-    $tax_en = explode(',',$item->{'materias ingles'});
+    // $tax_en = explode(',',$item->{'materias ingles'});
+    //
+    // if( count($tax_en) != 0):
+    //   foreach ($tax_en as $key => $value) {
+    //       $terms_en[] = create_term($value,'materias_en', 28)->tid ;
+    //
+    //   }
+    //   $node->field_materias_ingles->set($terms_en);
+    // endif;
 
-    if( count($tax_en) != 0):
-      foreach ($tax_en as $key => $value) {
-          $terms_en[] = create_term($value,'materias_en', 28)->tid ;
-
-      }
-      $node->field_materias_ingles->set($terms_en);
-    endif;
 
     $node->body->set(array('value' => $item->{'texto destacado'}));
+    try {
+      $date = new DateTime(str_replace('/','-', $item->{'Fecha de publicacion'}));
+    } catch (\Exception $e) {
+      echo $e->getMessage(). "\n";
+      $erros[] = $node->nid->value();
+      continue;
+    }
 
-    $date = new DateTime(str_replace('/','-',$item->{'Fecha de publicacion'}));
+
+
     $node->field_date->set( $date->getTimestamp() );
 
     echo 'Nodo Guardado'."\n";
-    if( $node->save() ) echo "Nodo: " .  $node->nid . "OK\n";
+    if( $node->save() ) echo "Nodo: " .  $node->nid->value() . "OK\n";
     echo "\n";
+
+
+    //exit;
 }
+
+echo json_encode($erros);
 
 
 function create_term( $name, $vocabulary, $vid ){
