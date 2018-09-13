@@ -6,3 +6,5 @@ sites/*/files
 sites/*/private
 sites/all/themes/custom/*/node_modules
 sites/default/files.tar.gz
+*.tar.gz
+*.zip
