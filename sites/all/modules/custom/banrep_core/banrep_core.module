@@ -4785,6 +4785,7 @@ function _get_coauthor($field_collection_id) {
  * Restringe numero de palabras().
  */
 function _banrep_recorte_palabras($ad, $words_number = 200) {
+  $ad = strip_tags($ad);
   if (strlen($ad) < $words_number) {
     $ad = $ad;
   }
