@@ -3654,7 +3654,7 @@ function _get_co_author_uid_by_name($name = FALSE){
       if($uid = _banrep_core_get_user_by_author_term($match[1])){
         dpm($uid);
         $response['uid'] = $uid;
-      }
+      } 
       return $response;
     }
     else {
