@@ -1,0 +1,5 @@
+name = Redemption
+description = "Redención de puntos"
+package = E SINERGIA
+version = "7.x-1.0"
+core = "7.x"

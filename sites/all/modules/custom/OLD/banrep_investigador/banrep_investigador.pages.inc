@@ -1,0 +1,480 @@
+<?php
+
+/**
+ * @file
+ * Funcionalidades relacionadas al Investigador.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function banrep_investigador_init() {
+  // Redirección url de investigadores de acuerdo al idioma
+  if(arg(0) == 'researchers' && !empty(arg(1))){
+    global $language;
+    if($language->language == 'es') {
+      drupal_goto('investigadores/' . arg(1));
+    }
+  }
+  if(arg(0) == 'investigadores' && !empty(arg(1))){
+    global $language;
+    if($language->language == 'en') {
+      drupal_goto('researchers/' . arg(1));
+    }
+  }
+}
+/**
+ * Implements hook_permission().
+ */
+function banrep_investigador_permission() {
+  return array(
+    'publicar contenido investigador' =>  array(
+      'title' => t('Publicar contenido como investigador'),
+      'description' => t(''),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function banrep_investigador_menu() {
+
+  $items['profile/activities/add'] = array(
+    'title' => t('Create activity'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('activities_add_form'),
+    'access arguments' => array('publicar contenido investigador'),
+    'file' => 'banrep_investigador.forms.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['term/get/ajax/%'] = array(
+    'page callback' => 'banrep_investigador_ajax_get_ajax', // Render HTML.
+    'page arguments' => array(3),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'delivery callback' => 'banrep_investigador_ajax_callback',
+  );
+
+  $items['user/get/ajax/%'] = array(
+    'page callback' => 'banrep_investigador_user_ajax_get_ajax', // Render HTML.
+    'page arguments' => array(3),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'delivery callback' => 'banrep_investigador_user_ajax_callback',
+  );
+
+  $items['admin/config/report/publications'] = array(
+    'page callback' => 'banrep_investigador_report_publications', // Render HTML.
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content')
+  );
+
+  $items['admin/config/create-json/report-pub'] = array(
+    'title' => t('Report pub'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('banrep_investigador_create_report_form'),
+    'access arguments' => array('administer users'),
+  );
+
+  return $items;
+}
+
+/**
+ * Consulta los likes a partir de un tid grupos de investigación.
+ */
+function banrep_investigador_ajax_get_ajax($tid) {
+  $term = taxonomy_term_load($tid);
+  $term->field_likes['und'][0]['value'] = $term->field_likes['und'][0]['value'] + 1;
+  taxonomy_term_save($term);
+  return $term->field_likes['und'][0]['value'];
+}
+
+/**
+ * Retorna el HTML de la funcion banrep_investigador_ajax_get_ajax.
+ */
+function banrep_investigador_ajax_callback($page_callback_result) {
+  print $page_callback_result;
+}
+
+/**
+ * Consulta los likes a partir de un uid.
+ */
+function banrep_investigador_user_ajax_get_ajax($uid) {
+  $user_data = user_load($uid);
+  $user_data->field_likes['und'][0]['value'] = $user_data->field_likes['und'][0]['value'] + 1;
+  user_save($user_data);
+  return $user_data->field_likes['und'][0]['value'];
+}
+
+/**
+ * Retorna el HTML de la funcion banrep_investigador_user_ajax_get_ajax.
+ */
+function banrep_investigador_user_ajax_callback($page_callback_result) {
+  print $page_callback_result;
+}
+
+/**
+ * Callback mostrar reporte consolidado.
+ */
+function banrep_investigador_report_publications() {
+  // Json
+  $file_json = 'public://reports/publications/json/publications.json';
+  $json_pub = array();
+  if (file_exists($file_json)) {
+    $str_data = file_get_contents($file_json);
+    $json_pub = json_decode($str_data,TRUE);
+  }
+  if (!empty($json_pub)) {
+    $header = array(
+      'Uid',
+      'Nombre',
+      'Rol',
+      'Total Pub.',
+      // 'Art. Ensayo sobre politica economica',
+      // 'Art. Otras revistas',
+      // 'Dt. Borradores de economia',
+      // 'Dt. Cuadernos de historia economica',
+      // 'Dt. Trabajo economia regional',
+      // 'Dt. Ensayos sobre economia regional',
+      // 'Dt. Temas de estabilidad financiera',
+      // 'Libros Bancos',
+      // 'Capitulos de libros',
+    );
+    $rows = $rows_excel = array();
+    $num = 0;
+
+    foreach ($json_pub as $pub_uid => $pub) {
+      $rows[$num][] = $pub_uid;
+      $rows[$num][] = $pub['info_user']['name'];
+      $rows[$num][] = $pub['info_user']['role_name'];
+      $rows[$num][] = $pub['info_user']['total_pub'];
+
+      foreach ($pub as $key_info => $info) {
+        if (is_numeric($key_info) or $key_info == 'other_art') {
+          if ($num == 0) {
+            $header[] = $info['name'];
+          }
+          $rows[$num][] = $info['total'];
+        }
+      }
+
+      foreach ($rows[$num] as $key_row => $val_row) {
+        $rows_excel[$num][ $key_row] = $val_row;
+      }
+      $num++;
+    }
+
+    $content = theme('table', array('header' => $header, 'rows' => $rows));
+    // Excel
+    module_load_include('inc', 'phpexcel', 'phpexcel');
+    $file_abs_excel = DRUPAL_ROOT . '/sites/default/files/reports/publications/excel/publications3.xlsx';
+    if(file_exists($file_abs_excel)){
+      unlink($file_abs_excel);
+    }
+    $is_create = phpexcel_export($header, $rows, $file_abs_excel);
+
+    if ($is_create == 10) {
+      $file_excel = file_create_url('public://reports/publications/excel/publications3.xlsx');
+      $link_excel = '<ul class="action-links"><li>' . l('Descargar Excel', $file_excel) . '</li>
+</ul>';
+      $content = $link_excel . theme('table', array('header' => $header, 'rows' => $rows));
+    }
+
+    return $content;
+
+  }
+}
+
+/**
+ * Callback crear reporte personalizado.
+ */
+function banrep_investigador_create_report_form($form, &$form_state) {
+  global $language;
+  global $base_url;
+  $url = $base_url .'/'. $language->language . '/admin/config/report/publications';
+  $form['legend'] = array(
+    '#type' => 'item',
+    '#markup' => t('Este apartado genera un archivo en formato JSON con la información consolidada de los investigadores, debe ejecutarse antes de descargar el reporte para actualizar la información. Una vez generado ir a <a href="' . $url . '">Reporte</a>.'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Generar reporte en JSON')
+  );
+  return $form;
+}
+
+/**
+ * Validador crear reporte personalizado.
+ */
+function banrep_investigador_create_report_form_validate($form, &$form_state) {
+}
+
+/**
+ * Submit crear reporte personalizado.
+ */
+function banrep_investigador_create_report_form_submit($form, &$form_state) {
+  banrep_investigador_create_batch();
+}
+
+/**
+ * Batch crear reporte personalizado.
+ */
+function banrep_investigador_create_batch() {
+  $batch = array(
+    'title' => t('Create info report publications'),
+    'init_message' => t('Starting update...'),
+    'progress_message' => t('Processed @current out of @total entries'),
+    'error_message' => t("Error processing entries. Please check your csv file for syntax errors.")
+  );
+
+  $investigador = user_role_load_by_name('investigador');
+  $tecnico = user_role_load_by_name('tecnico');
+  $rids = array($investigador->rid, $tecnico->rid);
+
+  $db_and = db_and();
+  $db_and->condition('fdpt.field_pub_type_value', array(206, 1), 'IN');
+  $db_and->condition('fdn.field_notes_value', 'BANCO DE LA REPUBLICA');
+
+  $db_or = db_or();
+  $db_or->condition('fdpt.field_pub_type_value', array(201), 'IN');
+  $db_or->condition('fdc.field_concept_target_id', array(10876, 22809, 22812, 22811, 22813, 22810), 'IN');
+  $db_or->condition($db_and);
+
+  $query = db_select('users', 'u');
+  $query->join('users_roles', 'ur', 'u.uid = ur.uid');
+  $query->join('role', 'r', 'ur.rid = r.rid');
+  $query->join('field_data_field_full_name', 'fdfn', 'u.uid = fdfn.entity_id');
+  $query->join('field_data_field_user_reference', 'fur', 'u.uid = fur.field_user_reference_target_id');
+  $query->join('field_data_field_publicacion', 'fdp', 'fur.entity_id = fdp.entity_id');
+  $query->join('field_data_field_pub_type', 'fdpt', 'fdp.field_publicacion_target_id = fdpt.entity_id');
+  $query->join('field_data_field_concept', 'fdc', 'fdp.field_publicacion_target_id = fdc.entity_id');
+  $query->leftJoin('field_data_field_notes', 'fdn', 'fdc.field_concept_target_id = fdn.entity_id');
+  $query->fields('u', array('uid','mail'))
+        ->fields('ur', array('rid'))
+        ->fields('fur', array('entity_id'))
+        ->fields('fdp',array('field_publicacion_target_id '))
+        ->fields('fdpt',array('field_pub_type_value '))
+        ->fields('fdc',array('field_concept_target_id'));
+  $query->addField('r', 'name', 'role_name');
+  $query->addField('fdfn', 'field_full_name_value', 'full_name');
+  $query->condition('ur.rid', $rids, 'IN')
+        ->condition('fdfn.entity_type', 'user')
+        ->condition('fdfn.bundle', 'user')
+        ->condition('fur.entity_type', 'node')
+        ->condition('fur.bundle', 'pub_user')
+        ->condition($db_or);
+  $query->addExpression('count(fur.field_user_reference_target_id)', 'count_publication');
+  $query->groupBy("u.uid");
+  $result = $query->execute()->fetchAll();
+
+  if (!empty($result)) {
+
+    $concept_nids = array(
+      10876 => 'Art. Ensayo sobre politica economica',
+      'other_art' => 'Art. Otras revistas',
+      22809 => 'Dt. Borradores de economia',
+      22812 => 'Dt. Cuadernos de historia economica',
+      22811 => 'Dt. Trabajo economia regional',
+      22813 => 'Dt. Ensayos sobre economia regional',
+      22810 => 'Dt. Temas de estabilidad financiera',
+    );
+    $tax_tids_pub = array(
+      206 => 'Libros Bancos',
+      1 => 'Capitulos de libros',
+    );
+
+    $num = 1;
+    $rows = array();
+    $json_pub = json_encode(array());
+    $file = 'public://reports/publications/json/publications.json';
+    file_put_contents($file, $json_pub);
+
+    foreach ($result as $key => $value) {
+      $rows[$key] = $value;
+      // Si ya van exactamente 50 iteraciones se llama la funcion del batch.
+      if ($num % 50 == 0) {
+        $batch['operations'][] = array(
+          'banrep_investigador_report_json_create',
+          array($rows, $concept_nids, $tax_tids_pub, $file)
+        );
+        $rows = array();
+      }
+      $num++;
+    }
+    if ($rows) {
+      $batch['operations'][] = array(
+        'banrep_investigador_report_json_create',
+        array($rows, $concept_nids, $tax_tids_pub, $file)
+      );
+    }
+    // Se ejecuta el batch.
+    batch_set($batch);
+  }
+}
+
+/**
+ * JSON crear reporte personalizado.
+ */
+function banrep_investigador_report_json_create($rows, $concept_nids, $tax_tids_pub, $file, &$context) {
+  if (file_exists($file)) {
+    $str_data = file_get_contents($file);
+    $json_pub = json_decode($str_data,TRUE);
+
+    foreach ($rows as $key => $value) {
+      $uid = $value->uid;
+      $json_user = array(
+        'info_user' => array(
+          'name' => $value->full_name,
+          'role_name' => $value->role_name,
+          'total_pub' => $value->count_publication,
+        )
+      );
+
+      $query_ot_art = db_select('field_data_field_user_reference', 'fdur');
+      $query_ot_art->join('field_data_field_publicacion', 'fdp', 'fdur.entity_id = fdp.entity_id');
+      $query_ot_art->join('field_data_field_pub_type', 'fdpt', 'fdp.field_publicacion_target_id = fdpt.entity_id');
+      $query_ot_art->join('field_data_field_concept', 'fdc', 'fdp.field_publicacion_target_id = fdc.entity_id');
+      $query_ot_art->fields('fdur', array('entity_id','field_user_reference_target_id'))
+                ->fields('fdp', array('field_publicacion_target_id'))
+                ->fields('fdpt', array('field_pub_type_value'))
+                ->fields('fdc', array('field_concept_target_id'))
+                ->condition('fdur.entity_type', 'node')
+                ->condition('fdur.bundle', 'pub_user')
+                ->condition('fdur.field_user_reference_target_id', $uid)
+                ->condition('fdpt.field_pub_type_value', 201)
+                ->condition('fdc.field_concept_target_id', 10876, '!=');
+      $tot_ot_art = 0;
+      $tot_ot_art = $query_ot_art->countQuery()->execute()->fetchField();
+
+      $query_docs = db_select('field_data_field_user_reference', 'fdur');
+      $query_docs->join('field_data_field_publicacion', 'fdp', 'fdur.entity_id = fdp.entity_id');
+      $query_docs->join('field_data_field_concept', 'fdc', 'fdp.field_publicacion_target_id = fdc.entity_id');
+      $query_docs->fields('fdur', array('field_user_reference_target_id'))
+                ->fields('fdp', array('field_publicacion_target_id'))
+                ->fields('fdc', array('field_concept_target_id'))
+                ->condition('fdur.entity_type', 'node')
+                ->condition('fdur.bundle', 'pub_user')
+                ->condition('fdur.field_user_reference_target_id', $uid)
+                ->condition('fdc.field_concept_target_id', array(10876, 22809, 22812, 22811, 22813, 22810), 'IN');
+      $query_docs->addExpression('count(fdc.field_concept_target_id)', 'count_concept_target_id');
+      $query_docs->groupBy("fdc.field_concept_target_id");
+      $result_docs = $query_docs->execute()->fetchAll();
+      $query_concept_nids = array();
+      if (!empty($result_docs)) {
+        foreach ($result_docs as $key_docs => $value_doc) {
+          $query_concept_nids[$value_doc->field_concept_target_id] = $value_doc->count_concept_target_id;
+        }
+      }
+
+      $query_books = db_select('field_data_field_user_reference', 'fdur');
+      $query_books->join('field_data_field_publicacion', 'fdp', 'fdur.entity_id = fdp.entity_id');
+      $query_books->join('field_data_field_pub_type', 'fdpt', 'fdp.field_publicacion_target_id = fdpt.entity_id');
+      $query_books->join('field_data_field_concept', 'fdc', 'fdp.field_publicacion_target_id = fdc.entity_id');
+      $query_books->join('field_data_field_notes', 'fdn', 'fdc.field_concept_target_id = fdn.entity_id');
+      $query_books->fields('fdur', array('entity_id','field_user_reference_target_id'))
+                ->fields('fdp', array('field_publicacion_target_id'))
+                ->fields('fdpt', array('field_pub_type_value'))
+                ->fields('fdc', array('field_concept_target_id'))
+                ->fields('fdn',array('field_notes_value'))
+                ->condition('fdur.entity_type', 'node')
+                ->condition('fdur.bundle', 'pub_user')
+                ->condition('fdur.field_user_reference_target_id', $uid)
+                ->condition('fdpt.field_pub_type_value', array(206, 1), 'IN')
+                ->condition('fdn.field_notes_value', 'BANCO DE LA REPUBLICA');
+      $query_books->addExpression('count(fdpt.field_pub_type_value)', 'count_libros');
+      $query_books->groupBy("fdpt.field_pub_type_value");
+      $result_books = $query_books->execute()->fetchAll();
+      $query_tax_tids = array();
+      if (!empty($result_books)) {
+        foreach ($result_books as $key_books => $value_book) {
+          $query_tax_tids[$value_book->field_pub_type_value] = $value_book->count_libros;
+        }
+      }
+
+      foreach ($concept_nids as $nid => $title) {
+        $json_user[$nid]['name'] = $title;
+        $json_user[$nid]['total'] = 0;
+        if (isset($query_concept_nids[$nid])) {
+          $json_user[$nid]['total'] = $query_concept_nids[$nid];
+        }
+      }
+      $json_user['other_art']['total'] = $tot_ot_art - $json_user['other_art']['total'];
+      if ($json_user['other_art']['total'] < 0) {
+        $json_user['other_art']['total'] = $json_user['other_art']['total'] * -1;
+      }
+
+      foreach ($tax_tids_pub as $tid => $title) {
+        $json_user[$tid]['name'] = $title;
+        $json_user[$tid]['total'] = 0;
+        if (isset($query_tax_tids[$tid])) {
+          $json_user[$tid]['total'] = $query_tax_tids[$tid];
+        }
+      }
+
+      $json_pub[$uid] = $json_user;
+      $json_general = json_encode($json_pub);
+      file_put_contents($file, $json_general);
+    }
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function banrep_investigador_block_info() {
+  $blocks['user_favorites'] = array(
+    'info' => t('Dashboard - Mis Favoritos'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  $blocks['bi_home_pubs'] = array(
+    'info' => t('Home - Publications'),
+    'cache' => DRUPAL_NO_CACHE
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function banrep_investigador_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'user_favorites':
+      $type_link = (arg(0) == 'dashboard') ? 'privado' : 'publico';
+      global $user;
+      $user_data = user_load($user->uid);
+      foreach ($user_data->field_enlaces_recomendados['und'] as $key => $item) {
+        $enlaces[] = $item['value'];
+      }
+      $items = field_collection_item_load_multiple($enlaces);
+      $favorits = array();
+      foreach ($items as $key => $item) {
+        if($item->field_status['und'][0]['value'] == $type_link){
+          $favoritos[]['data'] = l($item->field_url_recomendado['und'][0]['title'], $item->field_url_recomendado['und'][0]['url']);
+        }
+      }
+
+      $block['subject'] = '';
+      $block['content'] =
+        '<div class="mis-enlaces-recomendados">' .
+          theme_item_list(
+            array(
+              'items' => (isset($favoritos) ? $favoritos : array()),
+              'title' => '',
+              'type' => 'ul',
+              'attributes' => array('id' => 'mis-favoritos','class' => 'mis-favoritos'),
+            )
+          ) .
+        '</div>'
+      ;
+      break;
+
+  }
+  return $block;
+}
+
