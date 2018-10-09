@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Formulario de creación de actividad.
- */
 function activities_add_form($form, &$form_state){
 
   $form_state['step'] = isset($form_state['step']) ? $form_state['step'] : 1;
@@ -136,12 +133,48 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     $opciones[$option->tid] = $option->name;
   }
   $form['query']['content']['type_accumulated'] = array(
-    '#title' => t('Type of accumulated'),
+    '#title' => t('Type of activity'),
     '#type' => 'select',
     '#description' => '',
     '#options' => $opciones,
     '#default_value' => get_input_value_from_publication($publication, 'type_accumulated'),
     '#required' => TRUE,
+  );
+
+  $form['query']['content']['type_concept_formation'] = array(
+    '#type' => 'hierarchical_select',
+    '#title' => t('Activity'),
+    '#config' => array(
+      'module' => 'hs_taxonomy',
+      'params' => array(
+        'vid' => 23, // Enter your vocabulary ID here.
+        'root_term' => NULL, // Enter a term ID here if you want to display only terms below the term with that ID.
+      ),
+      'save_lineage'    => 0,
+      'enforce_deepest' => 1,
+      'entity_count'    => 0,
+      'require_entity'  => 0,
+      'resizable'       => 1,
+      'level_labels' => array(
+        'status' => 1,
+        'labels' => array(
+          0 => t('-Select-'),
+          1 => t('-Select-'),
+          2 => t('-Select-'),
+          3 => t('-Select-'),
+        ),
+      ),
+      'dropbox' => array(
+        // Only allow for a single term or single lineage to be selected.
+        'status' => 0,
+      ),
+      'editability' => array(
+        // Creating new terms from within a form to filter by existing terms
+        // doesn't make sense, hence it is disabled.
+        'status' => 0,
+      ),
+    ),
+    '#default_value' =>  get_input_value_from_publication($publication, 'concept_formation'),
   );
   $form['query']['content']['description'] = array(
     '#title' => t('Description'),
@@ -164,7 +197,7 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
   );
 
   $form['query']['content']['start_date'] = array(
-    '#prefix'=>t('Start date'),
+    '#title'=>t('Start date'),
     '#date_format' => 'd-m-Y',
     '#date_year_range' => '-30:+1',
     '#type' => 'date_popup',
@@ -175,7 +208,7 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
   );
 
   $form['query']['content']['end_date'] = array(
-    '#prefix'=>t('Close date'),
+    '#title'=>t('Close date'),
     '#date_format' => 'd-m-Y',
     '#date_year_range' => '-30:+1',
     '#type' => 'date_popup',
@@ -378,17 +411,29 @@ function _activities_add_form_validate_step_1($form, &$form_state, &$response) {
   // Get the form values
   $values = isset($form_state['values']['query']["content"]) ? $form_state['values']['query']["content"] : [];
   $type_accumulated = isset($values['type_accumulated']) ? $values['type_accumulated'] : '';
-  $type_tids = [];
+  $type_act = array();
   if (!empty($type_accumulated)) {
-    $type_array = explode(',', $type_accumulated);
-    foreach ($type_array as $key => $type) {
-      $type_tid = _get_tag_by_name($type);
-      if ($type_tid) {
-        $type_tids[] = ['tid' => $type_tid];
+    $structure =  taxonomy_get_parents_all($type_accumulated);
+    foreach ($structure as $tax) {
+      $type_act[] = ['tid' => $tax->tid];
+    }
+  }
+  $concept_formation = '';
+  if (!empty($type_accumulated)) {
+    if ($type_accumulated == 15350) {
+      $concept_formation = $values['type_concept_formation'];
+      $type_tids[] = ['tid' => $concept_formation];
+    }
+    else {
+      $type_array = explode(',', $type_accumulated);
+      foreach ($type_array as $key => $type) {
+        $type_tid = _get_tag_by_name($type);
+        if ($type_tid) {
+          $type_tids[] = ['tid' => $type_tid];
+        }
       }
     }
   }
-
   // Descripción
   $description = isset($values['description']) ? $values['description'] : FALSE;
   if ($description == FALSE) {
@@ -456,7 +501,10 @@ function _activities_add_form_validate_step_1($form, &$form_state, &$response) {
     $node->uid = $user->uid;
     $node->title = time();
     // $node->body[LANGUAGE_NONE][0]['value'] = $description;
-    $node->field_concept_category[LANGUAGE_NONE][0]['tid'] = $type_accumulated;
+    $node->field_concept_category[LANGUAGE_NONE] = $type_act;
+    if (!empty($concept_formation)) {
+      $node->field_concept_formation[LANGUAGE_NONE][0]['tid'] = $concept_formation;
+    }
     $node->field_year[LANGUAGE_NONE][0]['value'] = $publication_year;
     $node->body[LANGUAGE_NONE][0]['value'] = $description;
     $node->field_act_status[LANGUAGE_NONE][0]['value'] = $visibility;
@@ -544,4 +592,3 @@ function _activities_get_header($form, &$form_state) {
   return $form;
 
 }
-

@@ -30,9 +30,6 @@ function myScript() {
 		case "7":
 		document.getElementById("tabs-7").style.display="block";
 		break;
-		case "8":
-		document.getElementById("tabs-8").style.display="block";
-		break;
 	}
 }
 
@@ -102,45 +99,6 @@ function searchSeminars(number){
 	}else{
 		return false;
 	}
-}
-
-function searchPublications(number){
-
-	var text_val 	= jQuery('#tabs-8 .searchArea #repoSearch').val();
-	var filter 		= document.getElementsByName('publicationFilter');
-
-	if(text_val != '') {
-		if(number == 1) {
-			for (var i = 0, length = filter.length; i < length; i++)
-			{
-				if (filter[i].checked) {
-
-					switch( filter[i].value ) {
-						case "1" :
-									window.location.href = "/publicaciones/lista?keywords="+text_val;
-									break;
-
-						case "2" :
-									window.location.href = "/publicaciones/lista?titulo="+text_val;
-									break;
-
-						case "3" :
-									window.location.href = "/publicaciones/lista?autor="+text_val;
-									break;
-					}
-
-				
-				}
-			}
-		}
-		else {
-			window.location.href = "/publicaciones/lista?titulo="+text_val;
-		}
-	}else{
-		return false;
-	}
-
-
 }
 
 function searchDatabases(){

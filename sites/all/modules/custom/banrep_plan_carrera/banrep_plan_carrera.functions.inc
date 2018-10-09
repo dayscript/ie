@@ -2,13 +2,13 @@
 
 /**
  * @file
- * Funciones de ayuda módulo plan carrera.
+ * Defines banrep_core module functionality.
  */
 
 /**
  * Funcion que cargar los requisitos de ascenso.
  */
-function get_requirements($scale, $route) {
+function get_requirements($scale, $route, $type = '') {
 
   $query = db_select('field_data_field_ruta_plan_carrera', 'r');
   $query->addField('r', 'entity_id', 'nid');
@@ -19,11 +19,29 @@ function get_requirements($scale, $route) {
   if (isset($result->nid) && is_numeric($result->nid) && $result->nid > 0) {
     $node                         = node_load($result->nid);
     $requirements                 = array();
-    $requirements['nid']          = $result->nid;
-    $requirements['general']      = get_general_requirements($node);
-    $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und']);
-    $requirements['time']         = get_time_requirements($node->field_requisitos_tiempo['und']);
-    $requirements['training']     = get_training_requirements($node->field_req_formacion_desempeno['und']);
+    if (empty($type)) {
+      $requirements['nid']          = $result->nid;
+      $requirements['general']      = get_general_requirements($node);
+      $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und']);
+      $requirements['time']         = get_time_requirements($node->field_requisitos_tiempo['und']);
+      $requirements['training']     = get_training_requirements($node->field_req_formacion_desempeno['und']);
+    }
+    else {
+      switch ($type) {
+        case 'general':
+        $requirements = get_general_requirements($node);
+          break;
+        case 'publications':
+        $requirements = get_publications_requirements($node->field_requisitos_publicaciones['und']);
+          break;
+        case 'time':
+        $requirements = get_time_requirements($node->field_requisitos_tiempo['und']);
+          break;
+        case 'training':
+        $requirements = get_training_requirements($node->field_req_formacion_desempeno['und']);
+          break;
+      }
+    }
     return $requirements;
   }
   else {
@@ -203,7 +221,7 @@ function _get_experience($uid, $field) {
 /**
  * Función que calcula el puntaje o la cantidad de publicaciones del usuario.
  */
-function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALSE, $type = 'CANTIDAD', $start_pub = 1) {
+function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALSE, $type = 'CANTIDAD', $start_pub = 1, $is_activity = FALSE) {
   $star_date = NULL;
   if ($start_pub > 1) {
     $usuario = user_load($uid);
@@ -222,35 +240,47 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
     }
   }
 
-  if ($flag_is_node) {
+  if ($is_activity) {
     $query = db_select('node', 'n');
-    $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
-    $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
-    $query->join('field_data_field_concept', 'c', 'c.entity_id = p.field_publicacion_target_id');
-    $query->condition('c.field_concept_target_id', $id_type_publication, '=');
-    $query->condition('n.type', 'pub_user', '=');
-    $query->condition('u.field_user_reference_target_id', $uid, '=');
+    $query->join('field_data_field_act_wf_status', 'e', 'e.entity_id = n.nid');
+    $query->join('field_data_field_concept_category', 'c', 'c.entity_id = n.nid');
+    $query->condition('c.field_concept_category_tid', $id_type_publication, '=');
+    $query->condition('n.type', 'activity', '=');
+    $query->condition('e.field_act_wf_status_value', 20, '=');
+    $query->condition('n.uid', $uid, '=');
   }
   else {
-    $query = db_select('node', 'n');
-    $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
-    $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
-    if ($id_type_publication == 15348) {
-      $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
-      $query->condition('c.field_pub_type_value', 201, '=');
-    }
-    elseif ($id_type_publication == 15349) {
-      $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
-      $query->condition('c.field_pub_type_value', 206, '=');
+    if ($flag_is_node) {
+      $query = db_select('node', 'n');
+      $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
+      $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
+      $query->join('field_data_field_concept', 'c', 'c.entity_id = p.field_publicacion_target_id');
+      $query->condition('c.field_concept_target_id', $id_type_publication, '=');
+      $query->condition('n.type', 'pub_user', '=');
+      $query->condition('u.field_user_reference_target_id', $uid, '=');
     }
     else {
-      $query->join('field_data_field_concept_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
-      $query->condition('c.field_concept_type_tid', $id_type_publication, '=');
-    }
+      $query = db_select('node', 'n');
+      $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
+      $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
+      if ($id_type_publication == 15348) {
+        $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_pub_type_value', 201, '=');
+      }
+      elseif ($id_type_publication == 15349) {
+        $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_pub_type_value', 206, '=');
+      }
+      else {
+        $query->join('field_data_field_concept_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_concept_type_tid', $id_type_publication, '=');
+      }
 
-    $query->condition('n.type', 'pub_user', '=');
-    $query->condition('u.field_user_reference_target_id', $uid, '=');
+      $query->condition('n.type', 'pub_user', '=');
+      $query->condition('u.field_user_reference_target_id', $uid, '=');
+    }
   }
+
 
   if (!is_null($start_date)) {
     $query->condition('n.created', $start_date, '>=');
@@ -264,8 +294,13 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
 
     case 'PUNTAJE':
       $query->leftJoin('field_data_field_puntaje', 'j', 'j.entity_id = n.nid');
-      $query->leftJoin('field_data_field_puntaje_usado', 'ju', 'ju.entity_id = n.nid');
-      $query->addExpression('SUM(COALESCE(j.field_puntaje_value,0) - COALESCE(ju.field_puntaje_usado_value,0))', 'puntaje');
+      $query->addField('j', 'field_puntaje_value', 'puntaje');
+      if ($is_activity) { 
+      }
+      else {
+        $query->leftJoin('field_data_field_puntaje_usado', 'ju', 'ju.entity_id = n.nid');
+        $query->addExpression('SUM(COALESCE(j.field_puntaje_value,0) - COALESCE(ju.field_puntaje_usado_value,0))', 'puntaje');                
+      }
       $result = $query->execute()->fetchObject();
       if (isset($result->puntaje) && !is_null($result->puntaje)) {
         $num_of_result = $result->puntaje;
@@ -328,4 +363,68 @@ function _get_log_by_rule($rule, $nid) {
   $query->orderBy('v.entity_id', 'DESC');
   $result = $query->execute()->fetchALL();
   return $result;
+}
+
+
+function _get_links_nodes($tid){
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'activity')
+        ->fieldCondition('field_concept_formation', 'tid', $tid);
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  $nodes = entity_load('node', $nids);
+  $arfiles = array();
+  foreach($nodes as $node)
+  {
+    if(!empty($node->field_re_attach_doc)){
+       $arfiles[] = array(
+         'url' => file_create_url($node->field_re_attach_doc[LANGUAGE_NONE][0]['uri']),
+         'name' =>  $node->field_re_attach_doc[LANGUAGE_NONE][0]['origname'],
+     );
+    }
+  }
+
+  if(!empty($arfiles))
+  {
+    $strFiles = "<br/><ul>";
+  foreach($arfiles as $arfile)
+  {
+    $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+  }
+  $strFiles .= "</ul>";
+
+  }
+
+  return $strFiles;
+
+}
+
+/**
+ * Funcion que carga los nodos de tipo formacion del usuario por concepto.
+ */
+function _get_training_by_tid($uid,$tid) {
+  $files = array();
+  if (is_numeric($tid) && $tid > 0) {
+    $query = db_select('node', 'n');
+    $query->addField('n', 'nid', 'nid');
+    $query->addField('f', 'field_re_attach_doc_fid', 'fid');
+    $query->join('field_data_field_concept_formation', 'c', 'c.entity_id = n.nid');
+    $query->join('field_data_field_re_attach_doc', 'f', 'f.entity_id = n.nid');
+    $query->condition('n.type', 'training');
+    $query->condition('n.uid', $uid);
+    $query->condition('c.field_concept_formation_tid', $tid);
+    $result = $query->execute()->fetchAll();
+    foreach ($result as $row) {
+      if (isset($row->nid) &&  !is_null($row->nid) && is_numeric($row->nid) && $row->nid > 0) {
+        $file = file_load($row->fid);
+        $url = file_create_url($file->uri);
+        $files[] = array('url' => $url, 'name' => $file->origname);
+      }
+    }
+  }
+
+  return $files;
+
 }

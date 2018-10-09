@@ -65,6 +65,9 @@
           case Drupal.settings.banrep_core.PUB_TYPE_WORK_DOCUMENT:
             selector = 'input.query-work-document-name';
             break;
+          case Drupal.settings.banrep_core.PUB_TYPE_OTHER_DOCUMENT:
+            selector = 'input.query-other-document-name';
+            break;
         }
         if (selector != '') {
           $(selector).val(res.label).change();
