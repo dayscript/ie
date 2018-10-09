@@ -3648,7 +3648,11 @@ function _get_co_author_uid_by_name($name = FALSE){
     if (isset($match[1]) && is_numeric($match[1])) {
       $response['tid'] = $match[1];
       $response['uid'] = NULL;
+      dpm('ads');
+
+      dpm($match[1]);
       if($uid = _banrep_core_get_user_by_author_term($match[1])){
+        dpm($uid);
         $response['uid'] = $uid;
       }
       return $response;
@@ -5136,6 +5140,7 @@ function human_to_machine($human_name) {
  * Restringe numero de palabras().
  */
 function _banrep_recorte_palabras($ad, $words_number = 200) {
+  $ad = strip_tags($ad);
   if (strlen($ad) < $words_number) {
     $ad = $ad;
   }
@@ -5156,6 +5161,7 @@ function _banrep_recorte_palabras($ad, $words_number = 200) {
  * una publicacion
  */
 function _publication_create_co_authors_banco($source_nid, $co_authors, $approved = FALSE){
+
   $source_pub = node_load($source_nid);
   $query = new EntityFieldQuery();
   $pub_user_nids_to_be_deleted =
@@ -5184,7 +5190,8 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
         ->fieldCondition('field_user_reference', 'target_id', $co_author['uid'])
         ->execute()
       ;
-      if (empty($pub_user)) {
+
+      if ( empty($pub_user) ) {
         $pub_user_base = new stdClass();  // Create a new node object
         $pub_user_base->type = 'pub_user';  // Content type
         $pub_user_base->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
@@ -5268,6 +5275,7 @@ function _banrep_obtener_lineas_codigo($codigos){
 
   return $nombres;
 }
+<<<<<<< HEAD
 
 function _banrep_obtener_lineas_tid($codigos){
   global $language;
@@ -5281,3 +5289,5 @@ function _banrep_obtener_lineas_tid($codigos){
 
   return $nombres;
 }
+=======
+>>>>>>> 24f246c5c687c2b155d71a59271f17da6909f37c

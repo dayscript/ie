@@ -640,6 +640,7 @@ function _banrep_core_get_concept_type($nid){
 function _banrep_core_get_user_by_author_term($nid){
   $query = db_select('field_data_field_user_reference', 'u');
   $query->condition('u.entity_id', $nid);
+  $query->condition('u.entity_type', 'taxonomy_term');
   $query->fields('u', array('field_user_reference_target_id'));
   $query->range(0,1);
   $user_id = $query->execute()->fetchField();
