@@ -3465,13 +3465,10 @@ function _get_co_author_uid_by_name($name = FALSE){
     if (isset($match[1]) && is_numeric($match[1])) {
       $response['tid'] = $match[1];
       $response['uid'] = NULL;
-      dpm('ads');
 
-      dpm($match[1]);
       if($uid = _banrep_core_get_user_by_author_term($match[1])){
-        dpm($uid);
         $response['uid'] = $uid;
-      } 
+      }
       return $response;
     }
     else {
