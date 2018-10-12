@@ -5275,19 +5275,3 @@ function _banrep_obtener_lineas_codigo($codigos){
 
   return $nombres;
 }
-<<<<<<< HEAD
-
-function _banrep_obtener_lineas_tid($codigos){
-  global $language;
-  $nombres = array();
-  foreach ($codigos as $key => $codigo) {
-    $query = db_select('taxonomy_term_data', 't');
-    $query->fields('t', array('tid'));
-    $query->condition('t.name', '%'.db_like($codigo), 'LIKE')->range(0,1);
-    $nombres[] = $query->execute()->fetchField();
-  }
-
-  return $nombres;
-}
-=======
->>>>>>> 24f246c5c687c2b155d71a59271f17da6909f37c
