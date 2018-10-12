@@ -116,7 +116,7 @@ function publications_add_form($form, &$form_state) {
       ];
     }
   }
-  dpm($form);
+  //dpm($form);
 
   return $form;
 }
@@ -549,7 +549,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
  */
 function _publications_add_form_step_2(&$form, &$form_state, &$publication = NULL) {
   $node = (object) drupal_json_decode($form_state['storage_publication']);
-  // dpm($node);
+  //// dpm($node);
   $header = [t('Information'), t('Value')];
   $rows = [];
 
@@ -1107,7 +1107,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     if (!empty($name)) {
       // if (_is_registered_user_by_name($name)) {
         $target_uid = _get_co_author_uid_by_name($name);
-  
+
         if (count($target_uid) > 0) {
           if ($main_author) {
             $main_author_arr[] = [
@@ -1290,7 +1290,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
  * Add publication form step 2 validations
  */
 function publications_add_form_validate_step_2($form, &$form_state, &$response) {
-  dpm($form_state);
+  //dpm($form_state);
   $is_back = FALSE;
   if (isset($form_state['values']['buttons']['back']) && $form_state['values']['op'] == $form_state['values']['buttons']['back']) {
     $is_back = TRUE;
@@ -1300,13 +1300,13 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
-      dpm($node);
-      dpm($node->main_author_reference);
+      //dpm($node);
+      //dpm($node->main_author_reference);
       // Save Publication
       //
       $main_author_ref = isset($node->main_author_reference) ? $node->main_author_reference : [];
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
-      dpm($main_author_ref);
+      //dpm($main_author_ref);
       unset($node->co_authors);
       unset($node->alternate_language);
       unset($node->jels);
@@ -1321,10 +1321,10 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       }
       node_save($node);
       if (isset($node->nid)) {
-        dpm($main_author_ref);
+        //dpm($main_author_ref);
 
         $co_authors = array_merge($main_author_ref, $co_authors);
-        dpm($co_authors);
+        //dpm($co_authors);
         _publication_create_co_authors_banco($node->nid, $co_authors);
       }
       $form_state['storage_publication'] = drupal_json_encode($node);
