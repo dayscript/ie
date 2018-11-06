@@ -7,6 +7,7 @@
       <option value="5"><?php echo t('Researchers'); ?></option>
       <option value="6"><?php echo t('CAIE'); ?></option>
       <option value="7"><?php echo t('Seminars'); ?></option>
+      <option value="8"><?php echo t('ESPE'); ?></option>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
   </div>
@@ -109,6 +110,24 @@
                      <label class="label" for="seminaryear"> <?php echo t('Year'); ?></label>
                      <input id="seminartitle" class="radio" type="radio" name="seminarFilter" value="2" />
                      <label class="label" for="seminartitle"> <?php echo t('Title'); ?></label>
+                     <div class="error-wrapper"></div>
+                  </div>
+               </div>
+            </form>
+         </div>
+
+         <div id="tabs-8" class="tabs-x" style="display:none;">
+            <form id="sbSS">
+               <div class="searchArea">
+                 <input id="repoSearch" class="ebscohostsearchtext" name="ebscohostsearchtext" type="text" size="50" />
+                 <button onclick="searchESPE(1); return false;" class="submit"><i class="icon-buscar"></i></button>
+                  <div id="seminarFilters" class="inline-elements">
+                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_0" value="" checked="checked" />
+                     <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
+                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_1" value="TI" />
+                     <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
+                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_2" value="AU" />
+                     <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
                      <div class="error-wrapper"></div>
                   </div>
                </div>

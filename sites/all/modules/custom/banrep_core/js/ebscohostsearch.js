@@ -30,6 +30,9 @@ function myScript() {
 		case "7":
 		document.getElementById("tabs-7").style.display="block";
 		break;
+		case "8":
+		document.getElementById("tabs-8").style.display="block";
+		break;
 	}
 }
 
@@ -119,5 +122,25 @@ function searchResearchers(){
 	}
 }
 
+function searchESPE(number){
+	var text_val = jQuery('#tabs-8 .searchArea #repoSearch').val();
+	if(text_val != ''){
+		if(number == 1) {
 
+			if(jQuery('#guidedField_0').is(':checked')) { 
+				window.location.href = "http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=searchFilterSubjectalone&value="+text_val;
+			}
 
+			if(jQuery('#guidedField_1').is(':checked')) { 
+				window.location.href = "http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=title&sort_by=1&order=ASC&rpp=40&starts_with="+text_val;
+			}
+
+			if(jQuery('#guidedField_2').is(':checked')) { 
+				window.location.href = " http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=author&value="+text_val;
+			}
+
+		}
+	}else{
+		return false;
+	}
+}
