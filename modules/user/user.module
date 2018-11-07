@@ -1606,8 +1606,7 @@ function user_view_access($account) {
       if (!is_object($account)) {
         $account = user_load($uid);
       }
-      // return (is_object($account) && $account->status);
-      return (is_object($account));
+      return (is_object($account) && $account->status);
     }
   }
   return FALSE;

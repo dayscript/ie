@@ -1,6 +1,5 @@
 # Ignore configuration files that may contain sensitive information.
 sites/*/settings*.php
-ddbb_investiga2018.sql
 
 # Ignore paths that contain user-generated content.
 sites/*/files
