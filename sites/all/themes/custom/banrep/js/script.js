@@ -160,7 +160,7 @@ jQuery(document).ready(function(){
 
       if (jQuery('.section-espe').length) { 
 
-        // jQuery(".navbar__search_form" ).appendTo( ".region-content-bottom" );
+        jQuery(".navbar__search_form" ).appendTo( ".region-content-bottom" );
 
 
         jQuery(".header__navbar .banrep-search-form .form-item-source select").val(8);

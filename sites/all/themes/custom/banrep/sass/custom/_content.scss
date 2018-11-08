@@ -5365,6 +5365,11 @@ form {
       }
     }
 
+    .field-label-above {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
     .field-name-field-url{
       margin: 2em 0;
       font-size: 1.2em;
@@ -5376,6 +5381,45 @@ form {
         padding: 0 0 0 70px;
         text-decoration: none;
         color: color(rojo-claro);
+      }
+    }
+
+    .field-name-field-le-puede-interesar {
+      .field-label {
+        position: relative;
+        display: block;
+        font-size: 21px;
+        line-height: 24px;
+        font-weight: normal;
+        margin-top: 0px;
+        margin-bottom: 1rem;
+        padding-top: 12px;
+        padding-bottom: 5px;
+        color: #594f51;
+        &:after {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 120px;
+          height: 2px;
+          content: "";
+          background-color: #860024;
+        }
+      }
+      .field-items {
+        p {
+          font-size: 0.8rem;
+          line-height: 1.4em;
+          margin: 0;
+          a {
+            font-size: 0.9rem;
+            line-height: 1.4em;
+            font-weight: bold;
+            margin-top: 0.8em;
+            display: inline-block;
+            color: color(rojo-claro);
+          }
+        }
       }
     }
 
