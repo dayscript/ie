@@ -127,16 +127,19 @@ function searchESPE(number){
 	if(text_val != ''){
 		if(number == 1) {
 
-			if(jQuery('#guidedField_0').is(':checked')) { 
-				window.location.href = "http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=searchFilterSubjectalone&value="+text_val;
-			}
+			switch (jQuery('input[name=EspeSelector]:checked', '#sbESPE').val() ) {
 
-			if(jQuery('#guidedField_1').is(':checked')) { 
-				window.location.href = "http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=title&sort_by=1&order=ASC&rpp=40&starts_with="+text_val;
-			}
+				case "kw":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=searchFilterSubjectalone&value="+text_val, "_blank");
+					break;
 
-			if(jQuery('#guidedField_2').is(':checked')) { 
-				window.location.href = " http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=author&value="+text_val;
+				case "tt":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=title&sort_by=1&order=ASC&rpp=40&starts_with="+text_val, "_blank");
+					break;
+
+				case "at":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=author&value="+text_val, "_blank");
+					break;
 			}
 
 		}

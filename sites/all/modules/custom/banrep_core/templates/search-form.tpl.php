@@ -117,17 +117,17 @@
          </div>
 
          <div id="tabs-8" class="tabs-x" style="display:none;">
-            <form id="sbSS">
+            <form id="sbESPE">
                <div class="searchArea">
                  <input id="repoSearch" class="ebscohostsearchtext" name="ebscohostsearchtext" type="text" size="50" />
                  <button onclick="searchESPE(1); return false;" class="submit"><i class="icon-buscar"></i></button>
                   <div id="seminarFilters" class="inline-elements">
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_0" value="" checked="checked" />
-                     <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_1" value="TI" />
-                     <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_2" value="AU" />
-                     <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_0" value="kw" />
+                     <label class="label" for="espe_0"> <?php echo t('Keywords'); ?></label>
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_1" value="tt" />
+                     <label class="label" for="espe_1"> <?php echo t('Title'); ?></label>
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_2" value="at" />
+                     <label class="label" for="espe_2"> <?php echo t('Author'); ?></label>
                      <div class="error-wrapper"></div>
                   </div>
                </div>

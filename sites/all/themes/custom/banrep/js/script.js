@@ -141,6 +141,8 @@ jQuery(document).ready(function(){
   }
 
 
+
+
   jQuery('.navbar__search_link a').click(function(e) {
       if ( !jQuery('.front').length) {
         e.preventDefault();
@@ -151,16 +153,33 @@ jQuery(document).ready(function(){
 
     if (jQuery('.page-caie').length) { 
       jQuery(".header__navbar .banrep-search-form .form-item-source select").val(1);
-      jQuery("#tabs-8").hide();
-      jQuery("#tabs-1").show();
+      jQuery(".tabs-x").hide();
+      jQuery("#tabs-6").show();
 
     } else {
 
-      jQuery(".header__navbar .navbar__search_form").hide();
+      if (jQuery('.section-espe').length) { 
 
-      jQuery(".navbar__search_link").click(function() {
-        jQuery(".header__navbar .navbar__search_form").toggle("normal");
-      });
+        // jQuery(".navbar__search_form" ).appendTo( ".region-content-bottom" );
+
+
+        jQuery(".header__navbar .banrep-search-form .form-item-source select").val(8);
+
+        jQuery("#espe_0").prop("checked", true);
+
+        jQuery(".tabs-x").hide();
+        jQuery("#tabs-8").show();
+
+      } else {
+
+        jQuery(".header__navbar .navbar__search_form").hide();
+
+        jQuery(".navbar__search_link").click(function() {
+          jQuery(".header__navbar .navbar__search_form").toggle("normal");
+        });
+        
+      }
+
       
     }
 
