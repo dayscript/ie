@@ -10789,6 +10789,18 @@ form .form-textarea {
   }
 }
 
+.view-publicaciones-home .views-row .views-field-field-imagen .field-content img {
+  height: 232px !important;
+}
+
+.view-publicaciones-home .views-row .views-field-nothing {
+  height: 224px !important;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .views-field-nothing {
+  height: 252px !important;
+}
+
 .filtros-vista {
   padding: 20px 20px 10px;
   margin-bottom: 10px;

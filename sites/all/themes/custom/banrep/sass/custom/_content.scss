@@ -5530,11 +5530,22 @@ form {
   }
 
   .node-type-publication .group-left,
-  .node-type-publication .group-right {
+  .node-type-publication .group-right { 
     width: 100%;
   }
 
 
 
 
+}
+.view-publicaciones-home .views-row .views-field-field-imagen .field-content img{
+    height: 232px!important;
+}
+
+.view-publicaciones-home .views-row .views-field-nothing{
+  height: 224px!important;
+}
+
+.view-publicaciones-home .view-header .view-publicaciones-home .views-field-nothing{
+  height: 252px!important;  
 }

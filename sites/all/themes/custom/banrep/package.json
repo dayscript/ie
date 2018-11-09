@@ -36,7 +36,7 @@
   "scripts": {
     "postinstall": "find node_modules/ -name '*.info' -type f -delete",
     "test": "gulp",
-    "start":"gulp build"
+    "start": "gulp build"
   },
   "dependencies": {
     "gulp-install": "^0.6.0"
