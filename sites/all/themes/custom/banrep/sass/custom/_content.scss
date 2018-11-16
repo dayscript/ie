@@ -4882,7 +4882,7 @@ form {
 
         background-color: color(grey-light);
         overflow: hidden;
-        min-height: 232px;
+        height: 232px;
 
         .info-investigacion {
 
@@ -4962,7 +4962,7 @@ form {
 
         position: relative;
         background-color: color(azul-oscuro-brc);
-        min-height: 260px;
+        height: 270px;
 
       }
 
@@ -5538,14 +5538,7 @@ form {
 
 
 }
-.view-publicaciones-home .views-row .views-field-field-imagen .field-content img{
-    height: 232px!important;
-}
 
-.view-publicaciones-home .views-row .views-field-nothing{
-  height: 224px!important;
-}
-
-.view-publicaciones-home .view-header .view-publicaciones-home .views-field-nothing{
-  height: 252px!important;  
+.view-ESPE.view-display-id-block {
+  padding: 0 !important;
 }
