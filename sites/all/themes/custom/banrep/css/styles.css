@@ -10793,6 +10793,14 @@ form .form-textarea {
   padding: 0 !important;
 }
 
+.view-publicaciones-destacados-home.col-xs-12 {
+  padding: 0;
+}
+
+.view-publicaciones-destacados-home .col-xs-12 {
+  padding: 0;
+}
+
 .filtros-vista {
   padding: 20px 20px 10px;
   margin-bottom: 10px;
