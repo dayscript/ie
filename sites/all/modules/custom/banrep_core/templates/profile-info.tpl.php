@@ -167,7 +167,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
           <?php if(is_array($user_data['field_research_lines'])): ?>
             <?php
               $lineas = _banrep_obtener_lineas_codigo($user_data['field_research_lines']);
-              $lineas_tid = _banrep_obtener_lineas_tid($user_data['field_research_lines']);
+//              $lineas_tid = _banrep_obtener_lineas_tid($user_data['field_research_lines']);
             ?>
             <div class="lineas">
               <strong>
