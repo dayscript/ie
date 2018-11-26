@@ -10189,7 +10189,7 @@ form .form-textarea {
 .view-publicaciones-home .views-row .views-field-nothing {
   background-color: #d9d9d9;
   overflow: hidden;
-  height: 232px;
+  height: 240px;
 }
 
 .view-publicaciones-home .views-row .views-field-nothing .info-investigacion {
@@ -10792,6 +10792,10 @@ form .form-textarea {
 .view-id-publicaciones_destacados_home.view-display-id-block,
 .view-id-ESPE.view-display-id-block {
   padding: 0 !important;
+}
+
+.view-id-publicaciones_destacados_home.view-display-id-block .view-header .views-row {
+  padding: 0;
 }
 
 .filtros-vista {
