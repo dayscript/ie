@@ -10798,6 +10798,14 @@ form .form-textarea {
   padding: 0;
 }
 
+.view-id-ESPE.view-display-id-block .view-header .views-field-nothing {
+  height: 270px;
+}
+
+.view-id-ESPE.view-display-id-block .views-row .views-field-nothing {
+  height: 232px;
+}
+
 .filtros-vista {
   padding: 20px 20px 10px;
   margin-bottom: 10px;
