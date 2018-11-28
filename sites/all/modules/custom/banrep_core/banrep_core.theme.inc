@@ -59,12 +59,20 @@ function theme_banrep_user_top_zone($variables) {
                        <a href="/' . $language->language . '/profile/activities/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Activity') .' </a>
                     </li>
-                    <li>
+                    <!--<li>
                        <a href="/' . $language->language . '/profile/training/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Training') .' </a>
-                    </li>
+                    </li>-->
                     '. $item_redemption .'
                     ' . $aditional_options . '
+                    <li>
+                       <a href="http://wdeppc1d:8080/sgee-proyectos/">
+                       <i class="fa fa-plus" aria-hidden="true"></i> '. t('Project Management') .' </a>
+                    </li>
+                    <li>
+                       <a href="http://repositorio.banrep.gov.co/">
+                       <i class="fa fa-plus" aria-hidden="true"></i> '. t('Publish in Repository') .' </a>
+                    </li>
                     <li>
                        <a href="/' . $language->language . '/user/logout">
                        <i class="fa fa-sign-out" aria-hidden="true"></i> '. t('Log out') .' </a>
