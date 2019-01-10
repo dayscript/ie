@@ -1,25 +1,19 @@
 <div class="form-container">
     <div class="form-item form-type-select form-item-source">
     <select id="test" onchange="myScript()">
-      <option value="8"><?php echo t('Publications'); ?></option>
-      <?php
-      if ( !drupal_is_front_page() ) {
-      ?>
       <option value="1"><?php echo t('Global Search'); ?></option>
       <option value="3"><?php echo t('Databases'); ?></option>
       <option value="4"><?php echo t('Books and Journals'); ?></option>
-      <?php
-      }
-      ?>
       <option value="5"><?php echo t('Researchers'); ?></option>
-      
+      <option value="6"><?php echo t('CAIE'); ?></option>
       <option value="7"><?php echo t('Seminars'); ?></option>
+      <option value="8"><?php echo t('ESPE'); ?></option>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
   </div>
   <div class="form-item form-type-textfield form-item-keys">
 
-         <div id="tabs-1" class="tabs-x" style="display:none;">
+         <div id="tabs-1" class="tabs-x">
             <form id="ebscohostCustomSearchBox" action="" onsubmit="return ebscoHostSearchGo(this);" method="post">
                <input id="ebscohostwindow" name="ebscohostwindow" type="hidden" value="1" />
                <input id="ebscohosturl" name="ebscohosturl" type="hidden" value="http://search.ebscohost.com/login.aspx?direct=true&site=eds-live&scope=site&type=0&custid=s5094900&groupid=main&profid=eds&mode=bool&lang=es&authtype=cookie,ip" />
@@ -122,23 +116,21 @@
             </form>
          </div>
 
-         <div id="tabs-8" class="tabs-x">
-            <form id="sbSP">
-              <div>
-                <div class="searchArea">
+         <div id="tabs-8" class="tabs-x" style="display:none;">
+            <form id="sbESPE">
+               <div class="searchArea">
                  <input id="repoSearch" class="ebscohostsearchtext" name="ebscohostsearchtext" type="text" size="50" />
-                 <button onclick="searchPublications(1); return false;" class="submit"><i class="icon-buscar"></i></button>
-                  <div id="publicationFilters" class="inline-elements">
-
-                    <input class="radio" type="radio" name="publicationFilter" id="publicationField_0" value="1" checked="checked" />
-                    <label class="label" for="publicationField_0"> <?php echo t('Keywords'); ?></label>
-
-                    <input class="radio" type="radio" name="publicationFilter" id="publicationField_1" value="2" />
-                    <label class="label" for="publicationField_1"> <?php echo t('Title'); ?></label>
-                    <div class="error-wrapper"></div>
+                 <button onclick="searchESPE(1); return false;" class="submit"><i class="icon-buscar"></i></button>
+                  <div id="seminarFilters" class="inline-elements">
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_0" value="kw" />
+                     <label class="label" for="espe_0"> <?php echo t('Keywords'); ?></label>
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_1" value="tt" />
+                     <label class="label" for="espe_1"> <?php echo t('Title'); ?></label>
+                     <input class="radio" type="radio" name="EspeSelector" id="espe_2" value="at" />
+                     <label class="label" for="espe_2"> <?php echo t('Author'); ?></label>
+                     <div class="error-wrapper"></div>
                   </div>
                </div>
-              </div>
             </form>
          </div>
 

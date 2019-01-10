@@ -112,6 +112,21 @@
 					?>
 				</div>
 				<?php endif; ?>
+				<?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_otros_documentos', $user_data['uid']);
+					$result = count($view);
+					if ($result):
+				?>
+				<h3><?php echo t('Other Papers'); ?></h3>
+				<div>
+					<?php
+					print views_embed_view(
+						'publicaciones_perfil_usuario',
+						'perfil_pubs_otros_documentos',
+						$user_data['uid']
+					);
+					?>
+				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php if($show_estudios_realizados): ?>

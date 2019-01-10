@@ -97,7 +97,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       }
     }
 
-    $html .= '<td> <input type="checkbox" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
+    $html .= '<td> <input type="checkbox" class="condition" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
     $html .= '<td><textarea rows="3" cols="20" name="rq_tiempo_' . $key . '_observaciones"></textarea>' . $comments['html'] . '  </td>';
     $html .= '</tr>';
   }
@@ -108,7 +108,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
 
   $form['rq_publiacion'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Requisitos de publicación'),
+    '#title' => t('Requisitos de publicaciones y/o actividades'),
     '#tree' => TRUE,
   );
   $html = '<table class="requirements__publications">';
@@ -141,6 +141,9 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       $html .= "<tr>";
       $input_value = '';
 
+      /*if (in_array('Admin GT', $user->roles)) {
+        $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
+      }*/
       switch ($condition['type']) {
         case 'PUNTAJE':
         case 'CANTIDAD':
@@ -152,9 +155,13 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
           else {
             if (isset($condition['concept'])) {
               $concepts  = explode(',', $condition['concept']);
+              $is_activity = FALSE;
+              if (isset($concepts[0]) && $concepts[0] == 211) {
+                $is_activity = TRUE;
+              }
               $size      = count($concepts);
               $name      = _get_concept_publications($condition['concept']);
-              $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub']);
+              $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
             }
           }
 
@@ -233,16 +240,27 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       else {
         $operator = 'Y ';
       }
-      $name = _get_concept_publications($condition);
-      $info_user = 0;
 
-      $html .= '<td>' . $operator . $name . '</td>';
+      $name = _get_concept_publications($condition);
+      $files = _get_training_by_tid($uid->uid,$condition);
+      $info_user = FALSE;
+      $strFiles = "";
+      if (count($files) > 0 ) {
+        $info_user = TRUE;
+        $strFiles = "<br/><ul>";
+      	foreach($files as $arfile) {
+      	  $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+      	}
+      	$strFiles .= "</ul>";
+      }
+
+      $html .= '<td>' . $operator . $name . $strFiles . '</td>';
       $html .= '<td>1</td>';
       $html .= '<td>' . $info_user . '</td>';
 
       $calificacion = 'No cumple';
       $checked = '';
-      if ($info_user >= $condition['value']) {
+      if ($info_user) {
         $checked = "checked";
         $calificacion = 'Cumple';
       }
@@ -270,7 +288,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     '#markup' => $html,
   );
 
-  if (in_array('Admin GT', $user->roles)) {
+  /*if (in_array('Admin GT', $user->roles)) {
     $form['rq_administrativos'] = array(
       '#type' => 'fieldset',
       '#title' => t('Requisitos administrativos'),
@@ -315,19 +333,19 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     $form['rq_administrativos']['html'] = array(
       '#markup' => $html,
     );
-  }
+  }*/
 
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Actializar',
+    '#value' => t('Update'),
   );
+
+  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') . '/plan_carrera_validate.js');
+
   return $form;
 }
 
-/**
- * Submit formulario del detalle de ascenso.
- */
 function banrep_plan_carrera_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];
@@ -392,23 +410,20 @@ function banrep_plan_carrera_form_submit($form,&$form_state){
   }
 }
 
-/**
- * Salida de comentarios.
- */
-function _output_comments ($name_item, $nid_log){
-  $comments = _get_log_by_rule($name_item, $nid_log);
-  $output_comments = array('html' => '', 'aprobado' => '');
-  $cont = 0;
-  foreach ($comments as  $comment) {
-   $item = field_collection_item_load($comment->entity_id);
-   $usuario_comment = user_load($item->field_usuario_update['und'][0]['target_id']);
-   $output_comments['html'] .= '<div class="comment"><div class="text">' . $item->field_comentario['und'][0]['value'] . '</div></div>';
-   if ($cont == 0) {
-     $output_comments['aprobado'] = $item->field_estado_regla['und'][0]['value'];
-     $output_comments['valor'] = isset($item->field_valor['und'][0]['value']) ? $item->field_valor['und'][0]['value'] : '';
-     $cont++;
-   }
-  }
+function _output_comments ($name_item,$nid_log){
+          $comments = _get_log_by_rule($name_item,$nid_log);
+          $output_comments = array('html'=>'','aprobado'=>'');
+          $cont = 0;
+          foreach ($comments as  $comment) {
+               $item             = field_collection_item_load($comment->entity_id);
+               $usuario_comment  = user_load($item->field_usuario_update['und'][0]['target_id']);
+               $output_comments['html'] .= '<div class="comment"><div class="text">'. $item->field_comentario['und'][0]['value'] . '</div></div>';
+               if ($cont==0){
+                   $output_comments['aprobado'] = $item->field_estado_regla['und'][0]['value'];
+                   $output_comments['valor'] = isset($item->field_valor['und'][0]['value'])?$item->field_valor['und'][0]['value']:'';
+                   $cont++;
+               }
+          }
 
-  return $output_comments;
+          return $output_comments;
 }

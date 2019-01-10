@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Formularios web del módulo banrep core.
+ * Form module functionality for the banrep_core module.
  */
 
 /**
- * Formulario de agregar publicación.
+ *  Form builder; the publication form.
  */
 function publications_add_form($form, &$form_state) {
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publications_node_form.js', array('scope'=>'footer'));
@@ -116,13 +116,13 @@ function publications_add_form($form, &$form_state) {
       ];
     }
   }
-  dpm($form);
+  //dpm($form);
 
   return $form;
 }
 
 /**
- * Formulario paso 1 de agregar publicación.
+ * Render form elements for step #1
  */
 function _publications_add_form_step_1(&$form, &$form_state, &$publication = NULL) {
   // Add Custom Concept:
@@ -192,7 +192,7 @@ function _publications_add_form_step_1(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario paso 1 izquierda de agregar publicación.
+ * Render form elements for step #1 Left content
  */
 function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publication = NULL) {
   $form['query']['left_column']['title'] = [
@@ -221,7 +221,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#description' => t('DOI link'),
   ];
 
-  $options = range(2018, 1990);
+  $options = range(2019, 1990);
   $form['query']['left_column']['publication_year'] = [
     '#type' => 'select',
     '#title' => t('Publication year'),
@@ -334,6 +334,17 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#datepicker_options' => array('maxDate' => 0),
     '#type' => 'date_popup',
     '#default_value'=> get_input_value_from_publication($publication, 'start_date'),
+    // '#states' => array(
+    //   'required' => array(
+    //     array(
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK_CHAPTER)),
+    //     ),
+    //   ),
+    // ),
   ];
 
   $form['query']['left_column']['evidence']['file'] = array(
@@ -346,6 +357,17 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
       'file_validate_extensions' => array('pdf'),
       '_file_validate_unique_pub' => array(),
     ),
+    // '#states' => array(
+    //   'required' => array(
+    //     array(
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK_CHAPTER)),
+    //     ),
+    //   ),
+    // ),
   );
 
   // File jel form element starts
@@ -435,9 +457,6 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
 
 }
 
-/**
- * Validación campo file .
- */
 function _file_validate_unique_pub($file) {
   $errors = array();
   $filename = $file->filename;
@@ -448,7 +467,7 @@ function _file_validate_unique_pub($file) {
 }
 
 /**
- * Formulario paso 1 derecha de agregar publicación.
+ * Render form elements for step #1 Right content
  */
 function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publication = NULL) {
 
@@ -484,6 +503,8 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
   _get_fieldset_publication_book_chapter($form, $form_state, $publication);
   // Box Para Documento de trabajo
   _get_fieldset_publication_work_document($form, $form_state, $publication);
+  // Box Para Documento de trabajo
+  _get_fieldset_publication_other_document($form, $form_state, $publication);
   // Box Para Documento en conferencia
   _get_fieldset_publication_conference_document($form, $form_state, $publication);
 
@@ -524,11 +545,11 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
 }
 
 /**
- * Formulario paso 2 de agregar publicación.
+ * Render form elements for step #2
  */
 function _publications_add_form_step_2(&$form, &$form_state, &$publication = NULL) {
   $node = (object) drupal_json_decode($form_state['storage_publication']);
-  // dpm($node);
+  //// dpm($node);
   $header = [t('Information'), t('Value')];
   $rows = [];
 
@@ -766,7 +787,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario paso 3 de agregar publicación.
+ * Render form elements for step #3
  */
 function _publications_add_form_step_3(&$form, &$form_state, &$publication = NULL) {
   $node = (object) drupal_json_decode($form_state['storage_publication']);
@@ -792,9 +813,9 @@ function _publications_add_form_step_3(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Ajax callback función que definimos en todos nuestros botones (atrás,
- * adelante y enviar). devuelve el formulario completo cada vez que se
- * llama a la función. Esta permite nuestros múltiples pasos.
+ * #ajax callback function that we defined on all of our buttons (back, forward
+ * and submit). returns the entire form each time the function is called. This
+ * allows for our mulitple steps.
  */
 function _ajax_multistep_form_publications_submit_callback($form, &$form_state) {
   return $form;
@@ -810,25 +831,38 @@ function _ajax_multistep_form_publications_submit_callback($form, &$form_state) 
  */
 function _ajax_multistep_form_publications_back_submit($form, &$form_state) {
   $form_state['step']--;
+  // Because this is a multi-step form, we always need to rebuild the form
+  // on every step, even after submission. This allows our form to be completely
+  // Ajaxified without ever requiring a page load.
   $form_state['rebuild'] = TRUE;
 }
 
 /**
- * Submit formulario de agregar publicación
+ * Add publication form submit
  */
 function publications_add_form_submit($form, &$form_state) {
+  // First we determine which step we are on, and save the
+  // submitted values to $form_state['storage']. This will
+  // allow our submitted values to persist.
   $step = $form_state['step'];
+  // Check to see if the next/forward button was clicked
   if (isset($form_state['values']['buttons']['forward']) && $form_state['values']['op'] == $form_state['values']['buttons']['forward']) {
+    // Increase the step by one, to move on to the next step
     $form_state['step'] = $step + 1;
   }
-  elseif (isset($form_state['values']['buttons']['submit']) && $form_state['values']['op'] == $form_state['values']['buttons']['submit']) {
+  elseif (isset($form_state['values']['buttons']['submit']) && $form_state['values']['op'] == $form_state['values']['buttons']['submit']) { // Check to see if the final step has been submitted
+
+    // The form has been completed, so we want to return the user to step 1
+    // as well as clear any saved values.
     $form_state['step'] = 3;
   }
+  // $form_state['rebuild'] to TRUE, in able to ensure that our
+  // our form is rebuilt, allowing for the multi-step process
   $form_state['rebuild'] = TRUE;
 }
 
 /**
- * Validador formulario de agregar publicación
+ * Add publication form submit validate
  */
 function publications_add_form_validate($form, &$form_state) {
   // First we set up a switch for each of our three steps
@@ -847,7 +881,7 @@ function publications_add_form_validate($form, &$form_state) {
 }
 
 /**
- * Validador paso 1 formulario de agregar publicación
+ * Add publication form step 1 validations
  */
 function publications_add_form_validate_step_1($form, &$form_state, &$response) {
 
@@ -879,6 +913,9 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
   }
   // Fecha aceptación
   $start_date = isset($values['evidence']['approved_date']) ? $values['evidence']['approved_date'] : FALSE;
+  // if ($start_date == FALSE) {
+  //   form_set_error('query[evidence][approved_date]', t('Approved date is required'));
+  // }
   // Soporte pdf
   if($values['evidence']['file']){
     $file = file_load($values['evidence']['file']);
@@ -888,6 +925,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     file_usage_add($file, 'banrep_investigador', 'node', 4);
   }
   else {
+    // form_set_error('query[evidence][file]', t('PDF Evidence is required'));
   }
 
   // Volumen
@@ -991,6 +1029,16 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       $concept_name = get_node_title($concept_target_id);
       $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
       break;
+      case PUB_TYPE_OTHER_DOCUMENT:
+        $concept_target_id = (
+          isset($values['fieldset_publication_other_documents']["work_document"]) ?
+          $values['fieldset_publication_other_documents']["work_document"] :
+          FALSE
+        );
+        $concept_type = 15317;
+        $concept_name = get_node_title($concept_target_id);
+        $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
+        break;
     case PUB_TYPE_CONFERENCE_DOCUMENT:
       $concept_type = (
         isset($values['fieldset_publication_conference_documents']['concept_type']) ?
@@ -1239,10 +1287,10 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
 }
 
 /**
- * Validador paso 2 formulario de agregar publicación.
+ * Add publication form step 2 validations
  */
 function publications_add_form_validate_step_2($form, &$form_state, &$response) {
-  dpm($form_state);
+  //dpm($form_state);
   $is_back = FALSE;
   if (isset($form_state['values']['buttons']['back']) && $form_state['values']['op'] == $form_state['values']['buttons']['back']) {
     $is_back = TRUE;
@@ -1252,13 +1300,13 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
-      dpm($node);
-      dpm($node->main_author_reference);
+      //dpm($node);
+      //dpm($node->main_author_reference);
       // Save Publication
       //
       $main_author_ref = isset($node->main_author_reference) ? $node->main_author_reference : [];
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
-      dpm($main_author_ref);
+      //dpm($main_author_ref);
       unset($node->co_authors);
       unset($node->alternate_language);
       unset($node->jels);
@@ -1273,10 +1321,10 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       }
       node_save($node);
       if (isset($node->nid)) {
-        dpm($main_author_ref);
+        //dpm($main_author_ref);
 
         $co_authors = array_merge($main_author_ref, $co_authors);
-        dpm($co_authors);
+        //dpm($co_authors);
         _publication_create_co_authors_banco($node->nid, $co_authors);
       }
       $form_state['storage_publication'] = drupal_json_encode($node);
@@ -1289,7 +1337,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
 }
 
 /**
- * Obtener fieldset tags.
+ * Get fieldset tags
  */
 function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
 
@@ -1329,6 +1377,9 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
     '#type' => 'submit',
     '#value' => t('Add tag'),
     '#submit' => ['tags_add_more_callback'],
+    // Setting #limit_validation_errors to an empty array
+    // ensures that the form fields are not validated when
+    // the back button is used. Otherwise, we will get errors
     '#limit_validation_errors' => [],
     '#ajax' => [
       'callback' => 'tags_callback',
@@ -1342,6 +1393,9 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
       '#type' => 'submit',
       '#value' => t('Eliminar Etiqueta'),
       '#submit' => ['tags_remove_one_callback'],
+      // Setting #limit_validation_errors to an empty array
+      // ensures that the form fields are not validated when
+      // the back button is used. Otherwise, we will get errors
       '#limit_validation_errors' => [],
       '#ajax' => [
         'callback' => 'tags_callback',
@@ -1352,7 +1406,7 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
 }
 
 /**
- * Obtener fieldset publicación artículo.
+ * Get fieldset Publicaciones tipo Articulo
  */
 function _get_fieldset_publication_article(&$form, &$form_state, &$publication = NULL) {
   // Field article form element starts
@@ -1378,6 +1432,7 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
     '#prefix' => '',
     '#suffix' => '',
   ];
+  //$concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
   $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id']);
   $_articles_type_options = get_articles_type_options();
   $form['query']['right_column']['fieldset_publication_articulos']['concept_type'] = [
@@ -1470,7 +1525,7 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
 }
 
 /**
- * Obtener fieldset Publicaciones tipo Libro.
+ * Get fieldset Publicaciones tipo Libro
  */
 function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NULL) {
   // Field book form element starts
@@ -1530,13 +1585,22 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
   $form['query']['right_column']['fieldset_publication_books']['close_book'] = [
     '#markup' =>
       $help .
+      // '<a' .
+      // ' href="javascript:void(0);"' .
+      // ' data-remodal-target="modal-concept"' .
+      // ' class="add-dialog references-dialog-activate"' .
+      // '>' .
+      //   ' + ' .
+      //   t('Añadir una Libro') .
+      //   '.' .
+      // '</a>' .
       ''
     ,
   ];
 }
 
 /**
- * Obtener fieldset Publicaciones tipo Compilador de libro.
+ * Get fieldset Publicaciones tipo Compilador de libro
  */
 function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publication = NULL) {
   // Field book_chapter form element starts
@@ -1651,7 +1715,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
 }
 
 /**
- * Obtener fieldset Publicaciones tipo Documento de trabajo.
+ * Get fieldset Publicaciones tipo Documento de trabajo
  */
 function _get_fieldset_publication_work_document(&$form, &$form_state, &$publication = NULL) {
   // Field work_document form element starts
@@ -1723,9 +1787,82 @@ function _get_fieldset_publication_work_document(&$form, &$form_state, &$publica
     ,
   ];
 }
+/**
+ * Get fieldset Publicaciones tipo Documento de trabajo
+ */
+function _get_fieldset_publication_other_document(&$form, &$form_state, &$publication = NULL) {
+  // Field work_document form element starts
+  $form['query']['right_column']['fieldset_publication_other_documents'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Tipo de acumulado'),
+    '#prefix' =>
+      '<div' .
+      ' id="fieldset-wrapper-other_document"' .
+      ' class="fieldset-wrapper-fieldset-publication-work_documents margin-fieldset"' .
+      '>'
+    ,
+    '#suffix' => '</div>',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#states' => [
+      'visible' => [
+        'select[name="query[right_column][pub_type]"]' => [
+          'value' => PUB_TYPE_OTHER_DOCUMENT
+        ],
+      ],
+    ],
+  ];
+  $form['query']['right_column']['fieldset_publication_other_documents']['work_document'] = [
+    '#type' => 'select',
+    '#title' => t(''),
+    '#default_value' => get_input_value_from_publication($publication, 'concept_target_id'),
+    '#description' => t(''),
+    '#options' => get_other_document_type_options(),
+    '#prefix' =>
+      '<div class="work_document-wrapper">' .
+        '<ul class="list-inline">' .
+          '<li class="item-title">' .
+            '<label for="edit-work_document_type">' .
+              t('Name of the series of other papers') .
+              ' ' .
+              '<span class="form-required" title="Este campo es obligatorio.">' .
+                '*' .
+              '</span>' .
+            '</label>' .
+          '</li>' .
+          '<li id="work_document_name">'
+    ,
+    '#suffix' =>
+          '</li>' .
+        '</ul>' .
+      '</div>'
+    ,
+    '#attributes' => [
+      'class' => [ 'query-work-document-name' ],
+    ],
+  ];
+  $help = '';
+  if (!empty($last_key)) {
+    $form['query']['right_column']['fieldset_publication_other_documents']['work_document']['#suffix'] =
+      $help
+    ;
+  }
+  $form['query']['right_column']['fieldset_publication_other_documents']['close_work_document'] = [
+    '#markup' =>
+      '<a' .
+      ' href="javascript:void(0);"' .
+      ' data-remodal-target="modal-concept"' .
+      ' class="add-dialog references-dialog-activate"' .
+      '>' .
+        ' + ' .
+        t('Add work documents series') .
+      '</a>'
+    ,
+  ];
+}
 
 /**
- * Obtener fieldset Publicaciones tipo Documento en conferencia.
+ * Get fieldset Publicaciones tipo Documento en conferencia
  */
 function _get_fieldset_publication_conference_document(&$form, &$form_state, &$publication = NULL) {
 
@@ -1795,8 +1932,8 @@ function _get_fieldset_publication_conference_document(&$form, &$form_state, &$p
 
 
 /**
- * Obtener fieldset otros coauthores.
- */
+* Otros Autores
+*/
 function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NULL){
   if (empty($form_state['num_co_author'])) {
     $form_state['num_co_author'] = 1;
@@ -1815,6 +1952,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
           ['value' => PUB_TYPE_ARTICLE],
           ['value' => PUB_TYPE_BOOK],
           ['value' => PUB_TYPE_WORK_DOCUMENT],
+          ['value' => PUB_TYPE_OTHER_DOCUMENT],
           ['value' => PUB_TYPE_CONFERENCE_DOCUMENT],
           ['value' => PUB_TYPE_BOOK_CHAPTER],
         ],
@@ -1889,8 +2027,8 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario agregar concepto.
- */
+* Add concept form
+*/
 function custom_concept_add_form($form, &$form_state) {
 
     $form['#attributes']['class'] = 'custom_concept_add_form';
@@ -2011,8 +2149,8 @@ function custom_concept_add_form($form, &$form_state) {
 }
 
 /**
- * Submit Formulario agregar concepto.
- */
+* Implements form ajax submit.
+*/
 function custom_concept_add_form_ajax_submit($form, &$form_state){
     global $user;
     // Get the form values

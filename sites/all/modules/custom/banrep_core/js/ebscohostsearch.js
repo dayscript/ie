@@ -104,45 +104,6 @@ function searchSeminars(number){
 	}
 }
 
-function searchPublications(number){
-
-	var text_val 	= jQuery('#tabs-8 .searchArea #repoSearch').val();
-	var filter 		= document.getElementsByName('publicationFilter');
-
-	if(text_val != '') {
-		if(number == 1) {
-			for (var i = 0, length = filter.length; i < length; i++)
-			{
-				if (filter[i].checked) {
-
-					switch( filter[i].value ) {
-						case "1" :
-									window.location.href = "/publicaciones/lista?keywords="+text_val;
-									break;
-
-						case "2" :
-									window.location.href = "/publicaciones/lista?titulo="+text_val;
-									break;
-
-						case "3" :
-									window.location.href = "/publicaciones/lista?autor="+text_val;
-									break;
-					}
-
-				
-				}
-			}
-		}
-		else {
-			window.location.href = "/publicaciones/lista?titulo="+text_val;
-		}
-	}else{
-		return false;
-	}
-
-
-}
-
 function searchDatabases(){
 	var text_val = jQuery('#tabs-3 .searchArea #repoSearch').val();
 	if(text_val != ''){
@@ -161,5 +122,28 @@ function searchResearchers(){
 	}
 }
 
+function searchESPE(number){
+	var text_val = jQuery('#tabs-8 .searchArea #repoSearch').val();
+	if(text_val != ''){
+		if(number == 1) {
 
+			switch (jQuery('input[name=EspeSelector]:checked', '#sbESPE').val() ) {
 
+				case "kw":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=searchFilterSubjectalone&value="+text_val, "_blank");
+					break;
+
+				case "tt":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=title&sort_by=1&order=ASC&rpp=40&starts_with="+text_val, "_blank");
+					break;
+
+				case "at":
+					window.open("http://repositorio.banrep.gov.co/handle/20.500.12134/9430/browse?type=author&value="+text_val, "_blank");
+					break;
+			}
+
+		}
+	}else{
+		return false;
+	}
+}

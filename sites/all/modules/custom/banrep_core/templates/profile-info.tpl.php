@@ -4,7 +4,7 @@ $show_the_field_dependency = __maybe_show_the_field('field_dependency', $user_da
 $show_the_field_email_corporate = __maybe_show_the_field('field_email_corporate', $user_data['uid']);
 $show_the_field_email_personal = __maybe_show_the_field('field_email_personal', $user_data['uid']);
 $show_the_field_research_lines = __maybe_show_the_field('field_research_lines', $user_data['uid']);
-$show_contact_button = 0;
+$show_contact_button = 1;
 
 $show_the_field_academics_profiles = __maybe_show_the_field('field_academics_profiles', $user_data['uid']);
 $show_the_field_social_networks = __maybe_show_the_field('field_social_networks', $user_data['uid']);

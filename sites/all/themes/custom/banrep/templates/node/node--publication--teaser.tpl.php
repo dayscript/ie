@@ -124,16 +124,18 @@ if ($node->field_main_author_reference['und']) {
     $co_authors[$main_author['tid']]['name_format'] = banrep_investigador_authors_to_apa($full_name);
   }
 }
-if ($node->field_other_co_authors['und'] && $tid_role_edition) {
-  foreach ($node->field_other_co_authors['und'] as $key_other => $co_author) {
-    $full_name = array(
-      array(
-        'names' => _banrep_core_obtener_nombres_autor($co_author['tid']),
-        'surnames' => _banrep_core_obtener_apellidos_autor($co_author['tid']),
-      )
-    );
-    $co_authors[$co_author['tid']]['full_name'] = $full_name;
-    $co_authors[$co_author['tid']]['name_format'] = banrep_investigador_authors_with_role_editor_to_apa($full_name, $tid_role_edition);
+if ( isset($node->field_other_co_authors['und']) ) {
+  if ($node->field_other_co_authors['und'] && $tid_role_edition) {
+    foreach ($node->field_other_co_authors['und'] as $key_other => $co_author) {
+      $full_name = array(
+        array(
+          'names' => _banrep_core_obtener_nombres_autor($co_author['tid']),
+          'surnames' => _banrep_core_obtener_apellidos_autor($co_author['tid']),
+        )
+      );
+      $co_authors[$co_author['tid']]['full_name'] = $full_name;
+      $co_authors[$co_author['tid']]['name_format'] = banrep_investigador_authors_with_role_editor_to_apa($full_name, $tid_role_edition);
+    }
   }
 }
 

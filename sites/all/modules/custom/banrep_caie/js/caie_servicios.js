@@ -1,5 +1,5 @@
 (function ($) {
-  Drupal.behaviors.caieModule = {
+  Drupal.behaviors.exampleModule = {
     attach: function (context, settings) {
       $('.back').click(function(e) {
           e.preventDefault();
