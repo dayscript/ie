@@ -248,6 +248,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
                     );
                   }
                   ksort($perfiles);
+                  dpm($perfiles);
                   $ver_mas = NULL;
                   foreach ($perfiles as $key => $val) {
                     if ($key > 6) {

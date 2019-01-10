@@ -1059,7 +1059,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     if (!empty($name)) {
       // if (_is_registered_user_by_name($name)) {
         $target_uid = _get_co_author_uid_by_name($name);
-  
+
         if (count($target_uid) > 0) {
           if ($main_author) {
             $main_author_arr[] = [
