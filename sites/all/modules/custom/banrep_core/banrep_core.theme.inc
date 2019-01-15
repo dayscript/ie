@@ -59,10 +59,10 @@ function theme_banrep_user_top_zone($variables) {
                        <a href="/' . $language->language . '/profile/activities/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Activity') .' </a>
                     </li>
-                    <!--<li>
+                    <li>
                        <a href="/' . $language->language . '/profile/training/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Training') .' </a>
-                    </li>-->
+                    </li>
                     '. $item_redemption .'
                     ' . $aditional_options . '
                     <li>

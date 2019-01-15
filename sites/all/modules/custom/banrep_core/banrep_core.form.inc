@@ -209,7 +209,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'url'),
     '#size' => 60,
     '#maxlength' => 256,
-    '#description' => t('Source link'),
+    // '#description' => t('Source link'),
   ];
 
   $form['query']['left_column']['doi'] = [
@@ -218,7 +218,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'doi'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('DOI link'),
+    // '#description' => t('DOI link'),
   ];
 
   $options = range(2019, 1990);
@@ -238,7 +238,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'volumen'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Volumen'),
+    // '#description' => t('Volumen'),
     '#states' => array(
       'visible' => array(
         array(
@@ -254,7 +254,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'number'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Number'),
+    // '#description' => t('Number'),
     '#states' => array(
       'visible' => array(
         array(
@@ -272,7 +272,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'page'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Pages'),
+    // '#description' => t('Pages'),
     '#states' => array(
       'visible' => array(
         array(
@@ -290,7 +290,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'pub_city'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('City'),
+    // '#description' => t('City'),
     '#states' => array(
       'visible' => array(
         array(
@@ -306,7 +306,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'editorial'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Editorial'),
+    // '#description' => t('Editorial'),
     '#states' => array(
       'visible' => array(
         array(
