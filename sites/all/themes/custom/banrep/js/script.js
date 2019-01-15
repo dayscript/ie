@@ -188,6 +188,19 @@ jQuery(document).ready(function(){
   }
 
 
+  if (jQuery('.view-autor-investigacion').length) {
+
+    jQuery('.user-profile a').each(function( index ) {
+
+      if ( jQuery( this ).attr('href') == "/es/profile/253" ) {
+        jQuery( this ).removeAttr('href');
+      }
+
+    });
+
+  }
+
+
 
 
  });

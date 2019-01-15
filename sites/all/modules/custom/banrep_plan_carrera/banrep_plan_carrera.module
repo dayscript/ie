@@ -65,7 +65,7 @@ function banrep_plan_carrera_node_presave($node) {
   global $user;
   switch($node->type){
   	case 'pub_user':
-
+    
  		//Capturando el id del estado
     $estado = $node->field_estado_publicaci_n['und'][0]['workflow']['workflow_sid'];
     $estado_ant = $node->original->field_estado_publicaci_n['und'][0]['value'];
@@ -83,13 +83,13 @@ function banrep_plan_carrera_node_presave($node) {
 	    }
 			//Generando vector de comparacion,sacando las rutas y su puntaje por tipo de publicacion
 	  	foreach($arpuntajes as $puntaje) {
-	  		$id_ruta = $puntaje->field_ruta['und'][0]['target_id'];
+	  		$id_ruta = $puntaje->field_puntajes_ruta['und'][0]['target_id'];
 	  		$ruta_puntaje[$id_ruta] =  $puntaje->field_puntajes_puntaje['und'][0]['value'];
 	  	}
 			//Consultando la ruta del usuario.
 	  	$uid = $node->field_user_reference['und'][0]['target_id'];
 	  	$userPub = user_load($uid);
-      $ruta_usuario = $userPub->field_ruta['und'][0]['target_id'];
+      $ruta_usuario = $userPub->field_puntajes_ruta['und'][0]['target_id'];
 			//Guardando puntaje acumulado
       $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
       $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
@@ -107,6 +107,7 @@ function banrep_plan_carrera_node_presave($node) {
       $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
       //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
       $puntaje += $puntaje_actual;
+      
       $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
       user_save($userPub);
 
@@ -143,8 +144,8 @@ function banrep_plan_carrera_node_presave($node) {
       $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
       user_save($userPub);
     }
-
 	break;
+
     case 'activity':
     $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
     $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
@@ -322,7 +323,7 @@ function banrep_plan_carrera_user_presave(&$edit, $account, $category)
   $uid = $account->uid;
   $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
   $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
-  $ruta = $edit['field_ruta'][LANGUAGE_NONE][0]['target_id'];
+  $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
   $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
 
 

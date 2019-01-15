@@ -1,12 +1,9 @@
 <?php
-
 /**
  * @file
  * Defines banrep_core module functionality.
  */
-
 module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions');
-
 /**
  * Callback del menu que arma el html del detalle de ascenso.
  */
@@ -15,12 +12,10 @@ function banrep_plan_carrera_page($uid) {
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
     return 'No existe plan de carrera';
   }
-
   $route        = $usuario->field_ruta['und'][0]['target_id'];
   $scale        = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements($scale, $route);
   $form         = drupal_get_form('banrep_plan_carrera_form', $requirements, $usuario);
-
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
   if ($uid == $user->uid) {
@@ -34,12 +29,10 @@ function banrep_plan_carrera_page($uid) {
   drupal_add_library('system', 'ui.accordion');
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/profile.js');
   $content = theme('banrep_core_profile', array('user_data' => $user_data, 'profile_info_order' => $profile_info_order));
-
   $html = $content;
   $html .= drupal_render($form);
   return $html;
 }
-
 /**
  * Funcion que pinta el formulario del detalle de ascenso.
  */
@@ -51,18 +44,15 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     '#type' => 'hidden',
     '#value' => $requirements['nid'],
   );
-
   $form['uid'] = array(
     '#type' => 'hidden',
     '#value' => $uid->uid,
   );
-
   $form['rq_tiempo'] = array(
     '#type' => 'fieldset',
     '#title' => t('Requisitos de tiempo'),
     '#tree' => TRUE,
   );
-
   $tipo_tiempo = list_allowed_values(field_info_field('field_pcr_tipo_tiempo'));
   $html = '<table class="requirements__time">';
   $html .= '<tr>';
@@ -96,7 +86,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
         $checked = '';
       }
     }
-
     $html .= '<td> <input type="checkbox" class="condition" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
     $html .= '<td><textarea rows="3" cols="20" name="rq_tiempo_' . $key . '_observaciones"></textarea>' . $comments['html'] . '  </td>';
     $html .= '</tr>';
@@ -105,14 +94,12 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
   $form['rq_tiempo']['html'] = array(
     '#markup' => $html,
   );
-
   $form['rq_publiacion'] = array(
     '#type' => 'fieldset',
     '#title' => t('Requisitos de publicaciones y/o actividades'),
     '#tree' => TRUE,
   );
   $html = '<table class="requirements__publications">';
-
   foreach ($requirements['publications'] as $keyg => $group) {
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
@@ -140,7 +127,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       $comments = _output_comments($name_item, $nid_log);
       $html .= "<tr>";
       $input_value = '';
-
       /*if (in_array('Admin GT', $user->roles)) {
         $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
       }*/
@@ -164,17 +150,14 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
               $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
             }
           }
-
           if(empty($condition['serie']) && empty($condition['concept']) ){
               $name = 'PUBLICACIONES';
               $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
-
           $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>';
           $html .= '<td>' . $info_user . $input_value . '</td>';
           break;
-
       }
       $calificacion = 'No cumple';
       $checked = '';
@@ -182,7 +165,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
         $checked      = "checked";
         $calificacion = 'Cumple';
       }
-
       if (isset($comments['html']) && !empty($comments['html'])) {
         if ($comments['aprobado'] == 1) {
           $checked = 'checked';
@@ -202,7 +184,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
   $form['rq_publiacion']['html'] = array(
     '#markup' => $html,
   );
-
   $html = '<table class="requirements__publications">';
   $form['rq_formacion'] = array(
     '#type' => 'fieldset',
@@ -210,14 +191,11 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     '#tree' => TRUE,
   );
 
-  foreach ($requirements['training'] as $keyg => $group) {
-    if (isset($group['operator']) && !empty($group['operator'])) {
-      $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
-    }
-
     $html .= '<tr><td colspan="6">';
-    $html .= '<table class="requirements__publications">';
+$html .= '<table class="requirements__publications">';
     $html .= '<tr>';
+    $html .= '<th></th>';
+
     $html .= '<th>Nombre requisito</th>';
     $html .= '<th>Valor requisito</th>';
     $html .= '<th>Valor actual</th>';
@@ -225,83 +203,142 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     $html .= '<th>Aprobación</th>';
     $html .= '<th>Observaciones</th>';
     $html .= '</tr>';
-    $flag_first_condition = TRUE;
-    foreach ($group as $keyc => $condition) {
-      $html .= "<tr>";
+    $html .= '<tbody>';
+    foreach ($requirements['training'] as $keyg => $group) {
 
-      if ($keyc == 'operator') {
-        continue;
-      }
-
-      if ($flag_first_condition) {
-        $operator = '';
-        $flag_first_condition = FALSE;
-      }
-      else {
-        $operator = 'Y ';
-      }
-
-      $name = _get_concept_publications($condition);
-      $files = _get_training_by_tid($uid->uid,$condition);
-      $info_user = FALSE;
-      $strFiles = "";
-      if (count($files) > 0 ) {
-        $info_user = TRUE;
-        $strFiles = "<br/><ul>";
-      	foreach($files as $arfile) {
-      	  $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
-      	}
-      	$strFiles .= "</ul>";
-      }
-
-      $html .= '<td>' . $operator . $name . $strFiles . '</td>';
-      $html .= '<td>1</td>';
-      $html .= '<td>' . $info_user . '</td>';
-
-      $calificacion = 'No cumple';
-      $checked = '';
-      if ($info_user) {
-        $checked = "checked";
-        $calificacion = 'Cumple';
-      }
-      $html .= '<td>' . $calificacion . '</td>';
-      $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
-      $comments = _output_comments($name_item, $nid_log);
-      if (isset($comments['html']) && !empty($comments['html'])) {
-        if ($comments['aprobado'] == 1) {
-          $checked = 'checked';
+        $name = _get_concept_publications($group[0]);
+        $files = _get_training_by_tid($uid->uid,$group[0]);
+        $info_user = FALSE;
+        $strFiles = "";
+        $keyc = 0;
+        if (count($files) > 0 ) {
+            $info_user = TRUE;
+            $strFiles = "<br/><ul>";
+            foreach($files as $arfile) {
+            $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+            }
+            $strFiles .= "</ul>";
         }
-        else {
-          $checked = '';
+
+        $calificacion = 'No cumple';
+        $checked = '';
+        if ($info_user) {
+            $checked = "checked";
+            $calificacion = 'Cumple';
         }
-      }
-      $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
-      $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
-      $html .= "</tr>";
+
+        $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
+        $comments = _output_comments($name_item, $nid_log);
+        if (isset($comments['html']) && !empty($comments['html'])) {
+            if ($comments['aprobado'] == 1) {
+            $checked = 'checked';
+            }
+            else {
+            $checked = '';
+            }
+        }
+
+    $html .= '<tr>';
+        $html .= '<td>'. $group['operator'] .'</td>';
+        $html .= '<td>'. $name . $strFiles.'</td>';
+        $html .= '<td>1</td>';
+        $html .= '<td>'.$info_user.'</td>';
+        $html .= '<td>'. $calificacion .'</td>';
+        
+        $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+    $html .= '</tr>';
+
     }
-    $html .= '</table></td></tr>';
-  }
+    $html .= '</tbody>';
 
+    
   $html .= '</table>';
 
+//   foreach ($requirements['training'] as $keyg => $group) {
+//     if (isset($group['operator']) && !empty($group['operator'])) {
+//       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
+//     }
+//     $html .= '<tr><td colspan="6">';
+//     $html .= '<table class="requirements__publications">';
+//     $html .= '<tr>';
+//     $html .= '<th>Nombre requisito</th>';
+//     $html .= '<th>Valor requisito</th>';
+//     $html .= '<th>Valor actual</th>';
+//     $html .= '<th>Calificación</th>';
+//     $html .= '<th>Aprobación</th>';
+//     $html .= '<th>Observaciones</th>';
+//     $html .= '</tr>';
+//     $flag_first_condition = TRUE;
+//     foreach ($group as $keyc => $condition) {
+//       $html .= "<tr>";
+//       if ($keyc == 'operator') {
+//         continue;
+//       }
+//       if ($flag_first_condition) {
+//         $operator = '';
+//         $flag_first_condition = FALSE;
+//       }
+//       else {
+//         $operator = 'Y ';
+//       }
+//       $name = _get_concept_publications($condition);
+//       $files = _get_training_by_tid($uid->uid,$condition);
+//       $info_user = FALSE;
+//       $strFiles = "";
+//       if (count($files) > 0 ) {
+//         $info_user = TRUE;
+//         $strFiles = "<br/><ul>";
+//       	foreach($files as $arfile) {
+//       	  $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+//       	}
+//       	$strFiles .= "</ul>";
+//       }
+//       $html .= '<td>' . $operator . $name . $strFiles . '</td>';
+//       $html .= '<td>1</td>';
+//       $html .= '<td>' . $info_user . '</td>';
+
+//       $calificacion = 'No cumple';
+//       $checked = '';
+//       if ($info_user) {
+//         $checked = "checked";
+//         $calificacion = 'Cumple';
+//       }
+
+//       $html .= '<td>' . $calificacion . '</td>';
+
+//       $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
+//       $comments = _output_comments($name_item, $nid_log);
+//       if (isset($comments['html']) && !empty($comments['html'])) {
+//         if ($comments['aprobado'] == 1) {
+//           $checked = 'checked';
+//         }
+//         else {
+//           $checked = '';
+//         }
+//       }
+//       $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+//       $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+//       $html .= "</tr>";
+//     }
+//     $html .= '</table></td></tr>';
+//   }
+  $html .= '</table>';
   $form['rq_formacion']['html'] = array(
     '#markup' => $html,
   );
-
   /*if (in_array('Admin GT', $user->roles)) {
     $form['rq_administrativos'] = array(
       '#type' => 'fieldset',
       '#title' => t('Requisitos administrativos'),
       '#tree' => TRUE,
     );
-
     $html = '<table class="requirements__administrative">';
     $html .= '<tr>';
     $html .= '<th>Nombre requisito</th>';
     $html .= '<th>Aprobación</th>';
     $html .= '<th>Observaciones</th>';
     $html .= '</tr>';
-
     $requirements__administrative = array(
       1 => 'Requerimientos en términos de conocimiento',
       2 => 'Requerimientos de experiencia',
@@ -309,7 +346,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       4 => 'Nivel de funciones y complejidad del cargo',
       5 => 'Indicadores de desempeño:  resultados y competencias para cada nivel',
     );
-
     foreach ($requirements__administrative as $key => $value) {
       $name_item = 'rq_administrative_' . $key;
       $comments = _output_comments($name_item, $nid_log);
@@ -329,23 +365,17 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       $html .= '</tr>';
     }
     $html .= '</table>';
-
     $form['rq_administrativos']['html'] = array(
       '#markup' => $html,
     );
   }*/
-
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
   );
-
   drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') . '/plan_carrera_validate.js');
-
   return $form;
 }
-
 function banrep_plan_carrera_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];
@@ -359,7 +389,6 @@ function banrep_plan_carrera_form_submit($form,&$form_state){
                    $item = entity_create('field_collection_item', array('field_name' => 'field_reglas'));
                    $item->setHostEntity('node', $log);
                    $key_aprobado = str_replace("observaciones", 'aprobado', $key);
-
                    $item->field_id['und'][0]['value']                 = str_replace("_observaciones", '', $key);
                    if (isset($values[$key_aprobado])){
                       $item->field_estado_regla['und'][0]['value'] = 1;
@@ -382,21 +411,16 @@ function banrep_plan_carrera_form_submit($form,&$form_state){
                    if (!isset($values[$key_aprobado])){
                       $flag_aprobado = FALSE;
                    }
-
               }
           }
       }
-
-
       if ($flag_aprobado){
           if (in_array('Admin GT', $user->roles)){
               $usuario = user_load($values['uid']);
               $usuario->field_estado_plan_carrera['und'][0]['value'] = 'APROBADO_PARA_CAMBIO_DE_CARGO';
               user_save($usuario);
-
               $log->field_fullfilled_requirements['und'][0]['value'] = 1;
               node_save($log);
-
               $to = $usuario->mail;
               $params = array();
               if (drupal_mail('banrep_plan_carrera', 'plan_carrera', $to, language_default(), $params)){
@@ -409,7 +433,6 @@ function banrep_plan_carrera_form_submit($form,&$form_state){
       }
   }
 }
-
 function _output_comments ($name_item,$nid_log){
           $comments = _get_log_by_rule($name_item,$nid_log);
           $output_comments = array('html'=>'','aprobado'=>'');
@@ -424,6 +447,5 @@ function _output_comments ($name_item,$nid_log){
                    $cont++;
                }
           }
-
           return $output_comments;
 }
