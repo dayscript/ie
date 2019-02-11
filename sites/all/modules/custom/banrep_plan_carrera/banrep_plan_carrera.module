@@ -64,205 +64,206 @@ function banrep_plan_carrera_mail($key, &$message, $params) {
 function banrep_plan_carrera_node_presave($node) {
   global $user;
   switch($node->type){
-  	case 'pub_user':
-    
- 		//Capturando el id del estado
-    $estado = $node->field_estado_publicaci_n['und'][0]['workflow']['workflow_sid'];
-    $estado_ant = $node->original->field_estado_publicaci_n['und'][0]['value'];
-		if ($estado_ant != 3 &&  $estado == 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-      //Sacando el puntaje actual
-      $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-      //Sacando información de la publicación (Tipo de publicación)
-      $pub_id  = $node->field_publicacion['und'][0]['target_id'];
-      $nodePub = node_load($pub_id);
-			$tip_pub = end($nodePub->field_concept_type['und']);
-			//Consultando los puntajes del tipo de publicación.
-	    $termTax = taxonomy_term_load($tip_pub['tid']);
-	    foreach($termTax->field_puntajes['und'] as $idpuntaje) {
-	     	$arpuntajes[] = field_collection_item_load($idpuntaje['value']);
-	    }
-			//Generando vector de comparacion,sacando las rutas y su puntaje por tipo de publicacion
-	  	foreach($arpuntajes as $puntaje) {
-	  		$id_ruta = $puntaje->field_puntajes_ruta['und'][0]['target_id'];
-	  		$ruta_puntaje[$id_ruta] =  $puntaje->field_puntajes_puntaje['und'][0]['value'];
-	  	}
-			//Consultando la ruta del usuario.
-	  	$uid = $node->field_user_reference['und'][0]['target_id'];
-	  	$userPub = user_load($uid);
-      $ruta_usuario = $userPub->field_puntajes_ruta['und'][0]['target_id'];
-			//Guardando puntaje acumulado
-      $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
-      $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
-      if (in_array('Admin GT', $user->roles)) {
-        $puntaje_actual = $puntaje_digitado;
-      } 
-      else {
-        $puntaje_actual = $ruta_puntaje[$ruta_usuario];
-      }
-
-      if (empty($puntaje_actual)) {
-        $puntaje_actual = $ruta_puntaje[$ruta_usuario]; 
-      } 
-
-      $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
-      //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
-      $puntaje += $puntaje_actual;
-      
-      $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-      user_save($userPub);
-
-			//Guardando puntaje especifico
-	  	$node->field_puntaje['und'][0]['value'] = $puntaje_actual;
-
-      //Historico
-      if(in_array('Admin GT', $user->roles))
-      {
-        $usuario_log = user_load($user->uid);
-        $nombre = "";
-        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-          $nombre = $usuario_log->field_full_name['und'][0]['value'];
-        }   
-        if (!empty($usuario_log->name)) {
-          $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+    case 'pub_user':
+       //Capturando el id del estado
+      $estado = $node->field_estado_publicaci_n['und'][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_estado_publicaci_n['und'][0]['value'];
+      if ($estado_ant != 3 &&  $estado == 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+        //Sacando el puntaje actual
+        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
+        //Sacando información de la publicación (Tipo de publicación)
+        $pub_id  = $node->field_publicacion['und'][0]['target_id'];
+        $nodePub = node_load($pub_id);
+        $tip_pub = end($nodePub->field_concept_type['und']);
+        //Consultando los puntajes del tipo de publicación.
+        $termTax = taxonomy_term_load($tip_pub['tid']);
+        foreach($termTax->field_puntajes['und'] as $idpuntaje) {
+           $arpuntajes[] = field_collection_item_load($idpuntaje['value']);
         }
+        //Generando vector de comparacion,sacando las rutas y su puntaje por tipo de publicacion
+        foreach($arpuntajes as $puntaje) {
+          $id_ruta = $puntaje->field_puntajes_ruta['und'][0]['target_id'];
+          $ruta_puntaje[$id_ruta] =  $puntaje->field_puntajes_puntaje['und'][0]['value'];
+        }
+        //Consultando la ruta del usuario.
+        $uid = $node->field_user_reference['und'][0]['target_id'];
+        $userPub = user_load($uid);
+        $ruta_usuario = $userPub->field_puntajes_ruta['und'][0]['target_id'];
+        //Guardando puntaje acumulado
+        $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
+        $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
+        if (in_array('Admin GT', $user->roles)) {
+          $puntaje_actual = $puntaje_digitado;
+        } 
         else {
-          $nombre = $usuario_log->name['und'][0]['value']; 
+          $puntaje_actual = $ruta_puntaje[$ruta_usuario];
         }
 
-        $datelog = date('d/m/Y h:i:s');
-        $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-        $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
-        $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo . ' - '. $nombre );
-      }
-    }
+        if (empty($puntaje_actual)) {
+          $puntaje_actual = $ruta_puntaje[$ruta_usuario]; 
+        } 
 
-    if ($estado_ant == 3 &&  $estado != 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-      $uid = $node->field_user_reference['und'][0]['target_id'];
-      $userPub = user_load($uid);
-      $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
-      $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_digitado;
-      $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-      user_save($userPub);
-    }
-	break;
+        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
+        //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
+        $puntaje += $puntaje_actual;
+        
+        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        user_save($userPub);
+
+        //Guardando puntaje especifico
+        $node->field_puntaje['und'][0]['value'] = $puntaje_actual;
+
+        //Historico
+        if(in_array('Admin GT', $user->roles))
+        {
+          $usuario_log = user_load($user->uid);
+          $nombre = "";
+          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
+            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          }   
+          if (!empty($usuario_log->name)) {
+            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+          }
+          else {
+            $nombre = $usuario_log->name['und'][0]['value']; 
+          }
+
+          $datelog = date('d/m/Y h:i:s');
+          $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+          $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
+          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo . ' - '. $nombre );
+        }
+      }
+
+      if ($estado_ant == 3 && $estado != 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+        $uid = $node->field_user_reference['und'][0]['target_id'];
+        $userPub = user_load($uid);
+        $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_digitado;
+        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+        user_save($userPub);
+      }
+      break;
 
     case 'activity':
-    $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
-    $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
+      $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
 
-    if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-      $userPub = user_load($node->uid);
-      $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
-      $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-      //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
-      $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
-      $puntaje += $puntaje_actual;
-      $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-      user_save($userPub);
+      if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+        $userPub = user_load($node->uid);
+        $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
+        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
+        //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
+        $puntaje = $userPub->field_puntaje_br['und'][0]['value'] + $puntaje_actual;
+        $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] = $puntaje;
+        user_save($userPub);
 
-      if (in_array('Admin GT', $user->roles)) {
-        $nombre = "";
-        $usuario_log = user_load($user->uid);
-      if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-        $nombre = $usuario_log->field_full_name['und'][0]['value'];
-      }   
-      if (!empty($usuario_log->name)) {
-        $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+        if (in_array('Admin GT', $user->roles)) {
+          $nombre = "";
+          $usuario_log = user_load($user->uid);
+        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
+          $nombre = $usuario_log->field_full_name['und'][0]['value'];
+        }   
+        if (!empty($usuario_log->name)) {
+          $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+        }
+        else {
+          $nombre = $usuario_log->name['und'][0]['value']; 
+        }
+         $datelog = date('d/m/Y h:i:s');
+         $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+         $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
+         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+        }
       }
-      else {
-        $nombre = $usuario_log->name['und'][0]['value']; 
-      }
-       $datelog = date('d/m/Y h:i:s');
-       $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-       $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-       $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
-      }
-    }
-    if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-      $userPub = user_load($node->uid);
-      $puntaje_actual =  $node->field_puntaje['und'][0]['value'];
-      $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_actual;
-      $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-      user_save($userPub);
 
-      if (in_array('Admin GT', $user->roles)) {
-        $nombre = "";
-        $usuario_log = user_load($user->uid);
-      if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-        $nombre = $usuario_log->field_full_name['und'][0]['value'];
-      }   
-      if (!empty($usuario_log->name)) {
-        $nombre .= ' ' . $usuario_log->field_full_name['und'][0]['value'];
+      if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+        $userPub = user_load($node->uid);
+        $puntaje_actual =  $node->field_puntaje['und'][0]['value'];
+        $puntaje = $userPub->field_puntaje_br['und'][0]['value'] - $puntaje_actual;
+        $userPub->field_puntaje_br['und'][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+        user_save($userPub);
+
+        if (in_array('Admin GT', $user->roles)) {
+          $nombre = "";
+          $usuario_log = user_load($user->uid);
+        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
+          $nombre = $usuario_log->field_full_name['und'][0]['value'];
+        }   
+        if (!empty($usuario_log->name)) {
+          $nombre .= ' ' . $usuario_log->field_full_name['und'][0]['value'];
+        }
+        else {
+          $nombre = $usuario_log->field_full_name['und'][0]['value']; 
+        }
+         $datelog = date('d/m/Y h:i:s');
+         $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+         $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
+         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+        }
       }
-      else {
-        $nombre = $usuario_log->field_full_name['und'][0]['value']; 
-      }
-       $datelog = date('d/m/Y h:i:s');
-       $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-       $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-       $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
-      }
-    }
-  break;
+
+      break;
     case 'redemption':
-    $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
-    $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
-		if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+      $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
 
-	     $userPub = user_load($node->uid);
-       $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-       $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
-       $puntaje += $puntaje_actual;
-       $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-	  	 user_save($userPub);
+      if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
 
-       if(in_array('Admin GT', $user->roles))
-       {
-        $nombre = "";
-        $usuario_log = user_load($user->uid);
-        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-          $nombre = $usuario_log->field_full_name['und'][0]['value'];
-        }   
-        if (!empty($usuario_log->name)) {
-          $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
-        }
-        else {
-          $nombre = $usuario_log->name['und'][0]['value']; 
-        }
-         $datelog = date('d/m/Y h:i:s');
-         $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-         $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
-       }
-  		}
-    if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+        $userPub = user_load($node->uid);
+        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
+        $puntaje += $puntaje_actual;
+        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        user_save($userPub);
 
-       $userPub = user_load($node->uid);
-       $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-       $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_actual;
-       $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
-       user_save($userPub);
+        if(in_array('Admin GT', $user->roles)){
+          $nombre = "";
+          $usuario_log = user_load($user->uid);
+          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
+            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          }   
+          if (!empty($usuario_log->name)) {
+            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+          }
+          else {
+            $nombre = $usuario_log->name['und'][0]['value']; 
+          }
 
-       if(in_array('Admin GT', $user->roles))
-       {
-        $nombre = "";
-        $usuario_log = user_load($user->uid);
-        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-          $nombre = $usuario_log->field_full_name['und'][0]['value'];
-        }   
-        if (!empty($usuario_log->name)) {
-          $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+          $datelog = date('d/m/Y h:i:s');
+          $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+          $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
+          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
         }
-        else {
-          $nombre = $usuario_log->name['und'][0]['value']; 
-        }
-         $datelog = date('d/m/Y h:i:s');
-         $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-         $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
-       }
       }
-	break;
+      if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+
+        $userPub = user_load($node->uid);
+        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_actual;
+        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        user_save($userPub);
+
+        if(in_array('Admin GT', $user->roles)){
+          $nombre = "";
+          $usuario_log = user_load($user->uid);
+          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
+            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          }   
+          if (!empty($usuario_log->name)) {
+            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+          }
+          else {
+            $nombre = $usuario_log->name['und'][0]['value']; 
+          }
+
+          $datelog = date('d/m/Y h:i:s');
+          $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+          $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
+          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+        }
+      }
+      break;
   }
 }
 
@@ -319,125 +320,111 @@ function banrep_plan_carrera_form_alter(&$form, &$form_state, $form_id)
 
 function banrep_plan_carrera_user_presave(&$edit, $account, $category)
 {
-
   $uid = $account->uid;
   $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
   $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
   $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
   $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
-
+  $puntaje_br = $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'];
 
   //echo '<pre> Escalafon actual =>'; print_r(node_load(24025)); echo '</pre>';
   echo '<pre> Escalafon actual =>'; print_r($escalafon_actual); echo '</pre>';
   echo '<pre> Escalafon nuevo =>'; print_r($escalafon_nuevo); echo '</pre>';
   echo '<pre> Ruta =>'; print_r($ruta); echo '</pre>';
   echo '<pre> puntaje_acumulado =>'; print_r($puntaje_acumulado); echo '</pre>';
-
+  echo '<pre> puntaje_BR =>'; print_r($puntaje_br); echo '</pre>';
 
   //Trayendo el requisito
-  $requisitos = _banrep_plan_carrera_query_requirements( $escalafon_actual,  $escalafon_nuevo, $ruta );
+  $requisitos = _banrep_plan_carrera_query_requirements( $escalafon_actual, $escalafon_nuevo, $ruta );
   $requisitos_pub = $requisitos->field_requisitos_publicaciones[LANGUAGE_NONE];
   $reset_puntos = $requisitos->field_requisitos_resetear[LANGUAGE_NONE][0]['value'];
+  $reset_puntos_br = $requisitos->field_reiniciar_puntaje_br[LANGUAGE_NONE][0]['value'];
 
   //Recorriendo el grupo de requisitos de publicaciones
-  foreach($requisitos_pub as $rpubs)
-  {
-      $requisitoPub = field_collection_item_load($rpubs['value']);
-      //Comparando el operador de  grupo
-      $operadorGrupo =  $requisitoPub->field_operador[LANGUAGE_NONE][0]['value'];
-      if($operadorGrupo == 'Y' || empty($operadorGrupo))
-      {
-        //Si el operador de grupo es Si o vacio ingresa
-        //Recorriendo las condiciones del grupo campo por campo
-        foreach ( $requisitoPub->field_condicion[LANGUAGE_NONE] as $row_req )
-        {
-          $condition = field_collection_item_load($row_req['value']);
-          $tipo_requisito = $condition->field_tipo_requisito[LANGUAGE_NONE][0]['value'];
-          $concept_type = end($condition->field_concept_type[LANGUAGE_NONE]);
-          $cantidad_puntaje = $condition->field_cantidad_puntaje[LANGUAGE_NONE][0]['value'];
-          $operador = $condition->field_operador[LANGUAGE_NONE][0]['value'];
-          $serie = $condition->field_serie[LANGUAGE_NONE][0]['target_id'];
+  foreach($requisitos_pub as $rpubs){
+    $requisitoPub = field_collection_item_load($rpubs['value']);
+    //Comparando el operador de  grupo
+    $operadorGrupo =  $requisitoPub->field_operador[LANGUAGE_NONE][0]['value'];
+    if($operadorGrupo == 'Y' || empty($operadorGrupo)){
+      //Si el operador de grupo es Si o vacio ingresa
+      //Recorriendo las condiciones del grupo campo por campo
+      foreach ( $requisitoPub->field_condicion[LANGUAGE_NONE] as $row_req ){
+        $condition = field_collection_item_load($row_req['value']);
+        $tipo_requisito = $condition->field_tipo_requisito[LANGUAGE_NONE][0]['value'];
+        $concept_type = end($condition->field_concept_type[LANGUAGE_NONE]);
+        $cantidad_puntaje = $condition->field_cantidad_puntaje[LANGUAGE_NONE][0]['value'];
+        $operador = $condition->field_operador[LANGUAGE_NONE][0]['value'];
+        $serie = $condition->field_serie[LANGUAGE_NONE][0]['target_id'];
 
-          //echo '<pre> puntaje necesitado'; print_r($cantidad_puntaje); echo '</pre>';
+        //echo '<pre> puntaje necesitado'; print_r($cantidad_puntaje); echo '</pre>';
 
-          //Comprobando el operador del campo
-          //Si el operador es Y o vacio ingresa
-          if( $operador == 'Y' || empty($operador))
-          {
-            //Validando si el tipo de concepto esta vacio
-            if(!empty($concept_type))
-            {
-              //Recorriendo los tipos de pub
-              foreach($concept_type as $row_type)
-              {
-                //Sacando las publicaciones por usuario, concepto y serie si no es vacio
-                if(!empty($serie))
-                {
-                  $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, $serie );
-                } else {
-                  $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, '');
-                }
+        //Comprobando el operador del campo
+        //Si el operador es Y o vacio ingresa
+        if( $operador == 'Y' || empty($operador)){
+          //Validando si el tipo de concepto esta vacio
+          if(!empty($concept_type)){
+            //Recorriendo los tipos de pub
+            foreach($concept_type as $row_type){
+              //Sacando las publicaciones por usuario, concepto y serie si no es vacio
+              if(!empty($serie)){
+                $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, $serie );
+              } else {
+                $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, '');
+              }
 
-                //Si hay registros
-                if(!empty($pub_types))
-                {
-                   ///echo '<pre> Type =>'; print_r($row_type); echo '</pre>';
-                   //echo '<pre> Serie =>'; print_r($serie); echo '</pre>';
-                   //echo '<pre>'; print_r($pub_types); echo '</pre>';
-                   //echo '<pre>'; print_r($reset_puntos); echo '</pre>';
+              //Si hay registros
+              if(!empty($pub_types)){
+                 ///echo '<pre> Type =>'; print_r($row_type); echo '</pre>';
+                 //echo '<pre> Serie =>'; print_r($serie); echo '</pre>';
+                 //echo '<pre>'; print_r($pub_types); echo '</pre>';
+                 //echo '<pre>'; print_r($reset_puntos); echo '</pre>';
 
-                   if($reset_puntos)
-                   {
-                     //Si se resetean los puntos
-                     foreach($pub_types as $row_pusers)
-                     {
-                        //Tener en cuenta los que ya fueron utilizados
-                        if(empty($row_pusers->field_puntaje_usado_value))
-                        {
-                          $node_pubusr = node_load($row_pusers->nid);
-                          $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $node_pubusr->field_puntaje[LANGUAGE_NONE][0]['value'];
-                          node_save($node_pubusr);
-                        }
-                     }
-                     $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = 0;
-
-                   } else {
-                     //Si no se resetean
-                     $PE = 0; // Puntaje ejecutado
-                     $PN = $cantidad_puntaje; //Puntaje necesitado
-                     foreach($pub_types as $row_pusers)
-                     {
-                        $P = $row_pusers->field_puntaje_value;
-                        $PU = $row_pusers->field_puntaje_usado_value;
+                if($reset_puntos){
+                  //Si se resetean los puntos
+                  foreach($pub_types as $row_pusers){
+                    //Tener en cuenta los que ya fueron utilizados
+                    if(empty($row_pusers->field_puntaje_usado_value)){
                         $node_pubusr = node_load($row_pusers->nid);
+                        $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $node_pubusr->field_puntaje[LANGUAGE_NONE][0]['value'];
+                        node_save($node_pubusr);
+                      }
+                    }
+                  $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = 0;
 
-                        if( $PE  <  $PN )
-                        {
-                          if( $PU < $P )
-                          {
+                } else {
+                  //Si no se resetean
+                  $PE = 0; // Puntaje ejecutado
+                  $PN = $cantidad_puntaje; //Puntaje necesitado
+                  foreach($pub_types as $row_pusers){
+                    $P = $row_pusers->field_puntaje_value;
+                    $PU = $row_pusers->field_puntaje_usado_value;
+                    $node_pubusr = node_load($row_pusers->nid);
 
-                            $diferencia = (( $P - $PU ) + $PE ) - $PN;
-                            if($diferencia <= 0 )
-                            {
-                               $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P;
-                               $PE += $P;
-                            } else {
-                               $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P - $diferencia;
-                               $PE += $diferencia;
-                            }
-                            node_save($node_pubusr);
-                          }
+                    if( $PE  <  $PN ){
+                      if( $PU < $P ){
+
+                        $diferencia = (( $P - $PU ) + $PE ) - $PN;
+
+                        if($diferencia <= 0 ){
+                           $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P;
+                           $PE += $P;
+                        } else {
+                           $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P - $diferencia;
+                           $PE += $diferencia;
                         }
-                     }
-                     $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] - $PN;
-                   }
+                        node_save($node_pubusr);
+                      }
+                    }
+                  }
+                  $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] - $PN;
                 }
               }
             }
           }
-
         }
+
       }
+    }
   }
 }
 
@@ -458,6 +445,7 @@ function _banrep_plan_carrera_query_pub( $type, $uid, $ctype, $serie, $ncomplete
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', $type );
+
   if($type == 'publication'){
     $query->propertyCondition('uid', $uid);
     $query->fieldCondition('field_concept_type', 'tid', $ctype);
@@ -469,17 +457,14 @@ function _banrep_plan_carrera_query_pub( $type, $uid, $ctype, $serie, $ncomplete
   }
 
   $result = $query->execute();
-  if (!empty($result['node']))
-  {
+  if (!empty($result['node'])){
     $nids = array_keys($result['node']);
     if( $ncomplete ){
       return node_load_multiple($nids);
     } else {
       return $nids;
     }
-
   }
-
 }
 
 
@@ -492,8 +477,7 @@ function _banrep_plan_carrera_query_requirements( $escalafon_actual,  $escalafon
         ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_actual)
         ->fieldCondition('field_escalafon_final', 'tid', $escalafon_nuevo);
   $result = $query->execute();
-  if (!empty($result['node']))
-  {
+  if (!empty($result['node'])){
     $nid = key($result['node']);
     return node_load($nid);
   }
@@ -518,8 +502,7 @@ function _banrep_plan_carrera_query_pubxusr( $uid, $ctype, $serie )
   $query->condition('nfct.field_concept_type_tid', $ctype, '=');
   //$query->condition(db_or()->isNull('fpu.field_puntaje_usado_value')->condition('fpu.field_puntaje_usado_value', 'fpun.field_puntaje_value', '<'));
   $query->orderBy('n.created', 'ASC');
-  if(!empty($serie))
-  {
+  if(!empty($serie)){
       $query->condition('fc.field_concept_target_id', $serie, '=');
   }
   $result = $query->execute();
