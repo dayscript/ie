@@ -66,201 +66,207 @@ function banrep_plan_carrera_node_presave($node) {
   switch($node->type){
     case 'pub_user':
        //Capturando el id del estado
-      $estado = $node->field_estado_publicaci_n['und'][0]['workflow']['workflow_sid'];
-      $estado_ant = $node->original->field_estado_publicaci_n['und'][0]['value'];
+      $estado = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
       if ($estado_ant != 3 &&  $estado == 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         //Sacando el puntaje actual
-        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
+        $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
         //Sacando información de la publicación (Tipo de publicación)
-        $pub_id  = $node->field_publicacion['und'][0]['target_id'];
+        $pub_id  = $node->field_publicacion[LANGUAGE_NONE][0]['target_id'];
         $nodePub = node_load($pub_id);
-        $tip_pub = end($nodePub->field_concept_type['und']);
-        //Consultando los puntajes del tipo de publicación.
-        $termTax = taxonomy_term_load($tip_pub['tid']);
-        foreach($termTax->field_puntajes['und'] as $idpuntaje) {
-           $arpuntajes[] = field_collection_item_load($idpuntaje['value']);
+        $concept_id = $nodePub->field_concept[LANGUAGE_NONE][0]['target_id'];
+        $node_concept = node_load($concept_id);
+
+        //Consultando los puntajes por tipo de concepto en el nodo concepto.
+        $concept_types = $node_concept->field_concept_category[LANGUAGE_NONE];
+        $puntajes_concepts = array();
+
+        // Buscar los tipos de concepto que estan en el nodo concepto para verificar los puntos y asignarlos al usuario segun la ruta
+        $ids_puntajes = array();
+        foreach ($concept_types as $concept_type) {
+          $concept_type_id = $concept_type['tid'];
+          $term_concept = taxonomy_term_load($concept_type_id);
+
+          foreach($term_concept->field_puntajes[LANGUAGE_NONE] as $idpuntaje) {
+             $ids_puntajes[] = $idpuntaje['value'];
+          }
         }
-        //Generando vector de comparacion,sacando las rutas y su puntaje por tipo de publicacion
-        foreach($arpuntajes as $puntaje) {
-          $id_ruta = $puntaje->field_puntajes_ruta['und'][0]['target_id'];
-          $ruta_puntaje[$id_ruta] =  $puntaje->field_puntajes_puntaje['und'][0]['value'];
+
+        // Consultando los puntajes de las ruta segun los conceptos que puntuan
+        $fields_puntajes = field_collection_item_load_multiple($ids_puntajes);
+
+        //Generando arreglo de comparacion, sacando las rutas y su puntaje según los conceptos que puntuan
+        $rutas_puntajes = array();
+        foreach($fields_puntajes as $field_puntaje) {
+          $id_ruta = $field_puntaje->field_ruta[LANGUAGE_NONE][0]['target_id'];
+          $rutas_puntajes[$id_ruta] = $field_puntaje->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
         }
+        
         //Consultando la ruta del usuario.
-        $uid = $node->field_user_reference['und'][0]['target_id'];
+        $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
         $userPub = user_load($uid);
-        $ruta_usuario = $userPub->field_puntajes_ruta['und'][0]['target_id'];
+        $ruta_usuario = $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'];
         //Guardando puntaje acumulado
-        $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
-        $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
-        if (in_array('Admin GT', $user->roles)) {
-          $puntaje_actual = $puntaje_digitado;
-        } 
-        else {
-          $puntaje_actual = $ruta_puntaje[$ruta_usuario];
-        }
-
-        if (empty($puntaje_actual)) {
-          $puntaje_actual = $ruta_puntaje[$ruta_usuario]; 
-        } 
-
-        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
-        //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
+        $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje_actual = $rutas_puntajes[$ruta_usuario];
+        $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+        //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
         $puntaje += $puntaje_actual;
         
-        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
         user_save($userPub);
 
         //Guardando puntaje especifico
-        $node->field_puntaje['und'][0]['value'] = $puntaje_actual;
+        $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
 
         //Historico
         if(in_array('Admin GT', $user->roles))
         {
           $usuario_log = user_load($user->uid);
           $nombre = "";
-          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+            $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
           }   
           if (!empty($usuario_log->name)) {
-            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+            $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
           }
           else {
-            $nombre = $usuario_log->name['und'][0]['value']; 
+            $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
           }
 
           $datelog = date('d/m/Y h:i:s');
           $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
           $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
-          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo . ' - '. $nombre );
+          $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo . ' - '. $nombre );
         }
       }
 
       if ($estado_ant == 3 && $estado != 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-        $uid = $node->field_user_reference['und'][0]['target_id'];
+        $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
         $userPub = user_load($uid);
-        $puntaje_digitado = $node->field_puntaje['und'][0]['value'];
-        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_digitado;
-        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+        $puntaje_digitado = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_digitado;
+        $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
         user_save($userPub);
       }
       break;
 
     case 'activity':
-      $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
-      $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
+      $estado = $node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_act_wf_status[LANGUAGE_NONE][0]['value'];
 
       if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         $userPub = user_load($node->uid);
-        $puntaje_anterior =  $node->original->field_puntaje['und'][0]['value'];
-        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-        //$puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_anterior;
-        $puntaje = $userPub->field_puntaje_br['und'][0]['value'] + $puntaje_actual;
+        $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+        //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
+        $puntaje = $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] + $puntaje_actual;
         $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] = $puntaje;
         user_save($userPub);
 
         if (in_array('Admin GT', $user->roles)) {
           $nombre = "";
           $usuario_log = user_load($user->uid);
-        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-          $nombre = $usuario_log->field_full_name['und'][0]['value'];
+        if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+          $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
         }   
         if (!empty($usuario_log->name)) {
-          $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+          $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
         }
         else {
-          $nombre = $usuario_log->name['und'][0]['value']; 
+          $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
         }
          $datelog = date('d/m/Y h:i:s');
          $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
          $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+         $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
         }
       }
 
       if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         $userPub = user_load($node->uid);
-        $puntaje_actual =  $node->field_puntaje['und'][0]['value'];
-        $puntaje = $userPub->field_puntaje_br['und'][0]['value'] - $puntaje_actual;
-        $userPub->field_puntaje_br['und'][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+        $puntaje_actual =  $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje = $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] - $puntaje_actual;
+        $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
         user_save($userPub);
 
         if (in_array('Admin GT', $user->roles)) {
           $nombre = "";
           $usuario_log = user_load($user->uid);
-        if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-          $nombre = $usuario_log->field_full_name['und'][0]['value'];
+        if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+          $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
         }   
         if (!empty($usuario_log->name)) {
-          $nombre .= ' ' . $usuario_log->field_full_name['und'][0]['value'];
+          $nombre .= ' ' . $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
         }
         else {
-          $nombre = $usuario_log->field_full_name['und'][0]['value']; 
+          $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value']; 
         }
          $datelog = date('d/m/Y h:i:s');
          $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
          $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-         $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+         $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
         }
       }
 
       break;
     case 'redemption':
-      $estado = $node->field_act_wf_status['und'][0]['workflow']['workflow_sid'];
-      $estado_ant = $node->original->field_act_wf_status['und'][0]['value'];
+      $estado = $node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_act_wf_status[LANGUAGE_NONE][0]['value'];
 
       if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
 
         $userPub = user_load($node->uid);
-        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'];
+        $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
         $puntaje += $puntaje_actual;
-        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
         user_save($userPub);
 
         if(in_array('Admin GT', $user->roles)){
           $nombre = "";
           $usuario_log = user_load($user->uid);
-          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+            $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
           }   
           if (!empty($usuario_log->name)) {
-            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+            $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
           }
           else {
-            $nombre = $usuario_log->name['und'][0]['value']; 
+            $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
           }
 
           $datelog = date('d/m/Y h:i:s');
           $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
           $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+          $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
         }
       }
       if ($estado != 20 && $estado_ant == 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
 
         $userPub = user_load($node->uid);
-        $puntaje_actual = $node->field_puntaje['und'][0]['value'];
-        $puntaje = $userPub->field_puntaje_acumulado['und'][0]['value'] - $puntaje_actual;
-        $userPub->field_puntaje_acumulado['und'][0]['value'] = $puntaje;
+        $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+        $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_actual;
+        $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
         user_save($userPub);
 
         if(in_array('Admin GT', $user->roles)){
           $nombre = "";
           $usuario_log = user_load($user->uid);
-          if (isset($usuario_log->field_full_name['und'][0]['value']) && !empty($usuario_log->field_full_name['und'][0]['value'])) {
-            $nombre = $usuario_log->field_full_name['und'][0]['value'];
+          if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+            $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
           }   
           if (!empty($usuario_log->name)) {
-            $nombre .= ' - ' . $usuario_log->name['und'][0]['value'];
+            $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
           }
           else {
-            $nombre = $usuario_log->name['und'][0]['value']; 
+            $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
           }
 
           $datelog = date('d/m/Y h:i:s');
           $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
           $puntajenuevo = 'Puntaje Nuevo '.$puntaje_actual;
-          $node->field_log_puntaje['und'][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
+          $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo. ' - ' .$nombre );
         }
       }
       break;
