@@ -343,110 +343,106 @@ function banrep_plan_carrera_user_presave(&$edit, $account, $category)
   $uid = $account->uid;
   $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
   $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
-  $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
-  $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
-  $puntaje_br = $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'];
 
-  //echo '<pre> Escalafon actual =>'; print_r(node_load(24025)); echo '</pre>';
-  echo '<pre> Escalafon actual =>'; print_r($escalafon_actual); echo '</pre>';
-  echo '<pre> Escalafon nuevo =>'; print_r($escalafon_nuevo); echo '</pre>';
-  echo '<pre> Ruta =>'; print_r($ruta); echo '</pre>';
-  echo '<pre> puntaje_acumulado =>'; print_r($puntaje_acumulado); echo '</pre>';
-  echo '<pre> puntaje_BR =>'; print_r($puntaje_br); echo '</pre>';
+  if($escalafon_nuevo > $escalafon_actual){
 
-  //Trayendo el requisito
-  $requisitos = _banrep_plan_carrera_query_requirements( $escalafon_actual, $escalafon_nuevo, $ruta );
-  $requisitos_pub = $requisitos->field_requisitos_publicaciones[LANGUAGE_NONE];
-  $reset_puntos = $requisitos->field_requisitos_resetear[LANGUAGE_NONE][0]['value'];
-  $reset_puntos_br = $requisitos->field_reiniciar_puntaje_br[LANGUAGE_NONE][0]['value'];
+    $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
+    $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
+    $puntaje_br = $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'];
+    $edit['field_estado_plna_carrera'][LANGUAGE_NONE][0]['value'] = 'SIN_CUMPLIR_REQUISITOS';
+    
+    //Trayendo el requisito
+    $requisitos = _banrep_plan_carrera_query_requirements( $escalafon_actual, $escalafon_nuevo, $ruta );
+    $requisitos_pub = $requisitos->field_requisitos_publicaciones[LANGUAGE_NONE];
+    $reset_puntos = $requisitos->field_requisitos_resetear[LANGUAGE_NONE][0]['value'];
+    $reset_puntos_br = $requisitos->field_reiniciar_puntaje_br[LANGUAGE_NONE][0]['value'];
+    //Recorriendo el grupo de requisitos de publicaciones
+    foreach($requisitos_pub as $rpubs){
+      $requisitoPub = field_collection_item_load($rpubs['value']);
+      //Comparando el operador de  grupo
+      $operadorGrupo =  $requisitoPub->field_operador[LANGUAGE_NONE][0]['value'];
+      if($operadorGrupo == 'Y' || empty($operadorGrupo)){
+        //Si el operador de grupo es Si o vacio ingresa
+        //Recorriendo las condiciones del grupo campo por campo
+        foreach ( $requisitoPub->field_condicion[LANGUAGE_NONE] as $row_req ){
+          $condition = field_collection_item_load($row_req['value']);
+          $tipo_requisito = $condition->field_tipo_requisito[LANGUAGE_NONE][0]['value'];
+          $concept_type = end($condition->field_concept_type[LANGUAGE_NONE]);
+          $cantidad_puntaje = $condition->field_cantidad_puntaje[LANGUAGE_NONE][0]['value'];
+          $operador = $condition->field_operador[LANGUAGE_NONE][0]['value'];
+          $serie = $condition->field_serie[LANGUAGE_NONE][0]['target_id'];
 
-  if($escalafon_actual !== $escalafon_nuevo){
+          //echo '<pre> puntaje necesitado'; print_r($cantidad_puntaje); echo '</pre>';
 
-  }
-
-  //Recorriendo el grupo de requisitos de publicaciones
-  foreach($requisitos_pub as $rpubs){
-    $requisitoPub = field_collection_item_load($rpubs['value']);
-    //Comparando el operador de  grupo
-    $operadorGrupo =  $requisitoPub->field_operador[LANGUAGE_NONE][0]['value'];
-    if($operadorGrupo == 'Y' || empty($operadorGrupo)){
-      //Si el operador de grupo es Si o vacio ingresa
-      //Recorriendo las condiciones del grupo campo por campo
-      foreach ( $requisitoPub->field_condicion[LANGUAGE_NONE] as $row_req ){
-        $condition = field_collection_item_load($row_req['value']);
-        $tipo_requisito = $condition->field_tipo_requisito[LANGUAGE_NONE][0]['value'];
-        $concept_type = end($condition->field_concept_type[LANGUAGE_NONE]);
-        $cantidad_puntaje = $condition->field_cantidad_puntaje[LANGUAGE_NONE][0]['value'];
-        $operador = $condition->field_operador[LANGUAGE_NONE][0]['value'];
-        $serie = $condition->field_serie[LANGUAGE_NONE][0]['target_id'];
-
-        //echo '<pre> puntaje necesitado'; print_r($cantidad_puntaje); echo '</pre>';
-
-        //Comprobando el operador del campo
-        //Si el operador es Y o vacio ingresa
-        if( $operador == 'Y' || empty($operador)){
-          //Validando si el tipo de concepto esta vacio
-          if(!empty($concept_type)){
-            //Recorriendo los tipos de pub
-            foreach($concept_type as $row_type){
-              //Sacando las publicaciones por usuario, concepto y serie si no es vacio
-              if(!empty($serie)){
-                $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, $serie );
-              } else {
-                $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, '');
-              }
-
-              //Si hay registros
-              if(!empty($pub_types)){
-                 ///echo '<pre> Type =>'; print_r($row_type); echo '</pre>';
-                 //echo '<pre> Serie =>'; print_r($serie); echo '</pre>';
-                 //echo '<pre>'; print_r($pub_types); echo '</pre>';
-                 //echo '<pre>'; print_r($reset_puntos); echo '</pre>';
-
-                if($reset_puntos){
-                  //Si se resetean los puntos
-                  foreach($pub_types as $row_pusers){
-                    //Tener en cuenta los que ya fueron utilizados
-                    if(empty($row_pusers->field_puntaje_usado_value)){
-                        $node_pubusr = node_load($row_pusers->nid);
-                        $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $node_pubusr->field_puntaje[LANGUAGE_NONE][0]['value'];
-                        node_save($node_pubusr);
-                      }
-                    }
-                  $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = 0;
-
+          //Comprobando el operador del campo
+          //Si el operador es Y o vacio ingresa
+          if( $operador == 'Y' || empty($operador)){
+            //Validando si el tipo de concepto esta vacio
+            if(!empty($concept_type)){
+              //Recorriendo los tipos de pub
+              foreach($concept_type as $row_type){
+                //Sacando las publicaciones por usuario, concepto y serie si no es vacio
+                if(!empty($serie)){
+                  $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, $serie );
                 } else {
-                  //Si no se resetean
-                  $PE = 0; // Puntaje ejecutado
-                  $PN = $cantidad_puntaje; //Puntaje necesitado
-                  foreach($pub_types as $row_pusers){
-                    $P = $row_pusers->field_puntaje_value;
-                    $PU = $row_pusers->field_puntaje_usado_value;
-                    $node_pubusr = node_load($row_pusers->nid);
+                  $pub_types = _banrep_plan_carrera_query_pubxusr( $uid, $row_type, '');
+                }
 
-                    if( $PE  <  $PN ){
-                      if( $PU < $P ){
+                //Si hay registros
+                if(!empty($pub_types)){
+                   ///echo '<pre> Type =>'; print_r($row_type); echo '</pre>';
+                   //echo '<pre> Serie =>'; print_r($serie); echo '</pre>';
+                   //echo '<pre>'; print_r($pub_types); echo '</pre>';
+                   //echo '<pre>'; print_r($reset_puntos); echo '</pre>';
 
-                        $diferencia = (( $P - $PU ) + $PE ) - $PN;
-
-                        if($diferencia <= 0 ){
-                           $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P;
-                           $PE += $P;
-                        } else {
-                           $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P - $diferencia;
-                           $PE += $diferencia;
+                  if(boolval($reset_puntos)){
+                    //Si se resetean los puntos
+                    foreach($pub_types as $row_pusers){
+                      //Tener en cuenta los que ya fueron utilizados
+                      if(empty($row_pusers->field_puntaje_usado_value)){
+                          $node_pubusr = node_load($row_pusers->nid);
+                          $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $node_pubusr->field_puntaje[LANGUAGE_NONE][0]['value'];
+                          node_save($node_pubusr);
                         }
-                        node_save($node_pubusr);
+                      }
+                    $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = 0;
+
+                  } else {
+                    //Si no se resetean
+                    $PE = 0; // Puntaje ejecutado
+                    $PN = $cantidad_puntaje; //Puntaje necesitado
+                    foreach($pub_types as $row_pusers){
+                      $P = $row_pusers->field_puntaje_value;
+                      $PU = $row_pusers->field_puntaje_usado_value;
+                      $node_pubusr = node_load($row_pusers->nid);
+
+                      if( $PE  <  $PN ){
+                        if( $PU < $P ){
+
+                          $diferencia = (( $P - $PU ) + $PE ) - $PN;
+
+                          if($diferencia <= 0 ){
+                             $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P;
+                             $PE += $P;
+                          } else {
+                             $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P - $diferencia;
+                             $PE += $diferencia;
+                          }
+                          node_save($node_pubusr);
+                        }
                       }
                     }
+                    $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] - $PN;
                   }
-                  $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] - $PN;
+
+                  if(boolval($reset_puntos_br)){
+                    $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'] = 0;
+                  }
                 }
               }
             }
           }
         }
-
       }
     }
   }

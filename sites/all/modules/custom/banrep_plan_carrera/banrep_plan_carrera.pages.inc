@@ -9,18 +9,22 @@ module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions
  */
 function banrep_plan_carrera_page($uid) {
   $usuario = user_load($uid);
+
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
-  return 'No existe plan de carrera';
+    return 'No existe plan de carrera';
   }
+
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements($scale, $route);
   $form     = drupal_get_form('banrep_plan_carrera_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
+
   if ($uid == $user->uid) {
-  $show_edit = TRUE;
+    $show_edit = TRUE;
   }
+
   $user_data = get_current_user_data($uid);
   $field_full_name = isset($user_data['field_full_name']) ? $user_data['field_full_name'] : '';
   $user_data['only_personal_information'] = TRUE;
@@ -41,17 +45,17 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
   $form = array();
   $nid_log = _get_node_log($uid->uid, $requirements['nid'], FALSE);
   $form['rid'] = array(
-  '#type' => 'hidden',
-  '#value' => $requirements['nid'],
+    '#type' => 'hidden',
+    '#value' => $requirements['nid'],
   );
   $form['uid'] = array(
-  '#type' => 'hidden',
-  '#value' => $uid->uid,
+    '#type' => 'hidden',
+    '#value' => $uid->uid,
   );
   $form['rq_tiempo'] = array(
-  '#type' => 'fieldset',
-  '#title' => t('Requisitos de tiempo'),
-  '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => t('Requisitos de tiempo'),
+    '#tree' => TRUE,
   );
   $tipo_tiempo = list_allowed_values(field_info_field('field_pcr_tipo_tiempo'));
   $html = '<table class="requirements__time">';
@@ -134,21 +138,22 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     case 'PUNTAJE':
     case 'CANTIDAD':
       if (isset($condition['serie'])) {
-      $name    = node_load($condition['serie']);
-      $name    = $name->title;
-      $info_user = _get_publications_user($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
+        $name    = node_load($condition['serie']);
+        $name    = $name->title;
+        $info_user = _get_publications_user($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
       }
       else {
-      if (isset($condition['concept'])) {
-        $concepts  = explode(',', $condition['concept']);
-        $is_activity = FALSE;
-        if (isset($concepts[0]) && $concepts[0] == 211) {
-        $is_activity = TRUE;
+
+        if (isset($condition['concept'])) {
+          $concepts  = explode(',', $condition['concept']);
+          $is_activity = FALSE;
+          if (isset($concepts[0]) && $concepts[0] == 211) {
+            $is_activity = TRUE;
+          }
+          $size    = count($concepts);
+          $name    = _get_concept_publications($condition['concept']);
+          $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
         }
-        $size    = count($concepts);
-        $name    = _get_concept_publications($condition['concept']);
-        $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
-      }
       }
       if(empty($condition['serie']) && empty($condition['concept']) ){
         $name = 'PUBLICACIONES';
@@ -162,8 +167,8 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     $calificacion = 'No cumple';
     $checked = '';
     if ($info_user >= $condition['value']) {
-    $checked    = "checked";
-    $calificacion = 'Cumple';
+      $checked    = "checked";
+      $calificacion = 'Cumple';
     }
     if (isset($comments['html']) && !empty($comments['html'])) {
     if ($comments['aprobado'] == 1) {

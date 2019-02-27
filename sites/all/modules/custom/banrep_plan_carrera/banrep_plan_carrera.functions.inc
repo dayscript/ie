@@ -259,16 +259,17 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
       $query->join('field_data_field_concept', 'c', 'c.entity_id = p.field_publicacion_target_id');
+      $query->join('field_data_field_estado_publicaci_n', 'ep', 'ep.entity_id = n.nid');
       $query->condition('c.field_concept_target_id', $id_type_publication, '=');
       $query->condition('n.type', 'pub_user', '=');
+      $query->condition('ep.field_estado_publicaci_n_value', 3, '=');
       $query->condition('u.field_user_reference_target_id', $uid, '=');
-    }
-    else {
-
+    }else {
 
       $query = db_select('node', 'n');
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
+      $query->join('field_data_field_estado_publicaci_n', 'ep', 'ep.entity_id = n.nid');
       // if ($id_type_publication == 15348) {
       if ($id_type_publication == 20697) {
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
@@ -284,6 +285,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->condition('c.field_concept_type_tid', $id_type_publication, '=');
       }
 
+      $query->condition('ep.field_estado_publicaci_n_value', 3, '=');
       $query->condition('n.type', 'pub_user', '=');
       $query->condition('u.field_user_reference_target_id', $uid, '=');
     }
