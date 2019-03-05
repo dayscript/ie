@@ -344,12 +344,12 @@ function banrep_plan_carrera_user_presave(&$edit, $account, $category)
   $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
   $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
 
-  if($escalafon_nuevo > $escalafon_actual){
+  if($escalafon_nuevo !== $escalafon_actual){
 
     $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
     $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
     $puntaje_br = $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'];
-    $edit['field_estado_plna_carrera'][LANGUAGE_NONE][0]['value'] = 'SIN_CUMPLIR_REQUISITOS';
+    $edit['field_estado_plan_carrera'][LANGUAGE_NONE][0]['value'] = 'SIN_CUMPLIR_REQUISITOS';
     
     //Trayendo el requisito
     $requisitos = _banrep_plan_carrera_query_requirements( $escalafon_actual, $escalafon_nuevo, $ruta );
