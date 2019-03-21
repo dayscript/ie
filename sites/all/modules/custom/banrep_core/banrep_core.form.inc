@@ -61,6 +61,7 @@ function publications_add_form($form, &$form_state) {
     'ROL_BOOK_COMPILER_TID' => ROL_BOOK_COMPILER_TID,
     'ROL_BOOK_EDITOR_TID' => ROL_BOOK_EDITOR_TID,
     'PUB_TYPE_ESPE_MAGAZINE' => PUB_TYPE_ESPE_MAGAZINE,
+    'PUB_TYPE_OTHER_DOCUMENT' => PUB_TYPE_OTHER_DOCUMENT,
   )), 'setting');
   if ($storage_publication != FALSE) {
     $form['storage_publication'] = [
@@ -291,6 +292,8 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_WORK_DOCUMENT)),
           'or',
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_OTHER_DOCUMENT)),
         ),
       ),
     ),
