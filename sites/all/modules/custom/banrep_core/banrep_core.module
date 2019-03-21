@@ -28,6 +28,7 @@ define('PUB_TYPE_BOOK_CHAPTER', '1');
 define('PUB_TYPE_WORK_DOCUMENT', '2951');
 define('PUB_TYPE_OTHER_DOCUMENT', '15317');
 define('PUB_TYPE_CONFERENCE_DOCUMENT', '2954');
+define('PUB_TYPE_ESPE_MAGAZINE', '24533');
 
 define('CONCEPT_TYPE_WORK_DOCUMENT', '2951');
 define('CONCEPT_TYPE_OTHER_DOCUMENT', '15317');
@@ -3328,6 +3329,16 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
       case 'attach_doc':
         if (isset($publication->field_re_attach_doc[LANGUAGE_NONE][0]['fid'])) {
           $default_value = $publication->field_re_attach_doc[LANGUAGE_NONE][0]['fid'];
+        }
+        break;
+      case 'mag_name':
+        if (isset($publication->field_mag_name[LANGUAGE_NONE][0]['value'])) {
+          $default_value = $publication->field_mag_name[LANGUAGE_NONE][0]['value'];
+        }
+        break;
+      case 'sepi':
+        if (isset($publication->field_sepi[LANGUAGE_NONE][0]['value'])) {
+          $default_value = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
         }
         break;
       case 'volumen':

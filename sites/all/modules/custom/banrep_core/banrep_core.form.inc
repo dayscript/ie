@@ -60,6 +60,8 @@ function publications_add_form($form, &$form_state) {
     'ROL_AUTHOR_COMPLETE_TID' => ROL_AUTHOR_COMPLETE_TID,
     'ROL_BOOK_COMPILER_TID' => ROL_BOOK_COMPILER_TID,
     'ROL_BOOK_EDITOR_TID' => ROL_BOOK_EDITOR_TID,
+    'PUB_TYPE_ESPE_MAGAZINE' => PUB_TYPE_ESPE_MAGAZINE,
+    'PUB_TYPE_OTHER_DOCUMENT' => PUB_TYPE_OTHER_DOCUMENT,
   )), 'setting');
   if ($storage_publication != FALSE) {
     $form['storage_publication'] = [
@@ -221,6 +223,15 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     // '#description' => t('DOI link'),
   ];
 
+  $form['query']['left_column']['sepi'] = [
+    '#type' => 'textfield',
+    '#title' => t('Identificador SEPI'),
+    '#default_value' => get_input_value_from_publication($publication, 'sepi'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    // '#description' => t('DOI link'),
+  ];
+
   $options = range(2019, 1990);
   $form['query']['left_column']['publication_year'] = [
     '#type' => 'select',
@@ -230,6 +241,22 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#description' => t(''),
     '#prefix' => '',
     '#suffix' => '',
+  ];
+
+   $form['query']['left_column']['mag_name'] = [
+    '#type' => 'textfield',
+    '#title' => t('Nombre de la revista'),
+    '#default_value' => get_input_value_from_publication($publication, 'mag_name'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    // '#description' => t('Volumen'),
+    '#states' => array(
+      'visible' => array(
+        array(
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
+        ),
+      ),
+    ),
   ];
 
   $form['query']['left_column']['volumen'] = [
@@ -243,6 +270,8 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
       'visible' => array(
         array(
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
         ),
       ),
     ),
@@ -261,6 +290,10 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
           'or',
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_WORK_DOCUMENT)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_OTHER_DOCUMENT)),
         ),
       ),
     ),
@@ -525,7 +558,8 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
     '#states' => [
       'visible' => [
         'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK
+          ['value' => PUB_TYPE_BOOK],
+          ['value' => PUB_TYPE_ESPE_MAGAZINE],
         ],
       ],
     ],
@@ -573,6 +607,14 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
       $node->field_doi[LANGUAGE_NONE][0]['url'],
     ];
   }
+  // Sepi
+  $sepi = '';
+  if (isset($node->field_sepi[LANGUAGE_NONE][0]['value'])) {
+    $sepi = $node->field_sepi[LANGUAGE_NONE][0]['value'];
+  }
+  if (!empty($sepi)) {
+    $rows[] = [t('Identificador SEPI'), $sepi];
+  }
   // Tipo de publicación
   $field_pub_type = field_info_field('field_pub_type');
 
@@ -608,6 +650,15 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
   if (!empty($publication_year)) {
     $rows[] = [t('Year'), $publication_year];
+  }
+
+  // Nombre de la revista
+  $mag_name = '';
+  if (isset($node->field_mag_name[LANGUAGE_NONE][0]['value'])) {
+    $mag_name = $node->field_mag_name[LANGUAGE_NONE][0]['value'];
+  }
+  if (!empty($mag_name)) {
+    $rows[] = [t('Nombre de la revista'), $mag_name];
   }
 
   // Volumen
@@ -928,6 +979,8 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     // form_set_error('query[evidence][file]', t('PDF Evidence is required'));
   }
 
+  // Nombre de la revista
+  $mag_name = isset($values['mag_name']) ? $values['mag_name'] : FALSE;
   // Volumen
   $volumen = isset($values['volumen']) ? $values['volumen'] : FALSE;
   // Number
@@ -955,6 +1008,8 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     form_set_error('query[left_column][url]', t('URL is required'));
     $response->is_valid = FALSE;
   }
+  // SEPI
+  $sepi = isset($values['sepi']) ? $values['sepi'] : FALSE;
   // DOI
   $doi = isset($values['doi']) ? $values['doi'] : FALSE;
   // Ingresar tipo de publicación.
@@ -1176,6 +1231,8 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_url[LANGUAGE_NONE][0]['url'] = $url;
     $node->field_doi[LANGUAGE_NONE][0]['url'] = $doi;
     $node->field_publication_year[LANGUAGE_NONE][0]['value'] = $publication_year;
+    $node->field_sepi[LANGUAGE_NONE][0]['value'] = $sepi;
+    $node->field_mag_name[LANGUAGE_NONE][0]['value'] = $mag_name;
     $node->field_volumen[LANGUAGE_NONE][0]['value'] = $volumen;
     $node->field_number[LANGUAGE_NONE][0]['value'] = $number;
     $node->field_page[LANGUAGE_NONE][0]['value'] = (
@@ -1955,6 +2012,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
           ['value' => PUB_TYPE_OTHER_DOCUMENT],
           ['value' => PUB_TYPE_CONFERENCE_DOCUMENT],
           ['value' => PUB_TYPE_BOOK_CHAPTER],
+          ['value' => PUB_TYPE_ESPE_MAGAZINE],
         ],
       ],
     ],
