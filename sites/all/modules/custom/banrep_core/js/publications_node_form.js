@@ -190,37 +190,37 @@
   };
   Drupal.behaviors.banrepCoreRoleWithinPublication = {
     attach: function (context, settings) {
-      var cambiarTextos = function(){
-        var $roleWithinPublication = $('#rol-within-publication');
-        var roleId = $roleWithinPublication.val();
-        if (roleId === '-1' || !$roleWithinPublication.is(':visible')) {
-          roleId = '219'; // Autor libro completo
-        }
-        var role =
-          $roleWithinPublication
-          .find('option[value=' + roleId + ']')
-          .text()
-          .split(' ')[0]
-        ;
-        var $authorsFieldset =
-          $('#co-author-fieldset-wrapper-author-complete-book')
-        ;
-        $authorsFieldset.find('span.variable-title').html(role+'es');
-        $authorsFieldset.find('label').each(function (index) {
-          var label;
-          if (index === 0) {
-            label = role + ' principal';
-          }
-          else {
-            label = 'Co-' + role.toLowerCase();
-          }
-          this.childNodes[0].nodeValue = label+' ';
-        });
-      };
-      $('#edit-query-right-column-pub-type,#rol-within-publication')
-      .once('banrepCoreRoleWithinPublication')
-      .on('change', cambiarTextos)
-      cambiarTextos();
+      // var cambiarTextos = function(){
+      //   var $roleWithinPublication = $('#rol-within-publication');
+      //   var roleId = $roleWithinPublication.val();
+      //   if (roleId === '-1' || !$roleWithinPublication.is(':visible')) {
+      //     roleId = '219'; // Autor libro completo
+      //   }
+      //   var role =
+      //     $roleWithinPublication
+      //     .find('option[value=' + roleId + ']')
+      //     .text()
+      //     .split(' ')[0]
+      //   ;
+      //   var $authorsFieldset =
+      //     $('#co-author-fieldset-wrapper-author-complete-book')
+      //   ;
+      //   $authorsFieldset.find('span.variable-title').html(role+'es');
+      //   $authorsFieldset.find('label').each(function (index) {
+      //     var label;
+      //     if (index === 0) {
+      //       label = role + ' principal';
+      //     }
+      //     else {
+      //       label = 'Co-' + role.toLowerCase();
+      //     }
+      //     this.childNodes[0].nodeValue = label+' ';
+      //   });
+      // };
+      // $('#edit-query-right-column-pub-type,#rol-within-publication')
+      // .once('banrepCoreRoleWithinPublication')
+      // .on('change', cambiarTextos)
+      // cambiarTextos();
     }
   };
   Drupal.behaviors.formPubValidate = {

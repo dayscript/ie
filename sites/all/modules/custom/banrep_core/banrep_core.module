@@ -37,6 +37,8 @@ define('ROL_AUTHOR_COMPLETE_TID', '219');
 define('ROL_CHAPTER_AUTHOR_TID', '220');
 define('ROL_BOOK_EDITOR_TID', '221');
 define('ROL_BOOK_COMPILER_TID', '222');
+define('ROL_AUTHOR_BOOK', TRUE);
+
 
 define('PUB_REVIEW_PENDING', 'pendiente');
 define('PUB_REVIEW_REVIEWED', 'revisado');
@@ -1667,6 +1669,7 @@ function co_author_add_more_callback($form, &$form_state) {
         $form_state['num_co_author'] = 0;
         $form_state['num_co_author']++;
     }
+
     $form_state['num_co_author']++;
     $form_state['rebuild'] = TRUE;
 }
@@ -3607,6 +3610,7 @@ function is_valid_rol_within_publication($rol = FALSE){
         return TRUE;
       }
     }
+    return TRUE; # Valida que sea rol de tipo ROL_AUTHOR_BOOK
   }
   return FALSE;
 }
@@ -3656,13 +3660,17 @@ function _get_co_author_uid_by_name($name = FALSE){
     $match = [];
     preg_match_all('#\((.*?)\)#', $name, $match , PREG_SET_ORDER);
     $match = end($match);
+    
+    $match[1] = ( is_string($match[1]) ) ? (int)$match[1] : $match[1];
+    
     if (isset($match[1]) && is_numeric($match[1])) {
       $response['tid'] = $match[1];
       $response['uid'] = NULL;
-
+      
       if($uid = _banrep_core_get_user_by_author_term($match[1])){
         $response['uid'] = $uid;
       }
+      
       return $response;
     }
     else {
@@ -4630,7 +4638,26 @@ function get_books_type_options(){
   $options = [];
   if(!empty($terms)){
     foreach ($terms as $key => $term){
-      $options[$term->tid] = $term->name;
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Books Role options
+ */
+function get_books_role_options($tid){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $terms = taxonomy_get_children($tid = $tid, $vid = $categorias_de_conceptos_vid);
+  $options = [];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
     }
   }
   return $options;

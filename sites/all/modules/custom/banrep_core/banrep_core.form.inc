@@ -118,7 +118,7 @@ function publications_add_form($form, &$form_state) {
       ];
     }
   }
-  //dpm($form);
+  
 
   return $form;
 }
@@ -506,7 +506,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
 
   // Tipo de publicación *
   $field_pub_type = field_info_field('field_pub_type');
-
+  
   $options = [];
   $options[''] = t('- Select -');
   if (isset($field_pub_type['settings']['allowed_values'])) {
@@ -516,6 +516,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
       }
     }
   }
+
 
   $form['query']['right_column']['pub_type'] = [
     '#type' => 'select',
@@ -541,30 +542,6 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
   // Box Para Documento en conferencia
   _get_fieldset_publication_conference_document($form, $form_state, $publication);
 
-  $form['query']['right_column']['rol_within_publication'] = [
-    '#id' => 'rol-within-publication',
-    '#type' => 'select',
-    '#title' => t('Rol dentro de la Publicación'),
-    '#options' => [
-      '-1' => t('— Seleccionar'),
-      ROL_AUTHOR_COMPLETE_TID => t('Autor libro completo'),
-      ROL_BOOK_COMPILER_TID => t('Compilador de libro'),
-      ROL_BOOK_EDITOR_TID => t('Editor de Libro'),
-    ],
-    '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = ROL_AUTHOR_COMPLETE_TID),
-    '#description' => t(''),
-    '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication">',
-    '#suffix' => '</div></div></div>',
-    '#states' => [
-      'visible' => [
-        'select[name="query[right_column][pub_type]"]' => [
-          ['value' => PUB_TYPE_BOOK],
-          ['value' => PUB_TYPE_ESPE_MAGAZINE],
-        ],
-      ],
-    ],
-  ];
-
   // Box Otros Autores
   _get_fieldset_other_co_author($form, $form_state, $publication);
 
@@ -582,8 +559,9 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
  * Render form elements for step #2
  */
 function _publications_add_form_step_2(&$form, &$form_state, &$publication = NULL) {
+  
   $node = (object) drupal_json_decode($form_state['storage_publication']);
-  //// dpm($node);
+  
   $header = [t('Information'), t('Value')];
   $rows = [];
 
@@ -773,16 +751,17 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
         break;
     }
   }
-  $_main_author_reference = $node->main_author_reference[0]['name'];
+  
+  $_main_author_reference = $node->main_author_reference[0]['name']['co_authors_author'];
   $_authors = [];
   if (isset($node->co_authors) && is_array($node->co_authors) && !empty($node->co_authors)) {
     foreach ($node->co_authors as $key => $co_author) {
       if (isset($co_author['name'])) {
         if (!$_main_author_reference) {
-          $_main_author_reference = $co_author['name'];
+          $_main_author_reference = $co_author['name']['co_authors_author'];
         }
         else{
-          $_authors[] =  $co_author['name'];
+          $_authors[] =  $co_author['name']['co_authors_author'];
         }
       }
     }
@@ -872,6 +851,10 @@ function _ajax_multistep_form_publications_submit_callback($form, &$form_state) 
   return $form;
 }
 
+function _ajax_multistep_form_publications_change_concept_type_callback($form, &$form_state){
+  return $form['query']['right_column']['co_author_fieldset'];
+}
+
 /**
  * We check which step we are on, then validate the submitted values for that
  * step. If the submitted value falls out of the allowed range of values, an
@@ -910,6 +893,7 @@ function publications_add_form_submit($form, &$form_state) {
   // $form_state['rebuild'] to TRUE, in able to ensure that our
   // our form is rebuilt, allowing for the multi-step process
   $form_state['rebuild'] = TRUE;
+  
 }
 
 /**
@@ -921,6 +905,7 @@ function publications_add_form_validate($form, &$form_state) {
   $response->success = FALSE;
   $response->is_valid = TRUE;
   $response->msg = '';
+  
   switch ($form_state['step']) {
     case 1:
       publications_add_form_validate_step_1($form, $form_state, $response);
@@ -935,12 +920,12 @@ function publications_add_form_validate($form, &$form_state) {
  * Add publication form step 1 validations
  */
 function publications_add_form_validate_step_1($form, &$form_state, &$response) {
-
+  
   // Get the form values
   $values_left_column = isset($form_state['values']['query']["left_column"]) ? $form_state['values']['query']["left_column"] : [];
   $values_right_column = isset($form_state['values']['query']["right_column"]) ? $form_state['values']['query']["right_column"] : [];
   $values = array_merge($values_left_column, $values_right_column);
-
+  
   // Title
   $title = isset($values['title']) ? $values['title'] : FALSE;
   if ($title == FALSE) {
@@ -1054,6 +1039,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
         $values['fieldset_publication_books']['concept_type'] :
         $concept_type
       );
+      $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
       break;
     case PUB_TYPE_BOOK_CHAPTER:
       $concept_type = (
@@ -1147,21 +1133,40 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     }
   }
 
+  
   // Autores
-  $co_authors_author = (
-    isset($values['co_author_fieldset']['co_authors_author']) ?
-    $values['co_author_fieldset']['co_authors_author'] :
-    []
-  );
+  $co_authors_author = [];
+  // $co_authors_author = (
+  //   isset($values['co_author_fieldset']['co_authors_author']) ?
+  //   $values['co_author_fieldset']['co_authors_author'] :
+  //   []
+  // );
+  
+  if ( isset( $values['co_author_fieldset']['co_authors_author'] ) ){
+    $co_authors_author = $values['co_author_fieldset']['co_authors_author'];
+  }
+  elseif ( isset( $values['co_author_fieldset']) && is_array( $values['co_author_fieldset'] ) ) {
+    $co_authors_author = $values['co_author_fieldset'];
+  }
+  else{
+    $co_authors_author = [];
+  }
 
+  
   $co_authors = [];
   $main_author_reference = NULL;
   $other_co_authors = [];
   $main_author = TRUE;
   foreach ($co_authors_author as $key => $name) {
-    if (!empty($name)) {
+    
+    if ( !empty($name) && is_numeric($key) ) { # evita agregar al arreglo los campos de agregar mas
       // if (_is_registered_user_by_name($name)) {
-        $target_uid = _get_co_author_uid_by_name($name);
+        //$name = ( is_array($name) ? $name['co_authors_author']: $name );
+        
+        
+        $target_uid = _get_co_author_uid_by_name($name['co_authors_author']);
+        $rol_within_publication = ( is_bool($rol_within_publication) ) ? $name['rol_within_publication'] : $rol_within_publication;
+        
 
         if (count($target_uid) > 0) {
           if ($main_author) {
@@ -1186,24 +1191,32 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
         }
       // }
       $main_author = FALSE;
+    }else{
+      continue;
     }
   }
 
 
   // Validations
   if ((!is_valid_rol_within_publication($rol_within_publication))) {
+    
     $response->msg = t('Rol Publication is not valid');
     $response->is_valid = FALSE;
     form_set_error(NULL, $response->msg);
   }
+  
+  
 
   if ($response->is_valid) {
     global $user;
     // Storage Publicación
     $node = NULL;
+    
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
+    
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
+      
     }
     if (is_null($node)) {
       $node = new stdClass();  // Create a new node object
@@ -1265,6 +1278,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_order[LANGUAGE_NONE][0]['value'] = 0;
     $node->field_jel[LANGUAGE_NONE] = $jel_tids;
     $node->field_publication_tags[LANGUAGE_NONE] = $tag_tids;
+    
     if ($rol_within_publication != FALSE && $rol_within_publication != '-1') {
       $node->field_role_within_publication[LANGUAGE_NONE][0]['tid'] =
         $rol_within_publication
@@ -1274,6 +1288,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_date[LANGUAGE_NONE][0]['value'] = time();
     //$node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'] = 2; // Pendiente Aprobación
     if ($main_author_reference !== NULL) {
+      
       $node->field_main_author_reference[LANGUAGE_NONE][0]['tid'] = $main_author_arr[0]['tid'];
       if (empty($node->field_main_author_reference[LANGUAGE_NONE][0]['tid'])) {
         $response->is_valid = FALSE;
@@ -1293,6 +1308,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     }
     // Autores
     $field_other_co_authors = [];
+    
     foreach ($co_authors as $key => $other_co_author) {
       if($main_author_arr[0]['tid'] != $other_co_author['tid']){
         $other_co_author_tid = $other_co_author['tid'];
@@ -1302,7 +1318,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
           form_set_error(
             '',
             t(
-              'Author "@author" doesn\'t exist',
+              'Co-Author "@author" doesn\'t exist',
               array(
                 '@author' => $other_co_author
               )
@@ -1327,16 +1343,21 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       $node->field_review[LANGUAGE_NONE][0]['value'] = PUB_REVIEW_PENDING; // Pendiente revisión
     }
 
+    
     // BEGIN Additional Info.
     $node->jels = $jels;
     $node->tags = $tags;
     $node->co_authors = $co_authors;
+    
+    
     $node->main_author_reference = $main_author_arr;
     // $node->other_co_authors = $other_co_authors;
     $node->concept_target_id = $concept_target_id;
     $node->concept_name = $concept_name;
     $node->concept_type = $concept_type;
     $node->alternate_language = $alternate_language;
+    $node->co_authors = $co_authors_author;
+    dpm($node);
     // END Additional Info.
     $publication = drupal_json_encode($node);
     $form_state['storage_publication'] = $publication;
@@ -1355,9 +1376,10 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
   if (!$is_back) {
     // Get the form values | Storage Publicación
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
+    
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
-      //dpm($node);
+      dpm($node);
       //dpm($node->main_author_reference);
       // Save Publication
       //
@@ -1376,10 +1398,28 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       if (isset($node->nid) && !isset($node->vid)) {
         $node->vid = $node->nid;
       }
+      
       node_save($node);
       if (isset($node->nid)) {
         //dpm($main_author_ref);
-
+        // (int) filter_var($co_authors[0]['co_authors_author'], FILTER_SANITIZE_NUMBER_INT);
+        if(count($co_authors) > 0){
+          foreach($co_authors as $key => $item){
+            if( is_numeric($key) ){
+              $values = array();
+              $values['field_name'] = 'field_co_authors';
+              $values['field_co_author'][LANGUAGE_NONE][0]['tid'] = (int) filter_var($item['co_authors_author'],FILTER_SANITIZE_NUMBER_INT);
+              $values['field_role_within_publicat'][LANGUAGE_NONE][0]['tid'] = 20728;//$item['rol_within_publication']; 
+                
+              $entity = entity_create('field_collection_item', $values);
+              $entity->setHostEntity('node', $node);
+              $entity->save();
+              $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
+            }
+          }
+          $node->field_co_authors[LANGUAGE_NONE] = $collections;
+          node_save($node);
+        }
         $co_authors = array_merge($main_author_ref, $co_authors);
         //dpm($co_authors);
         _publication_create_co_authors_banco($node->nid, $co_authors);
@@ -1608,6 +1648,7 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
     '#prefix' => '',
     '#suffix' => '',
   ];
+
   $form['query']['right_column']['fieldset_publication_books']['concept_type'] = [
     '#type' => 'select',
     '#title' => t(''),
@@ -1617,6 +1658,12 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
     '#attributes' => [],
     '#prefix' => '',
     '#suffix' => '',
+    '#ajax' => [
+      'wrapper' => 'co-author-fieldset-wrapper-author-complete-book',
+      // We pass in the wrapper we created at the start of the form
+      'callback' => '_ajax_multistep_form_publications_change_concept_type_callback',
+      // We pass a callback function we will use later to render the form for the user
+    ],
   ];
   $help =
     '<small>' .
@@ -2028,7 +2075,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
   $count_co_author = $form_state['num_co_author'];
   $multiple_co_author = ($count_co_author > 1);
   for ($i = 0; $i < $count_co_author; $i++) {
-    $form['query']['right_column']['co_author_fieldset']['co_authors_author'][$i] = array(
+    $form['query']['right_column']['co_author_fieldset'][$i]['co_authors_author'] = array(
       '#type' => 'textfield',
       '#title' => ($i===0?t('Autor principal'):t('Co-Autor')),
       '#size' => 30,
@@ -2045,6 +2092,34 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
         '</div>'
       ,
     );
+
+    if( !isset($form_state['select_concept_type']) ){
+      $form_state['select_concept_type'] = $form_state['values']['query']['right_column']['fieldset_publication_books']['concept_type'];
+    }
+
+    $options = ['-1' => '-- seleccione --'];
+    $options = array_merge($options, get_books_role_options($form_state['select_concept_type']) );
+    
+        
+    $form['query']['right_column']['co_author_fieldset'][$i]['rol_within_publication'] = [
+      '#id' => 'rol-within-publication-no-name-change',
+      '#type' => 'select',
+      '#title' => t('Rol dentro de la Publicación'),
+      '#options' => $options,
+      '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1'),
+      '#required' => true,
+      '#description' => t(''),
+      '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication-no-name-change">',
+      '#suffix' => '</div></div></div>',
+      '#states' => [
+        'visible' => [
+          'select[name="query[right_column][pub_type]"]' => [
+            ['value' => PUB_TYPE_BOOK],
+            ['value' => PUB_TYPE_ESPE_MAGAZINE],
+          ],
+        ],
+      ],
+    ];
   }
   $form['query']['right_column']['co_author_fieldset']['add_co_author_complete_book'] = array(
     '#type' => 'submit',
