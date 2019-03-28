@@ -1409,7 +1409,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
               $values = array();
               $values['field_name'] = 'field_co_authors';
               $values['field_co_author'][LANGUAGE_NONE][0]['tid'] = (int) filter_var($item['co_authors_author'],FILTER_SANITIZE_NUMBER_INT);
-              $values['field_role_within_publicat'][LANGUAGE_NONE][0]['tid'] = 20728;//$item['rol_within_publication']; 
+              $values['field_role_within_publicat'][LANGUAGE_NONE][0]['tid'] = $item['rol_within_publication']; 
                 
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
@@ -2093,20 +2093,24 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       ,
     );
 
+    
     if( !isset($form_state['select_concept_type']) ){
       $form_state['select_concept_type'] = $form_state['values']['query']['right_column']['fieldset_publication_books']['concept_type'];
+      if( $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']  != '-1'){
+        $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
+      }
     }
-
-    $options = ['-1' => '-- seleccione --'];
-    $options = array_merge($options, get_books_role_options($form_state['select_concept_type']) );
     
-        
+    $options = get_books_role_options($form_state['select_concept_type']);
+    $options['-1'] = '-- seleccione --';
+    
+
     $form['query']['right_column']['co_author_fieldset'][$i]['rol_within_publication'] = [
       '#id' => 'rol-within-publication-no-name-change',
       '#type' => 'select',
       '#title' => t('Rol dentro de la Publicación'),
       '#options' => $options,
-      '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1'),
+      '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1', $index = $i),
       '#required' => true,
       '#description' => t(''),
       '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication-no-name-change">',

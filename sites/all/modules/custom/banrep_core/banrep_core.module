@@ -3286,7 +3286,7 @@ function get_node_title($nid) {
 /*
 * Get Input Value From Publication
 */
-function get_input_value_from_publication($publication = NULL, $field_name = '', $default_value = ''){
+function get_input_value_from_publication($publication = NULL, $field_name = '', $default_value = '', $index = null){
   if (!is_null($publication) && !empty($field_name)) {
     switch ($field_name) {
       case 'title_en':
@@ -3414,7 +3414,13 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
         }
         break;
       case 'rol_within_publication':
-        if (isset($publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'])) {
+        if(!is_null($index)){
+           if( isset($publication->field_co_authors[LANGUAGE_NONE][$index]) ){
+              $entity = $publication->field_co_authors[LANGUAGE_NONE][$index]['value'];
+              $default_value = entity_load('field_collection_item', array($entity))[$entity]->field_role_within_publicat[LANGUAGE_NONE][0]['tid'];
+           } 
+        }
+        else if (isset($publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'])) {
           $default_value = $publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'];
         }
         break;
