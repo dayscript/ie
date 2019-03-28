@@ -1357,7 +1357,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->concept_type = $concept_type;
     $node->alternate_language = $alternate_language;
     $node->co_authors = $co_authors_author;
-    dpm($node);
+    //dpm($node);
     // END Additional Info.
     $publication = drupal_json_encode($node);
     $form_state['storage_publication'] = $publication;
@@ -1379,7 +1379,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
     
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
-      dpm($node);
+      //dpm($node);
       //dpm($node->main_author_reference);
       // Save Publication
       //
@@ -2096,7 +2096,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
     
     if( !isset($form_state['select_concept_type']) ){
       $form_state['select_concept_type'] = $form_state['values']['query']['right_column']['fieldset_publication_books']['concept_type'];
-      if( $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']  != '-1'){
+      if( $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']  != '-1' ){
         $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
       }
     }
