@@ -160,7 +160,7 @@ function banrep_plan_carrera_node_presave($node) {
 
                       user_save($userPub);
                   }
-                }
+                } 
               }
             }
           }
