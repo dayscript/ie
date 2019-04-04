@@ -1,0 +1,5 @@
+name = Banrep Fields
+description = "Permite agregar un campo que relaciona a otro campo de la entidad usuario"
+package = E SINERGIA
+version = "7.x-1.0"
+core = "7.x"

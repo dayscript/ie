@@ -1,0 +1,144 @@
+<?php
+
+module_load_include('inc', 'banrep_fields', 'inc/banrep_fields.functions');
+
+/**
+ * @file
+ * Defines a field type to display the list of fields_name in core
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function banrep_fields_field_info() {
+  return array(
+    'banrep_fields_field' => array(
+      'label' => t('Field reference'),
+      'description' => t('List of fields_name in core to be used as a field.'),
+      'default_widget' => 'banrep_fields_field_widget',
+      'default_formatter' => 'banrep_fields_field_formatter',
+      'settings' => array(),
+      'instance_settings' => array(),
+    )
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function banrep_fields_field_formatter_info() {
+  return array(
+    'formatter_field_name' => array(
+      'label' => t('Field name'),
+      'field types' => array('banrep_fields_field')
+    ),
+    'formatter_field_name' => array(
+      'label' => t('Field code'),
+      'field types' => array('banrep_fields_field')
+    ),
+    'formatter_field_name_lowercase' => array(
+      'label' => t('Field code lowercase'),
+      'field types' => array('banrep_fields_field')
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function banrep_fields_field_formatter_view($entity_type, $entity, $field, $instance, $lang, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'formatter_field_name':
+      foreach ($items as $delta => $item) {
+        $field_name = $item['field_name'];
+        if ($field_name == '0') {
+          return;
+        }
+        $fields_names = fields_get_list('user', null);
+        $field_name = t($fields_names[$field_name]);
+
+        $element[$delta]['#markup'] = $field_name;
+      }
+      break;
+    
+    case 'formatter_field_name':
+      foreach ($items as $delta => $item) {
+        $field_name = $item['field_name'];
+        if ($field_name == '0') {
+          return;
+        }
+        $element[$delta]['#markup'] = $field_name;
+      }
+      break;
+    
+    case 'formatter_field_name_lowercase':
+      foreach ($items as $delta => $item) {
+        $field_name = strtolower($item['field_name']);
+        if ($field_name == '0') {
+          return;
+        }
+        $element[$delta]['#markup'] = $field_name;
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function banrep_fields_field_widget_form(&$form, &$form_state, $field, $instance, $lang, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'banrep_fields_field_widget':
+      // Display the form to let the user pick a country
+      // fields_get_list() is a function on inc folder
+      $options = fields_get_list('user', null);
+      $element['field_name'] = array(
+        '#type' => 'select',
+        '#title' => $element['#title'],
+        '#options' => $options,
+        '#required' => $element['#required'],
+        '#empty_value' => 0,
+        '#default_value' => isset($items[$delta]['field_name']) ? $items[$delta]['field_name'] : NULL,
+      );
+      break;
+  }
+
+  return $element;
+}
+
+function banrep_fields_widget_error($element, $error, $form, &$form_state) {
+  switch ($error['error']) {
+    case 'banrep_fields_field_invalid':
+      form_error($element, $error['message']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function banrep_fields_field_is_empty($item, $field) {
+  if (!empty($item['banrep_fields_field'])) {
+    return true;
+  }
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function banrep_fields_field_widget_info() {
+  return array(
+    'banrep_fields_field_widget' => array(
+      'label' => t('List of fields_name'),
+      'field types' => array('banrep_fields_field'),
+      'settings' => array(),
+      'behaviors' => array(
+        'default value' => FIELD_BEHAVIOR_NONE
+      )
+    )
+  );
+}
