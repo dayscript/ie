@@ -1425,7 +1425,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
                 
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
-              $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var($item['co_authors_author'],FILTER_SANITIZE_NUMBER_INT);
+              $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var(str_replace('-','',$item['co_authors_author']),FILTER_SANITIZE_NUMBER_INT);
               $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $item['rol_within_publication']; 
               $entity->save();
               $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
