@@ -1415,8 +1415,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       
       node_save($node);
       if (isset($node->nid)) {
-        //dpm($main_author_ref);
-        // (int) filter_var($co_authors[0]['co_authors_author'], FILTER_SANITIZE_NUMBER_INT);
+        
         if(count($co_authors) > 0){
           foreach($co_authors as $key => $item){
             if( is_numeric($key) ){
