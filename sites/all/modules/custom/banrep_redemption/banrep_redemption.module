@@ -62,7 +62,7 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
       break;
     case 'training':
 
-    $options_date = range(2018, 1950);
+    $options_date = range(date('Y'), 1950);
       $fields['publication_year'] = array(
         '#type' => 'select',
         '#title' => t('Year'),
@@ -142,7 +142,15 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
          }
       }
       drupal_add_js(array('redemption' => array('tids' => $tids)), array('type' => 'setting'));
-      $vid = 23;
+
+      // $vocab = taxonomy_vocabulary_machine_name_load('concepto_formacion_desarrollo_desempeno');
+
+      // dpm($vocab);
+
+      // dpm( taxonomy_vocabulary_load(23) );
+
+      // $vid = 23;
+      $vid = 24;
       break;
   }
   $form['query']['content']['type_concept_formation'] = array(
@@ -164,8 +172,8 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
         'labels' => array(
           0 => t('-Select-'),
           1 => t('-Select-'),
-          2 => t('-Select-'),
-          3 => t('-Select-'),
+          // 2 => t('-Select-'),
+          // 3 => t('-Select-'),
         ),
       ),
       'dropbox' => array(
