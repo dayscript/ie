@@ -2067,14 +2067,35 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       'class' => [ 'other-co-author-fieldset-wrapper' ],
     ],
   );
+  
   $co_authors = get_input_value_from_publication($publication, 'co_authors_author', array());
+
   if (isset($publication->update_co_authors)) {
     unset($publication->update_co_authors);
     $form_state['num_co_author'] = count($co_authors);
   }
   $count_co_author = $form_state['num_co_author'];
   $multiple_co_author = ($count_co_author > 1);
+
+  if( !isset($form_state['select_concept_type']) ){
+    $form_state['select_concept_type'] = $form_state['values']['query']['right_column']['fieldset_publication_books']['concept_type'];
+    if( $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']  != '-1' ){
+      $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
+    }
+  }
+  
+  $options = get_books_role_options($form_state['select_concept_type']);
+  $options['-1'] = '-- seleccione --';
+  
+  
+  
   for ($i = 0; $i < $count_co_author; $i++) {
+
+    $co_authors_role[$i] = $publication->co_authors[$i]['rol_within_publication'] ? 
+                           $publication->co_authors[$i]['rol_within_publication'] : 
+                           get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1', $index = $i);
+    
+
     $form['query']['right_column']['co_author_fieldset'][$i]['co_authors_author'] = array(
       '#type' => 'textfield',
       '#title' => ($i===0?t('Autor principal'):t('Co-Autor')),
@@ -2094,23 +2115,12 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
     );
 
     
-    if( !isset($form_state['select_concept_type']) ){
-      $form_state['select_concept_type'] = $form_state['values']['query']['right_column']['fieldset_publication_books']['concept_type'];
-      if( $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']  != '-1' ){
-        $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
-      }
-    }
-    
-    $options = get_books_role_options($form_state['select_concept_type']);
-    $options['-1'] = '-- seleccione --';
-    
-
     $form['query']['right_column']['co_author_fieldset'][$i]['rol_within_publication'] = [
       '#id' => 'rol-within-publication-no-name-change',
       '#type' => 'select',
       '#title' => t('Rol dentro de la Publicación'),
       '#options' => $options,
-      '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1', $index = $i),
+      '#default_value' => (isset($co_authors_role[$i]) ? $co_authors_role[$i] : ''),
       '#required' => true,
       '#description' => t(''),
       '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication-no-name-change">',
@@ -2124,6 +2134,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
         ],
       ],
     ];
+
   }
   $form['query']['right_column']['co_author_fieldset']['add_co_author_complete_book'] = array(
     '#type' => 'submit',

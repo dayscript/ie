@@ -3425,9 +3425,11 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
         }
         break;
       case 'co_authors_author':
+        
         $default_value = [];
         if (isset($publication->main_author_reference[0]['name'])) {
-          $default_value[] = $publication->main_author_reference[0]['name'] . ' (' . $publication->main_author_reference[0]['tid'] . ')';
+          //$default_value[] = $publication->main_author_reference[0]['name'] . ' (' . $publication->main_author_reference[0]['tid'] . ')';
+          $default_value[] = $publication->main_author_reference[0]['name']['co_authors_author'];
         }
         elseif (isset($publication->nid)) {
           if (isset($publication->field_main_author_reference[LANGUAGE_NONE][0]['tid'])) {
@@ -3448,6 +3450,7 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
             $default_value[] = $term->name . ' (' . $term->tid . ')';
           }
         }
+        
         break;
       case 'tags':
         if (isset($publication->field_publication_tags[LANGUAGE_NONE][0])) {
