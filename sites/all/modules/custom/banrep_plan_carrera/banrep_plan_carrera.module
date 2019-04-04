@@ -157,7 +157,6 @@ function banrep_plan_carrera_node_presave($node) {
                       $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
                       
                       $puntaje_anterior = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
-                      dpm($userPub);
                       $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
                       $puntajenuevo = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
                       
