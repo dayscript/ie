@@ -772,9 +772,22 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
 
   // Otros Coautores
+
+  // $other_co_authors = [];
+  // if (isset($node->other_co_authors) && is_array($node->other_co_authors) && !empty($node->other_co_authors)) {
+  //   $other_co_authors = $node->other_co_authors;
+  // }
+  // if (!empty($other_co_authors)) {
+  //   $rows[] = [t('Other Co-authors (externals)'), implode(' <br/> ', $other_co_authors)];
+  // }
+
   $other_co_authors = [];
-  if (isset($node->other_co_authors) && is_array($node->other_co_authors) && !empty($node->other_co_authors)) {
-    $other_co_authors = $node->other_co_authors;
+  if (isset($node->co_authors) && is_array($node->co_authors) && !empty($node->co_authors)) {
+    foreach($node->co_authors as $key => $co_author_value){
+      if(is_numeric($key) && $key > 0){
+        array_push($other_co_authors, $co_author_value['co_authors_author']);
+      }
+    }
   }
   if (!empty($other_co_authors)) {
     $rows[] = [t('Other Co-authors (externals)'), implode(' <br/> ', $other_co_authors)];
@@ -1157,6 +1170,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
   $main_author_reference = NULL;
   $other_co_authors = [];
   $main_author = TRUE;
+  
   foreach ($co_authors_author as $key => $name) {
     
     if ( !empty($name) && is_numeric($key) ) { # evita agregar al arreglo los campos de agregar mas
@@ -1386,7 +1400,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       $main_author_ref = isset($node->main_author_reference) ? $node->main_author_reference : [];
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
       //dpm($main_author_ref);
-      unset($node->co_authors);
+      // unset($node->co_authors);
       unset($node->alternate_language);
       unset($node->jels);
       unset($node->tags);
@@ -1408,11 +1422,11 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
             if( is_numeric($key) ){
               $values = array();
               $values['field_name'] = 'field_co_authors';
-              $values['field_co_author'][LANGUAGE_NONE][0]['tid'] = (int) filter_var($item['co_authors_author'],FILTER_SANITIZE_NUMBER_INT);
-              $values['field_role_within_publicat'][LANGUAGE_NONE][0]['tid'] = $item['rol_within_publication']; 
                 
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
+              $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var($item['co_authors_author'],FILTER_SANITIZE_NUMBER_INT);
+              $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $item['rol_within_publication']; 
               $entity->save();
               $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
             }
@@ -1421,7 +1435,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
           node_save($node);
         }
         $co_authors = array_merge($main_author_ref, $co_authors);
-        //dpm($co_authors);
+        
         _publication_create_co_authors_banco($node->nid, $co_authors);
       }
       $form_state['storage_publication'] = drupal_json_encode($node);

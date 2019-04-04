@@ -5205,6 +5205,18 @@ function _banrep_recorte_palabras($ad, $words_number = 200) {
  * una publicacion
  */
 function _publication_create_co_authors_banco($source_nid, $co_authors, $approved = FALSE){
+  
+  # verified the $co_authors param have the property tid and uid
+  foreach($co_authors as $key => $co_author){
+    if(is_numeric($key)){
+      if(!in_array('tid',$co_author) || !in_array('rid', $co_author) || !in_array('uid',$co_author)){
+        $tid_and_uid = _get_co_author_uid_by_name($co_author['co_authors_author']);
+        $co_authors[$key]['tid'] = $tid_and_uid['tid'];
+        $co_authors[$key]['uid'] = $tid_and_uid['uid'];
+        $co_authors[$key]['rid'] = $co_author['rol_within_publication'];
+      }
+    }
+  }
 
   $source_pub = node_load($source_nid);
   $query = new EntityFieldQuery();
