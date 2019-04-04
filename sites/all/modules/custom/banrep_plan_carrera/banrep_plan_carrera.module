@@ -142,12 +142,12 @@ function banrep_plan_carrera_node_presave($node) {
               $collection = entity_load('field_collection_item', array($author['value']));
               
               $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
-              
+              dpm($author_tax);
               
               if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
                 
                 $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
-
+                dpm($author_rol);
                 foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
 
                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
