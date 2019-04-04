@@ -96,6 +96,28 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
         '#suffix' => '</div>',
       );
 
+      $fields['Nivel'] = array(
+        '#title' => t('Nivel'),
+        '#type' => 'select',
+        // '#description' => t('Public is visible for all people'),
+        '#options' => array('' => t('-Select-'), 'doctoral' => t('Doctoral'), 'phd' => t('PhD'), 'maestria' => t('Maestría'), 'especializacion' => t('Especialización'), 'pregrado' => t('Pregrado'), 'cursos' => t('Cursos')),
+        '#default_value' => get_input_value_from_publication($publication, 'visibility'),
+        '#required' => TRUE,
+        '#prefix' => '<div class="col-md-3 col-sm-12">',
+        '#suffix' => '</div></div>',
+      );
+
+      $fields['lugar'] = array(
+        '#title' => t('Lugar'),
+        '#type' => 'select',
+        // '#description' => t('Public is visible for all people'),
+        '#options' => array('' => t('-Select-'), 'colombia' => t('Colombia'), 'exterior' => t('Exterior')),
+        '#default_value' => get_input_value_from_publication($publication, 'visibility'),
+        '#required' => TRUE,
+        '#prefix' => '<div class="col-md-3 col-sm-12">',
+        '#suffix' => '</div></div>',
+      );
+
 
       $fields['visibility'] = array(
         '#title' => t('Public/Private'),
@@ -107,6 +129,7 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
         '#prefix' => '<div class="col-md-3 col-sm-12">',
         '#suffix' => '</div></div>',
       );
+
       $fields['file'] = array(
         '#title' => t('Attach evidence'),
         '#type' => 'managed_file',
@@ -193,6 +216,20 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
     '#title' => t('Description'),
     '#type' => 'textarea',
     '#default_value' => get_input_value_from_publication($publication, 'description'),
+    '#required' => TRUE,
+  );
+
+  $form['query']['content']['titulo_curso'] = array(
+    '#title' => t('Título / Curso'),
+    '#type' => 'textarea',
+    // '#default_value' => get_input_value_from_publication($publication, 'description'),
+    '#required' => TRUE,
+  );
+
+    $form['query']['content']['institucion'] = array(
+    '#title' => t('Institución'),
+    '#type' => 'textarea',
+    // '#default_value' => get_input_value_from_publication($publication, 'description'),
     '#required' => TRUE,
   );
 
