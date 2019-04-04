@@ -140,8 +140,8 @@ function banrep_plan_carrera_node_presave($node) {
             foreach($authorsPub as $key => $author){
               dpm($author);
               $collection = entity_load('field_collection_item', array($author['value']));
-              
-              $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[0][LANGUAGE_NONE][0]['tid']);
+              dpm($collection[$author['value']]->field_co_autor);
+              $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
               dpm($author_tax);
               dpm($userPub->uid);
               if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
