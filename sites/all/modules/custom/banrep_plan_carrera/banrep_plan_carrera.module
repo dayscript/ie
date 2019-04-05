@@ -215,7 +215,7 @@ function banrep_plan_carrera_node_presave($node) {
                     #$puntaje_anterior = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
                     #$puntaje_digitado = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
-                    #$node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    $node->field_puntaje[LANGUAGE_NONE][0]['value'] = 0;
                   }
                 } 
               }
