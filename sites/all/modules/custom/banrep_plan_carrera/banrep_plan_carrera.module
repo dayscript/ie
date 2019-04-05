@@ -195,8 +195,9 @@ function banrep_plan_carrera_node_presave($node) {
         // Realizar el proceso de suma de puntos, solo si la fecha de la publicación cumple con la fecha del requisito
         if (_banrep_plan_carrera_comprobar_fecha_puntacion_requisito($nodePub, $userPub)){
           $puntaje_digitado = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
-          $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_digitado;
-          $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+          
+          // $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_digitado;
+          // $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
           
           if( isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE]) ){
             $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
