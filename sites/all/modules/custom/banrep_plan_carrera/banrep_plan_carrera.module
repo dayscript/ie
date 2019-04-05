@@ -79,8 +79,9 @@ function banrep_plan_carrera_node_presave($node) {
         $nodePub = node_load($pub_id);
         // Realizar el proceso de suma de puntos, solo si la fecha de la publicación cumple con la fecha del requisito
         $puntuar = _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($nodePub, $userPub);
-       
         
+        dpm($puntuar);
+        dpm($nodePub);
         if($puntuar){
           
           //Sacando el puntaje actual
@@ -131,6 +132,7 @@ function banrep_plan_carrera_node_presave($node) {
             //Guardando puntaje especifico
             $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
           }
+
           elseif( isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE]) ){
             dpm('entro 1');
             $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
