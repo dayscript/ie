@@ -109,8 +109,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
 
   $html = '<table class="requirements__publications">';
   
-  dpm($requirements['publications']);
-  
+   
   foreach ($requirements['publications'] as $keyg => $group) {
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
@@ -141,6 +140,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       /*if (in_array('Admin GT', $user->roles)) {
       $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
       }*/
+      
       switch ($condition['type']) {
       case 'PUNTAJE':
       case 'CANTIDAD':
@@ -167,7 +167,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
           $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
         }
         $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
-        $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros
+        $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
         $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
         break;
       }

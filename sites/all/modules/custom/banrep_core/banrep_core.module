@@ -4656,6 +4656,24 @@ function get_books_type_options(){
 }
 
 /*
+ * Get Books Type options
+ */
+function get_books_chapters_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_BOOK;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = [];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
  * Get Books Role options
  */
 function get_books_role_options($tid){

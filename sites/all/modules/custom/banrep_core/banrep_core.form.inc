@@ -1093,6 +1093,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
         $concept_name = get_node_title($concept_target_id);
         $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
         break;
+    
     case PUB_TYPE_CONFERENCE_DOCUMENT:
       $concept_type = (
         isset($values['fieldset_publication_conference_documents']['concept_type']) ?
@@ -1110,7 +1111,15 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
           $concept_name
         );
       }
-      $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
+      $rol_within_publication = ROL_AUTHOR_COMPLETE_TID; 
+      break;
+    case PUB_TYPE_ESPE_MAGAZINE:
+      $concept_type = (
+        isset($values['fieldset_publication_books']['concept_type']) ?
+        $values['fieldset_publication_books']['concept_type'] :
+        $concept_type
+      );
+      $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
       break;
   }
 
@@ -1654,7 +1663,8 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
     '#states' => [
       'visible' => [
         'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK
+          ['value' => PUB_TYPE_BOOK],
+          ['value' => PUB_TYPE_ESPE_MAGAZINE]
         ],
       ],
     ],
@@ -1720,6 +1730,7 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
  * Get fieldset Publicaciones tipo Compilador de libro
  */
 function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publication = NULL) {
+
   // Field book_chapter form element starts
   $form['query']['right_column']['fieldset_publication_book_chapters'] = [
     '#type' => 'fieldset',
@@ -1736,7 +1747,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
     '#states' => [
       'visible' => [
         'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK_CHAPTER
+          ['value' => PUB_TYPE_BOOK_CHAPTER],
         ],
       ],
     ],
@@ -1745,6 +1756,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
   ];
   $concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
   $_books_type_options = get_books_type_options();
+
   $form['query']['right_column']['fieldset_publication_book_chapters']['concept_type'] = [
     '#type' => 'select',
     '#title' => t(''),
