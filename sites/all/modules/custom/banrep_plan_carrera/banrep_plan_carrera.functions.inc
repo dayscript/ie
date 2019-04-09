@@ -265,8 +265,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
       $query->condition('ep.field_estado_publicaci_n_value', 3, '=');
       $query->condition('u.field_user_reference_target_id', $uid, '=');
     }else {
-      dpm($id_type_publication);
-      dpm($uid);
+
       $query = db_select('node', 'n');
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
@@ -313,7 +312,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->addExpression('SUM(COALESCE(j.field_puntaje_value,0) - COALESCE(ju.field_puntaje_usado_value,0))', 'puntaje');                
       }
       $result = $query->execute()->fetchObject();
-      dpm($result); 
+      
       if (isset($result->puntaje) && !is_null($result->puntaje)) {
         $num_of_result = $result->puntaje;
       }
