@@ -28,7 +28,9 @@ define('PUB_TYPE_BOOK_CHAPTER', '1');
 define('PUB_TYPE_WORK_DOCUMENT', '2951');
 define('PUB_TYPE_OTHER_DOCUMENT', '15317');
 define('PUB_TYPE_CONFERENCE_DOCUMENT', '2954');
-define('PUB_TYPE_ESPE_MAGAZINE', '24533');
+define('PUB_TYPE_ESPE_MAGAZINE', '20662');
+define('PUB_TYPE_OTHERS_DOCUMENTS', '20708');
+
 
 define('CONCEPT_TYPE_WORK_DOCUMENT', '2951');
 define('CONCEPT_TYPE_OTHER_DOCUMENT', '15317');
@@ -4644,7 +4646,25 @@ function get_books_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
   $parent_tid = PUB_TYPE_BOOK;
   $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
-  $options = [];
+  $options = ['' => '-- Seleccione --'];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Espe Magazine Type options
+ */
+function get_espe_magazine_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_ESPE_MAGAZINE;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = ['' => '-- Seleccione --'];
   if(!empty($terms)){
     foreach ($terms as $key => $term){
       if( !$term->depth ){
@@ -4657,6 +4677,24 @@ function get_books_type_options(){
 
 /*
  * Get Books Type options
+ */
+function get_others_documents_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_OTHERS_DOCUMENTS;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = ['' => '-- Seleccione --'];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Books Chapters Type options
  */
 function get_books_chapters_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
