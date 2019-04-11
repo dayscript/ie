@@ -1120,7 +1120,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     case PUB_TYPE_ESPE_MAGAZINE:
       $concept_type = (
         isset($values['fieldset_publication_espe_magazine']['concept_type']) ?
-        $values['fieldset_publication_books']['concept_type'] :
+        $values['fieldset_publication_espe_magazine']['concept_type'] :
         $concept_type
       );
       $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
@@ -1128,7 +1128,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       case PUB_TYPE_OTHERS_DOCUMENTS:
       $concept_type = (
         isset($values['fieldset_publication_others_documents']['concept_type']) ?
-        $values['fieldset_publication_books']['concept_type'] :
+        $values['fieldset_publication_others_documents']['concept_type'] :
         $concept_type
       );
       // $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
@@ -1433,8 +1433,8 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       if (isset($node->nid) && !isset($node->vid)) {
         $node->vid = $node->nid;
       }
-      
-      node_save($node);
+      // dpm($node);
+      //node_save($node);
       if (isset($node->nid)) {
         
         if(count($co_authors) > 0){
@@ -1452,7 +1452,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
             }
           }
           $node->field_co_authors[LANGUAGE_NONE] = $collections;
-          node_save($node);
+          //node_save($node);
         }
         $co_authors = array_merge($main_author_ref, $co_authors);
         
