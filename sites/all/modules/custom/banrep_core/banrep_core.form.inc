@@ -1434,7 +1434,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
         $node->vid = $node->nid;
       }
       // dpm($node);
-      //node_save($node);
+      node_save($node);
       if (isset($node->nid)) {
         
         if(count($co_authors) > 0){
@@ -1452,7 +1452,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
             }
           }
           $node->field_co_authors[LANGUAGE_NONE] = $collections;
-          //node_save($node);
+          node_save($node);
         }
         $co_authors = array_merge($main_author_ref, $co_authors);
         
