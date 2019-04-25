@@ -9,7 +9,6 @@
  * Funcion que cargar los requisitos de ascenso.
  */
 function get_requirements($scale, $route, $type = '') {
-
   $query = db_select('field_data_field_ruta_plan_carrera', 'r');
   $query->addField('r', 'entity_id', 'nid');
   $query->join('field_data_field_escalafon_actual', 's', 's.entity_id = r.entity_id');
@@ -255,6 +254,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
   }
   else {
     if ($flag_is_node) {
+     
       $query = db_select('node', 'n');
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
@@ -276,7 +276,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->condition('c.field_pub_type_value', 201, '=');
       }
       // elseif ($id_type_publication == 15349) {
-      elseif ($id_type_publication == 20704) {
+      elseif ($id_type_publication == 20704 || $id_type_publication == 206 ) {
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_pub_type_value', 206, '=');
       }
@@ -290,7 +290,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
       $query->condition('u.field_user_reference_target_id', $uid, '=');
     }
   }
-
+  
 
   if (!is_null($start_date)) {
     $query->condition('n.created', $start_date, '>=');
@@ -312,6 +312,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->addExpression('SUM(COALESCE(j.field_puntaje_value,0) - COALESCE(ju.field_puntaje_usado_value,0))', 'puntaje');                
       }
       $result = $query->execute()->fetchObject();
+      
       if (isset($result->puntaje) && !is_null($result->puntaje)) {
         $num_of_result = $result->puntaje;
       }

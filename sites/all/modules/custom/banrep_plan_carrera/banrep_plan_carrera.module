@@ -79,9 +79,7 @@ function banrep_plan_carrera_node_presave($node) {
         $nodePub = node_load($pub_id);
         // Realizar el proceso de suma de puntos, solo si la fecha de la publicación cumple con la fecha del requisito
         $puntuar = _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($nodePub, $userPub);
-        
-        dpm($puntuar);
-        dpm($nodePub);
+     
         if($puntuar){
           
           //Sacando el puntaje actual
@@ -134,26 +132,25 @@ function banrep_plan_carrera_node_presave($node) {
           }
 
           elseif( isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE]) ){
-            dpm('entro 1');
             $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
             $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE]; ## chidren of field_pub_type taxonomy
             $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
             foreach($authorsPub as $key => $author){
-              dpm('entro 2');
               $collection = entity_load('field_collection_item', array($author['value']));
               $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
               if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
-                dpm('entro 3');
                 $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
                 foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-                    dpm('entro 4');
+                    
                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
-                    $puntaje_anterior = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
+                    $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+                    $puntaje_digitado =  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    
                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
-                    $puntaje_digitado = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    // $userPub->field_acumulado_general[LANGUAGE_NONE][0]['value'] += ($userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] + $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value']);
                     user_save($userPub);
                   }
                 } 
@@ -180,10 +177,15 @@ function banrep_plan_carrera_node_presave($node) {
               $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
             }
 
+            $format = '%s - %s - %s - %s - %s - %s';
             $datelog = date('d/m/Y h:i:s');
             $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
             $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
-            $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $datelog.' - '.$puntajeanterior.' - '.$puntajenuevo . ' - '. $nombre );
+            $subject = 'Estado: '. $estado_ant .' a '. $estado;
+            $pub_status = str_replace( array('3','2','4'), array('Aprobado','Pendiente por aprobación','No Aprobado'), $subject);
+            $value = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
+            
+            $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $value );
           }
         }       
       }
@@ -217,10 +219,11 @@ function banrep_plan_carrera_node_presave($node) {
                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
-                    #$puntaje_anterior = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
+                    $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
-                    #$puntaje_digitado = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
+                    $puntaje_digitado = 0;
                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = 0;
+                   
                   }
                 } 
               }
@@ -231,6 +234,31 @@ function banrep_plan_carrera_node_presave($node) {
           user_save($userPub);
         }
 
+           //Historico
+           if(in_array('Admin GT', $user->roles))
+           {
+             $usuario_log = user_load($user->uid);
+             $nombre = "";
+             if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+               $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
+             }   
+             if (!empty($usuario_log->name)) {
+               $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
+             }
+             else {
+               $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
+             }
+ 
+             $format = '%s - %s - %s - %s - %s - %s';
+             $datelog = date('d/m/Y h:i:s');
+             $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+             $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
+             $subject = 'Estado: '. $estado_ant .' a '. $estado;
+             $pub_status = str_replace( array('3','2','4'), array('Aprobado','Pendiente por aprobación','No Aprobado'), $subject);
+             $value = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
+            
+             $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $value );
+           }
 
       }
       break;

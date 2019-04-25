@@ -58,204 +58,214 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     '#tree' => TRUE,
   );
   $tipo_tiempo = list_allowed_values(field_info_field('field_pcr_tipo_tiempo'));
+
   $html = '<table class="requirements__time">';
-  $html .= '<tr>';
-  $html .= '<th>Nombre requisito</th>';
-  $html .= '<th>Valor requisito</th>';
-  $html .= '<th>Valor actual</th>';
-  $html .= '<th>Calificación</th>';
-  $html .= '<th>Aprobación</th>';
-  $html .= '<th>Observaciones</th>';
-  $html .= '</tr>';
-  foreach ($requirements['time'] as $key => $value) {
-  $info_user = _get_time_user($uid, $key);
-  $html .= '<tr>';
-  $html .= '<td>' . $tipo_tiempo[$key] . '</td>';
-  $html .= '<td>' . $value . '</td>';
-  $html .= '<td>' . $info_user . '</td>';
-  $checked = "";
-  $calificacion = 'No cumple';
-  if ($info_user >= $value) {
-    $checked = "checked";
-    $calificacion = 'Cumple';
-  }
-  $html .= '<td>' . $calificacion . '</td>';
-  $name_item = 'rq_tiempo_' . $key;
-  $comments = _output_comments($name_item, $nid_log);
-  if (isset($comments['html']) && !empty($comments['html'])) {
-    if ($comments['aprobado'] == 1) {
-    $checked = 'checked';
+    $html .= '<tr>';
+    $html .= '<th>Nombre requisito</th>';
+    $html .= '<th>Valor requisito</th>';
+    $html .= '<th>Valor actual</th>';
+    $html .= '<th>Calificación</th>';
+    $html .= '<th>Aprobación</th>';
+    $html .= '<th>Observaciones</th>';
+    $html .= '</tr>';
+    foreach ($requirements['time'] as $key => $value) {
+      $info_user = _get_time_user($uid, $key);
+      $html .= '<tr>';
+      $html .= '<td>' . $tipo_tiempo[$key] . '</td>';
+      $html .= '<td>' . $value . '</td>';
+      $html .= '<td>' . $info_user . '</td>';
+      $checked = "";
+      $calificacion = 'No cumple';
+      if ($info_user >= $value) {
+        $checked = "checked";
+        $calificacion = 'Cumple';
+      }
+      $html .= '<td>' . $calificacion . '</td>';
+      $name_item = 'rq_tiempo_' . $key;
+      $comments = _output_comments($name_item, $nid_log);
+      if (isset($comments['html']) && !empty($comments['html'])) {
+        if ($comments['aprobado'] == 1) {
+        $checked = 'checked';
+        }
+        else {
+        $checked = '';
+        }
+      }
+      $html .= '<td> <input type="checkbox" class="condition" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
+      $html .= '<td><textarea rows="3" cols="20" name="rq_tiempo_' . $key . '_observaciones"></textarea>' . $comments['html'] . '  </td>';
+      $html .= '</tr>';
     }
-    else {
-    $checked = '';
-    }
-  }
-  $html .= '<td> <input type="checkbox" class="condition" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
-  $html .= '<td><textarea rows="3" cols="20" name="rq_tiempo_' . $key . '_observaciones"></textarea>' . $comments['html'] . '  </td>';
-  $html .= '</tr>';
-  }
   $html .= '</table>';
+
   $form['rq_tiempo']['html'] = array(
   '#markup' => $html,
   );
+
   $form['rq_publiacion'] = array(
   '#type' => 'fieldset',
   '#title' => t('Requisitos de publicaciones y/o actividades'),
   '#tree' => TRUE,
   );
+
   $html = '<table class="requirements__publications">';
+  
+   
   foreach ($requirements['publications'] as $keyg => $group) {
-  if (isset($group['operator']) && !empty($group['operator'])) {
-    $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
-  }
-  $html .= '<tr><td colspan="6">';
-  $html .= '<table class="requirements__publications">';
-  $html .= '<tr>';
-  $html .= '<th>Nombre requisito</th>';
-  $html .= '<th>Valor requisito</th>';
-  $html .= '<th>Valor actual</th>';
-  $html .= '<th>Calificación</th>';
-  $html .= '<th>Aprobación</th>';
-  $html .= '<th>Observaciones</th>';
-  $html .= '</tr>';
-  foreach ($group['conditions'] as $keyc => $condition) {
-    $form['rq_publiacion'][$keyg][$keyc] = array(
-    '#type' => 'container',
-    '#attributes' => array('class' => array('row')),
-    );
-    $operator = '';
-    if (isset($condition['operator']) && !empty($condition['operator'])) {
-    $operator = $condition['operator'] . ' ';
+    if (isset($group['operator']) && !empty($group['operator'])) {
+      $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
     }
-    $name_item = 'rq_publiacion_' . $keyg . '_' . $keyc;
-    $comments = _output_comments($name_item, $nid_log);
-    $html .= "<tr>";
-    $input_value = '';
-    /*if (in_array('Admin GT', $user->roles)) {
-    $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
-    }*/
-    switch ($condition['type']) {
-    case 'PUNTAJE':
-    case 'CANTIDAD':
-      if (isset($condition['serie'])) {
-        $name    = node_load($condition['serie']);
-        $name    = $name->title;
-        $info_user = _get_publications_user($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
+    $html .= '<tr><td colspan="6">';
+    $html .= '<table class="requirements__publications">';
+    $html .= '<tr>';
+    $html .= '<th>Nombre requisito</th>';
+    $html .= '<th>Valor requisito</th>';
+    $html .= '<th>Valor actual</th>';
+    $html .= '<th>Calificación</th>';
+    $html .= '<th>Aprobación</th>';
+    $html .= '<th>Observaciones</th>';
+    $html .= '</tr>';
+    foreach ($group['conditions'] as $keyc => $condition) {
+      $form['rq_publiacion'][$keyg][$keyc] = array(
+      '#type' => 'container',
+      '#attributes' => array('class' => array('row')),
+      );
+      $operator = '';
+      if (isset($condition['operator']) && !empty($condition['operator'])) {
+      $operator = $condition['operator'] . ' ';
+      }
+      $name_item = 'rq_publiacion_' . $keyg . '_' . $keyc;
+      $comments = _output_comments($name_item, $nid_log);
+      $html .= "<tr>";
+      $input_value = '';
+      /*if (in_array('Admin GT', $user->roles)) {
+      $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
+      }*/
+      
+      switch ($condition['type']) {
+      case 'PUNTAJE':
+      case 'CANTIDAD':
+        if (isset($condition['serie'])) {
+          $name    = node_load($condition['serie']);
+          $name    = $name->title;
+          $info_user = _get_publications_user($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
+        }
+        else {
+
+          if (isset($condition['concept'])) {
+            $concepts  = explode(',', $condition['concept']);
+            $is_activity = FALSE;
+            if (isset($concepts[0]) && $concepts[0] == 211) {
+              $is_activity = TRUE;
+            }
+            $size    = count($concepts);
+            $name    = _get_concept_publications($condition['concept']);
+            $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
+          }
+        }
+        if(empty($condition['serie']) && empty($condition['concept']) ){
+          $name = 'PUBLICACIONES';
+          $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+        }
+        $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
+        $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
+        $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
+        break;
+      }
+      $calificacion = 'No cumple';
+      $checked = '';
+      if ($info_user >= $condition['value']) {
+        $checked    = "checked";
+        $calificacion = 'Cumple';
+      }
+      if (isset($comments['html']) && !empty($comments['html'])) {
+      if ($comments['aprobado'] == 1) {
+        $checked = 'checked';
       }
       else {
-
-        if (isset($condition['concept'])) {
-          $concepts  = explode(',', $condition['concept']);
-          $is_activity = FALSE;
-          if (isset($concepts[0]) && $concepts[0] == 211) {
-            $is_activity = TRUE;
-          }
-          $size    = count($concepts);
-          $name    = _get_concept_publications($condition['concept']);
-          $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
-        }
+        $checked = '';
       }
-      if(empty($condition['serie']) && empty($condition['concept']) ){
-        $name = 'PUBLICACIONES';
-        $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
       }
-      $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
-      $html .= '<td>' . $condition['value'] . '</td>';
-      $html .= '<td>' . $info_user . $input_value . '</td>';
-      break;
+      $html .= '<td>' . $calificacion . '</td>';
+      $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+      $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
+      $html .= "</tr>";
     }
-    $calificacion = 'No cumple';
-    $checked = '';
-    if ($info_user >= $condition['value']) {
-      $checked    = "checked";
-      $calificacion = 'Cumple';
-    }
-    if (isset($comments['html']) && !empty($comments['html'])) {
-    if ($comments['aprobado'] == 1) {
-      $checked = 'checked';
-    }
-    else {
-      $checked = '';
-    }
-    }
-    $html .= '<td>' . $calificacion . '</td>';
-    $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
-    $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
-    $html .= "</tr>";
-  }
-  $html .= '</table></td></tr>';
+    $html .= '</table></td></tr>';
   }
   $html .= '</table>';
+
   $form['rq_publiacion']['html'] = array(
-  '#markup' => $html,
+    '#markup' => $html,
   );
+  
   $html = '<table class="requirements__publications">';
+
   $form['rq_formacion'] = array(
-  '#type' => 'fieldset',
-  '#title' => t('Requisitos formación desarrollo y desempeño'),
-  '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => t('Requisitos formación desarrollo y desempeño'),
+    '#tree' => TRUE,
   );
 
   $html .= '<tr><td colspan="6">';
-$html .= '<table class="requirements__publications">';
-  $html .= '<tr>';
-  $html .= '<th></th>';
+  $html .= '<table class="requirements__publications">';
+    $html .= '<tr>';
+    $html .= '<th></th>';
 
-  $html .= '<th>Nombre requisito</th>';
-  $html .= '<th>Valor requisito</th>';
-  $html .= '<th>Valor actual</th>';
-  $html .= '<th>Calificación</th>';
-  $html .= '<th>Aprobación</th>';
-  $html .= '<th>Observaciones</th>';
-  $html .= '</tr>';
-  $html .= '<tbody>';
-  foreach ($requirements['training'] as $keyg => $group) {
+    $html .= '<th>Nombre requisito</th>';
+    $html .= '<th>Valor requisito</th>';
+    $html .= '<th>Valor actual</th>';
+    $html .= '<th>Calificación</th>';
+    $html .= '<th>Aprobación</th>';
+    $html .= '<th>Observaciones</th>';
+    $html .= '</tr>';
+    $html .= '<tbody>';
+    foreach ($requirements['training'] as $keyg => $group) {
 
-    $name = _get_concept_publications($group[0]);
-    $files = _get_training_by_tid($uid->uid,$group[0]);
-    $info_user = FALSE;
-    $strFiles = "";
-    $keyc = 0;
-    if (count($files) > 0 ) {
-      $info_user = TRUE;
-      $strFiles = "<br/><ul>";
-      foreach($files as $arfile) {
-      $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+      $name = _get_concept_publications($group[0]);
+      $files = _get_training_by_tid($uid->uid,$group[0]);
+      $info_user = FALSE;
+      $strFiles = "";
+      $keyc = 0;
+      if (count($files) > 0 ) {
+        $info_user = TRUE;
+        $strFiles = "<br/><ul>";
+        foreach($files as $arfile) {
+          $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+        }
+        $strFiles .= "</ul>";
       }
-      $strFiles .= "</ul>";
-    }
 
-    $calificacion = 'No cumple';
-    $checked = '';
-    if ($info_user) {
-      $checked = "checked";
-      $calificacion = 'Cumple';
-    }
-
-    $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
-    $comments = _output_comments($name_item, $nid_log);
-    if (isset($comments['html']) && !empty($comments['html'])) {
-      if ($comments['aprobado'] == 1) {
-      $checked = 'checked';
-      }
-      else {
+      $calificacion = 'No cumple';
       $checked = '';
+      if ($info_user) {
+        $checked = "checked";
+        $calificacion = 'Cumple';
       }
+
+      $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
+      $comments = _output_comments($name_item, $nid_log);
+      if (isset($comments['html']) && !empty($comments['html'])) {
+        if ($comments['aprobado'] == 1) {
+          $checked = 'checked';
+        }
+        else {
+          $checked = '';
+        }
+      }
+
+      $html .= '<tr>';
+        $html .= '<td>'. $group['operator'] .'</td>';
+        $html .= '<td>'. $name . $strFiles.'</td>';
+        $html .= '<td>1</td>';
+        $html .= '<td>'.$info_user.'</td>';
+        $html .= '<td>'. $calificacion .'</td>';
+        
+        $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+      $html .= '</tr>';
+
     }
-
-  $html .= '<tr>';
-    $html .= '<td>'. $group['operator'] .'</td>';
-    $html .= '<td>'. $name . $strFiles.'</td>';
-    $html .= '<td>1</td>';
-    $html .= '<td>'.$info_user.'</td>';
-    $html .= '<td>'. $calificacion .'</td>';
-    
-    $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
-    $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
-  $html .= '</tr>';
-
-  }
-  $html .= '</tbody>';
+    $html .= '</tbody>';
 
   
   $html .= '</table>';
