@@ -2257,6 +2257,9 @@ function _get_fieldset_publication_conference_document(&$form, &$form_state, &$p
 * Otros Autores
 */
 function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NULL){
+  
+  $access_rol_within_publication = [PUB_TYPE_ARTICLE,PUB_TYPE_WORK_DOCUMENT,PUB_TYPE_OTHER_DOCUMENT,PUB_TYPE_CONFERENCE_DOCUMENT,PUB_TYPE_BOOK_CHAPTER,PUB_TYPE_OTHERS_DOCUMENTS];
+
   if (empty($form_state['num_co_author'])) {
     $form_state['num_co_author'] = 1;
   }
@@ -2289,7 +2292,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
   );
   
   $co_authors = get_input_value_from_publication($publication, 'co_authors_author', array());
-
+  
   if (isset($publication->update_co_authors)) {
     unset($publication->update_co_authors);
     $form_state['num_co_author'] = count($co_authors);
@@ -2297,18 +2300,35 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
 
   $count_co_author = $form_state['num_co_author'];
   $multiple_co_author = ($count_co_author > 1);
-  $query_right_column = $form['query']['right_column'];
-  $form_state_right = $form_state['values']['query']['right_column'];
-  
-  if( !isset($form_state['select_concept_type']) ||  ( $form_state['select_concept_type'] != $form_state_right['fieldset_publication_books']['concept_type'] ) 
-    ){ 
-    $form_state['select_concept_type'] = $form_state_right['fieldset_publication_books']['concept_type'];
-    if( $query_right_column['fieldset_publication_books']['concept_type']['#default_value']  != '-1' ){
-      $form_state['select_concept_type'] = $query_right_column['fieldset_publication_books']['concept_type']['#default_value'];
-    }
+
+  // if($form['query']['right_column']['pub_type']['#default_value']){
+    
+  //   $form_state['select_concept_type'] = $form['query']['right_column']['pub_type']['#default_value'];
+  // }
+
+  if( isset($form_state['input']['query']['right_column']['pub_type']) && $form_state['input']['query']['right_column']['pub_type'] != PUB_TYPE_ESPE_MAGAZINE ) {
+
+    $form_state['select_concept_type'] = $form_state['input']['query']['right_column']['fieldset_publication_books']['concept_type'];
+    
+  }elseif( isset($form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']) && $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'] != -1 ){
+    
+    $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
+  }
+  else{
+    $form_state['select_concept_type'] = ($form_state['input']['query']['right_column']['pub_type']) ? 
+    $form_state['input']['query']['right_column']['pub_type']:$form['query']['right_column']['pub_type']['#default_value'];
   }
 
 
+  if($form_state['select_concept_type'] == PUB_TYPE_ESPE_MAGAZINE || 
+     $form_state['input']['query']['right_column']['pub_type'] == PUB_TYPE_BOOK ||
+     $form['query']['right_column']['pub_type']['#default_value'] == PUB_TYPE_BOOK){
+    $access = true;
+  }else{
+    $access = false;
+  }
+
+  
   // $items = [
   //   20662  => 'fieldset_publication_espe_magazine',
   //   206    => 'fieldset_publication_books',
@@ -2323,13 +2343,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
   // $pub_type_select = $form_state['values']['query']['right_column']['pub_type'];
   // $form_state['select_concept_type'] = $form_state['values']['query']['right_column'][$items[$pub_type_select]]['concept_type'];
 
-  
-  if( $form_state_right['pub_type'] == PUB_TYPE_ESPE_MAGAZINE || $query_right_column['pub_type']['#default_value'] == PUB_TYPE_ESPE_MAGAZINE ) {
-      
-    $form_state['select_concept_type'] = 
-    $form_state_right['pub_type'] ? $form_state_right['pub_type']:$form['query']['right_column']['pub_type']['#default_value'];
-     
-  }
+
   
   
   $options = get_books_role_options($form_state['select_concept_type']);
@@ -2337,7 +2351,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
   
     
   for ($i = 0; $i < $count_co_author; $i++) {
-
+    
     $co_authors_role[$i] = $publication->co_authors[$i]['rol_within_publication'] ? 
                            $publication->co_authors[$i]['rol_within_publication'] : 
                            get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1', $index = $i);
@@ -2360,7 +2374,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
         '</div>'
       ,
     );
-
+    
     
     $form['query']['right_column']['co_author_fieldset'][$i]['rol_within_publication'] = [
       '#id' => 'rol-within-publication-no-name-change',
@@ -2368,7 +2382,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       '#title' => t('Rol dentro de la Publicación'),
       '#options' => $options,
       '#default_value' => (isset($co_authors_role[$i]) ? $co_authors_role[$i] : ''),
-      '#required' => true,
+      // '#required' => true,
       '#description' => t(''),
       '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication-no-name-change">',
       '#suffix' => '</div></div></div>',
@@ -2380,8 +2394,10 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
           ],
         ],
       ],
+      '#access' => $access//in_array($form_state['input']['query']['right_column']['pub_type'],$access_rol_within_publication),
     ];
 
+    
   }
   $form['query']['right_column']['co_author_fieldset']['add_co_author_complete_book'] = array(
     '#type' => 'submit',
