@@ -276,7 +276,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->condition('c.field_pub_type_value', 201, '=');
       }
       // elseif ($id_type_publication == 15349) {
-      elseif ($id_type_publication == 20704 || $id_type_publication == 206 ) {
+      elseif ($id_type_publication == 20704 || $id_type_publication == 206 || $id_type_publication == 20708 ) {
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_pub_type_value', 206, '=');
       }
