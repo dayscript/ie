@@ -1441,6 +1441,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       $main_author_ref = isset($node->main_author_reference) ? $node->main_author_reference : [];
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
       
+      $co_authors = array_merge($main_author_ref, $co_authors);  
       
       // unset($node->co_authors);
       unset($node->alternate_language);
@@ -1458,7 +1459,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       if (isset($node->nid)) {
         
         if(count($co_authors) > 0){
-          $co_authors = array_merge($main_author_ref, $co_authors);  
+          
           foreach($co_authors as $key => $item){
             if( is_numeric($key) ){
               $values = array();
