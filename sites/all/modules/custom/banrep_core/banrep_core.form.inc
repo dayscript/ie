@@ -1127,11 +1127,12 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       $rol_within_publication = ROL_AUTHOR_COMPLETE_TID; 
       break;
     case PUB_TYPE_ESPE_MAGAZINE:
-      $concept_type = (
-        isset($values['fieldset_publication_espe_magazine']['concept_type']) ?
-        $values['fieldset_publication_espe_magazine']['concept_type'] :
-        $concept_type
-      );
+      // $concept_type = (
+      //   isset($values['fieldset_publication_espe_magazine']['concept_type']) ?
+      //   $values['fieldset_publication_espe_magazine']['concept_type'] :
+      //   $concept_type
+      // );
+      $concept_type = PUB_TYPE_ESPE_MAGAZINE;
       $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
       break;
       case PUB_TYPE_OTHERS_DOCUMENTS:
