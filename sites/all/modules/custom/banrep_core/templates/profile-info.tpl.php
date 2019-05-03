@@ -381,7 +381,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
           </div>
           <div class="col-lg-3">Escalafón Actual: 
             <span class="text-red">
-              <?php echo $user_load->field_usr_escalafon['und'][0]['tid'] ?> 
+              <?php echo taxonomy_term_load($user_load->field_usr_escalafon['und'][0]['tid'])->name ?> 
             </span>
           </div>
 
