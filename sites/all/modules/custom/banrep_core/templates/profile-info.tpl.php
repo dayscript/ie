@@ -365,19 +365,19 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
   <div class="col-lg-12 user-rgister-data">
           <?php $user_load = user_load($user_data['uid']) ?>
           <div class="col-lg-3">Puntaje Acomulado General: <?php echo $user_load->field_acumulado_general['und'][0]['value'] ?> </div>
-          <div class="col-lg-3">Puntaje Academico: <?php echo $user_load->field_puntaje_acumulado['und'][0]['value'] ?> </div>
+          <div class="col-lg-3">Puntaje Académico: <?php echo $user_load->field_puntaje_acumulado['und'][0]['value'] ?> </div>
           <div class="col-lg-3">Puntaje BR: <?php echo $user_load->field_puntaje_br[LANGUAGE_NONE][0]['value'] ?> </div>
-          <div class="col-lg-3">Escalafon Actual: <?php echo $user_load->field_usr_escalafon['und'][0]['tid'] ?> </div>
+          <div class="col-lg-3">Escalafón Actual: <?php echo $user_load->field_usr_escalafon['und'][0]['tid'] ?> </div>
 
-          <div class="col-lg-3">Fecha de ingreso al banco: 
+          <div class="col-lg-3">Fecha de Ingreso al Banco: 
             <br>
             <?php echo str_replace('- 0:00','',format_date($user_load->field_date_admission['und'][0]['value'], 'profile_investigator')) ?> 
           </div>
-          <div class="col-lg-3">Fecha Ultimo Puntaje: 
+          <div class="col-lg-3">Fecha Último Puntaje: 
             <br>
             <?php echo str_replace('- 0:00','',format_date($user_load->field_date_last_score['und'][0]['value'],'profile_investigator')) ?> 
           </div>
-          <div class="col-lg-3">Fecha Penultimo Puntaje
+          <div class="col-lg-3">Fecha Penúltimo Puntaje
             <br>
             <?php echo str_replace('- 0:00','',format_date($user_load->field_fecha_penultimo_puntaje['und'][0]['value'],'profile_investigator')) ?> 
           </div>
