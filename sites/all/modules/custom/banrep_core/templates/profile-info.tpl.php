@@ -369,9 +369,18 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
           <div class="col-lg-3">Puntaje BR: <?php echo $user_load->field_puntaje_br[LANGUAGE_NONE][0]['value'] ?> </div>
           <div class="col-lg-3">Escalafon Actual: <?php echo $user_load->field_usr_escalafon['und'][0]['tid'] ?> </div>
 
-          <div class="col-lg-3">Fecha de ingreso al banco: <br><?php echo str_replace('- 0:00','',format_date($user_load->field_date_admission['und'][0]['value'], 'profile_investigator')) ?> </div>
-          <div class="col-lg-3">Fecha Ultimo Puntaje: <br><?php echo str_replace('- 0:00','',format_date($user_load->field_date_last_score['und'][0]['value'],'profile_investigator')) ?> </div>
-          <div class="col-lg-3">Fecha Penultimo Puntaje <br><?php echo str_replace('- 0:00','',format_date($user_load->field_fecha_penultimo_puntaje['und'][0]['value'],'profile_investigator')) ?> </div>
+          <div class="col-lg-3">Fecha de ingreso al banco: 
+            <br>
+            <?php echo str_replace('- 0:00','',format_date($user_load->field_date_admission['und'][0]['value'], 'profile_investigator')) ?> 
+          </div>
+          <div class="col-lg-3">Fecha Ultimo Puntaje: 
+            <br>
+            <?php echo str_replace('- 0:00','',format_date($user_load->field_date_last_score['und'][0]['value'],'profile_investigator')) ?> 
+          </div>
+          <div class="col-lg-3">Fecha Penultimo Puntaje
+            <br>
+            <?php echo str_replace('- 0:00','',format_date($user_load->field_fecha_penultimo_puntaje['und'][0]['value'],'profile_investigator')) ?> 
+          </div>
           
   
   </div>
