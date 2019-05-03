@@ -4498,7 +4498,6 @@ form table ul {
 form table th.form-table__narrow-column,
 td .checkbox,
 th .checkbox {
-  width: -moz-min-content;
   width: -webkit-min-content;
   text-align: center;
 }
@@ -10954,6 +10953,14 @@ form .form-textarea {
 
 #banrep-plan-carrera-form .form-text {
   margin-left: 10px;
+}
+
+.text-red {
+  color: #860024;
+}
+
+.user-rgister-data div {
+  margin: 7px 0px;
 }
 
 .bg-gris-extra-claro {
