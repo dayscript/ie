@@ -1,6 +1,6 @@
 <?php
 
-/**
+/** 
  * @file
  * Form module functionality for the banrep_core module.
  */
@@ -1209,7 +1209,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
   
   foreach ($co_authors_author as $key => $name) {
     
-    if ( !empty($name) && is_numeric($key) ) { # evita agregar al arreglo los campos de agregar mas
+    if ( is_numeric($key) ) { # evita agregar al arreglo los campos de agregar mas
       // if (_is_registered_user_by_name($name)) {
         //$name = ( is_array($name) ? $name['co_authors_author']: $name );
         
@@ -1442,6 +1442,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
       
       $co_authors = array_merge($main_author_ref, $co_authors);  
+      
       
       // unset($node->co_authors);
       unset($node->alternate_language);
@@ -1901,23 +1902,23 @@ function _get_fieldset_publication_others_documents(&$form, &$form_state, &$publ
   ];
   $help =
     '<small>' .
-      '<ul>' .
-        '<li>' .
-          '<strong>Tipo A</strong>:'.
-          ' Publicados en el extranjero con editoriales que en el momento de su publicación' .
-          ' figuren en el Book Citation Index, en el SPI, Ranking General (Índice ICEE del' .
-          ' Consejo Superior de Publicaciones Científicas).' .
-        '</li>' .
-        '<li>' .
-          '<strong>Tipo B</strong>:'.
-          ' Publicados con organismos multilaterales, bancos centrales diferentes al Banco de' .
-          ' la República, y libros de la agenda de investigación de la Gerencia Técnica del BR.' .
-        '</li>' .
-        '<li>' .
-          '<strong>Tipo C</strong>:' .
-          ' Otros' .
-        '</li>
-      </ul>' .
+      // '<ul>' .
+      //   '<li>' .
+      //     '<strong>Tipo A</strong>:'.
+      //     ' Publicados en el extranjero con editoriales que en el momento de su publicación' .
+      //     ' figuren en el Book Citation Index, en el SPI, Ranking General (Índice ICEE del' .
+      //     ' Consejo Superior de Publicaciones Científicas).' .
+      //   '</li>' .
+      //   '<li>' .
+      //     '<strong>Tipo B</strong>:'.
+      //     ' Publicados con organismos multilaterales, bancos centrales diferentes al Banco de' .
+      //     ' la República, y libros de la agenda de investigación de la Gerencia Técnica del BR.' .
+      //   '</li>' .
+      //   '<li>' .
+      //     '<strong>Tipo C</strong>:' .
+      //     ' Otros' .
+      //   '</li>
+      // </ul>' .
     '</small>'
   ;
   $form['query']['right_column']['fieldset_publication_others_documents']['close_book'] = [
