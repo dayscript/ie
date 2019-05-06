@@ -5293,7 +5293,7 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
   foreach ($co_authors as $key => $co_author) {
     if (isset($co_author['uid']) && isset($co_author['rid'])) {
       $user = user_load($co_author['uid']);
-      dpm($user);
+      
       $user_full_name = field_get_items('user', $user, 'field_full_name');
       $user_research_group =
         field_get_items('user', $user, 'field_research_group')
