@@ -5266,16 +5266,16 @@ function _banrep_recorte_palabras($ad, $words_number = 200) {
 function _publication_create_co_authors_banco($source_nid, $co_authors, $approved = FALSE){
   
   # verified the $co_authors param have the property tid and uid
-  foreach($co_authors as $key => $co_author){
-    if(is_numeric($key)){
-      if(!in_array('tid',$co_author) || !in_array('rid', $co_author) || !in_array('uid',$co_author)){
-        $tid_and_uid = _get_co_author_uid_by_name($co_author['co_authors_author']);
-        $co_authors[$key]['tid'] = $tid_and_uid['tid'];
-        $co_authors[$key]['uid'] = $tid_and_uid['uid'];
-        $co_authors[$key]['rid'] = $co_author['rol_within_publication'];
-      }
-    }
-  }
+  // foreach($co_authors as $key => $co_author){
+  //   if(is_numeric($key)){
+  //     if(!in_array('tid',$co_author) || !in_array('rid', $co_author) || !in_array('uid',$co_author)){
+  //       $tid_and_uid = _get_co_author_uid_by_name($co_author['co_authors_author']);
+  //       $co_authors[$key]['tid'] = $tid_and_uid['tid'];
+  //       $co_authors[$key]['uid'] = $tid_and_uid['uid'];
+  //       $co_authors[$key]['rid'] = $co_author['rol_within_publication'];
+  //     }
+  //   }
+  // }
 
   $source_pub = node_load($source_nid);
   $query = new EntityFieldQuery();
@@ -5289,9 +5289,11 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
   if (!empty($pub_user_nids_to_be_deleted)) {
     $pub_user_nids_to_be_deleted = $pub_user_nids_to_be_deleted['node'];
   }
+  
   foreach ($co_authors as $key => $co_author) {
     if (isset($co_author['uid']) && isset($co_author['rid'])) {
       $user = user_load($co_author['uid']);
+      dpm($user);
       $user_full_name = field_get_items('user', $user, 'field_full_name');
       $user_research_group =
         field_get_items('user', $user, 'field_research_group')
@@ -5339,7 +5341,7 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
       $pub_user_base->status = 1;
       $pub_user_base->promote = 0;
       $pub_user_base->sticky = 0;
-      $pub_user_base->comment = 0;
+      $pub_user_base->comment = 0; 
       if ($approved) {
         $pub_user_base->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'] = 3;
         $pub_user_base->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'] = 3;
