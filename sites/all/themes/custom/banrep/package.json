@@ -39,9 +39,11 @@
   "scripts": {
     "postinstall": "find node_modules/ -name '*.info' -type f -delete",
     "test": "gulp",
-    "start": "gulp build"
+    "start": "gulp build",
+    "watch": "gulp watch"
   },
   "dependencies": {
-    "gulp-install": "^0.6.0"
+    "gulp-install": "^0.6.0",
+    "node-sass": "^4.12.0"
   }
 }
