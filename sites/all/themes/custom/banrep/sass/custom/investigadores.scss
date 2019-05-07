@@ -115,3 +115,36 @@
     border-bottom: none;
   }
 }
+
+
+#user-training-entityform-edit-form{
+  table{ 
+    tr{
+      background-color: #fff !important;
+    }
+  }
+  .group-header,.group-left,.group-right,.group-footer {
+    display: inline-block;
+    margin: 20px 0px;
+  }
+  
+  .group-header > div{
+    min-width: 100%;
+    margin: 10px 0px; 
+  }
+  .group-footer > div {
+    max-width: 330px;
+    display: inline-block;
+    margin: 17px 50px; 
+  }
+
+  #edit-field-studies-carried-out-und-0-field-fecha-inicio-estudio-und-0-value label{
+    display: none;
+  }
+  #edit-field-studies-carried-out-und-0-field-fecha-fin-estudio-und-0-value label{
+    display: none;
+  }
+
+}
+
+

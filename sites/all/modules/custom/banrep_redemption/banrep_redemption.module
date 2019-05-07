@@ -1,5 +1,6 @@
 <?php
 
+module_load_include('inc', 'banrep_redemption', 'banrep_functions');
 
 /**
  * Implements hook_menu().
@@ -15,14 +16,14 @@ function banrep_redemption_menu()
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  $items['profile/training/add'] = array(
-    'title' => t('Create Traning'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('banrep_redemption_add_form', 1),
-    //'access arguments' => array('publicar contenido investigador'),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
+  // $items['profile/training/add'] = array(
+  //   'title' => t('Create Traning'),
+  //   'page callback' => 'drupal_get_form',
+  //   'page arguments' => array('banrep_redemption_add_form', 1),
+  //   //'access arguments' => array('publicar contenido investigador'),
+  //   'access callback' => TRUE,
+  //   'type' => MENU_CALLBACK,
+  // );
 
 
   $items['proceso/update-state'] = array(
@@ -36,283 +37,57 @@ function banrep_redemption_menu()
 }
 
 
-function banrep_redemption_add_form($form, &$form_state, $type) {
-
-
-  $form['#attributes']['enctype'] = 'multipart/form-data';
-  $form['#prefix'] = '<div id="ajax_form_multistep_form"><div class="col-md-12">';
-  $form['#suffix'] = '</div></div>';
-  $form['#attributes']['class'] = 'activities_add_form';
-
-
-  $form['query']['content'] = [
-    '#type' => 'container',
-    '#attributes' => [
-      'class' => [
-        'demo',
-      ],
-    ],
-    '#weight' => 1,
-  ];
-
- $fields = array();
-  switch ($type) {
-    case 'redemption':
-      $vid = 26;
-      break;
-    case 'training':
-
-    $options_date = range(2018, 1950);
-      $fields['publication_year'] = array(
-        '#type' => 'select',
-        '#title' => t('Year'),
-        '#options' => array_combine($options_date, $options_date),
-        '#default_value' => get_input_value_from_publication($publication, 'act_year'),
-        '#description' => t(''),
-        '#prefix' => '<div class="row"><div class="col-md-3 col-sm-12">',
-        '#suffix' => '</div>',
-        '#required' => TRUE,
-      );
-
-      $fields['start_date'] = array(
-        '#title'=>t('Start date'),
-        '#date_format' => 'd-m-Y',
-        '#date_year_range' => '-30:+1',
-        '#type' => 'date_popup',
-        '#default_value'=>get_input_value_from_publication($publication, 'start_date'),
-        '#required' => TRUE,
-        '#prefix' => '<div class="col-md-3 col-sm-12">',
-        '#suffix' => '</div>',
-      );
-
-      $fields['end_date'] = array(
-        '#title'=>t('End Date'),
-        '#date_format' => 'd-m-Y',
-        '#date_year_range' => '-30:+1',
-        '#type' => 'date_popup',
-        '#default_value'=>get_input_value_from_publication($publication, 'end_date'),
-        '#required' => TRUE,
-        '#prefix' => '<div class="col-md-3 col-sm-12">',
-        '#suffix' => '</div>',
-      );
-
-
-      $fields['visibility'] = array(
-        '#title' => t('Public/Private'),
-        '#type' => 'select',
-        '#description' => t('Public is visible for all people'),
-        '#options' => array('' => t('-Select-'), 'publico' => t('Public'), 'privado' => t('Private')),
-        '#default_value' => get_input_value_from_publication($publication, 'visibility'),
-        '#required' => TRUE,
-        '#prefix' => '<div class="col-md-3 col-sm-12">',
-        '#suffix' => '</div></div>',
-      );
-      $fields['file'] = array(
-        '#title' => t('Attach evidence'),
-        '#type' => 'managed_file',
-        '#default_value' => get_input_value_from_publication($publication, 'attach_doc'),
-        '#description' => t('Upload an evidence document in pdf format'),
-        '#upload_location' => 'public://activity',
-        "#upload_validators"  => array(
-          'file_validate_extensions' => 'pdf',
-          '_file_validate_unique' => array($file),
-        ),
-        '#required' => TRUE,
-      );
-      global $user;
-      $usuario = user_load($user->uid);
-      $route        = $usuario->field_ruta['und'][0]['target_id'];
-      $scale        = $usuario->field_usr_escalafon['und'][0]['tid'];
-      module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions');
-      $requirements = get_requirements($scale, $route,'training');
-      $tids = array();
-      foreach ($requirements as $rule) {
-         foreach ($rule as $key => $requirement) {
-           if ($key == 'operator') {
-            continue;
-           }
-           $structure =  taxonomy_get_parents_all($requirement);
-           foreach ($structure as $tax) {
-             if ($tax->tid != $requirement) {
-               $tids[] = $tax->tid;
-             }
-             // code...
-           }
-           $tids[] = $requirement;
-         }
-      }
-      drupal_add_js(array('redemption' => array('tids' => $tids)), array('type' => 'setting'));
-      $vid = 23;
-      break;
-  }
-  $form['query']['content']['type_concept_formation'] = array(
-    '#type' => 'hierarchical_select',
-    '#title' => t('Concept'),
-    '#config' => array(
-      'module' => 'hs_taxonomy',
-      'params' => array(
-        'vid' => $vid, // Enter your vocabulary ID here.
-        'root_term' => NULL, // Enter a term ID here if you want to display only terms below the term with that ID.
-      ),
-      'save_lineage'    => 0,
-      'enforce_deepest' => 1,
-      'entity_count'    => 0,
-      'require_entity'  => 0,
-      'resizable'       => 1,
-      'level_labels' => array(
-        'status' => 1,
-        'labels' => array(
-          0 => t('-Select-'),
-          1 => t('-Select-'),
-          2 => t('-Select-'),
-          3 => t('-Select-'),
-        ),
-      ),
-      'dropbox' => array(
-        // Only allow for a single term or single lineage to be selected.
-        'status' => 0,
-      ),
-      'editability' => array(
-        // Creating new terms from within a form to filter by existing terms
-        // doesn't make sense, hence it is disabled.
-        'status' => 0,
-      ),
-    ),
-    '#default_value' =>  get_input_value_from_publication($publication, 'concept_formation'),
-  );
-
-  $form['query']['content']['description'] = array(
-    '#title' => t('Description'),
-    '#type' => 'textarea',
-    '#default_value' => get_input_value_from_publication($publication, 'description'),
-    '#required' => TRUE,
-  );
-
-  if (count($fields) > 0 ) {
-    $form += $fields;
-  }
-
-
-  $form['buttons']['submit'] = [
-        '#type' => 'submit',
-        '#value' => t('Save') . ' ❯',
-  ];
-  drupal_add_js(drupal_get_path('module', 'banrep_redemption') . '/redemption.js');
-
-  return $form;
-}
-
-
-function banrep_redemption_add_form_submit($form, &$form_state) {
-  global $user;
-  $type = arg(1);
-  if (empty($type)) {
-    drupal_set_message(t('Error saving content.'), 'error', FALSE);
-    return FALSE;
-  }
-
-  $node = NULL;
-  $node = new stdClass();
-  $node->type = $type;
-  $node->language = LANGUAGE_NONE;
-  node_object_prepare($node);
-  $node->status = 0;
-  $node->promote = 0;
-  $node->sticky = 0;
-  $node->comment = 0;
-  $node->uid = $user->uid;
-  $node->title = time();
-  $node->body['und'][0]['value'] = isset($form_state['values']['description']) ? $form_state['values']['description'] : '';
-  $field_concept = 'field_red_concepto';
-  $message = 'Nuevo registro de redención creado correctamente';
-
-  if ($type == 'training') {
-    $field_concept = 'field_concept_formation';
-    $message = 'Nuevo registro de formación y desarrollo creado correctamente';
-  }
-
-  if (isset($form_state['values']['start_date'])) {
-    $date =  strtotime($form_state['values']['start_date']);
-    $node->field_frm_date_start['und'][0]['value'] = $date;
-  }
-  if (isset($form_state['values']['end_date'])) {
-    $date =  strtotime($form_state['values']['end_date']);
-    $node->field_frm_date_end['und'][0]['value'] = $date;
-  }
-  if (isset($form_state['values']['publication_year'])) {
-    $node->field_year['und'][0]['value'] = $form_state['values']['publication_year'];
-  }
-  if (isset($form_state['values']['visibility'])) {
-    $node->field_act_status['und'][0]['value'] = $form_state['values']['visibility'];
-  }
-
-  if (isset($form_state['values']['type_concept_formation']) && !empty($form_state['values']['type_concept_formation'])) {
-    $node->{$field_concept}['und'][0]['tid'] = $form_state['values']['type_concept_formation'];
-    $puntaje = _get_puntaje_concepto_tax($form_state['values']['type_concept_formation']);
-    if ($puntaje) {
-      $node->field_puntaje['und'][0]['value'] = $puntaje;  
-    }
-      
-  }
-  $file = NULL;
-  if (isset($form_state['values']['file'])) {
-    $file = file_load($form_state['values']['file']);
-    $file->filename = $file->fid . '-' . time();
-    $file->status = FILE_STATUS_PERMANENT;
-    file_save($file);
-    $node->field_re_attach_doc[LANGUAGE_NONE][0] = (array)$file;
-    $node->field_re_attach_doc[LANGUAGE_NONE][0]['display'] = 1;
-  }
-
-  node_save($node);
-
-  if (isset($node->nid) && is_numeric($node->nid) && $node->nid > 0) {
-    drupal_set_message(t($message));
-    if (isset($file->nid)) {
-      file_usage_add($file, 'banrep_core', 'node', $node->nid);
-    }
-    drupal_goto('dashboard');
-  }
-}
-
-function banrep_redemption_update_state()
-{
-  $query = new EntityFieldQuery;
-  $query->entityCondition('entity_type', 'user')
-        ->addTag('role_filter');
-  $result = $query->execute();
-  $uids = array_keys($result['user']);
-  foreach( $uids as $uid )
-  {
-    //Comparación de requisitios
-  }
-  echo "<pre>"; print_r($uids); echo "</pre>";
-}
-/*
- * Funcion que carga le puntaje del concepto
+/**
+ * Implements hook_node_update().
  */
-function _get_puntaje_concepto_tax($tid,$uid = 0) {
-  if ($uid == 0) {
-    global $user;
-    $usuario = user_load($user->uid);
-  }
-  else {
-   $usuario = user_load($uid); 
-  }
-  $ruta = isset($usuario->field_ruta['und'][0]['target_id']) ? $usuario->field_ruta['und'][0]['target_id'] : 0;
-  $query = db_select('taxonomy_term_data', 't');
-  $query->addField('p', 'field_puntajes_puntaje_value', 'puntaje');
-  $query->join('field_data_field_puntajes', 'f', 'f.entity_id = t.tid');
-  $query->join('field_data_field_puntajes_puntaje', 'p', 'p.entity_id = f.field_puntajes_value');
-  $query->join('field_data_field_ruta', 'r', 'r.entity_id = f.field_puntajes_value');
-  $query->condition('t.tid', $tid);
-  $query->condition('r.field_ruta_target_id', $ruta);
-  $result = $query->execute()->fetchObject();
 
-  if (isset($result->puntaje) && !empty($result->puntaje) && !is_null($result->puntaje) && is_numeric($result->puntaje)) {
-    return $result->puntaje;
+function banrep_redemption_entity_update($entity, $type){
+  dpm($entity);
+  switch ($type) {
+    case 'entityform':
+      $user = user_load($entity->uid);
+      $field_collection_id = $entity->original->field_studies_carried_out['und'][0]['value'];
+      $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
+      
+      $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
+      if( $field_collection->field_aprobado['und'][0]['value'] == 1 ){
+        if( $user_field_index === true ){
+          //crear
+          $values['field_name'] = 'field_studies_carried_out';
+          $entity = entity_create('field_collection_item', $values);
+          $entity->setHostEntity('user', $user);
+          $entity->field_req_formacion_desempeno = $field_collection->field_req_formacion_desempeno;
+          $entity->field_titulo = $field_collection->field_titulo; 
+          $entity->field_university = $field_collection->field_university; 
+          $entity->field_fecha_inicio_estudio = $field_collection->field_fecha_inicio_estudio; 
+          $entity->field_fecha_fin_estudio = $field_collection->field_fecha_fin_estudio; 
+          $entity->field_year = $field_collection->field_year; 
+          $entity->field_tipo_posgrado = $field_collection->field_tipo_posgrado; 
+          $entity->field_nivel_estudio = $field_collection->field_nivel_estudio; 
+          $entity->field_lugar_posgrado = $field_collection->field_lugar_posgrado; 
+          $entity->field_support_file = $field_collection->field_support_file; 
+          $entity->field_pr_visibility = $field_collection->field_pr_visibility; 
+          $entity->field_aprobado = $field_collection->field_aprobado; 
+          $entity->save();
+          user_save($user);
+        }
+        drupal_set_message('Estudio académico asignado correctamente','status');
+      
+      }
+      break;
+    
+    default:
+      # code...
+      break;
   }
-  else {
-    return FALSE;
-  }
+  
 }
+
+
+// function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  
+//   global $user;
+//   if( empty($form['field_usuario']['und'][0]['target_id']['#default_value']) ){
+//     $form['field_usuario']['und'][0]['target_id']['#default_value']  = $user->mail.'('. $user->uid .')';
+//   }
+// }
