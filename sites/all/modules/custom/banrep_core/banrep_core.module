@@ -2818,19 +2818,123 @@ function get_academics_profiles_order(){
 
 
 function profile_work_in_progress_form($form, &$form_state, $account = NULL){
-    $form = array();
-    $form['#tree'] = TRUE;
-    $form['#attributes']['class'] = 'profile_work_in_progress_form';
+  $form = array();
+  $form['#tree'] = TRUE;
+  $form['#attributes']['class'] = 'profile_work_in_progress_form';
+  //var_dump( entity_load('field_trabajos_en_curso', $account->field_trabajos_en_curso[LANGUAGE_NONE][0]['value']) );
+  $form['field_trabajos_en_curso'] = [
+    '#type' => 'container',
+    '#tree' => TRUE,
+    '#prefix' => '<div id="js-ajax-elements-wrapper">', '#suffix' => '</div>',
+  ];
 
-  $form['work_in_progress'] = array(
-    '#title' => t('Work in progress'),
-    '#type' => 'text_format',
-    '#format' => 'rich_text',
-    '#description' => t(''),
-    '#default_value' => get_input_value_from_account($account, 'field_work_in_progress'),
-  );
+  $form_state['field_deltas'] = isset($form_state['field_trabajos_en_curso']) ? $form_state['field_trabajos_en_curso'] : $account->field_trabajos_en_curso['und'];
 
-  $ajax = array(
+  $form_state['num_field_cuentas_bancarias'] = count($form_state['field_deltas']) > 0 ? count($form_state['field_deltas']) : 0;
+
+  for ($delta = 0; $delta < $form_state['num_field_cuentas_bancarias']; $delta++) {
+    $form['field_trabajos_en_curso'][$delta] = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#prefix' => '<div class="group-trabajos">', '#suffix' => '</div>',
+    ];
+    $form['field_trabajos_en_curso'][$delta]['titulo_trabajo'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Título',
+      '#size' => 60, 
+      '#maxlength' => 254,
+      '#default_value' => $account->field_trabajos_en_curso['und'][0]['value'],
+      //isset($account->field_titulo_trabajo['und'][0]['value']) ? $account->field_titulo_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $tags = array();
+    foreach ($account->field_areas_tematicas['und'] as $item) {
+      $tags[$item['tid']] = isset($item['taxonomy_term']) ? $item['taxonomy_term'] : taxonomy_term_load($item['tid']);
+    }
+
+    $form['field_trabajos_en_curso'][$delta]['areas_tematicas'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Áreas temáticas'),
+      '#autocomplete_path' => 'taxonomy/autocomplete/field_areas_tematicas',
+      '#size' => 60,
+      '#maxlength' => 1024,
+      '#default_value' => taxonomy_implode_tags($tags),
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['objetivo_trabajo'] = array(
+      '#type' => 'textarea',
+      '#title' => 'Objetivo',
+      '#description' => t(''),
+      '#default_value' => isset($account->field_objetivo_trabajo['und'][0]['value']) ? $account->field_objetivo_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['identificador_sepi_trabajo'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Identificador SEPI',
+      '#size' => 60, 
+      '#maxlength' => 254,
+      '#default_value' => isset($account->field_identificador_sepi_trabajo['und'][0]['value']) ? $account->field_identificador_sepi_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">','#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['estado_trabajo'] = array(
+      '#title' => t('Estado'),
+      '#type' => 'select',
+      '#options' => array(
+        "" => t('- Ninguno -'),
+        "publico" => t('Public'),
+        "privado" => t('Privado')
+      ),
+      '#default_value' => isset($account->field_estado_trabajo['und'][0]['value']) ? $account->field_estado_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['work_in_progress'] = array(
+      '#title' => t('Work in progress'),
+      '#type' => 'text_format',
+      '#format' => 'rich_text',
+      '#description' => t(''),
+      '#default_value' => get_input_value_from_account($account, 'field_work_in_progress'),
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['remove_name'] = array(
+      '#type' => 'submit',
+      '#value' => t('Eliminar'),
+      '#submit' => ['banrep_core__add_more_ajax_remove'],
+      '#limit_validation_errors' => array(),
+      '#ajax' => array(
+        'callback' => 'banrep_core_add_more_ajax_add_one_callback',
+        'wrapper' => 'js-ajax-elements-wrapper',
+      ),
+      '#attributes' => array(
+        'class' => ['button-small'],
+      ),
+      '#name' => 'remove_name_' . $delta,
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+  }
+
+  $form['field_trabajos_en_curso']['add_name'] = [
+    '#type' => 'submit',
+    '#value' => t('Agregar'),
+    '#submit' => array('banrep_core_add_more_ajax_add_one'),
+    '#ajax' => [
+      'callback' => 'banrep_core_add_more_ajax_add_one_callback',
+      'wrapper' => 'js-ajax-elements-wrapper',
+    ],
+    '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+  ];
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#prefix' => '<div class="row"><div class="col-md-12">',
+    '#suffix' => '</div></div>',
+    '#ajax' => array(
       'callback' => 'profile_work_in_progress_form_ajax_submit',
       'wrapper' => '',
       'effect' => 'fade',
@@ -2839,32 +2943,40 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
           'message' => NULL,
       ),
       'event' => 'click',
-  );
-  // form submit
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-    '#prefix' => '<div class="row"><div class="col-md-12">',
-    '#suffix' => '</div></div>',
-     '#ajax' => $ajax,
+    ),
   );
 
   return $form;
 }
 
-
 function profile_work_in_progress_form_ajax_submit($form, &$form_state){
   global $user;
   $values = isset($form_state['values']) ? $form_state['values'] : FALSE;
-  $field_work = isset($values['work_in_progress']['value'])?$values['work_in_progress']['value']: '';
   $msg = t('Your changes have been successfully saved!');
   $response = new stdClass();
   $response->success = FALSE;
   $response->is_valid = TRUE;
   $response->message = $msg;
+
   if($response->is_valid){
     $user_fields = user_load($user->uid);
-    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['value'] = $field_work;
+    
+    $user_fields->field_titulo_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['titulo_trabajo']) ? $values['titulo_trabajo'] : '';
+    $user_fields->field_titulo_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
+
+    $user_fields->field_areas_tematicas[LANGUAGE_NONE] = [];
+    $user_fields->field_areas_tematicas[LANGUAGE_NONE] = areas_tematicas_autocomplete($values['areas_tematicas']);
+
+    $user_fields->field_objetivo_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['objetivo_trabajo']) ? $values['objetivo_trabajo'] : '';
+    $user_fields->field_objetivo_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
+
+    $user_fields->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['identificador_sepi_trabajo']) ? $values['identificador_sepi_trabajo'] : '';
+    $user_fields->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
+
+    $user_fields->field_estado_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['estado_trabajo']) ? $values['estado_trabajo'] : '';
+    $user_fields->field_estado_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
+
+    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($values['work_in_progress']['value']) ? $values['work_in_progress']['value'] : '';
     $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['format'] = 'rich_text';
     user_save($user_fields);
     $response->success = TRUE;
@@ -2876,7 +2988,53 @@ function profile_work_in_progress_form_ajax_submit($form, &$form_state){
           array('command' => 'responseRecommendedLinksForm', 'data' => $response, 'msg' =>$msg),
       ),
   );
+}
 
+function areas_tematicas_autocomplete($tags) {
+  $areas_ids = array();
+  $termes = taxonomy_vocabulary_get_names();
+  $taxonomy_vid = $termes['areas_tematicas']->vid;
+  $areas = explode(',', str_replace(' ', '', $tags));
+
+  foreach ($areas as $key => $value) {
+    $areas_tematicas_terms = taxonomy_get_term_by_name($value, 'areas_tematicas');
+      if(isset($areas_tematicas_terms) && !empty($areas_tematicas_terms)) {
+        array_push($areas_ids, array('tid' => key($areas_tematicas_terms)));
+      }else{
+        $term1 = (object) array(
+          'name' => $value,
+          'vid' => $taxonomy_vid,
+        );
+        taxonomy_term_save($term1);
+        array_push($areas_ids, array('tid' => key(taxonomy_get_term_by_name($value, 'areas_tematicas')) ));
+      }
+  }
+  return $areas_ids;
+}
+
+function banrep_core_add_more_ajax_add_one($form, &$form_state) {
+  $form_state['field_deltas'][] = count($form_state['field_deltas']) > 0 ? max($form_state['field_deltas']) + 1 : 0;
+  if (empty($form_state['num_field_trabajos_en_curso'])) {
+    $form_state['num_field_trabajos_en_curso'] = 0;
+  }
+  $form_state['num_field_trabajos_en_curso']++;
+  $form_state['rebuild'] = TRUE;
+  drupal_get_messages();
+}
+
+function banrep_core_add_more_ajax_add_one_callback($form, $form_state) {
+  return $form['field_trabajos_en_curso'];
+}
+
+function banrep_core_add_more_ajax_remove($form, &$form_state) {
+  $delta_remove = $form_state['triggering_element']['#parents'][1];
+  unset($form_state['field_deltas'][$delta_remove]);
+    
+  if ($form_state['num_field_trabajos_en_curso'] > 1) {
+    $form_state['num_field_trabajos_en_curso']--;
+  }
+  $form_state['rebuild'] = TRUE;
+  drupal_get_messages();
 }
 
 /**
