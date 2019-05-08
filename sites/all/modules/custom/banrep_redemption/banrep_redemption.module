@@ -50,7 +50,7 @@ function banrep_redemption_entity_update($entity, $type){
       // $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
       
       $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
-      if( $field_collection->field_aprobado['und'][0]['value'] == 'SI' ){
+      if( $field_collection->field_aprobado['und'][0]['value'] == 1 ){
         //crear
         $values['field_name'] = 'field_studies_carried_out';
         $entity = entity_create('field_collection_item', $values);
