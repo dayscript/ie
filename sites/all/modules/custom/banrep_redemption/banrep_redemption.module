@@ -82,10 +82,10 @@ function banrep_redemption_entity_update($entity, $type){
 }
 
 
-// function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+ 
+  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/forms.js';
   
-//   global $user;
-//   if( empty($form['field_usuario']['und'][0]['target_id']['#default_value']) ){
-//     $form['field_usuario']['und'][0]['target_id']['#default_value']  = $user->mail.'('. $user->uid .')';
-//   }
-// }
+}
+
+
