@@ -635,6 +635,10 @@ function banrep_core_theme($existing, $type, $theme, $path) {
       'file' => 'banrep_core.pages.inc',
       'variables' => array('items' => NULL),
     ),
+    'banrep_core_profile_trabajos_en_curso' => array(
+      'template' => 'templates/profile-trabajos-en-curso',
+      'variables' => array('user_data' => NULL),
+    ),
   );
 }
 
@@ -2816,40 +2820,48 @@ function get_academics_profiles_order(){
   return $items;
 }
 
-
+/**
+* Profile Work in progress Form
+*/
 function profile_work_in_progress_form($form, &$form_state, $account = NULL){
   $form = array();
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'profile_work_in_progress_form';
-  //var_dump( entity_load('field_trabajos_en_curso', $account->field_trabajos_en_curso[LANGUAGE_NONE][0]['value']) );
+
   $form['field_trabajos_en_curso'] = [
     '#type' => 'container',
     '#tree' => TRUE,
     '#prefix' => '<div id="js-ajax-elements-wrapper">', '#suffix' => '</div>',
   ];
 
-  $form_state['field_deltas'] = isset($form_state['field_trabajos_en_curso']) ? $form_state['field_trabajos_en_curso'] : $account->field_trabajos_en_curso['und'];
+  $form_state['field_deltas'] = isset($form_state['field_deltas']) ? $form_state['field_deltas'] : $account->field_trabajos_en_curso['und'];
+  $form_state['field_deltas_delete'] = isset($form_state['field_deltas_delete']) ? $form_state['field_deltas_delete'] : [];
 
-  $form_state['num_field_cuentas_bancarias'] = count($form_state['field_deltas']) > 0 ? count($form_state['field_deltas']) : 0;
+  foreach ($form_state['field_deltas']  as $delta => $value) {
+    $form['field_trabajos_en_curso'][$delta] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Trabajo en curso'),
+    );
 
-  for ($delta = 0; $delta < $form_state['num_field_cuentas_bancarias']; $delta++) {
-    $form['field_trabajos_en_curso'][$delta] = [
-      '#type' => 'container',
-      '#tree' => TRUE,
-      '#prefix' => '<div class="group-trabajos">', '#suffix' => '</div>',
+    $entity_id = $value['value'];
+    $field = entity_load('field_collection_item',  array($entity_id));
+
+    $form['field_trabajos_en_curso'][$delta]['id_trabajos_en_curso'] = [
+      '#type' => 'hidden',
+        '#value' => isset($entity_id) ? $entity_id : 0,
     ];
+
     $form['field_trabajos_en_curso'][$delta]['titulo_trabajo'] = array(
       '#type' => 'textfield',
       '#title' => 'Título',
       '#size' => 60, 
       '#maxlength' => 254,
-      '#default_value' => $account->field_trabajos_en_curso['und'][0]['value'],
-      //isset($account->field_titulo_trabajo['und'][0]['value']) ? $account->field_titulo_trabajo['und'][0]['value'] : '',
+      '#default_value' => isset($field[$entity_id]->field_titulo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_titulo_trabajo['und'][0]['value'] : '',
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
     );
 
     $tags = array();
-    foreach ($account->field_areas_tematicas['und'] as $item) {
+    foreach ($field[$entity_id]->field_areas_tematicas['und'] as $item) {
       $tags[$item['tid']] = isset($item['taxonomy_term']) ? $item['taxonomy_term'] : taxonomy_term_load($item['tid']);
     }
 
@@ -2860,15 +2872,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       '#size' => 60,
       '#maxlength' => 1024,
       '#default_value' => taxonomy_implode_tags($tags),
-      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
-    );
-
-    $form['field_trabajos_en_curso'][$delta]['objetivo_trabajo'] = array(
-      '#type' => 'textarea',
-      '#title' => 'Objetivo',
-      '#description' => t(''),
-      '#default_value' => isset($account->field_objetivo_trabajo['und'][0]['value']) ? $account->field_objetivo_trabajo['und'][0]['value'] : '',
-      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+      '#prefix' => '<div class="group-item col-xs-4">', '#suffix' => '</div>',
     );
 
     $form['field_trabajos_en_curso'][$delta]['identificador_sepi_trabajo'] = array(
@@ -2876,8 +2880,8 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       '#title' => 'Identificador SEPI',
       '#size' => 60, 
       '#maxlength' => 254,
-      '#default_value' => isset($account->field_identificador_sepi_trabajo['und'][0]['value']) ? $account->field_identificador_sepi_trabajo['und'][0]['value'] : '',
-      '#prefix' => '<div class="group-item col-xs-12">','#suffix' => '</div>',
+      '#default_value' => isset($field[$entity_id]->field_identificador_sepi_trabajo['und'][0]['value']) ? $field[$entity_id]->field_identificador_sepi_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-4">','#suffix' => '</div>',
     );
 
     $form['field_trabajos_en_curso'][$delta]['estado_trabajo'] = array(
@@ -2888,26 +2892,34 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
         "publico" => t('Public'),
         "privado" => t('Privado')
       ),
-      '#default_value' => isset($account->field_estado_trabajo['und'][0]['value']) ? $account->field_estado_trabajo['und'][0]['value'] : '',
+      '#default_value' => isset($field[$entity_id]->field_estado_trabajo['und'][0]['value']) ? $field[$entity_id]->field_estado_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-4">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['objetivo_trabajo'] = array(
+      '#type' => 'textarea',
+      '#title' => 'Objetivo',
+      '#description' => t(''),
+      '#default_value' => isset($field[$entity_id]->field_objetivo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_objetivo_trabajo['und'][0]['value'] : '',
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
     );
 
-    $form['field_trabajos_en_curso'][$delta]['work_in_progress'] = array(
+    /*$form['field_trabajos_en_curso'][$delta]['work_in_progress'] = array(
       '#title' => t('Work in progress'),
       '#type' => 'text_format',
       '#format' => 'rich_text',
       '#description' => t(''),
-      '#default_value' => get_input_value_from_account($account, 'field_work_in_progress'),
+      '#default_value' => isset($field[$entity_id]->field_work_in_progress['und'][0]['value']) ? $field[$entity_id]->field_work_in_progress['und'][0]['value'] : '',
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
-    );
+    );*/
 
     $form['field_trabajos_en_curso'][$delta]['remove_name'] = array(
       '#type' => 'submit',
-      '#value' => t('Eliminar'),
-      '#submit' => ['banrep_core__add_more_ajax_remove'],
+      '#value' => t('- Eliminar Trabajo en curso'),
+      '#submit' => ['profile_work_in_progress_form_add_more_ajax_remove'],
       '#limit_validation_errors' => array(),
       '#ajax' => array(
-        'callback' => 'banrep_core_add_more_ajax_add_one_callback',
+        'callback' => 'profile_work_in_progress_form_add_more_ajax_callback',
         'wrapper' => 'js-ajax-elements-wrapper',
       ),
       '#attributes' => array(
@@ -2916,14 +2928,15 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       '#name' => 'remove_name_' . $delta,
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
     );
+
   }
 
   $form['field_trabajos_en_curso']['add_name'] = [
     '#type' => 'submit',
-    '#value' => t('Agregar'),
-    '#submit' => array('banrep_core_add_more_ajax_add_one'),
+    '#value' => t('+ Añadir Trabajo en curso'),
+    '#submit' => array('profile_work_in_progress_form_add_more_ajax_add'),
     '#ajax' => [
-      'callback' => 'banrep_core_add_more_ajax_add_one_callback',
+      'callback' => 'profile_work_in_progress_form_add_more_ajax_callback',
       'wrapper' => 'js-ajax-elements-wrapper',
     ],
     '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
@@ -2932,11 +2945,9 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#prefix' => '<div class="row"><div class="col-md-12">',
-    '#suffix' => '</div></div>',
     '#ajax' => array(
       'callback' => 'profile_work_in_progress_form_ajax_submit',
-      'wrapper' => '',
+      'wrapper' => 'js-ajax-elements-wrapper',
       'effect' => 'fade',
       'progress' => array(
           'type' => 'throbber',
@@ -2944,6 +2955,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       ),
       'event' => 'click',
     ),
+    '#prefix' => '<div class="row"><div class="col-md-12">', '#suffix' => '</div></div>',
   );
 
   return $form;
@@ -2951,46 +2963,57 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
 function profile_work_in_progress_form_ajax_submit($form, &$form_state){
   global $user;
+
+  foreach ($form_state['field_deltas_delete'] as $key => $work) {
+    $field_collection_item_value = $work['value'];
+    entity_delete_multiple('field_collection_item', array($field_collection_item_value));
+  }
+  
   $values = isset($form_state['values']) ? $form_state['values'] : FALSE;
+  foreach ($values['field_trabajos_en_curso'] as $key => $work) {
+     $field_collection_item_value = $work['id_trabajos_en_curso'];
+    if(is_numeric($field_collection_item_value)){
+      if ($field_collection_item_value == 0) {
+        $user = user_load('934');
+        $values['field_name'] = 'field_trabajos_en_curso';
+        $entity = entity_create('field_collection_item', $values);
+        $entity->setHostEntity('user', $user);
+        $entity->field_titulo_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['titulo_trabajo']) ? $work['titulo_trabajo'] : ''; 
+        $entity->field_areas_tematicas[LANGUAGE_NONE] = taxonomy_translate_areas_tematicas($work['areas_tematicas']); 
+        $entity->field_objetivo_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['objetivo_trabajo']) ? $work['objetivo_trabajo'] : '';
+        $entity->field_estado_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['estado_trabajo']) ? $work['estado_trabajo'] : '';
+        //$entity->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($work['work_in_progress']['value']) ? $work['work_in_progress']['value'] : ''; 
+        $entity->save();
+        user_save($user);
+      }else {
+        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
+        $field_collection_value[$field_collection_item_value]->field_titulo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['titulo_trabajo']) ? $work['titulo_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_areas_tematicas[LANGUAGE_NONE] = taxonomy_translate_areas_tematicas($work['areas_tematicas']);
+        $field_collection_value[$field_collection_item_value]->field_objetivo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['objetivo_trabajo']) ? $work['objetivo_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['identificador_sepi_trabajo']) ? $work['identificador_sepi_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_estado_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['estado_trabajo']) ? $work['estado_trabajo'] : '';
+        //$field_collection_value[$field_collection_item_value]->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($work['work_in_progress']['value']) ? $work['work_in_progress']['value'] : '';
+        $field_collection_value[$field_collection_item_value]->save();
+      }
+    }
+  }
+
   $msg = t('Your changes have been successfully saved!');
   $response = new stdClass();
   $response->success = FALSE;
   $response->is_valid = TRUE;
   $response->message = $msg;
 
-  if($response->is_valid){
-    $user_fields = user_load($user->uid);
-    
-    $user_fields->field_titulo_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['titulo_trabajo']) ? $values['titulo_trabajo'] : '';
-    $user_fields->field_titulo_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
-
-    $user_fields->field_areas_tematicas[LANGUAGE_NONE] = [];
-    $user_fields->field_areas_tematicas[LANGUAGE_NONE] = areas_tematicas_autocomplete($values['areas_tematicas']);
-
-    $user_fields->field_objetivo_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['objetivo_trabajo']) ? $values['objetivo_trabajo'] : '';
-    $user_fields->field_objetivo_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
-
-    $user_fields->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['identificador_sepi_trabajo']) ? $values['identificador_sepi_trabajo'] : '';
-    $user_fields->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
-
-    $user_fields->field_estado_trabajo[LANGUAGE_NONE][0]['value']  = isset($values['estado_trabajo']) ? $values['estado_trabajo'] : '';
-    $user_fields->field_estado_trabajo[LANGUAGE_NONE][0]['format'] = 'rich_text';
-
-    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($values['work_in_progress']['value']) ? $values['work_in_progress']['value'] : '';
-    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['format'] = 'rich_text';
-    user_save($user_fields);
-    $response->success = TRUE;
-  }
-
+  $response->success = TRUE;
   return array(
       '#type' => 'ajax',
       '#commands' => array(
-          array('command' => 'responseRecommendedLinksForm', 'data' => $response, 'msg' =>$msg),
+          array('command' => 'responseWorkInProgressForm', 'data' => $response, 'msg' =>$msg),
       ),
   );
 }
 
-function areas_tematicas_autocomplete($tags) {
+function taxonomy_translate_areas_tematicas($tags) {
   $areas_ids = array();
   $termes = taxonomy_vocabulary_get_names();
   $taxonomy_vid = $termes['areas_tematicas']->vid;
@@ -3012,29 +3035,20 @@ function areas_tematicas_autocomplete($tags) {
   return $areas_ids;
 }
 
-function banrep_core_add_more_ajax_add_one($form, &$form_state) {
-  $form_state['field_deltas'][] = count($form_state['field_deltas']) > 0 ? max($form_state['field_deltas']) + 1 : 0;
-  if (empty($form_state['num_field_trabajos_en_curso'])) {
-    $form_state['num_field_trabajos_en_curso'] = 0;
-  }
-  $form_state['num_field_trabajos_en_curso']++;
-  $form_state['rebuild'] = TRUE;
-  drupal_get_messages();
-}
-
-function banrep_core_add_more_ajax_add_one_callback($form, $form_state) {
+function profile_work_in_progress_form_add_more_ajax_callback($form, $form_state) {
   return $form['field_trabajos_en_curso'];
 }
 
-function banrep_core_add_more_ajax_remove($form, &$form_state) {
-  $delta_remove = $form_state['triggering_element']['#parents'][1];
-  unset($form_state['field_deltas'][$delta_remove]);
-    
-  if ($form_state['num_field_trabajos_en_curso'] > 1) {
-    $form_state['num_field_trabajos_en_curso']--;
-  }
+function profile_work_in_progress_form_add_more_ajax_add($form, &$form_state) {
+  $form_state['field_deltas'][] = array('value' => 0);
   $form_state['rebuild'] = TRUE;
-  drupal_get_messages();
+}
+
+function profile_work_in_progress_form_add_more_ajax_remove($form, &$form_state) {
+  $delta_remove = $form_state['triggering_element']['#parents'][1];
+  $form_state['field_deltas_delete'][] = $form_state['field_deltas'][$delta_remove];
+  unset($form_state['field_deltas'][$delta_remove]);
+  $form_state['rebuild'] = TRUE;
 }
 
 /**

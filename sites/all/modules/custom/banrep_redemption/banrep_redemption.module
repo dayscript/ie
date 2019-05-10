@@ -42,7 +42,7 @@ function banrep_redemption_menu()
  */
 
 function banrep_redemption_entity_update($entity, $type){
-  dpm($entity);
+  //dpm($entity);
   switch ($type) {
     case 'entityform':
       $user = user_load($entity->uid);
