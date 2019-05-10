@@ -124,7 +124,7 @@ function get_user_fields_values($fields_name, $entity){
 		}else{
 			$user_data[$field_name] = get_user_field_value($entity, $field_name);
 		}
-	}dpm($fields_name);
+	}
 	return $user_data;
 }
 

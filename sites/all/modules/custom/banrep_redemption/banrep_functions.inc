@@ -1,5 +1,7 @@
 <?php
 
+define('REQ_FORMATION_ID_DESEMPEÑO',15343);
+
 
 function banrep_redemption_add_form($form, &$form_state, $type) {
 
