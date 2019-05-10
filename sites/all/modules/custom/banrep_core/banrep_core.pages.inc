@@ -372,12 +372,19 @@ function banrep_core_dashboard_page() {
   // Recomendados
   $user_favorites = module_invoke('banrep_investigador', 'block_view', 'user_favorites');
 
-  $favoritos      = views_embed_view('mis_enlaces_recomendados', 'enlaces_recomendados_privados', $user->uid);
-  $training = views_embed_view('gestionar_formacion_desarrollo', 'block', $user->uid);
+  $favoritos  = views_embed_view('mis_enlaces_recomendados', 'enlaces_recomendados_privados', $user->uid);
+  $training   = views_embed_view('gestionar_formacion_desarrollo', 'block', $user->uid);
   $redemption = views_embed_view('gestionar_redenciones', 'block', $user->uid);
+  $scalafon   = views_embed_view('ruta_del_investigador', 'block', $user->uid);
 
   $html =
     '<div class="box-dashboard accordion" id="accordion">' .
+      '<h2>' . t('Ruta del investigador') . '</h2>' .
+      '<div class="registro">' .
+        '<div class="row-container">' .
+          $scalafon .
+        '</div>' .
+      '</div>' .
       '<h2>' . t('Gestión de publicaciones') . '</h2>' .
       '<div class="registro">' .
         '<div class="row-container">' .
