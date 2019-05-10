@@ -2963,7 +2963,6 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
 function profile_work_in_progress_form_ajax_submit($form, &$form_state){
   global $user;
-  dpm($user);
   foreach ($form_state['field_deltas_delete'] as $key => $work) {
     $field_collection_item_value = $work['value'];
     entity_delete_multiple('field_collection_item', array($field_collection_item_value));
