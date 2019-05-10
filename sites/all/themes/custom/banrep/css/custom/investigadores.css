@@ -162,4 +162,12 @@
   display: none;
 }
 
+.view-ruta-del-investigador li div .field-content {
+  color: #860024;
+}
+
+.view-ruta-del-investigador li div .field-content a {
+  color: #860024;
+}
+
 /*# sourceMappingURL=investigadores.css.map */
