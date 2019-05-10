@@ -85,6 +85,11 @@ function banrep_redemption_entity_update($entity, $type){
 function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
  
   $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/forms.js';
+  $visible_conditions = array(
+    'REQ_FORMATION_ID_DESEMPEÑO' => REQ_FORMATION_ID_DESEMPEÑO
+  );
+  
+  drupal_add_js(array('banrep_redemption' => $visible_conditions), 'setting');
   
 }
 
