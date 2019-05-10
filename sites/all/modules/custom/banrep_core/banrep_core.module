@@ -2963,7 +2963,6 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
 function profile_work_in_progress_form_ajax_submit($form, &$form_state){
   global $user;
-
   foreach ($form_state['field_deltas_delete'] as $key => $work) {
     $field_collection_item_value = $work['value'];
     entity_delete_multiple('field_collection_item', array($field_collection_item_value));
@@ -2974,7 +2973,7 @@ function profile_work_in_progress_form_ajax_submit($form, &$form_state){
      $field_collection_item_value = $work['id_trabajos_en_curso'];
     if(is_numeric($field_collection_item_value)){
       if ($field_collection_item_value == 0) {
-        $user = user_load('934');
+        $user = user_load($user->uid);
         $values['field_name'] = 'field_trabajos_en_curso';
         $entity = entity_create('field_collection_item', $values);
         $entity->setHostEntity('user', $user);
