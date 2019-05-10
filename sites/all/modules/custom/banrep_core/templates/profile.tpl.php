@@ -36,6 +36,10 @@
 				<?php $mis_enlaces_recomendados = get_mis_enlaces_recomendados( $user_data['uid'], 'publico' );
 				if($mis_enlaces_recomendados != FALSE): ?>
 				<li><a href="#tabs-5"><?php echo t('Recommended'); ?></a></li>
+
+			<?php endif; ?>
+			<?php if(!empty($user_data['field_trabajos_en_curso'])): ?>
+				<li><a href="#tabs-6"><?php echo t('Trabajos en curso'); ?></a></li>
 			<?php endif; ?>
 		</ul>
 
@@ -168,7 +172,15 @@
 			</div>
 			<?php endif; ?>
 		<?php endif; ?>
+		
+		<div id="tabs-6">
+			<div class="tabs-wrapper">
+				<?php echo theme('banrep_core_profile_trabajos_en_curso', array('user_data' => $user_data)); ?>
+			</div>
 		</div>
+
+		</div>
+
 	</div>
 </div>
 

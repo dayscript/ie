@@ -80,6 +80,16 @@ jQuery(document).ready(
 			    jQuery('html, body').animate({scrollTop: jQuery(id).offset().top}, 1000);
             }
         }
-              
+
+        Drupal.ajax.prototype.commands.responseWorkInProgressForm = function (ajax, response, status) {
+            var res = response.data;
+            if(res.success){
+                var id = '#tabs-work-in-progress';
+                jQuery("#tabs .messages").addClass('hide');
+                jQuery(id + " .messages pre").html(res.message);
+                jQuery(id + " .messages").removeClass('hide');
+                jQuery('html, body').animate({scrollTop: jQuery(id).offset().top}, 1000);
+            }
+        }
 	}
 );

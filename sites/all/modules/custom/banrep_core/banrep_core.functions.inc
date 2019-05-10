@@ -114,6 +114,7 @@ function get_user_fields_values($fields_name, $entity){
 		'field_social_networks' => array('field_social_network', 'field_url'),
 		'field_academics_profiles' => array('field_academic_profile', 'field_url'),
 		'field_studies_carried_out' => array('field_titulo', 'field_university', 'field_year'),
+    'field_trabajos_en_curso' => array('field_titulo_trabajo', 'field_areas_tematicas', 'field_objetivo_trabajo', 'field_estado_trabajo'),
 	);
 	$field_collections_keys = array_keys($field_collections);
 	foreach ($fields_name as $key => $field_name) {
@@ -161,6 +162,7 @@ function get_current_user_data($uid = ''){
 		'field_studies_carried_out',
 		'field_scopus_author_author_id',
 		'field_repec_id',
+    'field_trabajos_en_curso'
 	);
 	$user_data = get_user_fields_values($fields, $user_fields);
 	$user_data['uid'] = $user_fields->uid;
