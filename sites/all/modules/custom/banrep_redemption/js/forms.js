@@ -11,11 +11,14 @@
                 $('#edit-field-studies-carried-out-und-0-field-tipo-posgrado').css('display', 'none');
                 $('#edit-field-studies-carried-out-und-0-field-nivel-estudio').css('display', 'none');
                 $('#edit-field-studies-carried-out-und-0-field-lugar-posgrado').css('display', 'none');
+                $('#edit-field-studies-carried-out-und-0-field-university').css('display', 'none');
+                
             }else{
                 $('#edit-field-studies-carried-out-und-0-field-titulo').css('display','inline-block');
                 $('#edit-field-studies-carried-out-und-0-field-tipo-posgrado').css('display', 'inline-block');
                 $('#edit-field-studies-carried-out-und-0-field-nivel-estudio').css('display', 'inline-block');
                 $('#edit-field-studies-carried-out-und-0-field-lugar-posgrado').css('display', 'inline-block');
+                $('#edit-field-studies-carried-out-und-0-field-university').css('display', 'none');
             }
         })
       }
