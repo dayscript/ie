@@ -50,6 +50,7 @@ function banrep_redemption_entity_update($entity, $type){
       // $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
       
       $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
+      dpm($field_collection);
       if( $field_collection->field_aprobado['und'][0]['value'] == 1 ){
         //crear
         $values['field_name'] = 'field_studies_carried_out';
@@ -69,8 +70,9 @@ function banrep_redemption_entity_update($entity, $type){
         $entity->field_aprobado = $field_collection->field_aprobado; 
         $entity->save();
         user_save($user);
-      }
         drupal_set_message('Estudio académico asignado correctamente','status');
+      }
+        
       
       
       break;
