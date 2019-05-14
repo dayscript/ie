@@ -89,7 +89,7 @@ function banrep_redemption_entity_update($entity, $type){
             }
           
           break;
-          
+
         default:
           # code...
           break;
@@ -137,6 +137,7 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
     'field_puntaje_br',
     'field_puntaje_acumulado',
   ];
+  
   $select_field_beneficios_options = [];
   foreach($form['field_beneficios']['und']['#options'] as $key => $tid){
     if( $key != '_none'){
