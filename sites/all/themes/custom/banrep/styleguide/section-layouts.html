@@ -228,10 +228,10 @@ instead.</p>
             <summary>
                               Markup: <code>layouts/layout-center/layout-center.twig</code>
                           </summary>
-            <pre class="hljs"><code class="language-twig"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-center </span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
+            <pre class="hljs"><code class="language-twig">&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-center &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;hljs-template-variable&quot;&gt;{{modifier_class}}&lt;/span&gt;&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&lt;span class=&quot;hljs-string&quot;&gt;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
   This is layout center that has content is centered on larger screens.
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</span></code></pre>
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;</code></pre>
           </details>
               
               <div class="kss-source kss-style">
@@ -428,65 +428,65 @@ to the div to ensure its nested grid items align with the parent grid.</li>
             <summary>
                               Markup: <code>layouts/layout-3col/layout-3col.twig</code>
                           </summary>
-            <pre class="hljs"><code class="language-twig"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col </span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__full"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__full<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__left-content"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__left-content<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__right-sidebar"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__right-sidebar<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__right-content"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__right-content<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__left-sidebar"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__left-sidebar<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__right-content"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__right-content<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__first-left-sidebar"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__first-left-sidebar<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__second-left-sidebar"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__second-left-sidebar<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-1"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-1<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-2"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-2<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-3"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-3<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item. Don't forget to look for the <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-4<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item at tablet sizes.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-4"</span>&gt;</span>
-    The <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-4<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item.
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__full layout-3col__grid-item-container"</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The first <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The second <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The third <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The fourth <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The fifth <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-3col__col-x"</span>&gt;</span>
-      The sixth <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>.layout-3col__col-x<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> grid item in this nested grid.
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</span></code></pre>
+            <pre class="hljs"><code class="language-twig">&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;hljs-template-variable&quot;&gt;{{modifier_class}}&lt;/span&gt;&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&lt;span class=&quot;hljs-string&quot;&gt;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__full&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__full&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__left-content&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__left-content&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__right-sidebar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__right-sidebar&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__right-content&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__right-content&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__left-sidebar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__left-sidebar&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__right-content&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__right-content&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__first-left-sidebar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__first-left-sidebar&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__second-left-sidebar&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__second-left-sidebar&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-1&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-1&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-2&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-2&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-3&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-3&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item. Don&#039;t forget to look for the &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-4&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item at tablet sizes.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    The &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-4&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item.
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__full layout-3col__grid-item-container&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The first &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The second &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The third &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The fourth &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The fifth &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-3col__col-x&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+      The sixth &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt;.layout-3col__col-x&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;code&lt;/span&gt;&amp;gt;&lt;/span&gt; grid item in this nested grid.
+    &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;</code></pre>
           </details>
               
               <div class="kss-source kss-style">
@@ -587,11 +587,11 @@ order.</p>
             <summary>
                               Markup: <code>layouts/layout-swap/layout-swap.twig</code>
                           </summary>
-            <pre class="hljs"><code class="language-twig"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-swap"</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>This element comes <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>first<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span> in the HTML source order.<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"layout-swap__top"</span>&gt;</span>This element comes <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>second<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span> in the HTML source order.<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</span></code></pre>
+            <pre class="hljs"><code class="language-twig">&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-swap&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;This element comes &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;first&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt; in the HTML source order.&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;layout-swap__top&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;This element comes &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt;second&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;strong&lt;/span&gt;&amp;gt;&lt;/span&gt; in the HTML source order.&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;</code></pre>
           </details>
               
               <div class="kss-source kss-style">

@@ -1,0 +1,11 @@
+name = Field CSS
+description = Provides a field that allows for the input of CSS
+package = fields
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2016-02-29
+version = "7.x-1.0"
+core = "7.x"
+project = "field_css"
+datestamp = "1456760055"
+
