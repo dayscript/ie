@@ -37,6 +37,7 @@
             <?php if(!empty($user_data['field_trabajos_en_curso'])): ?>
             <li><a href="#tabs-6"><?php echo t('Trabajos en curso'); ?></a></li>
             <?php endif; ?>
+            <li><a href="#tabs-7"><?php echo t('Otras Actividades'); ?></a></li>
          </ul>
          <div id="tabs-1">
             <div class="tabs-wrapper" id="pubs_perfil_acordion">
@@ -46,13 +47,7 @@
                   ?>
                <h3><?php echo t('Selected '); ?></h3>
                <div>
-                  <?php
-                     print views_embed_view(
-                        'publicaciones_perfil_usuario',
-                        'perfil_pubs_destacados',
-                        $user_data['uid']
-                     );
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_destacados', $user_data['uid']); ?>
                </div>
                <?php endif; ?>
                <?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_articulos', $user_data['uid']);
@@ -61,9 +56,7 @@
                   ?>
                <h3><?php echo t('Articles'); ?></h3>
                <div>
-                  <?php
-                     echo views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_articulos', $user_data['uid']);
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_articulos', $user_data['uid']); ?>
                </div>
                <?php endif; ?>
                <?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_libros', $user_data['uid']);
@@ -72,13 +65,7 @@
                   ?>
                <h3><?php echo t('Books'); ?></h3>
                <div>
-                  <?php
-                     print views_embed_view(
-                        'publicaciones_perfil_usuario',
-                        'perfil_pubs_libros',
-                        $user_data['uid']
-                     );
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_libros',$user_data['uid']);?>
                </div>
                <?php endif; ?>
                <?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_capitulos_libros', $user_data['uid']);
@@ -87,13 +74,7 @@
                   ?>
                <h3><?php echo t('Book chapters'); ?></h3>
                <div>
-                  <?php
-                     print views_embed_view(
-                        'publicaciones_perfil_usuario',
-                        'perfil_pubs_capitulos_libros',
-                        $user_data['uid']
-                     );
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_capitulos_libros', $user_data['uid']); ?>
                </div>
                <?php endif; ?>
                <?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_documentos_trabajo', $user_data['uid']);
@@ -102,13 +83,7 @@
                   ?>
                <h3><?php echo t('Working Papers'); ?></h3>
                <div>
-                  <?php
-                     print views_embed_view(
-                        'publicaciones_perfil_usuario',
-                        'perfil_pubs_documentos_trabajo',
-                        $user_data['uid']
-                     );
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_documentos_trabajo', $user_data['uid']); ?>
                </div>
                <?php endif; ?>
                <?php $view = views_get_view_result('publicaciones_perfil_usuario', 'perfil_pubs_revista_espe', $user_data['uid']);
@@ -132,13 +107,7 @@
                   ?>
                <h3><?php echo t('Other Papers'); ?></h3>
                <div>
-                  <?php
-                     print views_embed_view(
-                        'publicaciones_perfil_usuario',
-                        'perfil_pubs_otros_documentos',
-                        $user_data['uid']
-                     ); 
-                     ?>
+                  <?php print views_embed_view('publicaciones_perfil_usuario', 'perfil_pubs_otros_documentos',$user_data['uid']); ?>
                </div>
                <?php endif; ?>
             </div>
@@ -188,6 +157,11 @@
             </div>
          </div>
          <?php endif; ?>
+         <div id="tabs-7">
+            <div class="tabs-wrapper">               
+               <?php print views_embed_view('otras_actividades', 'block', $user_data['uid']); ?>
+            </div>
+         </div>
       </div>
    </div>
 </div>
