@@ -2875,12 +2875,12 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       '#prefix' => '<div class="group-item col-xs-4">', '#suffix' => '</div>',
     );
 
-    $form['field_trabajos_en_curso'][$delta]['identificador_sepi_trabajo'] = array(
+    $form['field_trabajos_en_curso'][$delta]['identificador_sepi'] = array(
       '#type' => 'textfield',
       '#title' => 'Identificador SEPI',
       '#size' => 60, 
       '#maxlength' => 254,
-      '#default_value' => isset($field[$entity_id]->field_identificador_sepi_trabajo['und'][0]['value']) ? $field[$entity_id]->field_identificador_sepi_trabajo['und'][0]['value'] : '',
+      '#default_value' => isset($field[$entity_id]->field_identificador_sepi['und'][0]['value']) ? $field[$entity_id]->field_identificador_sepi['und'][0]['value'] : '',
       '#prefix' => '<div class="group-item col-xs-4">','#suffix' => '</div>',
     );
 
@@ -2989,7 +2989,7 @@ function profile_work_in_progress_form_ajax_submit($form, &$form_state){
         $field_collection_value[$field_collection_item_value]->field_titulo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['titulo_trabajo']) ? $work['titulo_trabajo'] : '';
         $field_collection_value[$field_collection_item_value]->field_areas_tematicas[LANGUAGE_NONE] = taxonomy_translate_areas_tematicas($work['areas_tematicas']);
         $field_collection_value[$field_collection_item_value]->field_objetivo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['objetivo_trabajo']) ? $work['objetivo_trabajo'] : '';
-        $field_collection_value[$field_collection_item_value]->field_identificador_sepi_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['identificador_sepi_trabajo']) ? $work['identificador_sepi_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_identificador_sepi[LANGUAGE_NONE][0]['value']  = isset($work['identificador_sepi']) ? $work['identificador_sepi'] : '';
         $field_collection_value[$field_collection_item_value]->field_estado_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['estado_trabajo']) ? $work['estado_trabajo'] : '';
         //$field_collection_value[$field_collection_item_value]->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($work['work_in_progress']['value']) ? $work['work_in_progress']['value'] : '';
         $field_collection_value[$field_collection_item_value]->save();
