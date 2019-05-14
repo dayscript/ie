@@ -1,0 +1,79 @@
+<?php
+
+    /**
+     * Implements hook_menu();
+     */
+
+
+
+     /**
+      * Implements hook_cron();
+      */
+
+
+    function banrep_sepi_cron(){
+        $enviroment = 'dev';
+        $path_in = variable_get('file_private_path').'/sepi-in-'.$enviroment;
+        $files_in_folder = [];
+        $files = [];
+        watchdog('banrep_sepi', 'Iniciado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
+
+        $files_in_folder = file_scan_directory($path_in, $mask = '/.*\.json$/', $options = array(), $depth = 0);
+
+        dpm($files_in_folder);
+
+        foreach($files_in_folder as $key => $file){
+
+            $files[$file->name] = [ 
+                'metadata' =>$file, 
+                'contents' => json_decode(utf8_encode(file_get_contents($file->uri)),false) ,
+            ];
+
+            $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+
+        }
+
+        dpm($files);
+
+
+
+        
+    }
+
+
+        
+    function _create_node_publication($publication){
+        $result = null;
+        $nid = 0;
+        
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'publication')
+        ->fieldCondition('field_sepi', 'value', 0000, '=');
+        //->fieldCondition('field_sepi', 'value', $publication['contents']->identificador_sepi, '=');
+        $result = $query->execute();
+        $nid =  _get_nid($result);
+        
+        if( !is_null($nid) && is_numeric($nid) ){
+            return $nid;
+        }
+
+
+    }
+
+
+    function _create_node_pub_user(){}
+
+    function _get_nid($result){
+
+        if(isset( $result['node'][key($result['node'])]) ){
+            return (int)$result['node'][key($result['node'])]->nid;
+        }
+
+        return null;
+        
+    }
+
+    
+
+     
