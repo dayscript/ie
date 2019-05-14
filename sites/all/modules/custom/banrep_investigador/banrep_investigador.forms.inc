@@ -1,5 +1,4 @@
 <?php
-
 function activities_add_form($form, &$form_state){
 
   $form_state['step'] = isset($form_state['step']) ? $form_state['step'] : 1;
@@ -132,6 +131,29 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
   foreach ($options as $key => $option) {
     $opciones[$option->tid] = $option->name;
   }
+
+  $form['query']['content']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Título',
+    '#size' => 60, 
+    '#maxlength' => 254,
+    '#required' => TRUE,
+  );
+  $form['query']['content']['aprobado_por'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Aprobado por'),
+    '#autocomplete_path' => 'user/autocomplete',
+    '#size' => 60,
+    '#maxlength' => 1024,
+    '#required' => TRUE,
+  );
+  $form['query']['content']['identificador_sepi'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Identificador SEPI',
+    '#size' => 60, 
+    '#maxlength' => 254,
+    '#required' => TRUE,
+  );
   $form['query']['content']['type_accumulated'] = array(
     '#title' => t('Type of activity'),
     '#type' => 'select',
@@ -140,7 +162,6 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#default_value' => get_input_value_from_publication($publication, 'type_accumulated'),
     '#required' => TRUE,
   );
-
   $form['query']['content']['type_concept_formation'] = array(
     '#type' => 'hierarchical_select',
     '#title' => t('Activity'),
@@ -183,7 +204,6 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#default_value' => get_input_value_from_publication($publication, 'description'),
     '#required' => TRUE,
   );
-
   $options_date = range(2018, 1950);
   $form['query']['content']['publication_year'] = array(
     '#type' => 'select',
@@ -195,7 +215,6 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#suffix' => '</div>',
     '#required' => TRUE,
   );
-
   $form['query']['content']['start_date'] = array(
     '#title'=>t('Start date'),
     '#date_format' => 'd-m-Y',
@@ -206,7 +225,6 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#prefix' => '<div class="col-md-3">',
     '#suffix' => '</div>',
   );
-
   $form['query']['content']['end_date'] = array(
     '#title'=>t('Close date'),
     '#date_format' => 'd-m-Y',
@@ -217,8 +235,6 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#prefix' => '<div class="col-md-3">',
     '#suffix' => '</div>',
   );
-
-
   $form['query']['content']['visibility'] = array(
     '#title' => t('Public/Private'),
     '#type' => 'select',
@@ -498,9 +514,15 @@ function _activities_add_form_validate_step_1($form, &$form_state, &$response) {
       $node->sticky = 0;  // (1 or 0): sticky at top of lists or not
       $node->comment = 0;  // 2 = comments open, 1 = comments closed, 0 = comments hidden
     }
+
     $node->uid = $user->uid;
-    $node->title = time();
-    // $node->body[LANGUAGE_NONE][0]['value'] = $description;
+    $node->title = $values['title'];//time();
+    $node->field_identificador_sepi[LANGUAGE_NONE][0]['value'] = $values['identificador_sepi'];
+    
+    $user_uid = user_load_by_name($values['aprobado_por'])->uid;
+    if(isset($user_uid) && !empty($user_uid)) {
+      $node->field_usuario[LANGUAGE_NONE][0]['target_id'] = $user_uid;
+    }
     $node->field_concept_category[LANGUAGE_NONE] = $type_act;
     if (!empty($concept_formation)) {
       $node->field_concept_formation[LANGUAGE_NONE][0]['tid'] = $concept_formation;
