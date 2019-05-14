@@ -137,6 +137,12 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
     'field_puntaje_br',
     'field_puntaje_acumulado',
   ];
+
+  $readonly_fields_for_investigador = [
+    'field_descuento_puntos_br',
+    'field_descuento_puntos_academico',
+    'field_descuento_puntos_general',
+  ];
   
   $select_field_beneficios_options = [];
   foreach($form['field_beneficios']['und']['#options'] as $key => $tid){
@@ -156,7 +162,11 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
     $form['field_puntaje']['und'][0]['value']['#default_value'] = $user->field_puntaje_acumulado['und'][0]['value'];
     $form['field_puntaje_br']['und'][0]['value']['#default_value'] = $user->field_puntaje_br['und'][0]['value'];
     $form['field_puntaje_acumulado']['und'][0]['value']['#default_value'] = $user->field_acumulado_general['und'][0]['value'];
-  
+    
+    foreach($readonly_fields_for_investigador as $key => $field){
+      $form[$field]['und'][0]['value']['#attributes'][$readonly] = $readonly;
+    }
+    
   }
 
   foreach($readonly_fields as $key => $field){
