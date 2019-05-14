@@ -1,0 +1,5 @@
+name = Integracion Sepi
+description = "Actualizacion periodica de entidades"
+package = Dayscript
+version = "7.x-1.0"
+core = "7.x"
