@@ -2840,7 +2840,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
   foreach ($form_state['field_deltas']  as $delta => $value) {
     $form['field_trabajos_en_curso'][$delta] = array(
       '#type' => 'fieldset',
-      '#title' => t('Trabajo en curso'),
+      '#title' => t('Work in progress'),
     );
 
     $entity_id = $value['value'];
@@ -2853,7 +2853,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
     $form['field_trabajos_en_curso'][$delta]['titulo_trabajo'] = array(
       '#type' => 'textfield',
-      '#title' => 'Título',
+      '#title' => t('Título'),
       '#size' => 60, 
       '#maxlength' => 254,
       '#default_value' => isset($field[$entity_id]->field_titulo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_titulo_trabajo['und'][0]['value'] : '',
@@ -2877,7 +2877,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
     $form['field_trabajos_en_curso'][$delta]['identificador_sepi'] = array(
       '#type' => 'textfield',
-      '#title' => 'Identificador SEPI',
+      '#title' => t('Identificador SEPI'),
       '#size' => 60, 
       '#maxlength' => 254,
       '#default_value' => isset($field[$entity_id]->field_identificador_sepi['und'][0]['value']) ? $field[$entity_id]->field_identificador_sepi['und'][0]['value'] : '',
@@ -2898,7 +2898,7 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
 
     $form['field_trabajos_en_curso'][$delta]['objetivo_trabajo'] = array(
       '#type' => 'textarea',
-      '#title' => 'Objetivo',
+      '#title' => t('Objetivo'),
       '#description' => t(''),
       '#default_value' => isset($field[$entity_id]->field_objetivo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_objetivo_trabajo['und'][0]['value'] : '',
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
@@ -2928,7 +2928,6 @@ function profile_work_in_progress_form($form, &$form_state, $account = NULL){
       '#name' => 'remove_name_' . $delta,
       '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
     );
-
   }
 
   $form['field_trabajos_en_curso']['add_name'] = [
@@ -3016,7 +3015,7 @@ function taxonomy_translate_areas_tematicas($tags) {
   $areas_ids = array();
   $termes = taxonomy_vocabulary_get_names();
   $taxonomy_vid = $termes['areas_tematicas']->vid;
-  $areas = explode(',', str_replace(' ', '', $tags));
+  $areas = explode(',', str_replace(', ', ',', $tags));
 
   foreach ($areas as $key => $value) {
     $areas_tematicas_terms = taxonomy_get_term_by_name($value, 'areas_tematicas');
