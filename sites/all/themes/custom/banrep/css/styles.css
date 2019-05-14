@@ -4498,6 +4498,7 @@ form table ul {
 form table th.form-table__narrow-column,
 td .checkbox,
 th .checkbox {
+  width: -moz-min-content;
   width: -webkit-min-content;
   text-align: center;
 }
@@ -10997,6 +10998,17 @@ form .form-textarea {
 
 .user-rgister-data div {
   margin: 7px 0px;
+}
+
+.group-puntajes > div {
+  max-width: 33.3333%;
+  float: left;
+  margin: 0 23px 0 0;
+}
+
+.group-descuentos {
+  text-align: center;
+  margin-top: 40px;
 }
 
 .bg-gris-extra-claro {

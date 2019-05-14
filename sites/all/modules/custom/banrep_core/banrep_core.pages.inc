@@ -454,7 +454,7 @@ function banrep_core_profile_page($name = '') {
     global $user;
     global $language;
 
-
+    
     $profile_path = ($language->language == 'es') ? 'investigadores' : 'researchers';
     $profile_info_order = FALSE;
     $show_edit = FALSE;
