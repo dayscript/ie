@@ -142,7 +142,7 @@
 						'publicaciones_perfil_usuario',
 						'perfil_pubs_otros_documentos',
 						$user_data['uid']
-					);
+					); 
 					?>
 				</div>
 				<?php endif; ?>

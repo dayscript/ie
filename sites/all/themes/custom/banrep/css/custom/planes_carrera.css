@@ -28,4 +28,15 @@
   margin: 7px 0px;
 }
 
+.group-puntajes > div {
+  max-width: 33.3333%;
+  float: left;
+  margin: 0 23px 0 0;
+}
+
+.group-descuentos {
+  text-align: center;
+  margin-top: 40px;
+}
+
 /*# sourceMappingURL=planes_carrera.css.map */
