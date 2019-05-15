@@ -114,10 +114,10 @@
 
             // $node_wrapper->field_role_within_publication->set();
             
+        $author_tid = _get_autor_for_mail( 'galonsoma@banrep.gov.co'/*$publication['contents']->autor_principal->correo*/  );
 
-            if( $tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo  ) ){
-                dpm($tid);
-                // $node_wrapper->field_main_author_reference->set( [ 'tid' => $tid ] );
+            if( !is_null($tid) ){
+                $node_wrapper->field_main_author_reference->set( [ 'tid' => $author_tid ] );
             }
             
             
