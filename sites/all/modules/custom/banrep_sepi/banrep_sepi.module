@@ -21,8 +21,7 @@
 
         $files_in_folder = file_scan_directory($path_in, $mask = '/.*\.json$/', $options = array(), $depth = 0);
 
-        dpm($files_in_folder);
-
+        
         foreach($files_in_folder as $key => $file){
 
             $files[$file->name] = [ 
@@ -36,10 +35,9 @@
 
         }
 
-        dpm($files);
 
         
-
+        watchdog('banrep_sepi', 'Finalizado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
 
         
     }
