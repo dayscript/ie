@@ -129,7 +129,7 @@
             // $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
             // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
             $node_wrapper->save();
-            
+            return 'OK';
             //_create_node_pub_user($node_wrapper);
 
         }
