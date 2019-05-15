@@ -108,7 +108,7 @@
             $node_wrapper->field_sepi = $publication['contents']->identificador_sepi;
             // $node_wrapper->field_jel = $publication['contents']->cod_jel;
             
-            $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
+            // $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
             
             // $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
 
