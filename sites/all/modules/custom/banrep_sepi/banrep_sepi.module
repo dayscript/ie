@@ -102,7 +102,7 @@
 
             $node_wrapper->title = $publication['contents']->titulo;
             $node_wrapper->field_title_en = $publication['contents']->titulo_otroidioma;
-            $node_wrapper->field_url = $publication['contents']->url;
+            $node_wrapper->field_url = ['url' => $publication['contents']->url, 'title' => '', 'attributes'=>'' ];
             $node_wrapper->field_doi = $pyblication['contents']->doi;
             $node_wrapper->field_sepi = $publication['contents']->identificador_sepi;
             $node_wrapper->field_jel = $publication['contents']->cod_jel;
