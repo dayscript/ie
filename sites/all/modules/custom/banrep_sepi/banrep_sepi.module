@@ -96,7 +96,7 @@
         }else{ // create entity
             $entity_type = 'node';
             $entity = entity_create($entity_type, array('type' => 'publication'));
-            $wrapper = entity_metadata_wrapper($entity_type, $entity);
+            $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
 
             $node_wrapper->field_pub_type->value( [ 'value' => _get_type_publication( $publication['contents']->tipopub ) ] );
 
