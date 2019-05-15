@@ -11011,6 +11011,10 @@ form .form-textarea {
   margin-top: 40px;
 }
 
+.views-label-field-acumulado-general, .views-label-field-puntaje-acumulado, .views-field-field-puntaje-br, .views-field-field-usr-escalafon {
+  padding: 0;
+}
+
 .bg-gris-extra-claro {
   background: #f2f2f2;
 }
