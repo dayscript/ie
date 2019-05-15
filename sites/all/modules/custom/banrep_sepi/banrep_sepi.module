@@ -97,10 +97,10 @@
             $entity_type = 'node';
             $entity = entity_create($entity_type, array('type' => 'publication'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
-
+            dpm($publication);
             $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
 
-            $node_wrapper->title->set( ['value' => $publication['contents']->title ] ) ;
+            $node_wrapper->title = $publication['contents']->title;
             $node_wrapper->field_title_en = $publication['contents']->titulo_otroidioma;
             $node_wrapper->field_url = $publication['contents']->url;
             $node_wrapper->field_doi = $pyblication['contents']->doi;
