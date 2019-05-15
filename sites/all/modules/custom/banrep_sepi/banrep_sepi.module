@@ -105,7 +105,7 @@
             $node_wrapper->field_url = ['url' => $publication['contents']->url, 'title' => '', 'attributes'=>'' ];
             $node_wrapper->field_doi = $pyblication['contents']->doi;
             $node_wrapper->field_sepi = $publication['contents']->identificador_sepi;
-            $node_wrapper->field_jel = $publication['contents']->cod_jel;
+            // $node_wrapper->field_jel = $publication['contents']->cod_jel;
             
             $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
             
