@@ -39,8 +39,13 @@
   margin-top: 40px;
 }
 
-.views-label-field-acumulado-general, .views-label-field-puntaje-acumulado, .views-field-field-puntaje-br, .views-field-field-usr-escalafon {
-  padding: 0;
+.views-label-field-acumulado-general, .views-label-field-puntaje-acumulado,
+.views-field-field-puntaje-br,
+.views-field-field-usr-escalafon,
+.views-label-field-date-admission,
+.views-label-field-fecha-penultimo-puntaje,
+.views-label-field-date-last-score {
+  padding: 0 !important;
 }
 
 /*# sourceMappingURL=planes_carrera.css.map */
