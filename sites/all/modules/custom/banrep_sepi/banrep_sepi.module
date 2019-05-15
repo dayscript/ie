@@ -211,7 +211,7 @@
             return key($result['taxonomy_term']);
 
         }else{
-            return null
+            return null;
         }
 
 
