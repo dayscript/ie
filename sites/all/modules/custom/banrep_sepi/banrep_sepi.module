@@ -98,22 +98,22 @@
             $entity = entity_create($entity_type, array('type' => 'publication'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
 
-            $node_wrapper->field_pub_type->value( [ 'value' => _get_type_publication( $publication['contents']->tipopub ) ] );
+            $node_wrapper->field_pub_type->set( [ 'set' => _get_type_publication( $publication['contents']->tipopub ) ] );
 
-            $node_wrapper->title->value($publication['contents']->title);
-            $node_wrapper->field_title_en->value($publication['contents']->titulo_otroidioma);
-            $node_wrapper->field_url->value($publication['contents']->url);
-            $node_wrapper->field_doi->value($pyblication['contents']->doi);
-            $node_wrapper->field_sepi->value($publication['contents']->identificador_sepi);
-            $node_wrapper->field_jel->value($publication['contents']->cod_jel);
+            $node_wrapper->title->set($publication['contents']->title);
+            $node_wrapper->field_title_en->set($publication['contents']->titulo_otroidioma);
+            $node_wrapper->field_url->set($publication['contents']->url);
+            $node_wrapper->field_doi->set($pyblication['contents']->doi);
+            $node_wrapper->field_sepi->set($publication['contents']->identificador_sepi);
+            $node_wrapper->field_jel->set($publication['contents']->cod_jel);
             
-            $node_wrapper->field_concept_type->value( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
+            $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
             
-            $node_wrapper->field_concept->value( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
+            $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
 
-            $node_wrapper->field_role_within_publication->value();
+            $node_wrapper->field_role_within_publication->set();
             
-            $node_wrapper->field_main_author_reference->value( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
+            $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
             
             
             // $node_wrapper->field_co_authors->set($publication['contents']->coautores); //array
