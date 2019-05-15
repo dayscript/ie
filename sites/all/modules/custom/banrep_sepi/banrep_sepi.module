@@ -109,7 +109,7 @@
             
             $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
             
-            $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
+            // $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
 
             // $node_wrapper->field_role_within_publication->set();
             
