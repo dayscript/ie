@@ -76,7 +76,7 @@
 
             $node_wrapper->field_role_within_publication->set();
             
-            $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
+            $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  ) ] );
             
             
             $node_wrapper->field_co_authors->set($publication['contents']->coautores); //array
