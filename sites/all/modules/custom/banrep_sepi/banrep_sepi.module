@@ -14,6 +14,7 @@
     function banrep_sepi_cron(){
         $enviroment = 'dev';
         $path_in = variable_get('file_private_path').'/sepi-in-'.$enviroment;
+        $path_out = variable_get('file_private_path').'/sepi-out-'.$enviroment;
         $files_in_folder = [];
         $files = [];
         watchdog('banrep_sepi', 'Iniciado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
@@ -30,11 +31,14 @@
             ];
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+            
+            file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name, $replace = FILE_EXISTS_RENAME);
 
         }
 
         dpm($files);
 
+        
 
 
         
