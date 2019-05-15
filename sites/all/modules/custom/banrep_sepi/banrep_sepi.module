@@ -100,7 +100,7 @@
             dpm($publication);
             $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
 
-            $node_wrapper->title = $publication['contents']->title;
+            $node_wrapper->title = $publication['contents']->titulo;
             $node_wrapper->field_title_en = $publication['contents']->titulo_otroidioma;
             $node_wrapper->field_url = $publication['contents']->url;
             $node_wrapper->field_doi = $pyblication['contents']->doi;
