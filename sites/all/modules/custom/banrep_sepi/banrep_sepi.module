@@ -30,9 +30,9 @@
                 'contents' => json_decode(utf8_encode(file_get_contents($file->uri)),false) ,
             ];
 
-            $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+            //$files[$file->name]['result'] = _create_node_publication($files[$file->name]);
             
-            file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name, $replace = FILE_EXISTS_RENAME);
+            //file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name, $replace = FILE_EXISTS_RENAME);
 
         }
 
@@ -53,8 +53,8 @@
         $query = new EntityFieldQuery();
         $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'publication')
-        // ->fieldCondition('field_sepi', 'value', 0000, '=');
-        ->fieldCondition('field_sepi', 'value', $publication['contents']->identificador_sepi, '=');
+        ->fieldCondition('field_sepi', 'value', 0000, '=');
+        //->fieldCondition('field_sepi', 'value', $publication['contents']->identificador_sepi, '=');
         $result = $query->execute();
         $nid =  _get_nid($result);
         
@@ -63,60 +63,76 @@
             $node = node_load($nid);
             $node_wrapper = entity_metadata_wrapper('node', $node);
             
-            $node_wrapper->field_pub_type->set();
-            $node_wrapper->title->set();
-            $node_wrapper->field_title_en->set();
-            $node_wrapper->field_url->set();
-            $node_wrapper->field_doi->set();
-            $node_wrapper->field_sepi->set();
-            $node_wrapper->field_jel->set();
-            $node_wrapper->field_concept_type->set();
-            $node_wrapper->field_concept->set();
+            $node_wrapper->field_pub_type->set( [ 'value' => _get_type_publication( $publication['contents']->tipopub ) ] );
+
+            $node_wrapper->title->set($publication['contents']->title);
+            $node_wrapper->field_title_en->set($publication['contents']->titulo_otroidioma);
+            $node_wrapper->field_url->set($publication['contents']->url);
+            $node_wrapper->field_doi->set($pyblication['contents']->doi);
+            $node_wrapper->field_sepi->set($publication['contents']->identificador_sepi);
+            $node_wrapper->field_jel->set($publication['contents']->cod_jel);
+            
+            $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
+            
+            $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
+
             $node_wrapper->field_role_within_publication->set();
-            $node_wrapper->field_main_author_reference->set();
-            $node_wrapper->field_co_authors->set();
+            
+            $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
+            
+            
+            $node_wrapper->field_co_authors->set($publication['contents']->coautores); //array
             $node_wrapper->field_other_co_authors->set();
-            $node_wrapper->field_date->set();
-            $node_wrapper->field_publication_year->set();
+            $node_wrapper->field_date->set($publication['contents']->fecha_publicacion);
+            $node_wrapper->field_publication_year->set($publication['contents']->anopublicacion);
             $node_wrapper->field_mag_name->set();
             $node_wrapper->field_pub_serie->set();
-            $node_wrapper->field_editorial->set();
-            $node_wrapper->field_number->set();
-            $node_wrapper->field_page->set();
-            $node_wrapper->field_volumen->set();
-            $node_wrapper->field_pub_city->set();
-            $node_wrapper->field_publication_tags->set();
+            $node_wrapper->field_editorial->set($publication['contents']->editorial);
+            $node_wrapper->field_number->set($publication['contents']->numero);
+            $node_wrapper->field_page->set($publication['contents']->paginas);
+            $node_wrapper->field_volumen->set($publication['contents']->volumen);
+            $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
+            $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
+            $node_wrapper->save();
 
         }else{ // create entity
             $entity_type = 'node';
             $entity = entity_create($entity_type, array('type' => 'publication'));
             $wrapper = entity_metadata_wrapper($entity_type, $entity);
 
-            $node_wrapper->field_pub_type->set();
-            $node_wrapper->title->set();
-            $node_wrapper->field_title_en->set();
-            $node_wrapper->field_url->set();
-            $node_wrapper->field_doi->set();
-            $node_wrapper->field_sepi->set();
-            $node_wrapper->field_jel->set();
-            $node_wrapper->field_concept_type->set();
-            $node_wrapper->field_concept->set();
+            $node_wrapper->field_pub_type->set( [ 'value' => _get_type_publication( $publication['contents']->tipopub ) ] );
+
+            $node_wrapper->title->set($publication['contents']->title);
+            $node_wrapper->field_title_en->set($publication['contents']->titulo_otroidioma);
+            $node_wrapper->field_url->set($publication['contents']->url);
+            $node_wrapper->field_doi->set($pyblication['contents']->doi);
+            $node_wrapper->field_sepi->set($publication['contents']->identificador_sepi);
+            $node_wrapper->field_jel->set($publication['contents']->cod_jel);
+            
+            $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
+            
+            $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
+
             $node_wrapper->field_role_within_publication->set();
-            $node_wrapper->field_main_author_reference->set();
-            $node_wrapper->field_co_authors->set();
-            $node_wrapper->field_other_co_authors->set();
-            $node_wrapper->field_date->set();
-            $node_wrapper->field_publication_year->set();
-            $node_wrapper->field_mag_name->set();
-            $node_wrapper->field_pub_serie->set();
-            $node_wrapper->field_editorial->set();
-            $node_wrapper->field_number->set();
-            $node_wrapper->field_page->set();
-            $node_wrapper->field_volumen->set();
-            $node_wrapper->field_pub_city->set();
-            $node_wrapper->field_publication_tags->set();
+            
+            $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
+            
+            
+            // $node_wrapper->field_co_authors->set($publication['contents']->coautores); //array
+            // $node_wrapper->field_other_co_authors->set();
+            // $node_wrapper->field_date->set($publication['contents']->fecha_publicacion);
+            // $node_wrapper->field_publication_year->set($publication['contents']->anopublicacion);
+            // $node_wrapper->field_mag_name->set();
+            // $node_wrapper->field_pub_serie->set();
+            // $node_wrapper->field_editorial->set($publication['contents']->editorial);
+            // $node_wrapper->field_number->set($publication['contents']->numero);
+            // $node_wrapper->field_page->set($publication['contents']->paginas);
+            // $node_wrapper->field_volumen->set($publication['contents']->volumen);
+            // $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
+            // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
             $node_wrapper->save();
-            _create_node_pub_user($node_wrapper);
+            
+            //_create_node_pub_user($node_wrapper);
 
         }
 
@@ -181,6 +197,49 @@
         
     }
 
-    
+    function _get_autor_for_mail($mail){
+        
+
+        if($user = user_load_by_mail($mail)) {
+
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'taxonomy_term')
+            ->entityCondition('bundle', 'autores_externos')
+            ->fieldCondition('field_user_reference', 'target_id', $user->uid, '=');
+            $result = $query->execute();
+        
+            return key($result['taxonomy_term']);
+
+        }else{
+            return null
+        }
+
+
+
+
+
+    }
+
+    function _get_type_publication( $name, $vocabulary = 'categorias_de_conceptos' ){
+        
+        $tid = key(taxonomy_get_term_by_name($name, $vocabulary) );
+
+        if( $tid ){
+            return $tid;
+        }
+        
+
+        $types = array(
+            'Artículo' => '201',
+            'Revista Espe' =>'20662',
+            'Libro'=> '206',
+            'Capitulo de libro' => '1',
+            'Documento de trabajo'=> '2951',
+            'Otros Documentos'=>'20708',
+        );
+
+        return ( isset($types[$name]) ) ? $types[$name]:null;
+
+    }
 
      
