@@ -100,18 +100,18 @@
 
             $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
 
-            $node_wrapper->title->set($publication['contents']->title);
-            $node_wrapper->field_title_en->set($publication['contents']->titulo_otroidioma);
-            $node_wrapper->field_url->set($publication['contents']->url);
-            $node_wrapper->field_doi->set($pyblication['contents']->doi);
-            $node_wrapper->field_sepi->set($publication['contents']->identificador_sepi);
-            $node_wrapper->field_jel->set($publication['contents']->cod_jel);
+            $node_wrapper->title = $publication['contents']->title;
+            $node_wrapper->field_title_en = $publication['contents']->titulo_otroidioma;
+            $node_wrapper->field_url = $publication['contents']->url;
+            $node_wrapper->field_doi = $pyblication['contents']->doi;
+            $node_wrapper->field_sepi = $publication['contents']->identificador_sepi;
+            $node_wrapper->field_jel = $publication['contents']->cod_jel;
             
             $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
             
             $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
 
-            $node_wrapper->field_role_within_publication->set();
+            // $node_wrapper->field_role_within_publication->set();
             
             $node_wrapper->field_main_author_reference->set( [ 'tid' => _get_autor_for_mail( $publication['contents']->autor_principal->correo  )->uid ] );
             
