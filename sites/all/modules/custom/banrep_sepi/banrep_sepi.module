@@ -199,7 +199,7 @@
         
 
         if($user = user_load_by_mail($mail)) {
-
+            dpm($user);
             $query = new EntityFieldQuery();
             $query->entityCondition('entity_type', 'taxonomy_term')
             ->entityCondition('bundle', 'autores_externos')
