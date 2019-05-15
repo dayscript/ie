@@ -49,3 +49,12 @@
 .views-label-field-date-last-score {
    padding: 0!important;
 }
+
+.views-label-field-date-admission,
+.views-label-field-fecha-penultimo-puntaje,
+.views-label-field-date-last-score {
+   .field-content{
+      padding: 0!important;
+   } 
+}
+

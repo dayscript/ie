@@ -48,4 +48,8 @@
   padding: 0 !important;
 }
 
-/*# sourceMappingURL=planes_carrera.css.map */
+.views-label-field-date-admission .field-content,
+.views-label-field-fecha-penultimo-puntaje .field-content,
+.views-label-field-date-last-score .field-content {
+  padding: 0 !important;
+}
