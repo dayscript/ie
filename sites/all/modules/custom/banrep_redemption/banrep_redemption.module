@@ -43,20 +43,14 @@ function banrep_redemption_menu()
 
 function banrep_redemption_entity_update($entity, $type){
   switch ($type) {
-
-    // Validatade entity type
     case 'entityform':
       switch ($entity->type) {
-        
-        // validate entityform type
         case 'user_training':
           $user = user_load($entity->uid);
           $field_collection_id = $entity->original->field_studies_carried_out['und'][0]['value'];
           // $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
-
           $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
           if( $field_collection->field_aprobado['und'][0]['value'] == 1 ){
-            //crear
             $values['field_name'] = 'field_studies_carried_out';
             $entity = entity_create('field_collection_item', $values);
             $entity->setHostEntity('user', $user);
@@ -79,27 +73,18 @@ function banrep_redemption_entity_update($entity, $type){
           break;
         
           case 'user_redemption':
-            if( $entity->field_aprobado['und'][0]['value'] == 1 ){
-              $user = user_load($entity->uid);
-              $user->field_puntaje_acumulado['und'][0]['value'] -= $entity->field_puntaje['und'][0]['value'];
-              $user->field_puntaje_br['und'][0]['value'] -=  $entity->field_puntaje_br['und'][0]['value'];
-              $user->field_acumulado_general['und'][0]['value'] -=  $entity->field_puntaje_acumulado['und'][0]['value'];
-              user_save($user);
-              drupal_set_message('Redención actualizada correctamente','status');
+          case 'user_discount':
+            if ($entity->field_aprobado['und'][0]['value'] == 1) {
+              $points = array(
+                'field_descuento_puntos_academico' => $entity->field_descuento_puntos_academico['und'][0]['value'],
+                'field_descuento_puntos_br' => $entity->field_descuento_puntos_br['und'][0]['value'],
+                'field_descuento_puntos_general' => $entity->field_descuento_puntos_general['und'][0]['value']
+              );
+              $result = discount_points($entity, $type, $points);
+              drupal_set_message($result['msj'], $result['type']);
             }
-          
-          break;
-
-        default:
-          # code...
-          break;
+            break;
       }
-      
-      
-      
-      break;
-    default:
-      # code...
       break;
   }
 }
@@ -178,3 +163,49 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
 
 }
 
+/**
+ * Implemets hook_form_alter();
+ * 
+ */
+
+function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/discount_form.js';
+  drupal_add_js(array('banrep_discount' => ['discount' => $_GET["id"]]), 'setting');
+
+  if(isset($_GET["id"])) {
+    $user = user_load($_GET["id"]);
+
+    $form['field_usuario']['und'][0]['target_id']['#default_value'] = array($user->name.' ('.$user->uid.')');
+
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_acumulado_general[LANGUAGE_NONE][0]['value']) ? $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] : 0;
+    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_puntaje_br[LANGUAGE_NONE][0]['value']) ? $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] : 0;
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value']) ? $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] : 0;
+  }
+}
+
+/**
+ * Implemets function Discount points
+ * 
+ */
+
+function discount_points($entity, $type, $points){
+  if (isset($entity->field_usuario[LANGUAGE_NONE][0]['target_id'])) {
+    $user = user_load($entity->field_usuario[LANGUAGE_NONE][0]['target_id']);
+
+    $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_academico'] : 0;
+    $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_br'] : 0;
+    $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] -=  $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_general'] : 0;
+    user_save($user);
+    
+    switch ($type) {
+      case 'user_redemption':
+        return array('msj' => 'Redención actualizada correctamente', 'type' => 'status');
+        break;
+      case 'user_discount':
+        return array('msj' => 'Descuento realizado correctamente', 'type' => 'status');
+        break;
+    }
+  }else {
+    return array('msj' => 'Descuento no realizado', 'type' => 'error');
+  }
+}
