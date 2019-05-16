@@ -31,7 +31,7 @@
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
             
-            file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
+            // file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
 
         }
 
