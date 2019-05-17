@@ -29,7 +29,7 @@
                 'contents' => json_decode(utf8_encode(file_get_contents($file->uri)),false) ,
             ];
 
-            $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+            // $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
             
             // file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
 
