@@ -25,23 +25,23 @@
             }
         })
 
-        br.change(function(){
-            if( parseInt($(this).val()) > max_value_br ){
-                $(this).val(0)
-            }
-        })
+        // br.change(function(){
+        //     if( parseInt($(this).val()) > max_value_br ){
+        //         $(this).val(0)
+        //     }
+        // })
 
-        academico.change(function(){
-            if( parseInt($(this).val()) > max_academico ){
-                $(this).val(0)
-            }
-        })
+        // academico.change(function(){
+        //     if( parseInt($(this).val()) > max_academico ){
+        //         $(this).val(0)
+        //     }
+        // })
         
-        general.change(function(){
-            if( parseInt($(this).val()) > max_general ){
-                $(this).val(0)
-            }
-        })
+        // general.change(function(){
+        //     if( parseInt($(this).val()) > max_general ){
+        //         $(this).val(0)
+        //     }
+        // })
 
       },
     };

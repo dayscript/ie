@@ -47,10 +47,10 @@ function banrep_redemption_entity_update($entity, $type){
       switch ($entity->type) {
         case 'user_training':
           $user = user_load($entity->uid);
-          $field_collection_id = $entity->original->field_studies_carried_out['und'][0]['value'];
+          $field_collection_id = $entity->original->field_studies_carried_out[LANGUAGE_NONE][0]['value'];
           // $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
           $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
-          if( $field_collection->field_aprobado['und'][0]['value'] == 1 ){
+          if( $field_collection->field_aprobado[LANGUAGE_NONE][0]['value'] == 1 ){
             $values['field_name'] = 'field_studies_carried_out';
             $entity = entity_create('field_collection_item', $values);
             $entity->setHostEntity('user', $user);
@@ -74,11 +74,11 @@ function banrep_redemption_entity_update($entity, $type){
         
           case 'user_redemption':
           case 'user_discount':
-            if ($entity->field_aprobado['und'][0]['value'] == 1) {
+            if ($entity->field_aprobado[LANGUAGE_NONE][0]['value'] == 1) {
               $points = array(
-                'field_descuento_puntos_academico' => $entity->field_descuento_puntos_academico['und'][0]['value'],
-                'field_descuento_puntos_br' => $entity->field_descuento_puntos_br['und'][0]['value'],
-                'field_descuento_puntos_general' => $entity->field_descuento_puntos_general['und'][0]['value']
+                'field_descuento_puntos_academico' => $entity->field_descuento_puntos_academico[LANGUAGE_NONE][0]['value'],
+                'field_descuento_puntos_br' => $entity->field_descuento_puntos_br[LANGUAGE_NONE][0]['value'],
+                'field_descuento_puntos_general' => $entity->field_descuento_puntos_general[LANGUAGE_NONE][0]['value']
               );
               $result = discount_points($entity, $type, $points);
               drupal_set_message($result['msj'], $result['type']);
@@ -97,7 +97,7 @@ function banrep_redemption_entity_update($entity, $type){
 function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
  
   
-  $form['field_studies_carried_out']['und']['add_more']['#access'] = false;
+  $form['field_studies_carried_out'][LANGUAGE_NONE]['add_more']['#access'] = false;
   $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/forms.js';
   $visible_conditions = array(
     'REQ_FORMATION_ID_DESEMPEÑO' => REQ_FORMATION_ID_DESEMPEÑO
@@ -130,7 +130,7 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
   ];
   
   $select_field_beneficios_options = [];
-  foreach($form['field_beneficios']['und']['#options'] as $key => $tid){
+  foreach($form['field_beneficios'][LANGUAGE_NONE]['#options'] as $key => $tid){
     if( $key != '_none'){
       $select_field_beneficios_options[$key] = taxonomy_term_load($key);
     }
@@ -144,24 +144,42 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
 
   if($form['#entity']->is_new){
 
-    $form['field_puntaje']['und'][0]['value']['#default_value'] = $user->field_puntaje_acumulado['und'][0]['value'];
-    $form['field_puntaje_br']['und'][0]['value']['#default_value'] = $user->field_puntaje_br['und'][0]['value'];
-    $form['field_puntaje_acumulado']['und'][0]['value']['#default_value'] = $user->field_acumulado_general['und'][0]['value'];
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_br[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_acumulado_general[LANGUAGE_NONE][0]['value'];
     
     foreach($readonly_fields_for_investigador as $key => $field){
-      $form[$field]['und'][0]['value']['#attributes'][$readonly] = $readonly;
+      $form[$field][LANGUAGE_NONE][0]['value']['#attributes'][$readonly] = $readonly;
     }
     
   }
 
   foreach($readonly_fields as $key => $field){
-    $form[$field]['und'][0]['value']['#attributes'][$readonly] = $readonly;
+    $form[$field][LANGUAGE_NONE][0]['value']['#attributes'][$readonly] = $readonly;
   }
   
   
-  
+  $form['#validate'][] = '_banrep_redemption_form_user_redemption_entityform_edit_form_validate_max';
 
 }
+
+/**
+ * Implements validation form function
+ */
+function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_max($form, &$form_state){
+    
+    $fields = [
+      'field_descuento_puntos_br'        => 'field_puntaje_br',
+      'field_descuento_puntos_academico' => 'field_puntaje_acumulado',
+      'field_descuento_puntos_general'   => 'field_puntaje',
+    ];
+
+    foreach($fields as $key => $field){
+      if( $form_state['values'][$key][LANGUAGE_NONE][0]['value'] > $form_state['values'][$field][LANGUAGE_NONE][0]['value']  ){
+        form_set_error($key, 'No se puede crear la solicitud debido a que no cumple con los requisitos');
+      } 
+    }
+  }
 
 /**
  * Implemets hook_form_alter();
@@ -175,7 +193,7 @@ function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form,
   if(isset($_GET["id"])) {
     $user = user_load($_GET["id"]);
 
-    $form['field_usuario']['und'][0]['target_id']['#default_value'] = array($user->name.' ('.$user->uid.')');
+    $form['field_usuario'][LANGUAGE_NONE][0]['target_id']['#default_value'] = array($user->name.' ('.$user->uid.')');
 
     $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_acumulado_general[LANGUAGE_NONE][0]['value']) ? $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] : 0;
     $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_puntaje_br[LANGUAGE_NONE][0]['value']) ? $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] : 0;
@@ -189,23 +207,24 @@ function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form,
  */
 
 function discount_points($entity, $type, $points){
-  if (isset($entity->field_usuario[LANGUAGE_NONE][0]['target_id'])) {
-    $user = user_load($entity->field_usuario[LANGUAGE_NONE][0]['target_id']);
+  try {
+    switch ($entity->type) {
+      case 'user_redemption':
+        $user = user_load($entity->uid);
+        $message = array('msj' => 'Redención actualizada correctamente', 'type' => 'status');
+        break;
+      case 'user_discount':
+        $user = user_load($entity->field_usuario[LANGUAGE_NONE][0]['target_id']);
+        $message = array('msj' => 'Descuento realizado correctamente', 'type' => 'status');
+        break;
+    }
 
     $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_academico'] : 0;
     $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_br'] : 0;
     $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] -=  $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_general'] : 0;
     user_save($user);
-    
-    switch ($type) {
-      case 'user_redemption':
-        return array('msj' => 'Redención actualizada correctamente', 'type' => 'status');
-        break;
-      case 'user_discount':
-        return array('msj' => 'Descuento realizado correctamente', 'type' => 'status');
-        break;
-    }
-  }else {
-    return array('msj' => 'Descuento no realizado', 'type' => 'error');
+    return $message;
+  } catch (Exception $e) {
+    return array('msj' => 'Descuento no realizado' . ' ' . $e->getMessage(), 'type' => 'error');
   }
 }
