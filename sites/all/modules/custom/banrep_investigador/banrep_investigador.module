@@ -611,14 +611,14 @@ function banrep_investigador_node_presave($node) {
           $field_on_save =  $field_collection_value[key($field_collection_value)]->field_acomula_en['und'][0]['field_name'];
           switch ($results_state) {
             case 'Aprobado':
-              $user->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $field_collection_value[key($field_collection_value)]->field_puntajes_puntaje['und'][0]['value'];
+              $user->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'];
               user_save($user);
-              $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $field_collection_value[key($field_collection_value)]->field_puntajes_puntaje['und'][0]['value'];
+              $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'];
               break;
             case 'No Aprobado':
-              $user->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  (int)$user->{$field_on_save}[LANGUAGE_NONE][0]['value'] > 0 ? $field_collection_value[key($field_collection_value)]->field_puntajes_puntaje['und'][0]['value'] : 0;
+              $user->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  (int)$user->{$field_on_save}[LANGUAGE_NONE][0]['value'] > 0 ? $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'] : 0;
               user_save($user);
-              $node->field_puntaje[LANGUAGE_NONE][0]['value'] -=  (int)$node->field_puntaje[LANGUAGE_NONE][0]['value'] > 0 ? $field_collection_value[key($field_collection_value)]->field_puntajes_puntaje['und'][0]['value'] : 0;
+              $node->field_puntaje[LANGUAGE_NONE][0]['value'] -=  (int)$node->field_puntaje[LANGUAGE_NONE][0]['value'] > 0 ? $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'] : 0;
               break;
           }
       }

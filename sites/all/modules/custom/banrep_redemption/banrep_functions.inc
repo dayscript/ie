@@ -265,9 +265,9 @@ function banrep_redemption_update_state() {
     }
     $ruta = isset($usuario->field_ruta['und'][0]['target_id']) ? $usuario->field_ruta['und'][0]['target_id'] : 0;
     $query = db_select('taxonomy_term_data', 't');
-    $query->addField('p', 'field_puntajes_puntaje_value', 'puntaje');
+    $query->addField('p', 'field_puntaje_value', 'puntaje');
     $query->join('field_data_field_puntajes', 'f', 'f.entity_id = t.tid');
-    $query->join('field_data_field_puntajes_puntaje', 'p', 'p.entity_id = f.field_puntajes_value');
+    $query->join('field_data_field_puntaje', 'p', 'p.entity_id = f.field_puntajes_value');
     $query->join('field_data_field_ruta', 'r', 'r.entity_id = f.field_puntajes_value');
     $query->condition('t.tid', $tid);
     $query->condition('r.field_ruta_target_id', $ruta);

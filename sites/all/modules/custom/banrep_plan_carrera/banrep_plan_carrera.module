@@ -114,7 +114,7 @@ function banrep_plan_carrera_node_presave($node) {
             $rutas_puntajes = array();
             foreach($fields_puntajes as $field_puntaje) {
               $id_ruta = $field_puntaje->field_ruta[LANGUAGE_NONE][0]['target_id'];
-              $rutas_puntajes[$id_ruta] = $field_puntaje->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+              $rutas_puntajes[$id_ruta] = $field_puntaje->field_puntaje[LANGUAGE_NONE][0]['value'];
             }          
                       
             //Guardando puntaje acumulado
@@ -147,10 +147,10 @@ function banrep_plan_carrera_node_presave($node) {
                     
                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
                     $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
-                    $puntaje_digitado =  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    $puntaje_digitado =  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     
-                    $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
-                    $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                    $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     // $userPub->field_acumulado_general[LANGUAGE_NONE][0]['value'] += ($userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] + $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value']);
                     user_save($userPub);
                   }
@@ -221,7 +221,7 @@ function banrep_plan_carrera_node_presave($node) {
                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
                     $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
-                    $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  $taxonomy_route->field_puntajes_puntaje[LANGUAGE_NONE][0]['value'];
+                    $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     $puntaje_digitado = 0;
                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = 0;
                    
