@@ -150,6 +150,7 @@ function banrep_plan_carrera_node_presave($node) {
                     $puntaje_digitado =  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     
                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                    dpm($taxonomy_route);
                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     // $userPub->field_acumulado_general[LANGUAGE_NONE][0]['value'] += ($userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] + $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value']);
                     user_save($userPub);
