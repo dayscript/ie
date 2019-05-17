@@ -35,7 +35,8 @@ function theme_banrep_user_top_zone($variables) {
           $aditional_options .= '<li><a href="/' . $language->language . '/profile/group/'.$user_info->field_research_group['und'][0]['tid'].'/edit"><i class="fa fa-cog" aria-hidden="true"></i> '. t('Manage Group') .' </a></li>';
       }
     }
-
+    
+    dpm($user_info);
     $output .= '<li class="dropdown dropdown-user">
                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username username-hide-on-mobile"> '.$full_name.' </span>
@@ -62,8 +63,17 @@ function theme_banrep_user_top_zone($variables) {
                     <li>
                        <a href="/' . $language->language . '/profile/training/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Training') .' </a>
-                    </li>
-                    '. $item_redemption .'
+                    </li>';
+                    
+        if( $user_info->field_ruta['und'][0]['target_id'] == 20733 || $user_info->field_ruta['und'][0]['target_id'] == 15321){
+          $output .= '<li>
+                       <a href="/' . $language->language . '/profile/redemption/add">
+                       <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Redemption') .' </a>
+                    </li>';
+
+        }            
+        
+        $output .=  $item_redemption .'
                     ' . $aditional_options . '
                     <li>
                        <a href="http://wdeppc1d:8080/sgee-proyectos/">
