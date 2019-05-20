@@ -26,7 +26,7 @@
 
             $files[$file->name] = [ 
                 'metadata' =>$file, 
-                'contents' => json_decode(utf8_encode(file_get_contents($file->uri)),false) ,
+                'contents' => json_decode(file_get_contents($file->uri),false) ,
             ];
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
