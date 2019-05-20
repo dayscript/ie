@@ -65,13 +65,13 @@ function theme_banrep_user_top_zone($variables) {
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Training') .' </a>
                     </li>';
 
-        if( $user_info->field_ruta['und'][0]['target_id'] == 20733 || $user_info->field_ruta['und'][0]['target_id'] == 15321){
-          $output .= '<li>
-                       <a href="/' . $language->language . '/profile/redemption/add">
-                       <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Redemption') .' </a>
-                    </li>';
+        // if( $user_info->field_ruta['und'][0]['target_id'] == 20733 || $user_info->field_ruta['und'][0]['target_id'] == 15321){
+        //   $output .= '<li>
+        //                <a href="/' . $language->language . '/profile/redemption/add">
+        //                <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Redemption') .' </a>
+        //             </li>';
 
-        }            
+        // }            
         
         $output .=  $item_redemption .'
                     ' . $aditional_options . '
