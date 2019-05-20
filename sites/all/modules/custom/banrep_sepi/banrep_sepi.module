@@ -29,9 +29,9 @@
                 'contents' => json_decode(utf8_encode(file_get_contents($file->uri)),false) ,
             ];
 
-            // $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+            $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
             
-            // file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
+            file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
 
         }
 
@@ -80,7 +80,7 @@
             
             $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
 
-            if( !is_null($tid) ){
+            if( !is_null($author_tid) ){
                 $node_wrapper->field_main_author_reference->set( [ 'tid' => $author_tid ] );
             }
             
@@ -121,7 +121,7 @@
             
             $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
 
-            if( !is_null($tid) ){
+            if( !is_null($author_tid) ){
                 $node_wrapper->field_main_author_reference->set( [ 'tid' => $author_tid ] );
             }
             
@@ -139,9 +139,12 @@
             // $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
             // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
             $node_wrapper->save();
-            return 'OK';
+            
             //_create_node_pub_user($node_wrapper);
 
+        
+            return 'OK';
+        
         }
 
 
