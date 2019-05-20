@@ -144,9 +144,9 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
 
   if($form['#entity']->is_new){
 
-    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_acumulado_general[LANGUAGE_NONE][0]['value'];
     $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_br[LANGUAGE_NONE][0]['value'];
-    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_acumulado_general[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
     
     foreach($readonly_fields_for_investigador as $key => $field){
       $form[$field][LANGUAGE_NONE][0]['value']['#attributes'][$readonly] = $readonly;
