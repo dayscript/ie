@@ -808,8 +808,14 @@ function banrep_core_node_presave($node) {
         ': ' .
         $node->title
       ;
-      if (!isset($node->nid)) {
-       user_watchdog($node->uid, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+      if (!isset($node->nid) ) {
+        if(isset($node->uid)){
+          user_watchdog($node->uid, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+        }else{
+          user_watchdog(934, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+
+        }
+       
       }
     }
   }
