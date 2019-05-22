@@ -4,6 +4,7 @@ function theme_banrep_user_top_zone($variables) {
   global $user, $language;
   $output = '';
   $item_redemption = "";
+  $item_discount = '';
   if($user->uid > 0) {
     $user_info = user_load($user->uid);
     $route = isset($user_info->field_ruta['und'][0]['target_id']) ? $user_info->field_ruta['und'][0]['target_id'] : 0;
@@ -36,6 +37,14 @@ function theme_banrep_user_top_zone($variables) {
       }
     }
     
+
+    if(user_has_role(3) || user_has_role(11) || user_has_role(10) ){
+        $item_discount = '
+        <li>
+          <a href="/' . $language->language . '/profile/discount/add">
+          <i class="fa fa-plus" aria-hidden="true"></i> '. t('Descuento por cambio de cargo') .' </a>
+        </li>';
+    }
     
     $output .= '<li class="dropdown dropdown-user">
                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
@@ -64,16 +73,9 @@ function theme_banrep_user_top_zone($variables) {
                        <a href="/' . $language->language . '/profile/training/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Training') .' </a>
                     </li>';
-
-        // if( $user_info->field_ruta['und'][0]['target_id'] == 20733 || $user_info->field_ruta['und'][0]['target_id'] == 15321){
-        //   $output .= '<li>
-        //                <a href="/' . $language->language . '/profile/redemption/add">
-        //                <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Redemption') .' </a>
-        //             </li>';
-
-        // }            
+        $output .= $item_discount;
         
-        $output .=  $item_redemption .'
+        $output .=  $item_redemption .' 
                     ' . $aditional_options . '
                     <li>
                        <a href="http://wdeppc1d:8080/sgee-proyectos/">

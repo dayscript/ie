@@ -1,11 +1,5 @@
 <?php
 
-    /**
-     * Implements hook_menu();
-     */
-
-
-
      /**
       * Implements hook_cron();
       */
@@ -20,11 +14,10 @@
         watchdog('banrep_sepi', 'Iniciado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
 
         $files_in_folder = file_scan_directory($path_in, $mask = '/.*\.json$/', $options = array(), $depth = 0);
-
         
         foreach($files_in_folder as $key => $file){
+            watchdog('banrep_sepi', 'Procesando archivo '.$file->uri , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
             $contents_file = encodeToIso(file_get_contents($file->uri));
-
             $files[$file->name] = [ 
                 'metadata' =>$file, 
                 'contents' => json_decode($contents_file),
@@ -32,13 +25,12 @@
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
             
+            
             //file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
-
+            
+            watchdog('banrep_sepi', 'Procesamiento completo' , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
         }
 
-        dpm($files);
-
-        
         watchdog('banrep_sepi', 'Finalizado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
 
         
@@ -75,9 +67,6 @@
         
         }
 
-           
-        
-        
         $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
         $node_wrapper->title            = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_title_en   = (!empty($publication['contents']->titulo_otroidioma )) ? $publication['contents']->titulo_otroidioma: NULL;
@@ -99,9 +88,6 @@
             $node_wrapper->field_main_author_reference = $author_tid;
         }   
         
-       
-
-        dpm($node_wrapper);
          //array
         // $node_wrapper->field_other_co_authors->set();
         // $node_wrapper->field_date->set($publication['contents']->fecha_publicacion);
@@ -116,8 +102,11 @@
         // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
         $node_wrapper->save();
         
+        array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
+        
+        
         if(is_array($publication['contents']->coautores) ){
-            $publication['contents']->coautores = create_coauthors($publication['contents']->coautores, $node_wrapper);
+            $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
          //$node_wrapper->field_co_authors->set($publication['contents']->coautores);
@@ -129,81 +118,79 @@
 
     }
 
-    function create_coauthors($co_authors, $node_wrapper){
+    function _create_coauthors($co_authors, $node_wrapper){
         
         $node = node_load($node_wrapper->nid->value());
         $values['field_name'] = 'field_co_authors';
         $role_tid = 20722;
         
         foreach($co_authors as $index => $author){
-            // $entity = entity_create('field_collection_item', $values);
-            // $entity->setHostEntity('node', $node);
-            // $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] =  15094;//_get_autor_for_mail($author->nombre);
-            // $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $role_tid;
-            //$entity->save();
-
-            $taxonomy_term = taxonomy_term_load($role_tid);
-            $entity_id = $taxonomy_term->field_puntajes['und'][0]['value'];
-            $field_collection_value = entity_load('field_collection_item', array($entity_id));
-            $key = key($field_collection_value);
-            $co_authors[$index]->puntaje = [ 
-                    'ruta' => $field_collection_value[$key]->field_ruta,
-                    'campo'=>$field_collection_value[$key]->field_acomula_en,
-                    'puntaje' => $field_collection_value[$key]->field_puntaje
-            ];
             
+            $entity = entity_create('field_collection_item', $values);
+            $entity->setHostEntity('node', $node);
+            
+            $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = 
+                ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
+            
+            if( !empty($author->rol) ){
+                $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );    
+            }                      
+            
+            $entity->save();
+
+            if( !empty($author->correo) ){
+                if( $term_id = _get_autor_for_mail($author->correo) ){
+                    _create_node_pub_user($node_wrapper,$term_id);
+                }
+            }
         }
+
+        $node_wrapper->save();
 
         return $co_authors;
 
     }
 
 
-    function _create_node_pub_user($node_wrapper){
+    function _create_node_pub_user( $node_wrapper, $term_id ){
 
-        $query = new EntityFieldQuery();
-        $query->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle', 'pub_user')
-        // ->fieldCondition('field_sepi', 'value', 0000, '=');
-        ->fieldCondition('field_user_reference', 'target_id', $node_wrapper->field_main_author_reference, '=')
-        ->fieldCondition('field_publicacion', 'target_id', $node_wrapper->nid, '=');
-        $result = $query->execute();
-        $nid =  _get_nid($result);
-        if( !is_null($nid) && is_numeric($nid) ){ // update entity
-            $node = node_load($nid);
-            $node_wrapper = entity_metadata_wrapper('node', $node);
+        $author_interno = taxonomy_term_load($term_id);
 
-            $node_wrapper->title->set();
-            $node_wrapper->field_publicacion->set();
-            $node_wrapper->field_user_reference->set();
-            $node_wrapper->field_main_author->set();
-            $node_wrapper->field_estado_publicaci_n->set();
-            $node_wrapper->field_research_group->set();
-            $node_wrapper->field_order->set();
-            $node_wrapper->field_puntaje->set();
-            $node_wrapper->field_puntaje_usado->set();
-            $node_wrapper->field_log_puntaje->set();
-            $node_wrapper->save();
-
-        }
-        else{
+        if( isset( $author_interno->field_user_reference['und'][0]['target_id'] ) ){
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'node')
+                  ->entityCondition('bundle', 'pub_user')
+                    // ->fieldCondition('field_sepi', 'value', 0000, '=');
+                  ->fieldCondition('field_user_reference', 'target_id', $author_interno->field_user_reference['und'][0]['target_id'] , '=')
+                  ->fieldCondition('field_publicacion', 'target_id', $node_wrapper->nid, '=');
+            
             $entity_type = 'node';
-            $entity = entity_create($entity_type, array('type' => 'publication'));
-            $wrapper = entity_metadata_wrapper($entity_type, $entity);
-
-            $node_wrapper->title->set();
-            $node_wrapper->field_publicacion->set();
-            $node_wrapper->field_user_reference->set();
-            $node_wrapper->field_main_author->set();
-            $node_wrapper->field_estado_publicaci_n->set();
-            $node_wrapper->field_research_group->set();
-            $node_wrapper->field_order->set();
-            $node_wrapper->field_puntaje->set();
-            $node_wrapper->field_puntaje_usado->set();
-            $node_wrapper->field_log_puntaje->set();
-            $node_wrapper->save();
+            $result = $query->execute();
+            $nid    =  _get_nid($result);
+            
+       
+            if( !is_null($nid) && is_numeric($nid) ){ // update entity
+                $node = node_load($nid);
+                $pub_wrapper = entity_metadata_wrapper($entity_type, $node);
+            }
+            else{
+                $entity = entity_create($entity_type, array('type' => 'pub_user'));
+                $pub_wrapper = entity_metadata_wrapper($entity_type, $entity);
+            }
+    
+            $pub_wrapper->title                   = $node_wrapper->title->value(). ' - ' . $author_interno->name;
+            $pub_wrapper->field_user_reference = $author_interno->field_user_reference['und'][0]['target_id'];
+            $pub_wrapper->field_publicacion    = $node_wrapper->nid->value();
+            
+            // $node_wrapper->field_main_author->set();
+            // $node_wrapper->field_estado_publicaci_n->set();
+            // $node_wrapper->field_research_group->set();
+            // $node_wrapper->field_order->set();
+            // $node_wrapper->field_puntaje->set();
+            // $node_wrapper->field_puntaje_usado->set();
+            // $node_wrapper->field_log_puntaje->set();
+            $pub_wrapper->save();
         }
-        
     }
 
     function _get_nid($result){
@@ -240,7 +227,7 @@
 
     }
 
-    function _get_autor_for_name($name, $vocabulary = 'autores_externos'){
+    function _get_taxonomy_by_name($name, $vocabulary = 'autores_externos'){
         
         if($tid = taxonomy_get_term_by_name($name, $vocabulary)){
             return key($tid) ;
