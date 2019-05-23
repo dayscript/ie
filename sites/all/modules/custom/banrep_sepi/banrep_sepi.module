@@ -1,10 +1,8 @@
 <?php
 
-     /**
-      * Implements hook_cron();
-      */
-
-
+    /**
+     * Implements hook_cron();
+    */
     function banrep_sepi_cron(){
         $enviroment = 'dev';
         $path_in = 'private://'.'sepi-in-'.$enviroment;
@@ -12,7 +10,6 @@
         $files_in_folder = [];
         $files = [];
         watchdog('banrep_sepi', 'Iniciado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
-
         $files_in_folder = file_scan_directory($path_in, $mask = '/.*\.json$/', $options = array(), $depth = 0);
         
         foreach($files_in_folder as $key => $file){
@@ -24,34 +21,33 @@
             ];
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
-            
-            
-            //file_save_data($files[$file->name]['result'], $destination = $path_out.'/'.$file->name.'.json', $replace = FILE_EXISTS_REPLACE );
-            
+
             watchdog('banrep_sepi', 'Procesamiento completo' , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
         }
 
         watchdog('banrep_sepi', 'Finalizado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
-
-        
     }
 
+    /**
+     * Function to fix acents
+     */
     function encodeToIso($string) { 
         return mb_convert_encoding($string,'utf-8','ISO-8859-15');
-   } 
-        
+    } 
+    
+    /**
+     * Function to create the publication node
+     */
     function _create_node_publication($publication){
-        dpm($publication);
-        
-        
+        // dpm($publication);
         $result = null;
         $nid = 0;
         
         $query = new EntityFieldQuery();
         $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'publication')
-        ->fieldCondition('field_sepi', 'value', 0000, '=');
-        //->fieldCondition('field_sepi', 'value', $publication['contents']->identificador_sepi, '=');
+        //->fieldCondition('field_sepi', 'value', 0000, '=');
+        ->fieldCondition('field_sepi', 'value', $publication['contents']->identificador_sepi, '=');
         $result = $query->execute();
         $nid =  _get_nid($result);
         $entity_type = 'node';
@@ -100,28 +96,26 @@
         // $node_wrapper->field_volumen->set($publication['contents']->volumen);
         // $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
         // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
+        $node_wrapper->field_co_authors = null;
+        $node_wrapper->field_other_co_authors = null;
         $node_wrapper->save();
         
         array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
         
-        //$node_wrapper->field_co_authors->s
+        
         if(is_array($publication['contents']->coautores) ){
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
-
-         //$node_wrapper->field_co_authors->set($publication['contents']->coautores);
-        
-        //_create_node_pub_user($node_wrapper);
-
     
         return $publication;
 
     }
 
+    /**
+     * function to create authors in publication
+     */
     function _create_coauthors($co_authors, $node_wrapper){
-        
         $node = node_load($node_wrapper->nid->value());
-        dpm($node_wrapper->field_pub_type->value());
         switch ($node_wrapper->field_pub_type->value()) {
             case PUB_TYPE_BOOK:
             case PUB_TYPE_ESPE_MAGAZINE:
@@ -133,7 +127,8 @@
 
                     $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = $tid;
                     if( !empty($author->rol) ){
-                        $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );    
+                        $role_in_pub = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );
+                        $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $role_in_pub ;    
                     }                      
                     $entity->save(TRUE);
                     
@@ -143,7 +138,7 @@
 
                     if( !empty($author->correo) ){
                         if( $term_id = _get_autor_for_mail($author->correo) ){
-                            _create_node_pub_user($node_wrapper,$term_id);
+                            _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
                         }
                     }
                 }
@@ -158,7 +153,7 @@
                     }
                     if( !empty($author->correo) ){
                         if( $term_id = _get_autor_for_mail($author->correo) ){
-                            _create_node_pub_user($node_wrapper,$term_id);
+                            _create_node_pub_user($node_wrapper,$term_id, null);
                         }
                     }
                 }
@@ -166,13 +161,13 @@
                 break;
     
         }
-        
         return $co_authors;
-
     }
 
-
-    function _create_node_pub_user( $node_wrapper, $term_id ){
+    /**
+     * function to create node pub_user
+     */
+    function _create_node_pub_user( $node_wrapper, $term_id, $role_in_pub ){
 
         $author_interno = taxonomy_term_load($term_id);
 
@@ -182,7 +177,7 @@
                   ->entityCondition('bundle', 'pub_user')
                     // ->fieldCondition('field_sepi', 'value', 0000, '=');
                   ->fieldCondition('field_user_reference', 'target_id', $author_interno->field_user_reference['und'][0]['target_id'] , '=')
-                  ->fieldCondition('field_publicacion', 'target_id', $node_wrapper->nid, '=');
+                  ->fieldCondition('field_publicacion', 'target_id', $node_wrapper->nid->value(), '=');
             
             $entity_type = 'node';
             $result = $query->execute();
@@ -202,51 +197,51 @@
             $pub_wrapper->field_user_reference    = $author_interno->field_user_reference['und'][0]['target_id'];
             $pub_wrapper->field_publicacion       = $node_wrapper->nid->value();
             
+            
+            $pub_wrapper->field_puntaje          = _get_points_for_role_and_route($author_interno->field_user_reference['und'][0]['target_id'],$role_in_pub);
+
             // $node_wrapper->field_main_author->set();
             // $node_wrapper->field_estado_publicaci_n->set();
             // $node_wrapper->field_research_group->set();
             // $node_wrapper->field_order->set();
-            // $node_wrapper->field_puntaje->set();
+            
             // $node_wrapper->field_puntaje_usado->set();
             // $node_wrapper->field_log_puntaje->set();
             $pub_wrapper->save();
         }
     }
 
+    /**
+     * function to get nid to node
+     */
     function _get_nid($result){
-
-        
         if( isset($result['node']) && isset( $result['node'][key($result['node'])]) ){
             return (int)$result['node'][key($result['node'])]->nid;
         }
-
         return null;
-        
     }
 
+    /**
+     * function to get tid in author taxonomy
+     */
     function _get_autor_for_mail($mail){
-        
-
         if($user = user_load_by_mail($mail)) {
-            
             $query = new EntityFieldQuery();
             $query->entityCondition('entity_type', 'taxonomy_term')
             ->entityCondition('bundle', 'autores_externos')
             ->fieldCondition('field_user_reference', 'target_id', $user->uid, '=');
             $result = $query->execute();
-        
             return key($result['taxonomy_term']);
 
         }else{
             return null;
         }
-
-
-
-
-
     }
 
+
+    /**
+     * function to get tid by name of taxonomy
+     */
     function _get_taxonomy_by_name($name, $vocabulary = 'autores_externos'){
         
         if($tid = taxonomy_get_term_by_name($name, $vocabulary)){
@@ -256,15 +251,14 @@
         return null;
     }
 
+    /**
+     * function to get tid by name in taxonomy
+     */
     function _get_type_publication( $name, $vocabulary = 'categorias_de_conceptos' ){
-        
         $tid = key(taxonomy_get_term_by_name($name, $vocabulary) );
-
         if( $tid ){
             return $tid;
         }
-        
-
         $types = array(
             'Artículo' => '201',
             'Revista Espe' =>'20662',
@@ -273,9 +267,28 @@
             'Documento de trabajo'=> '2951',
             'Otros Documentos'=>'20708',
         );
-
         return ( isset($types[$name]) ) ? $types[$name]:null;
-
     }
 
      
+
+    /*
+    *   function for get points to pub_user
+    */
+    function _get_points_for_role_and_route($uid, $tid){
+        $term = taxonomy_term_load($tid);
+        $user = user_load($uid);
+        $collections = $term->field_puntajes[LANGUAGE_NONE];
+        foreach($collections as $index => $item_collection){
+            $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
+            dpm($collection);
+            dpm($user);
+            if( $collection->field_ruta['und'][0]['target_id'] == $user->field_ruta['und'][0]['target_id'] ){
+                
+                return $collection->field_puntaje['und'][0]['value'];
+            }
+        }
+
+        return 0;
+
+    }
