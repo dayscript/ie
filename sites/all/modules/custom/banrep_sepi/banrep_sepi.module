@@ -72,7 +72,7 @@
         
         // $node_wrapper->field_jel = $publication['contents']->cod_jel;
         
-        // $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
+        $node_wrapper->field_concept_type->set( _get_type_publication($publication['contents']->clasificacion );
         
         $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto);
         // $node_wrapper->field_role_within_publication->set();
