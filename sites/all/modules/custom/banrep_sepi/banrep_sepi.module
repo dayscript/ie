@@ -153,7 +153,7 @@
                     }
                     if( !empty($author->correo) ){
                         if( $term_id = _get_autor_for_mail($author->correo) ){
-                            _create_node_pub_user($node_wrapper,$term_id, null);
+                            _create_node_pub_user($node_wrapper,$term_id, $node_wrapper->field_concept->value() );
                         }
                     }
                 }
@@ -281,10 +281,7 @@
         $collections = $term->field_puntajes[LANGUAGE_NONE];
         foreach($collections as $index => $item_collection){
             $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
-            dpm($collection);
-            dpm($user);
             if( $collection->field_ruta['und'][0]['target_id'] == $user->field_ruta['und'][0]['target_id'] ){
-                
                 return $collection->field_puntaje['und'][0]['value'];
             }
         }

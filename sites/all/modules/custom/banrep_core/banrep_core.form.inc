@@ -733,7 +733,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
 
   // Rol dentro de la Publicación
-  $role_within_publication = '';
+  $role_within_publication = null;
   $roles = get_roles_within_publication();
   $role_within_publication_tid = '';
   if(isset($node->field_role_within_publication['und'][0]['tid'])){
@@ -745,6 +745,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
     $rows[] = array(t('Publication Role'), $role_within_publication);
   }
 
+    
   // Coautores Banco.
   $co_authors = [];
   $label = t('Book author');
@@ -1469,13 +1470,12 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
               $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var(str_replace('-','',$item['name']['co_authors_author']),FILTER_SANITIZE_NUMBER_INT);
-              if( $item['name']['rol_within_publication'] != '-1' ){
+              if( $item['name']['rol_within_publication'] != '-1' && !empty($item['name']['rol_within_publication']) ){
                 $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $item['name']['rol_within_publication']; 
               }
               elseif( $item['name']['rol_within_publication'] == '-1' ){
                 
               }
-              
               
               $entity->save();
               $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
@@ -2313,9 +2313,8 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       'class' => [ 'other-co-author-fieldset-wrapper' ],
     ],
   );
-  dpm($publication);
+  
   $co_authors = get_input_value_from_publication($publication, 'co_authors_author', array());
-  dpm($co_authors);
   
 
   if (isset($publication->update_co_authors)) {
