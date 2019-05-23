@@ -830,45 +830,8 @@ function banrep_core_node_presave($node) {
       $estado_publicacion = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
     }
     if ($estado_publicacion === '3') {
-      dpm($node);
       $node->status = NODE_PUBLISHED;
-
-      $sepi = node_load($node->field_publicacion['und'][0]['target_id'])->field_sepi['und'][0]['value'];
-      $user_document = user_load($node->field_user_reference['und'][0]['target_id'])->field_document_number['und'][0]['value'];
-      dpm($sepi);
-      dpm($user_document);
-      $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
-
-      $enviroment = 'dev';
-      $path_out = 'private://'.'sepi-out-'.$enviroment;
-      $save_data = [
-          "keywords"=>"",
-          "cod_jel"=>"I00,I15,I18,N36,O10",
-          "titulo"=>"More than 100 years of improvements in living standards: the case of Colombia",
-          "tipopub"=>"Artículo",
-          "clasificacion"=>"Publicación en journal ISI, Grupo 4",
-          "concepto"=>"CLIOMETRICA",
-          "autor_principal"=>["nombre"=>"María Teresa Ramírez Giraldo", "correo"=>"mramirgi@banrep.gov.co", "id"=>"51900267", "rol"=>"Coordinador capitulo ESPE", "puntaje"=>""],
-          "coautores"=>[ 
-              ["nombre"=>"A. Calvo Hernández", "correo"=>"", "id"=>"155", "rol"=>"Coordinador capitulo ESPE", "puntaje"=>""], 
-              ["nombre"=>"Juliana Jaramillo Echeverri", "correo"=>"", "id"=>"156", "rol"=>"", "puntaje"=>""] 
-          ],
-          "url"=>"https://link.springer.com/article/10.1007/s11698-018-0181-5",
-          "doi"=>"",
-          "editorial"=>"",
-          "ciudad"=>"",
-          "volumen"=>"",
-          "numero"=>"",
-          "paginas"=>"",
-          "anopublicacion"=>"2018",
-          "fecha_publicacion"=>"2018-11-22",
-          "fecha_aceptacion"=>"2018-10-21",
-          "titulo_otroidioma"=>"",
-          "identificador_sepi"=>"64",
-          "archivo_aprobacion"=>"//172.16.107.81/pe-GT-Datos/BD_APP/CPI/mramirgi/More than One-Hunder Years of Improvements in Living Standards The case of Colombia/"
-      ];
-
-      file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
+      _generate_response_sepi($node);
 
     }
   }

@@ -664,3 +664,72 @@ function _banrep_core_get_username_by_uid($uid){
     return NULL;
   }
 }
+/**
+ * Function to generate file.json for sepi
+ */
+
+function _generate_response_sepi($pub_user){
+  $publication = node_load( $pub_user->field_publicacion[LANGUAGE_NONE][0]['target_id'] );
+  $user        = user_load( $pub_user->field_user_reference[LANGUAGE_NONE][0]['target_id'] );
+  
+  $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
+  $user_document = $user->field_document_number[LANGUAGE_NONE][0]['value'];
+  $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
+  $enviroment = 'dev';
+  $path_out = 'private://'.'sepi-out-'.$enviroment;
+  $jel_code = '';
+  $tags = '';
+
+  if( !empty($publication->field_jel[LANGUAGE_NONE]) ){
+    $tid_name = [];
+    foreach($publication->field_jel[LANGUAGE_NONE] as $key => $tid ){
+      $tid_name[] = taxonomy_term_load($tid['tid'])->name;
+    }
+    $jel_code = implode(',',$tid_name);
+  }
+
+  if( !empty($publication->field_publication_tags[LANGUAGE_NONE]) ){
+    $tid_name = [];
+    foreach($publication->field_publication_tags[LANGUAGE_NONE] as $key => $tid ){
+      $tid_name[] = taxonomy_term_load($tid['tid'])->name;
+    }
+    $tags = implode(',',$tid_name);
+  }
+
+  $types = array(
+    '201'   => 'Artículo' ,
+    '20662' => 'Revista Espe' ,
+    '206'   => 'Libro',
+    '1'     => 'Capitulo de libro' ,
+    '2951'  => 'Documento de trabajo',
+    '20708' => 'Otros Documentos',
+  );
+
+  $save_data = [ 
+      "keywords"      => $tags,
+      "cod_jel"       => $jel_code,
+      "titulo"        => ( !empty($publication->title) ) ? $publication->title:'',
+      "tipopub"       => $types[$publiation->field_pub_type[LANGUAGE_NONE][0]['value']],
+      "clasificacion" => taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name,
+      "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
+      "autor"         => [ 
+        'nombre' => $user->field_full_name[LANGUAGE_NONE][0]['value'],
+        'puntos' => $pub_user->field_puntaje[LANGUAGE_NONE][0]['value'] 
+      ],
+      "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) )         ? $publication->field_url[LANGUAGE_NONE][0]['url']:null,
+      "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) )         ? $publication->field_doi[LANGUAGE_NONE][0]['url']:null,
+      "editorial"          => ( isset($publication->field_editorial[LANGUAGE_NONE][0]['value']) ) ? $publication->field_editorial[LANGUAGE_NONE][0]['value']:null,
+      "ciudad"             => ( isset($publication->field_pub_city[LANGUAGE_NONE][0]['value']) )  ? $publication->field_pub_city[LANGUAGE_NONE][0]['value']:null,
+      "volumen"            => ( isset($publication->field_volumen[LANGUAGE_NONE][0]['value']) )   ? $publication->field_volumen[LANGUAGE_NONE][0]['value']:null,
+      "numero"             => ( isset($publication->field_number[LANGUAGE_NONE][0]['value']) )    ? $publication->field_number[LANGUAGE_NONE][0]['value']:null,
+      "paginas"            => ( isset($publication->field_page[LANGUAGE_NONE][0]['value']) )      ? $publication->field_page[LANGUAGE_NONE][0]['value']:null,
+      "anopublicacion"     => ( isset($publication->field_publication_year[LANGUAGE_NONE][0]['value']) ) ? $publication->field_publication_year[LANGUAGE_NONE][0]['value']:null,
+      "fecha_publicacion"  => '',
+      "fecha_aceptacion"   => ( isset($publication->field_date[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d',$publication->field_date[LANGUAGE_NONE][0]['value']):null,
+      "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value']:null,
+      "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value']:null,
+      "archivo_aprobacion" => "//172.16.107.81/pe-GT-Datos/BD_APP/CPI/mramirgi/More than One-Hunder Years of Improvements in Living Standards The case of Colombia/"
+  ];
+
+  file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
+}
