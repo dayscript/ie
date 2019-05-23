@@ -254,7 +254,7 @@
         if($nodes = node_load_multiple(NULL, array("title" => $title)) ){
             return key($nodes);
         }else{
-            return nullM
+            return null;
         }
         
     }
