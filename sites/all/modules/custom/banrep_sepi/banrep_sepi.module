@@ -69,8 +69,18 @@
         $node_wrapper->field_url        = ['url' => $publication['contents']->url, 'title' => '', 'attributes'=>'' ];
         $node_wrapper->field_doi        = (!empty($publication['contents']->doi)) ? ['url' => $publication['contents']->doi, 'attributes'=>'' ]: NULL;
         $node_wrapper->field_sepi       = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
+        $node_wrapper->field_number     = (!empty($publication['contents']->numero)  ? $publication['contents']->numero: null);
+        $node_wrapper->field_page       = (!empty($publication['contents']->paginas) ? $publication['contents']->paginas: null);
+        $node_wrapper->field_volumen    = (!empty($publication['contents']->volumen) ? $publication['contents']->volumen: null);
+        $node_wrapper->field_pub_city   = (!empty($publication['contents']->ciudad)  ? $publication['contents']->ciudad: null);
+
+        $node_wrapper->field_mag_name   = (!empty($publication['contents']->revista) ? $publication['contents']->editorial:null );
+        $node_wrapper->field_pub_serie  = (!empty($publication['contents']->serie) ? $publication['contents']->editorial:null );
+        $node_wrapper->field_editorial  = (!empty($publication['contents']->editorial) ? $publication['contents']->editorial:null );
+        //$node_wrapper->field_date       = $publication['contents']->fecha_publicacion);
+        //$node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
+        $node_wrapper->field_jel        = (!empty($publication['contents']->cod_jel)) ? $publication['contents']->cod_jel:null;
         
-        // $node_wrapper->field_jel = $publication['contents']->cod_jel;
         $node_wrapper->field_concept_type = [];
         $node_wrapper->field_concept_type->set( [_get_type_publication($publication['contents']->clasificacion) ]);
         
@@ -82,18 +92,9 @@
         if( !is_null($author_tid) ){ 
             $node_wrapper->field_main_author_reference = $author_tid;
         }   
+          
         
-         //array
-        // $node_wrapper->field_other_co_authors->set();
-        // $node_wrapper->field_date->set($publication['contents']->fecha_publicacion);
-        // $node_wrapper->field_publication_year->set($publication['contents']->anopublicacion);
-        // $node_wrapper->field_mag_name->set();
-        // $node_wrapper->field_pub_serie->set();
-        // $node_wrapper->field_editorial->set($publication['contents']->editorial);
-        // $node_wrapper->field_number->set($publication['contents']->numero);
-        // $node_wrapper->field_page->set($publication['contents']->paginas);
-        // $node_wrapper->field_volumen->set($publication['contents']->volumen);
-        // $node_wrapper->field_pub_city->set($publication['contents']->ciudad);
+
         // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
         $node_wrapper->field_co_authors = null;
         $node_wrapper->field_other_co_authors = null;
