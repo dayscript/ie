@@ -73,9 +73,10 @@
         // $node_wrapper->field_jel = $publication['contents']->cod_jel;
         
         // $node_wrapper->field_concept_type->set( [ 'tid' => _get_type_publication($publication['contents']->clasificacion) ] );
-        
-        // $node_wrapper->field_concept->set( ['tid' => _get_type_publication($publication['contents']->concepto) ] );
 
+        if( $publication['contents']->concepto == 'CLIOMETRICA'){
+            $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto);
+        }
         // $node_wrapper->field_role_within_publication->set();
         
         $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
@@ -249,6 +250,11 @@
         }
         
         return null;
+    }
+
+    function _get_node_concept($title){
+        $nodes = node_load_multiple(NULL, array("title" => $title));
+        return key($nodes);
     }
 
     /**
