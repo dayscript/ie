@@ -67,7 +67,7 @@
         $node_wrapper->title            = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_title_en   = (!empty($publication['contents']->titulo_otroidioma )) ? $publication['contents']->titulo_otroidioma: NULL;
         $node_wrapper->field_url        = ['url' => $publication['contents']->url, 'title' => '', 'attributes'=>'' ];
-        $node_wrapper->field_doi        = (!empty($publication['contents']->doi)) ? $publication['contents']->doi: NULL;
+        $node_wrapper->field_doi        = (!empty($publication['contents']->doi)) ? ['url' => $publication['contents']->doi, 'attributes'=>'' ]: NULL;
         $node_wrapper->field_sepi       = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
         
         // $node_wrapper->field_jel = $publication['contents']->cod_jel;
