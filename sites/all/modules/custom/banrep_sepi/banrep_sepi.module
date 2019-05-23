@@ -79,14 +79,9 @@
         $node_wrapper->field_editorial  = (!empty($publication['contents']->editorial) ? $publication['contents']->editorial:null );
         $node_wrapper->field_date       = strtotime($publication['contents']->fecha_publicacion);
 
-        // $node_wrapper->field_date->set([
-        //         'value'        => strtotime($publication['contents']->fecha_publicacion), 
-        //         'timezone'     => 'America/Bogota',
-        //         'timezone_db'  =>  'America/Bogota',
-        //         'date_type'    => 'datestamp'
-        //     ]);
-        //$node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
+        $node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
         // $node_wrapper->field_jel        = (!empty($publication['contents']->cod_jel)) ? $publication['contents']->cod_jel:null;
+        // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
        
 
 
@@ -104,7 +99,6 @@
           
         
 
-        // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
         $node_wrapper->field_co_authors = null;
         $node_wrapper->field_other_co_authors = null;
         $node_wrapper->save();
