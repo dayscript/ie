@@ -104,7 +104,7 @@
         
         array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
         
-        
+        //$node_wrapper->field_co_authors->s
         if(is_array($publication['contents']->coautores) ){
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
@@ -121,32 +121,52 @@
     function _create_coauthors($co_authors, $node_wrapper){
         
         $node = node_load($node_wrapper->nid->value());
-        $values['field_name'] = 'field_co_authors';
-        $role_tid = 20722;
-        
-        foreach($co_authors as $index => $author){
-            
-            $entity = entity_create('field_collection_item', $values);
-            $entity->setHostEntity('node', $node);
-            
-            $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = 
-                ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
-            
-            if( !empty($author->rol) ){
-                $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );    
-            }                      
-            
-            $entity->save();
+        dpm($node_wrapper->field_pub_type->value());
+        switch ($node_wrapper->field_pub_type->value()) {
+            case PUB_TYPE_BOOK:
+            case PUB_TYPE_ESPE_MAGAZINE:
+                $values['field_name'] = 'field_co_authors';
+                foreach($co_authors as $index => $author){
+                    $entity = entity_create('field_collection_item', $values);
+                    $entity->setHostEntity('node', $node);
+                    $tid = ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
 
-            if( !empty($author->correo) ){
-                if( $term_id = _get_autor_for_mail($author->correo) ){
-                    _create_node_pub_user($node_wrapper,$term_id);
+                    $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = $tid;
+                    if( !empty($author->rol) ){
+                        $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );    
+                    }                      
+                    $entity->save(TRUE);
+                    
+                    if($index != 0 && !is_null($tid) ){
+                        $node->field_other_co_authors[LANGUAGE_NONE][]['tid'] = $tid; 
+                    }
+
+                    if( !empty($author->correo) ){
+                        if( $term_id = _get_autor_for_mail($author->correo) ){
+                            _create_node_pub_user($node_wrapper,$term_id);
+                        }
+                    }
                 }
-            }
+                node_save($node);
+                break;
+            
+            default:
+                foreach($co_authors as $index => $author){
+                    $tid = ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
+                    if($index != 0){
+                        $node_wrapper->field_other_co_authors[] = $tid; 
+                    }
+                    if( !empty($author->correo) ){
+                        if( $term_id = _get_autor_for_mail($author->correo) ){
+                            _create_node_pub_user($node_wrapper,$term_id);
+                        }
+                    }
+                }
+                $node_wrapper->save(TRUE);
+                break;
+    
         }
-
-        $node_wrapper->save();
-
+        
         return $co_authors;
 
     }
@@ -179,8 +199,8 @@
             }
     
             $pub_wrapper->title                   = $node_wrapper->title->value(). ' - ' . $author_interno->name;
-            $pub_wrapper->field_user_reference = $author_interno->field_user_reference['und'][0]['target_id'];
-            $pub_wrapper->field_publicacion    = $node_wrapper->nid->value();
+            $pub_wrapper->field_user_reference    = $author_interno->field_user_reference['und'][0]['target_id'];
+            $pub_wrapper->field_publicacion       = $node_wrapper->nid->value();
             
             // $node_wrapper->field_main_author->set();
             // $node_wrapper->field_estado_publicaci_n->set();

@@ -728,7 +728,7 @@ function _generate_response_sepi($pub_user){
       "fecha_aceptacion"   => ( isset($publication->field_date[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d',$publication->field_date[LANGUAGE_NONE][0]['value']):null,
       "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value']:null,
       "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value']:null,
-      "archivo_aprobacion" => "//172.16.107.81/pe-GT-Datos/BD_APP/CPI/mramirgi/More than One-Hunder Years of Improvements in Living Standards The case of Colombia/"
+      "archivo_aprobacion" => null
   ];
 
   file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );

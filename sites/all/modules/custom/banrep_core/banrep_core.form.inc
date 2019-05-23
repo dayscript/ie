@@ -2283,7 +2283,7 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
 
   $access_rol_within_publication = [PUB_TYPE_ARTICLE,PUB_TYPE_WORK_DOCUMENT,PUB_TYPE_OTHER_DOCUMENT,PUB_TYPE_CONFERENCE_DOCUMENT,PUB_TYPE_BOOK_CHAPTER,PUB_TYPE_OTHERS_DOCUMENTS];
 
-  if (empty($form_state['num_co_author'])) {
+  if ( empty($form_state['num_co_author'] ) ) {
     $form_state['num_co_author'] = 1;
   }
   // File co_author form element starts
@@ -2313,9 +2313,9 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       'class' => [ 'other-co-author-fieldset-wrapper' ],
     ],
   );
-  
+  dpm($publication);
   $co_authors = get_input_value_from_publication($publication, 'co_authors_author', array());
-  
+  dpm($co_authors);
   
 
   if (isset($publication->update_co_authors)) {
