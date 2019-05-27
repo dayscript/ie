@@ -625,14 +625,26 @@ function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
 /*
 * Get concept type.
 */
-function _banrep_core_get_concept_type($nid){
+function _banrep_core_get_concept_type($nid, $term = NUll){
+  
   $query = db_select('field_data_field_concept_category', 'c');
   $query->condition('c.entity_id', $nid);
   $query->fields('c', array('field_concept_category_tid'));
   $query->orderBy('c.field_concept_category_tid', 'DESC');
+ 
+
+  if(!is_null($term)){
+    $concept_type = $query->execute()->fetchAll();
+    foreach ($concept_type as $key => $concept) {
+      if($concept->field_concept_category_tid == $term){
+        return $concept->field_concept_category_tid;
+      }
+    }
+    return;
+  }
+
   $query->range(0,1);
   $concept_type = $query->execute()->fetchField();
-
   return $concept_type;
 }
 
