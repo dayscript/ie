@@ -682,7 +682,7 @@ function _banrep_core_get_username_by_uid($uid){
 
 function _generate_response_sepi($pub_user){
   $publication = node_load( $pub_user->field_publicacion[LANGUAGE_NONE][0]['target_id'] );
-  dpm($publication);
+  
   $user        = user_load( $pub_user->field_user_reference[LANGUAGE_NONE][0]['target_id'] );
   
   $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];

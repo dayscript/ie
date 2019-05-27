@@ -1432,7 +1432,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
   $is_back = FALSE;
   if (isset($form_state['values']['buttons']['back']) && $form_state['values']['op'] == $form_state['values']['buttons']['back']) {
     $is_back = TRUE;
-  }
+  } 
   if (!$is_back) {
     // Get the form values | Storage Publicación
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
