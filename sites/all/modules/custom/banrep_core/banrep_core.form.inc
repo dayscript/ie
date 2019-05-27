@@ -1457,7 +1457,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       unset($node->concept_name);
       unset($node->concept_type);
       if (isset($node->nid) && !isset($node->vid)) {
-        $node->vid = $node->nid;
+        $node->vid = $node->vid;
       }
       node_save($node);
       if (isset($node->nid)) {
