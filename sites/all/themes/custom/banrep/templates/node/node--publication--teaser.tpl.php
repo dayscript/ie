@@ -102,6 +102,7 @@ hide($content['links']);
 $concepts_articulos = array(201,202,203,204,205);
 $concepts_libros = array(206,207,208,209);
 $concepts_workpapers = array(2951);
+$concepts_revista_espe =  array(20662);
 $concept_type = $node->field_pub_type['und'][0]['value'];
 $concept_name = NULL;
 if(isset($node->field_concept['und'][0]['target_id'])){
@@ -209,6 +210,13 @@ if ( isset($node->field_other_co_authors['und']) ) {
         '</span>'
       ;
     }
+  }
+  if (in_array($concept_type, $concepts_revista_espe) || $concept_type == 20662) {
+      $concepto =
+        '<span class="concepto">' .
+          '<em>' . t('Espe Magazine', array(), array('langcode' => 'es')) . '</em>' .
+        '</span>'
+      ;
   }
 
   $ciudad = '';
