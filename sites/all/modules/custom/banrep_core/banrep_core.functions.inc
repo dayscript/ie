@@ -682,6 +682,7 @@ function _banrep_core_get_username_by_uid($uid){
 
 function _generate_response_sepi($pub_user){
   $publication = node_load( $pub_user->field_publicacion[LANGUAGE_NONE][0]['target_id'] );
+  dpm($publication);
   $user        = user_load( $pub_user->field_user_reference[LANGUAGE_NONE][0]['target_id'] );
   
   $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
@@ -716,12 +717,12 @@ function _generate_response_sepi($pub_user){
     '2951'  => 'Documento de trabajo',
     '20708' => 'Otros Documentos',
   );
-
+  
   $save_data = [ 
       "keywords"      => $tags,
       "cod_jel"       => $jel_code,
       "titulo"        => ( !empty($publication->title) ) ? $publication->title:'',
-      "tipopub"       => $types[$publiation->field_pub_type[LANGUAGE_NONE][0]['value']],
+      "tipopub"       => taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
       "clasificacion" => taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name,
       "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
       "autor"         => [ 
