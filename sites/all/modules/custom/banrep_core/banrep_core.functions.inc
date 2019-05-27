@@ -727,7 +727,7 @@ function _generate_response_sepi($pub_user){
       "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
       "autor"         => [ 
         'nombre' => $user->field_full_name[LANGUAGE_NONE][0]['value'],
-        'puntos' => $pub_user->field_puntaje['und'][0]['value'] 
+        'puntos' => (string)$pub_user->field_puntaje['und'][0]['value'] 
       ],
       "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) )         ? $publication->field_url[LANGUAGE_NONE][0]['url']:null,
       "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) )         ? $publication->field_doi[LANGUAGE_NONE][0]['url']:null,
