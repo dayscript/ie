@@ -1,0 +1,570 @@
+<?php
+function banrep_gestion_ppi_menu() {
+  $items['profile/gestion-ppi/%'] = array(
+    'title' => 'Gestión Plan de Promoción a la Investigación',
+    'page callback' => 'banrep_gestion_ppi_page',
+    'page arguments' => array(2),
+    'access callback' => true,
+    'file' => 'banrep_gestion_ppi.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function banrep_gestion_ppi_mail($key, &$message, $params) {
+  $message['headers'] = array_merge(
+    $message['headers'],
+    array(
+      'MIME-Version' => '1.0',
+      'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+      'Content-Transfer-Encoding' => '8Bit',
+      'X-Mailer' => 'Drupal'
+    )
+  );
+  $options = array(
+    'langcode' => $message['language']->language,
+    );
+  switch ($key) {
+    case 'plan_carrera':
+      $message['subject'] = 'Mensaje directo desde portal Investigaciones económicas';
+      $message['body'][] = '<h3>Estimado Usuario,</h3>';
+      $message['body'][] = '<p>Le informamos que su solicitud de ascenso a sido aprobada y se encuentra en estado: APROBADO PARA CAMBIO DE CARGO';
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function banrep_gestion_ppi_node_presave($node) {
+  global $user;
+  switch($node->type){
+    case 'pub_user':
+      //Capturando el id del estado
+      $estado = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado_ant = $node->original->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
+      if ($estado_ant != 3 &&  $estado == 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+         //Consultando la ruta del usuario.
+         $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
+         $userPub = user_load($uid);
+         $ruta_usuario = $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'];
+         //Sacando información de la publicación (Tipo de publicación)
+         $pub_id  = $node->field_publicacion[LANGUAGE_NONE][0]['target_id'];
+         $nodePub = node_load($pub_id);
+         // Realizar el proceso de suma de puntos, solo si la fecha de la publicación cumple con la fecha del requisito
+         $puntuar = _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($nodePub, $userPub);
+      
+         if($puntuar){
+           //Sacando el puntaje actual
+           $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+           //Para nodos que tiene concepto
+           if( isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id']) ){
+             $concept_id = $nodePub->field_concept[LANGUAGE_NONE][0]['target_id'];
+             $node_concept = node_load($concept_id);
+             //Consultando los puntajes por tipo de concepto en el nodo concepto.
+             $concept_types = $node_concept->field_concept_category[LANGUAGE_NONE];
+             $puntajes_concepts = array();
+             // Buscar los tipos de concepto que estan en el nodo concepto para verificar los puntos y asignarlos al usuario segun la ruta
+             $ids_puntajes = array();
+           
+             foreach ($concept_types as $concept_type) {
+               $concept_type_id = $concept_type['tid'];
+               $term_concept = taxonomy_term_load($concept_type_id);
+
+               foreach($term_concept->field_puntajes[LANGUAGE_NONE] as $idpuntaje) {
+                 $ids_puntajes[] = $idpuntaje['value'];
+               }
+             }
+
+             // Consultando los puntajes de las ruta segun los conceptos que puntuan
+             $fields_puntajes = field_collection_item_load_multiple($ids_puntajes);
+
+             //Generando arreglo de comparacion, sacando las rutas y su puntaje según los conceptos que puntuan
+             $rutas_puntajes = array();
+             foreach($fields_puntajes as $field_puntaje) {
+               $id_ruta = $field_puntaje->field_ruta[LANGUAGE_NONE][0]['target_id'];
+               $rutas_puntajes[$id_ruta] = $field_puntaje->field_puntaje[LANGUAGE_NONE][0]['value'];
+             }          
+                       
+             //Guardando puntaje acumulado
+             $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
+             $puntaje_actual = $rutas_puntajes[$ruta_usuario];
+             $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+             //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
+             $puntaje += $puntaje_actual;
+             
+             $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
+             user_save($userPub);
+
+             //Guardando puntaje especifico
+             $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
+           }
+
+           elseif( isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE]) ){
+             $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
+             $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE]; ## chidren of field_pub_type taxonomy
+             $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
+             foreach($authorsPub as $key => $author){
+               $collection = entity_load('field_collection_item', array($author['value']));
+               $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
+               if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
+                 $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
+                 foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
+                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
+                   
+                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
+                     
+                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+                     $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     $puntaje_digitado =  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     
+                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     dpm($taxonomy_route);
+                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     // $userPub->field_acumulado_general[LANGUAGE_NONE][0]['value'] += ($userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] + $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value']);
+                     user_save($userPub);
+                   }
+                 } 
+               }
+             }
+           }
+
+           /*
+            *  Para nodos que tiene concepto
+            */ 
+
+           //Historico
+           if(in_array('Admin GT', $user->roles))
+           {
+             $usuario_log = user_load($user->uid);
+             $nombre = "";
+             if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+               $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
+             }   
+             if (!empty($usuario_log->name)) {
+               $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
+             }
+             else {
+               $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
+             }
+
+             $format = '%s - %s - %s - %s - %s - %s';
+             $datelog = date('d/m/Y h:i:s');
+             $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+             $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
+             $subject = 'Estado: '. $estado_ant .' a '. $estado;
+             $pub_status = str_replace( array('3','2','4'), array('Aprobado','Pendiente por aprobación','No Aprobado'), $subject);
+             $value = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
+             
+             $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $value );
+           }
+         }       
+       }
+
+       if ($estado_ant == 3 && $estado != 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
+         
+         $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
+         $userPub = user_load($uid);
+
+         //Sacando información de la publicación (Tipo de publicación)
+         $pub_id  = $node->field_publicacion[LANGUAGE_NONE][0]['target_id'];
+         $nodePub = node_load($pub_id);
+
+         // Realizar el proceso de suma de puntos, solo si la fecha de la publicación cumple con la fecha del requisito
+         if (_banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($nodePub, $userPub)){
+           $puntaje_digitado = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+           
+           // $puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_digitado;
+           // $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje < 0 ? 0 : $puntaje;
+           
+           if( isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE]) ){
+             $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
+             $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE]; ## chidren of field_pub_type taxonomy
+             $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
+             foreach($authorsPub as $key => $author){
+               $collection = entity_load('field_collection_item', array($author['value']));
+               $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
+               if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
+                 $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
+                 foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
+                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
+                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
+                     $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+                     $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] -=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                     $puntaje_digitado = 0;
+                     $node->field_puntaje[LANGUAGE_NONE][0]['value'] = 0;
+                    
+                   }
+                 } 
+               }
+             }
+           }
+           user_save($userPub);
+         }
+            //Historico
+            if(in_array('Admin GT', $user->roles))
+            {
+              $usuario_log = user_load($user->uid);
+              $nombre = "";
+              if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
+                $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
+              }   
+              if (!empty($usuario_log->name)) {
+                $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
+              }
+              else {
+                $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
+              }
+
+              $format = '%s - %s - %s - %s - %s - %s';
+              $datelog = date('d/m/Y h:i:s');
+              $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
+              $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
+              $subject = 'Estado: '. $estado_ant .' a '. $estado;
+              $pub_status = str_replace( array('3','2','4'), array('Aprobado','Pendiente por aprobación','No Aprobado'), $subject);
+              $value = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
+             
+              $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $value );
+            }
+      }
+      break;
+  }
+}
+
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
+{
+  global $user;
+
+  switch ($form_id)
+  {
+    case 'pub_user_node_form':
+      if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
+      {
+          # they change values for force the state the field to disabled
+          $form['field_puntaje']['#states'] = array(
+           'required' => array( 'select[name="field_estado_publicaci_n[und][0][workflow][workflow_sid]"]' => array('value' => '3-') ),
+           'enabled' => array( 'select[name="field_estado_publicaci_n[und][0][workflow][workflow_sid]"]' => array('value' => '3-') )
+          );
+      } else {
+         $form['field_puntaje']['#disabled'] = TRUE;
+      }
+    
+      break;
+    case 'activity_node_form':
+    case 'redemption_node_form':
+
+      if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
+      {
+
+          $form['field_puntaje']['#states'] = array(
+           'required' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') ),
+           'enabled' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') )
+          );
+
+      } else {
+
+        if(in_array('caie', $user->roles) && empty($form['#entity']->field_puntaje))
+        {
+              $form['field_puntaje']['#states'] = array(
+               'required' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') ),
+               'enabled' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') )
+              );
+        } else {
+
+          $form['field_puntaje']['#disabled'] = TRUE;
+        }
+      }
+    break;
+  }
+}
+
+function banrep_gestion_ppi_user_presave(&$edit, $account, $category)
+{
+  $uid = $account->uid;
+  $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+  $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
+
+  if($escalafon_nuevo !== $escalafon_actual){
+
+    $ruta = $edit['field_puntajes_ruta'][LANGUAGE_NONE][0]['target_id'];
+    $puntaje_acumulado = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'];
+    $puntaje_br = $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'];
+    $edit['field_estado_plan_carrera'][LANGUAGE_NONE][0]['value'] = 'SIN_CUMPLIR_REQUISITOS';
+    
+    //Trayendo el requisito
+    $requisitos = _banrep_gestion_ppi_query_requirements( $escalafon_actual, $escalafon_nuevo, $ruta );
+    $requisitos_pub = $requisitos->field_requisitos_publicaciones[LANGUAGE_NONE];
+    $reset_puntos = $requisitos->field_requisitos_resetear[LANGUAGE_NONE][0]['value'];
+    $reset_puntos_br = $requisitos->field_reiniciar_puntaje_br[LANGUAGE_NONE][0]['value'];
+    //Recorriendo el grupo de requisitos de publicaciones
+    foreach($requisitos_pub as $rpubs){
+      $requisitoPub = field_collection_item_load($rpubs['value']);
+      //Comparando el operador de  grupo
+      $operadorGrupo =  $requisitoPub->field_operador[LANGUAGE_NONE][0]['value'];
+      if($operadorGrupo == 'Y' || empty($operadorGrupo)){
+        //Si el operador de grupo es Si o vacio ingresa
+        //Recorriendo las condiciones del grupo campo por campo
+        foreach ( $requisitoPub->field_condicion[LANGUAGE_NONE] as $row_req ){
+          $condition = field_collection_item_load($row_req['value']);
+          $tipo_requisito = $condition->field_tipo_requisito[LANGUAGE_NONE][0]['value'];
+          $concept_type = end($condition->field_concept_type[LANGUAGE_NONE]);
+          $cantidad_puntaje = $condition->field_cantidad_puntaje[LANGUAGE_NONE][0]['value'];
+          $operador = $condition->field_operador[LANGUAGE_NONE][0]['value'];
+          $serie = $condition->field_serie[LANGUAGE_NONE][0]['target_id'];
+
+          //echo '<pre> puntaje necesitado'; print_r($cantidad_puntaje); echo '</pre>';
+
+          //Comprobando el operador del campo
+          //Si el operador es Y o vacio ingresa
+          if( $operador == 'Y' || empty($operador)){
+            //Validando si el tipo de concepto esta vacio
+            if(!empty($concept_type)){
+              //Recorriendo los tipos de pub
+              foreach($concept_type as $row_type){
+                //Sacando las publicaciones por usuario, concepto y serie si no es vacio
+                if(!empty($serie)){
+                  $pub_types = _banrep_gestion_ppi_query_pubxusr( $uid, $row_type, $serie );
+                } else {
+                  $pub_types = _banrep_gestion_ppi_query_pubxusr( $uid, $row_type, '');
+                }
+
+                //Si hay registros
+                if(!empty($pub_types)){
+                   ///echo '<pre> Type =>'; print_r($row_type); echo '</pre>';
+                   //echo '<pre> Serie =>'; print_r($serie); echo '</pre>';
+                   //echo '<pre>'; print_r($pub_types); echo '</pre>';
+                   //echo '<pre>'; print_r($reset_puntos); echo '</pre>';
+
+                  if(boolval($reset_puntos)){
+                    //Si se resetean los puntos
+                    foreach($pub_types as $row_pusers){
+                      //Tener en cuenta los que ya fueron utilizados
+                      if(empty($row_pusers->field_puntaje_usado_value)){
+                          $node_pubusr = node_load($row_pusers->nid);
+                          $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $node_pubusr->field_puntaje[LANGUAGE_NONE][0]['value'];
+                          node_save($node_pubusr);
+                        }
+                      }
+                    $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = 0;
+
+                  } else {
+                    //Si no se resetean
+                    $PE = 0; // Puntaje ejecutado
+                    $PN = $cantidad_puntaje; //Puntaje necesitado
+                    foreach($pub_types as $row_pusers){
+                      $P = $row_pusers->field_puntaje_value;
+                      $PU = $row_pusers->field_puntaje_usado_value;
+                      $node_pubusr = node_load($row_pusers->nid);
+
+                      if( $PE  <  $PN ){
+                        if( $PU < $P ){
+
+                          $diferencia = (( $P - $PU ) + $PE ) - $PN;
+
+                          if($diferencia <= 0 ){
+                             $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P;
+                             $PE += $P;
+                          } else {
+                             $node_pubusr->field_puntaje_usado[LANGUAGE_NONE][0]['value'] = $P - $diferencia;
+                             $PE += $diferencia;
+                          }
+                          node_save($node_pubusr);
+                        }
+                      }
+                    }
+                    $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] = $edit['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value'] - $PN;
+                  }
+
+                  if(boolval($reset_puntos_br)){
+                    $edit['field_puntaje_br'][LANGUAGE_NONE][0]['value'] = 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * function _banrep_gestion_ppi_query_pub
+ * Función para consultar los nodos por tipo y concepto.
+ * puede devolver los ids del nodos o el nodo completo como objeto.
+ *
+ * @params
+ *   $type = Tipo del nodo (publication ó pub_user)
+ *   $uid = Id del usuario
+ *   $ctype =  Id de la taxonomia de concepto
+ *   $ncomplete = Booleano controla el retorno de los nid o el objeto del nodo
+ */
+function _banrep_gestion_ppi_query_pub( $type, $uid, $ctype, $serie, $ncomplete = FALSE )
+{
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', $type );
+
+  if($type == 'publication'){
+    $query->propertyCondition('uid', $uid);
+    $query->fieldCondition('field_concept_type', 'tid', $ctype);
+    if(!empty($serie)){
+      $query->fieldCondition('field_concept', 'target_id', $serie);
+    }
+  } else {
+    $query->fieldCondition('field_user_reference', 'target_id', $uid);
+  }
+
+  $result = $query->execute();
+  if (!empty($result['node'])){
+    $nids = array_keys($result['node']);
+    if( $ncomplete ){
+      return node_load_multiple($nids);
+    } else {
+      return $nids;
+    }
+  }
+}
+
+
+function _banrep_gestion_ppi_query_requirements( $escalafon_actual,  $escalafon_nuevo, $ruta)
+{
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'requirements')
+        ->fieldCondition('field_ruta_plan_carrera', 'tid', $ruta)
+        ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_actual)
+        ->fieldCondition('field_escalafon_final', 'tid', $escalafon_nuevo);
+  $result = $query->execute();
+  if (!empty($result['node'])){
+    $nid = key($result['node']);
+    return node_load($nid);
+  }
+}
+
+function _banrep_gestion_ppi_query_pubxusr( $uid, $ctype, $serie )
+{
+
+  $query = db_select('node', 'n')->fields('n', array('nid', 'created'));
+  $query->leftJoin('field_data_field_publicacion', 'fp', 'n.nid = fp.entity_id AND fp.entity_type = \'node\' AND fp.deleted =\'0\'');
+  $query->leftJoin('node', 'nfp', 'fp.field_publicacion_target_id = nfp.nid');
+  $query->addField('nfp', 'nid');
+  $query->leftJoin('field_data_field_user_reference', 'fur', 'n.nid = fur.entity_id AND fur.entity_type = \'node\' AND fur.deleted=\'0\'');
+  $query->innerJoin('field_data_field_concept_type', 'nfct', 'nfp.nid = nfct.entity_id AND nfct.entity_type= \'node\' AND nfct.deleted=\'0\'');
+  $query->leftJoin('field_data_field_concept', 'fc', 'nfp.nid = fc.entity_id AND fc.entity_type= \'node\' AND fc.deleted=\'0\'');
+  $query->leftJoin('field_data_field_puntaje_usado', 'fpu', 'n.nid = fpu.entity_id AND fpu.entity_type= \'node\' AND fpu.deleted=\'0\'');
+  $query->addField('fpu', 'field_puntaje_usado_value');
+  $query->leftJoin('field_data_field_puntaje', 'fpun', 'n.nid = fpun.entity_id AND fpun.entity_type= \'node\' AND fpun.deleted=\'0\'');
+  $query->addField('fpun', 'field_puntaje_value');
+  $query->condition('n.type', array('pub_user'),'IN');
+  $query->condition('fur.field_user_reference_target_id', $uid, '=');
+  $query->condition('nfct.field_concept_type_tid', $ctype, '=');
+  //$query->condition(db_or()->isNull('fpu.field_puntaje_usado_value')->condition('fpu.field_puntaje_usado_value', 'fpun.field_puntaje_value', '<'));
+  $query->orderBy('n.created', 'ASC');
+  if(!empty($serie)){
+      $query->condition('fc.field_concept_target_id', $serie, '=');
+  }
+  $result = $query->execute();
+  return $result->fetchAll();
+}
+
+function _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($publicacion, $usuario_publicacion)
+{
+  //Consultando la ruta del usuario.
+  $comparacion = false;
+  $ruta_usuario = $usuario_publicacion->field_ruta[LANGUAGE_NONE][0]['target_id'];
+  //Sacando información de la publicación (Tipo de publicación)
+  $escalafon_id= $usuario_publicacion->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+  // obteniendo nodo requisitos para determinar si se acumula el puntaje de la publicación        
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'requirements')
+        ->fieldCondition('field_ruta_plan_carrera', 'tid', $ruta_usuario)
+        ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_id);
+
+  $result_query = $query->execute();
+
+  if (!empty($result_query['node'])){
+    $nid = key($result_query['node']);
+    $node_requisito = node_load($nid);
+    $comparar_con_fecha = $node_requisito->field_date_start_pub[LANGUAGE_NONE][0]['value'];
+
+    $fecha_publicacion = intval($publicacion->field_date[LANGUAGE_NONE][0]['value']);
+    $fecha_comparacion = 0;
+
+    if($comparar_con_fecha == 2){
+      $fecha_comparacion = intval($usuario_publicacion->fecha_penultimo_puntaje[LANGUAGE_NONE][0]['value']);
+    }
+
+    if($comparar_con_fecha == 3){
+      $fecha_comparacion = intval($usuario_publicacion->field_date_last_score[LANGUAGE_NONE][0]['value']);
+    }
+
+    if($fecha_publicacion >= $fecha_comparacion){
+      $comparacion = true;
+    }
+  }
+
+  return $comparacion;
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */ 
+function banrep_gestion_ppi_views_pre_render(&$view) {
+    // dpm($view);
+  if ($view->name == 'gestionar_publicaciones' && $view->current_display == 'page') {
+    $results = &$view->result;
+
+    foreach ($results as $key => &$result) {
+      if(isset($result->field_field_number_1)){
+        $aplica = 'No';
+        // dpm($result);
+        $tid = $result->_field_data['nid']['entity']->field_main_author_reference[LANGUAGE_NONE][0]['tid'];
+        $author_term = taxonomy_term_load($tid);
+        $uid = $author_term->field_user_reference['und'][0]['target_id'];
+        $author = user_load($uid);
+        $escalafon_id= $author->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+        $ruta= $author->field_ruta[LANGUAGE_NONE][0]['target_id'];
+
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node')
+              ->entityCondition('bundle', 'requirements')
+              ->fieldCondition('field_ruta_plan_carrera', 'tid', $ruta)
+              ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_id);
+        $result_query = $query->execute();
+
+        if (!empty($result_query['node'])){
+          $nid = key($result_query['node']);
+          $node_requisito = node_load($nid);
+          $comparar_con_fecha = $node_requisito->field_date_start_pub[LANGUAGE_NONE][0]['value'];
+
+          $fecha_publicacion = intval($result->field_field_date[0]['raw']['value']);
+          $fecha_comparacion = 0;
+
+          if($comparar_con_fecha == 2){
+            $fecha_comparacion = intval($author->fecha_penultimo_puntaje[LANGUAGE_NONE][0]['value']);
+          }
+
+          if($comparar_con_fecha == 3){
+            $fecha_comparacion = intval($author->field_date_last_score[LANGUAGE_NONE][0]['value']);
+          }
+
+          if($fecha_publicacion >= $fecha_comparacion){
+            $aplica = 'Si';
+          }
+        }
+
+        $result->field_field_number_1[0]['rendered']['#markup'] = $aplica;
+      }
+    }
+  }
+}
