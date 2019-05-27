@@ -1599,7 +1599,6 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
   //$concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
   $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id'],$publication->field_concept_type['und'][0]['tid']);
   // $concept_type = isset($publication->field_concept[LANGUAGE_NONE][0]['target_id']) ?  $publication->field_concept[LANGUAGE_NONE][0]['target_id']:null;
-  dpm($publication->field_concept[LANGUAGE_NONE][0]['target_id']);
   $_articles_type_options = get_articles_type_options();
   $form['query']['right_column']['fieldset_publication_articulos']['concept_type'] = [
     '#type' => 'select',
