@@ -77,11 +77,31 @@
         $node_wrapper->field_mag_name   = (!empty($publication['contents']->revista) ? $publication['contents']->editorial:null );
         $node_wrapper->field_pub_serie  = (!empty($publication['contents']->serie) ? $publication['contents']->editorial:null );
         $node_wrapper->field_editorial  = (!empty($publication['contents']->editorial) ? $publication['contents']->editorial:null );
-        $node_wrapper->field_date       = strtotime($publication['contents']->fecha_publicacion);
-
+        if( !empty($publication['contents']->fecha_publicacion) ){
+            $node_wrapper->field_act_date_start   =  strtotime($publication['contents']->fecha_publicacion);
+        }
+        
         $node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
-        // $node_wrapper->field_jel        = (!empty($publication['contents']->cod_jel)) ? $publication['contents']->cod_jel:null;
-        // $node_wrapper->field_publication_tags->set($publication['contents']->keywords);
+        
+        $node_wrapper->field_jel = [];
+        if( !empty($publication['contents']->cod_jel) ){
+            $codes = [];
+            $terms = explode(',', $publication['contents']->cod_jel);
+            foreach ($terms as $key => $term) {
+                $codes[] =  _get_taxonomy_by_name($term, $vocabulary = 'jel');
+            }
+            $node_wrapper->field_jel->set($codes);
+        }
+
+        $node_wrapper->field_publication_tags = [];
+        if( !empty($publication['contents']->keywords) ){
+            $codes = [];
+            $terms = explode(',', $publication['contents']->keywords);
+            foreach ($terms as $key => $term) {
+                $codes[] =  _get_taxonomy_by_name($term, $vocabulary = 'tags');
+            }
+            $node_wrapper->field_publication_tags->set($codes);
+        }
        
 
 
