@@ -360,7 +360,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#collapsed' => FALSE,
   ];
 
-  dpm(get_input_value_from_publication($publication, 'start_date'));
+  
 
   $form['query']['left_column']['evidence']['approved_date'] = [
     '#title' => t('Approved date'),
