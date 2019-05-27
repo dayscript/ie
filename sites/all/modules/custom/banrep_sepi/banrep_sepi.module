@@ -85,6 +85,10 @@
             $node_wrapper->field_date   =  strtotime($publication['contents']->fecha_publicacion);
         }
         
+
+        if($publication['contents']->archivo_aprobacion){
+           $node_wrapper->archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
+        }
         
         $node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
         
