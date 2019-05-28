@@ -625,14 +625,26 @@ function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
 /*
 * Get concept type.
 */
-function _banrep_core_get_concept_type($nid){
+function _banrep_core_get_concept_type($nid, $term = NUll){
+  
   $query = db_select('field_data_field_concept_category', 'c');
   $query->condition('c.entity_id', $nid);
   $query->fields('c', array('field_concept_category_tid'));
   $query->orderBy('c.field_concept_category_tid', 'DESC');
+ 
+
+  if(!is_null($term)){
+    $concept_type = $query->execute()->fetchAll();
+    foreach ($concept_type as $key => $concept) {
+      if($concept->field_concept_category_tid == $term){
+        return $concept->field_concept_category_tid;
+      }
+    }
+    return;
+  }
+
   $query->range(0,1);
   $concept_type = $query->execute()->fetchField();
-
   return $concept_type;
 }
 
@@ -670,6 +682,7 @@ function _banrep_core_get_username_by_uid($uid){
 
 function _generate_response_sepi($pub_user){
   $publication = node_load( $pub_user->field_publicacion[LANGUAGE_NONE][0]['target_id'] );
+  
   $user        = user_load( $pub_user->field_user_reference[LANGUAGE_NONE][0]['target_id'] );
   
   $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
@@ -704,17 +717,17 @@ function _generate_response_sepi($pub_user){
     '2951'  => 'Documento de trabajo',
     '20708' => 'Otros Documentos',
   );
-
+  
   $save_data = [ 
       "keywords"      => $tags,
       "cod_jel"       => $jel_code,
       "titulo"        => ( !empty($publication->title) ) ? $publication->title:'',
-      "tipopub"       => $types[$publiation->field_pub_type[LANGUAGE_NONE][0]['value']],
+      "tipopub"       => taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
       "clasificacion" => taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name,
       "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
       "autor"         => [ 
         'nombre' => $user->field_full_name[LANGUAGE_NONE][0]['value'],
-        'puntos' => $pub_user->field_puntaje[LANGUAGE_NONE][0]['value'] 
+        'puntos' => (string)$pub_user->field_puntaje['und'][0]['value'] 
       ],
       "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) )         ? $publication->field_url[LANGUAGE_NONE][0]['url']:null,
       "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) )         ? $publication->field_doi[LANGUAGE_NONE][0]['url']:null,

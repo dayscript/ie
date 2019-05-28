@@ -360,6 +360,8 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#collapsed' => FALSE,
   ];
 
+  
+
   $form['query']['left_column']['evidence']['approved_date'] = [
     '#title' => t('Approved date'),
     '#date_format' => 'Y-m-d',
@@ -1430,7 +1432,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
   $is_back = FALSE;
   if (isset($form_state['values']['buttons']['back']) && $form_state['values']['op'] == $form_state['values']['buttons']['back']) {
     $is_back = TRUE;
-  }
+  } 
   if (!$is_back) {
     // Get the form values | Storage Publicación
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
@@ -1455,7 +1457,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       unset($node->concept_name);
       unset($node->concept_type);
       if (isset($node->nid) && !isset($node->vid)) {
-        $node->vid = $node->nid;
+        // $node->vid = $node->nid;
       }
       node_save($node);
       if (isset($node->nid)) {
@@ -1595,7 +1597,8 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
     '#suffix' => '',
   ];
   //$concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
-  $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id']);
+  $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id'],$publication->field_concept_type['und'][0]['tid']);
+  // $concept_type = isset($publication->field_concept[LANGUAGE_NONE][0]['target_id']) ?  $publication->field_concept[LANGUAGE_NONE][0]['target_id']:null;
   $_articles_type_options = get_articles_type_options();
   $form['query']['right_column']['fieldset_publication_articulos']['concept_type'] = [
     '#type' => 'select',

@@ -248,7 +248,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
                     );
                   }
                   ksort($perfiles);
-                  dpm($perfiles);
+
                   $ver_mas = NULL;
                   foreach ($perfiles as $key => $val) {
                     if ($key > 6) {
@@ -363,8 +363,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
   </div>
 
   <?php
-    
-     if(arg(2) == 'carrera'):
+    if(arg(2) == 'carrera' || arg(1) == 'gestion-ppi'):
   ?>
     <div class="col-lg-12 user-rgister-data">
             <?php $user_load = user_load($user_data['uid']); dpm($user_load);?>
@@ -411,4 +410,9 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
   <?php
     endif;
   ?>
+  <?php if(arg(1) == 'gestion-ppi'):?>
+   <div class="col-lg-12">
+    <?php print views_embed_view('beneficios_ppi', 'block', $user_data['uid']); ?>
+  </div>
+  <?php endif; ?>
 </div>
