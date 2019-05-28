@@ -266,7 +266,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       $html .= '<tr>';
         $html .= '<td>'. $group['operator'] .'</td>';
         $html .= '<td>'. $name . $strFiles.'</td>';
-        $html .= '<td>1</td>';
         $html .= '<td>'.$info_user.'</td>';
         $html .= '<td>'. $calificacion .'</td>';
         
