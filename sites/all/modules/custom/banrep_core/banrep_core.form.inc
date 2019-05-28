@@ -1482,7 +1482,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
               $entity->save();
               $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
             }
-          }
+          } 
           
           $node->field_co_authors[LANGUAGE_NONE] = $collections;
           node_save($node);
