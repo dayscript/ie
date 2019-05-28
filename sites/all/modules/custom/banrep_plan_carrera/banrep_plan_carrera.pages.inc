@@ -195,7 +195,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
       $html .= '<tr>';
-      $html .= '<td>';
+      $html .= '<td colpan="7">';
       $html .= $condition['html'];
       $html .= '</td>';
       $html .= '</tr>';
