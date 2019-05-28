@@ -26,6 +26,8 @@ class EventsSeminarNodeMigration extends Migration {
     // $file_uri = 'public://migrate/seminarios.json';
     $file_uri_format = format_json($file_uri);
 
+    
+
     $this->source = new MigrateSourceJSON($file_uri_format, 'nid', $fields);
 
     // Set up our destination - nodes of type Event
