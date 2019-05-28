@@ -43,7 +43,7 @@ function banrep_gestion_ppi_page($uid) {
 function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $uid = NULL) {
   global $user;
   $form = array();
-  $nid_log = _get_node_log($uid->uid, $requirements['nid'], FALSE);
+  $nid_log = _get_node_log_ppi($uid->uid, $requirements['nid'], FALSE);
   $form['rid'] = array(
     '#type' => 'hidden',
     '#value' => $requirements['nid'],
@@ -144,7 +144,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           if (isset($condition['serie'])) {
             $name    = node_load($condition['serie']);
             $name    = $name->title;
-            $info_user = _get_publications_user($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
+            $info_user = _get_publications_user_ppi($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
           }
           else {
             if (isset($condition['concept'])) {
@@ -154,8 +154,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 $is_activity = TRUE;
               }
               $size    = count($concepts);
-              $name    = _get_concept_publications($condition['concept']);
-              $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
+              $name    = _get_concept_publications_ppi($condition['concept']);
+              $info_user = _get_publications_user_ppi($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
             }
           }
           if(empty($condition['serie']) && empty($condition['concept']) ){
@@ -217,7 +217,7 @@ function banrep_gestion_ppi_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];
   if (isset($values['uid']) && !empty($values['uid']) && $values['uid'] > 0 && isset($values['rid'])){
-    $log = _get_node_log($values['uid'],$values['rid']);
+    $log = _get_node_log_ppi($values['uid'],$values['rid']);
     $flag_aprobado = TRUE;
     foreach ($values as $key => $value) {
       $pos = strpos($key, 'observaciones');
@@ -271,7 +271,7 @@ function banrep_gestion_ppi_form_submit($form,&$form_state){
   }
 }
 function _output_comments ($name_item,$nid_log){
-  $comments = _get_log_by_rule($name_item,$nid_log);
+  $comments = _get_log_by_rule_ppi($name_item,$nid_log);
   $output_comments = array('html'=>'','aprobado'=>'');
   $cont = 0;
   foreach ($comments as  $comment) {
