@@ -8,7 +8,7 @@
 /**
  * Funcion que cargar los requisitos de ascenso.
  */
-function get_requirements($scale, $route, $type = '') {
+function get_requirements_ppi($scale, $route, $type = '') {
   $query = db_select('field_data_field_ruta_plan_carrera', 'r');
   $query->addField('r', 'entity_id', 'nid');
   $query->join('field_data_field_escalafon_actual', 's', 's.entity_id = r.entity_id');
