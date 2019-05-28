@@ -1461,18 +1461,10 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       }
 
       //delete entity collection if exists
-      if(isset($node->field_co_authors[LANGUAGE_NONE])){
-        foreach ($node->field_co_authors[LANGUAGE_NONE] as $key => $value) {
-          // Build array of field collection values.
-          $field_collection_item_values[] = $value['value'];
-        
-          // Unset them.  
-          unset($node->field_co_authors[LANGUAGE_NONE][$key]);
-        }
-        entity_delete_multiple('field_collection_item', $field_collection_item_values);
-      } 
+      $node->field_co_authors = null;
 
       node_save($node);
+      
       if (isset($node->nid)) {
         
         if(count($co_authors) > 0){

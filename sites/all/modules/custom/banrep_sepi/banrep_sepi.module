@@ -1,5 +1,22 @@
 <?php
 
+    function  banrep_sepi_entity_update($entity, $type){
+
+        switch ($type) {
+            case 'pub_user':
+                dpm($entity);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+    }
+
+
+
+
     /**
      * Implements hook_cron();
     */
