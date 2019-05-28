@@ -1,5 +1,8 @@
 <?php
 
+define('APROBADO', 3);
+
+
 /**
  * @file
  * Defines banrep_core module functionality.
@@ -8,7 +11,7 @@
 /**
  * Funcion que cargar los requisitos de ascenso.
  */
-function get_requirements($scale, $route, $type = '') {
+function get_requirements($scale, $route, $uid, $type = '') {
   $query = db_select('field_data_field_ruta_plan_carrera', 'r');
   $query->addField('r', 'entity_id', 'nid');
   $query->join('field_data_field_escalafon_actual', 's', 's.entity_id = r.entity_id');
@@ -21,7 +24,7 @@ function get_requirements($scale, $route, $type = '') {
     if (empty($type)) {
       $requirements['nid']          = $result->nid;
       $requirements['general']      = get_general_requirements($node);
-      $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und']);
+      $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und'], $uid);
       $requirements['time']         = get_time_requirements($node->field_requisitos_tiempo['und']);
       $requirements['training']     = get_training_requirements($node->field_req_formacion_desempeno['und']);
     }
@@ -31,7 +34,7 @@ function get_requirements($scale, $route, $type = '') {
         $requirements = get_general_requirements($node);
           break;
         case 'publications':
-        $requirements = get_publications_requirements($node->field_requisitos_publicaciones['und']);
+        $requirements = get_publications_requirements($node->field_requisitos_publicaciones['und'], $uid);
           break;
         case 'time':
         $requirements = get_time_requirements($node->field_requisitos_tiempo['und']);
@@ -80,7 +83,8 @@ function get_time_requirements($items) {
 /**
  * Funcion que carga los requirimientos de publicaciones.
  */
-function get_publications_requirements($items) {
+function get_publications_requirements($items, $uid) {
+  $data_list = [];
   $requirements = array();
   $cont_group = 0;
   foreach ($items as $group) {
@@ -90,8 +94,11 @@ function get_publications_requirements($items) {
     $cont_condition = 0;
     $requirements[$cont_group]['operator'] = $operator_g;
     foreach ($conditions as $condition) {
+
       $rule = field_collection_item_load($condition['value']);
       $type = $rule->field_tipo_requisito['und'][0]['value'];
+      $idCondition = $rule->field_concept_type['und'][0]['tid'];
+
       switch ($type) {
         case 'CANTIDAD':
         case 'PUNTAJE':
@@ -105,15 +112,85 @@ function get_publications_requirements($items) {
           $requirements[$cont_group]['conditions'][$cont_condition]['concept'] = implode(',', $concept);
           break;
       }
-      $requirements[$cont_group]['conditions'][$cont_condition]['operator'] = $rule->field_operador['und'][0]['value'];
-      $requirements[$cont_group]['conditions'][$cont_condition]['type']     = $type;
-      $requirements[$cont_group]['conditions'][$cont_condition]['value']    = $rule->field_cantidad_puntaje['und'][0]['value'];
+      $data_list = get_list_x_term($idCondition, $uid);
+      $titles = ['Titulo', 'Fecha de aprobado', 'Puntos'];
+      $requirements[$cont_group]['conditions'][$cont_condition]['operator']     = $rule->field_operador['und'][0]['value'];
+      $requirements[$cont_group]['conditions'][$cont_condition]['type']         = $type;
+      $requirements[$cont_group]['conditions'][$cont_condition]['value']        = $rule->field_cantidad_puntaje['und'][0]['value'];
+      $requirements[$cont_group]['conditions'][$cont_condition]['html']         = get_table_list_view_more($data_list, 'Lista de Publicaciones' ,$titles);
+      $requirements[$cont_group]['conditions'][$cont_condition]['concept_type'] = get_concept_type($rule);
       $cont_condition++;
     }
     $cont_group++;
   }
 
   return $requirements;
+}
+
+function get_list_x_term($tid, $uid){
+  $query = new EntityFieldQuery();
+  $type_id = _get_concept_id_publications($tid);
+  // Traer todas las publicaciones activas por usuario y por tipo
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'pub_user')
+  ->fieldCondition('field_user_reference', 'target_id', $uid)
+  ->fieldCondition('field_estado_publicaci_n', 'value', APROBADO);
+
+  // $query->addTag('debug');
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  $data = node_load_multiple($nids);
+ 
+  $lista_pub = [];
+
+  foreach ($data as $key => $value) {
+    $idP = [$value->field_publicacion['und'][0]['target_id']];
+    $entity_publication = entity_load('node', $idP);
+
+    if(!empty($entity_publication) && $entity_publication->field_pub_type['und'][0]['value'] == $type_id){
+      foreach ($value as $key1 => $value1) {
+        if($key1 == 'title'){
+          $lista_pub[$key]['title'] = $value1;
+        }elseif ($key1 == 'revision_timestamp') {
+          $lista_pub[$key]['timestamp'] = date("d-m-Y", $value1);
+        }elseif ($key1 == 'field_puntaje') {
+          if($value->field_puntaje){
+            $lista_pub[$key]['score'] = $value1;
+          }else {
+            $lista_pub[$key]['score'] = 0;
+          }
+        }
+      }
+    }
+  }
+  return $lista_pub;
+}
+
+function get_table_list_view_more($list, $label, $titles){
+  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') .'/js/test.js');
+  return theme('view-more', array(
+    'list' => $list,
+    'label' => $label,
+    'titles' => $titles,
+  ));
+}
+
+function get_concept_type($rule){
+  $result = '-';
+  if(isset($rule->field_concept_type[LANGUAGE_NONE][0]['tid'])){
+    if($concept_type = taxonomy_term_load($rule->field_concept_type[LANGUAGE_NONE][0]['tid'])){
+      if(isset($concept_type->field_puntajes[LANGUAGE_NONE][0]['value'])){
+        if($puntajes = field_collection_item_load($concept_type->field_puntajes[LANGUAGE_NONE][0]['value'])){
+          //Cargar la data
+          if(isset($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'])){
+            $result = $puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+          }
+        }
+      }
+    }
+    
+  }
+  return $result;
 }
 
 /**
@@ -154,12 +231,21 @@ function _get_concept_publications($tids) {
     }
   }
 
-  // echo "<pre>";
-  // print_r( $name );
-  // echo "</pre>";
-
   return $name;
 
+}
+
+/**
+ * Funcion que carga los ids de publicacion.
+ */
+function _get_concept_id_publications($tid) {
+  $result = NULL;
+  $term = taxonomy_term_load($tid);
+
+  if($term->tid){
+    $result = $term->tid;
+  }
+  return $result;
 }
 
 /**
@@ -454,4 +540,136 @@ function _get_training_by_tid($uid,$tid) {
 
   return $files;
 
+}
+
+function calculate_profile_data($uid, $date_update){
+
+  //Cargar la data del usuario
+  $user = user_load($uid);
+  // Calcular puntaje acumulado General
+  calculate_accumulated_general($user);
+
+  // Calcular puntaje academico
+  calculate_score_training($user);
+
+  // Calcular puntaje BR
+  
+  // Fecha penultimo puntaje
+  $last_date = $user->field_date_last_score['und'][0]['value'];
+  // pasar esta fecha a la anterior
+  update_fields($user, $last_date, 'field_fecha_penultimo_puntaje');
+
+  // Fecha ultimo puntaje
+  update_fields($user, $date_update, 'field_date_last_score');
+}
+
+function calculate_accumulated_general($user){
+  // Trae la suma de puntos de publicaciones activas
+  $value_all_publications = _get_all_publications_user_for_value($user->uid);
+  //Guardar en el campo de usuario el valor 
+  update_fields($user, $value_all_publications, 'field_acumulado_general');
+}
+
+function calculate_score_training($user){
+  // La suma del valor actual con estado Aprobado
+  $value_all_training = _get_score_training($user);
+
+  //Guardar el campo de usuario 
+  update_fields($user, $value_all_training, 'field_puntaje_acumulado');
+}
+
+function _get_score_BR(){
+  // Obtener plan de carrera ruta
+
+  // realizar las busquedas de la 
+}
+
+/**
+ * Función que retorna el valor calculado del puntaje de toda las publicaciones aprobadas.
+ */
+function _get_all_publications_user_for_value($idUser) {
+  $suma = 0;
+  $query = new EntityFieldQuery();
+
+  // Traer todas las publicaciones activas por usuario
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'pub_user')
+  ->fieldCondition('field_user_reference', 'target_id', $idUser)
+  ->fieldCondition('field_estado_publicaci_n', 'value', APROBADO);
+
+  // $query->addTag('debug');
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  $data = node_load_multiple($nids); 
+  foreach ($data as $key) {
+    foreach ($key as $key2 => $value2) {
+      if($key2 == 'field_puntaje'){
+        if($value2['und'][0]['value'] != NULL ){
+          $puntaje = $value2['und'][0]['value'];
+          // Realiza la suma de los puntos de las publicaciones
+          $suma = $suma + $puntaje;
+        }
+      }
+    }
+  }
+  return $suma;
+}
+
+/**
+ * Función que retorna el valor calculado del puntaje del estudio realizados.
+ */
+function _get_score_training($user){
+  $suma = 0.0;
+  $idCarrie = $user->field_studies_carried_out['und'][0]['value'];
+  $profile = field_collection_item_load($idCarrie);
+  $idFormacion = $profile->field_req_formacion_desempeno['und'][0]['value'];
+  $pdata2 = field_collection_item_load($idFormacion);
+  $idTerm = $pdata2->field_formacion_y_desarrollo['und'][0]['tid'];
+  $terms = taxonomy_term_load($idTerm);
+  $query = new EntityFieldQuery();
+
+  // Traer todos los estudios activas por usuario
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'training')
+  ->fieldCondition('field_concept_formation', 'tid', $terms->tid);
+
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  $data = node_load_multiple($nids); 
+
+  foreach ($data as $key) {
+    foreach ($key as $key2 => $value2) {
+      if($key2 == 'field_puntaje' ){
+        if($value2 != NULL){
+          $puntaje = $value2['und'][0]['value'];
+          $suma = $suma + $puntaje;
+        }
+      }
+    }
+  }
+  return $suma;
+}
+
+function update_fields(&$user, $value_data, $field_name) {
+
+  foreach ($user as $key => $value) {
+    if($key == $field_name){
+      $value['und'][0]['value'] = $value_data;
+    }
+    // user_save($user);
+    field_attach_update('user', $user);
+  }
+  
+
+}
+
+function get_id_user_x_term($tid){
+  $result = NULL;
+  $term = taxonomy_term_load($tid);
+  if($term){
+    if(isset($term->field_user_reference['und'][0]['target_id'])){
+      $result = $term->field_user_reference['und'][0]['target_id']; 
+    }
+  }
+  return $result;
 }

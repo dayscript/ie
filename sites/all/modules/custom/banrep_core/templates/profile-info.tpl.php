@@ -364,10 +364,10 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
 
   <?php
     
-    if(arg(2) == 'carrera'):
+     if(arg(2) == 'carrera'):
   ?>
     <div class="col-lg-12 user-rgister-data">
-            <?php $user_load = user_load($user_data['uid']) ?>
+            <?php $user_load = user_load($user_data['uid']); dpm($user_load);?>
             <div class="col-lg-3">Puntaje Acomulado General: 
               <span class="text-red">
                 <?php echo $user_load->field_acumulado_general['und'][0]['value'] ?> 

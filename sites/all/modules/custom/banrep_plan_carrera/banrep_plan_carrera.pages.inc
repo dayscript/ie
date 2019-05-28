@@ -9,14 +9,13 @@ module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions
  */
 function banrep_plan_carrera_page($uid) {
   $usuario = user_load($uid);
-
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
     return 'No existe plan de carrera';
   }
 
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
-  $requirements = get_requirements($scale, $route);
+  $requirements = get_requirements($scale, $route, $usuario->uid);
   $form     = drupal_get_form('banrep_plan_carrera_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
@@ -109,8 +108,10 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
 
   $html = '<table class="requirements__publications">';
   
+
    
   foreach ($requirements['publications'] as $keyg => $group) {
+
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
     }
@@ -120,18 +121,19 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
     $html .= '<th>Nombre requisito</th>';
     $html .= '<th>Valor requisito</th>';
     $html .= '<th>Valor actual</th>';
+    $html .= '<th>Tipo puntaje</th>';
     $html .= '<th>Calificación</th>';
     $html .= '<th>Aprobación</th>';
     $html .= '<th>Observaciones</th>';
     $html .= '</tr>';
     foreach ($group['conditions'] as $keyc => $condition) {
       $form['rq_publiacion'][$keyg][$keyc] = array(
-      '#type' => 'container',
-      '#attributes' => array('class' => array('row')),
+        '#type' => 'container',
+        '#attributes' => array('class' => array('row')),
       );
       $operator = '';
       if (isset($condition['operator']) && !empty($condition['operator'])) {
-      $operator = $condition['operator'] . ' ';
+        $operator = $condition['operator'] . ' ';
       }
       $name_item = 'rq_publiacion_' . $keyg . '_' . $keyc;
       $comments = _output_comments($name_item, $nid_log);
@@ -140,7 +142,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
       /*if (in_array('Admin GT', $user->roles)) {
       $input_value = '<input type="text" size="4" class="form-text" name="rq_publiacion_' . $keyg . '_' . $keyc . '_valor" value ="' . $comments['valor'] . '"placeholder="Nuevo valor">';
       }*/
-      
       switch ($condition['type']) {
       case 'PUNTAJE':
       case 'CANTIDAD':
@@ -160,11 +161,13 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
             $size    = count($concepts);
             $name    = _get_concept_publications($condition['concept']);
             $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
+
           }
         }
         if(empty($condition['serie']) && empty($condition['concept']) ){
           $name = 'PUBLICACIONES';
           $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+          
         }
         $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
         $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
@@ -178,17 +181,24 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
         $calificacion = 'Cumple';
       }
       if (isset($comments['html']) && !empty($comments['html'])) {
-      if ($comments['aprobado'] == 1) {
-        $checked = 'checked';
+        if ($comments['aprobado'] == 1) {
+          $checked = 'checked';
+        }
+        else {
+          $checked = '';
+        }
       }
-      else {
-        $checked = '';
-      }
-      }
+
+      $html .= '<td>' . $condition['concept_type'] . '</td>';
       $html .= '<td>' . $calificacion . '</td>';
       $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
+      $html .= '<tr>';
+      $html .= '<td>';
+      $html .= $condition['html'];
+      $html .= '</td>';
+      $html .= '</tr>';
     }
     $html .= '</table></td></tr>';
   }
@@ -263,7 +273,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
         $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
         $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
       $html .= '</tr>';
-
     }
     $html .= '</tbody>';
 
@@ -391,6 +400,7 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
   drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') . '/plan_carrera_validate.js');
   return $form;
 }
+
 function banrep_plan_carrera_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];

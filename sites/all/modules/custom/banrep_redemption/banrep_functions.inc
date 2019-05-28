@@ -89,7 +89,7 @@ function banrep_redemption_add_form($form, &$form_state, $type) {
         $route        = $usuario->field_ruta['und'][0]['target_id'];
         $scale        = $usuario->field_usr_escalafon['und'][0]['tid'];
         module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions');
-        $requirements = get_requirements($scale, $route,'training');
+        $requirements = get_requirements($scale, $route, $usuario->uid,'training');
         $tids = array();
         foreach ($requirements as $rule) {
         foreach ($rule as $key => $requirement) {
