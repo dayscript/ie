@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Implements hook_shema()
+ */
+
+function banrep_sepi_schema() {
+    $schema['banrep_sepi_files'] = array(
+        'description' => 'The base table for nodes.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for a node.',
+                'type' => 'varchar',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+        ),
+        'primary key' => array('id'),
+        'unique keys' => array( 'id' =>  array( 'id' )     )
+    );
+  
+    return $schema;
+  }
+
+?>
