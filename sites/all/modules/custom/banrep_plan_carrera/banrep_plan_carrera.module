@@ -60,6 +60,7 @@ function banrep_plan_carrera_mail($key, &$message, $params) {
  * Implements hook_form_alter().
  */
 function banrep_plan_carrera_node_presave($node) {
+  
   global $user;
   switch($node->type){
     case 'pub_user':
@@ -67,6 +68,8 @@ function banrep_plan_carrera_node_presave($node) {
        
       $estado = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
       $estado_ant = $node->original->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
+    
+      // Si es estado es 3 (aprobado)
       if ($estado_ant != 3 &&  $estado == 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         //Consultando la ruta del usuario.
         $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
@@ -185,6 +188,7 @@ function banrep_plan_carrera_node_presave($node) {
             $value = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
             
             $node->field_log_puntaje[LANGUAGE_NONE][] = array('value' => $value );
+            _generate_response_sepi($node);
           }
         }       
       }
