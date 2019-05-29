@@ -56,8 +56,7 @@
             // return $publication;    
             $node = node_load($nid);
             $node_wrapper = entity_metadata_wrapper($entity_type, $node);
-            
-            
+            $node_wrapper->status->set(0);
   
         }else{ // create entity
             
