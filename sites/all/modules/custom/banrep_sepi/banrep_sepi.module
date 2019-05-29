@@ -137,7 +137,7 @@
         unset($node_wrapper->field_co_authors);
         $node_wrapper->field_other_co_authors = null;
         
-        if(!$node_wrapper->status){
+        if(!$node_wrapper->status->value()){
             $node_wrapper->status = 0;
         }
         
