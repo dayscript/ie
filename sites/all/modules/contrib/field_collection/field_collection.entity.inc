@@ -233,15 +233,7 @@ class FieldCollectionItemEntity extends Entity {
     list($recieved_id) = entity_extract_ids($this->hostEntityType, $entity);
 
     if ($this->isInUse() && !empty($this->hostEntityId)) {
-      if (is_array($this->hostEntityId)) {
-        $current_id = in_array(
-          $recieved_id,
-          $this->hostEntityId
-        ) ? $recieved_id : FALSE;
-      }
-      else {
-        $current_id = $this->hostEntityId;
-      }
+      $current_id = $this->hostEntityId;
     }
     else {
       $current_host = entity_revision_load($this->hostEntityType, $this->hostEntityRevisionId);
@@ -325,7 +317,7 @@ class FieldCollectionItemEntity extends Entity {
 
           if ($this->isInUse()) {
             $data_array_keys = array_keys($data);
-            $this->hostEntityId = $data ? $data_array_keys : FALSE;
+            $this->hostEntityId = $data ? end($data_array_keys) : FALSE;
             $this->hostEntityRevisionId = FALSE;
           }
           // If we are querying for revisions, we get the revision ID.
