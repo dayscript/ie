@@ -137,6 +137,10 @@
         unset($node_wrapper->field_co_authors);
         $node_wrapper->field_other_co_authors = null;
         
+        if(!$node_wrapper->status){
+            $node_wrapper->status = 0;
+        }
+        
         
         $node_wrapper->save(true);
         
