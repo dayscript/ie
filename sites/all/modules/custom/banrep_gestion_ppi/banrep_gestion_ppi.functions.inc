@@ -24,6 +24,7 @@ function get_requirements_ppi($scale, $route, $type = '') {
       $requirements['publications'] = get_publications_requirements_ppi($node->field_requisitos_publicaciones['und']);
       $requirements['time']         = get_time_requirements_ppi($node->field_requisitos_tiempo['und']);
       $requirements['training']     = get_training_requirements_ppi($node->field_req_formacion_desempeno['und']);
+      $requirements['publications_req'] = $node->field_date_start_pub['und'][0]['value'];
     }
     else {
       switch ($type) {

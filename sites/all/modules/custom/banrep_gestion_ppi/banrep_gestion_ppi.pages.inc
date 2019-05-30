@@ -58,8 +58,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   '#tree' => TRUE,
   );
 
-  /**/
-  $user_ppi = user_load($uid->uid); 
+  $user_ppi = user_load($uid->uid);
 
   $crumbs = array();
   $crumbs[] = l(t('Home'), '');
@@ -68,61 +67,86 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   $crumbs[] = l(t($user_ppi->name), 'profile/gestion-ppi/'.$user_ppi->uid);
   drupal_set_breadcrumb($crumbs);
 
-  $pub_user_type = array();
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'node')
-  ->entityCondition('bundle', 'pub_user')
-  ->propertyCondition('status', NODE_PUBLISHED)
-  ->fieldCondition('field_user_reference', 'target_id', $uid->uid, '=')
-  ->fieldCondition('field_estado_publicaci_n', 'value', 3, '=');
-  $result = $query->execute();
+  if ($requirements['publications_req']) {
+    switch ($requirements['publications_req']) {
+      case '1'://Creación de usuario (Todo)
+        $date_query = $user_ppi->created;
+        break;
+      case '2'://Penúltimo puntaje
+        $date_query = $user_ppi->field_fecha_penultimo_puntaje[LANGUAGE_NONE][0]['value'];
+        break;
+      case '3'://Último puntaje
+        $date_query = $user_ppi->field_date_last_score[LANGUAGE_NONE][0]['value'];
+        break;
+      case '4'://Ultima solicitud beneficios
+        $date_query = $user_ppi->field_last_redemption_date[LANGUAGE_NONE][0]['value'];
+        break;
+    }
+  
+    $pub_user_type = array();
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'pub_user')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('field_user_reference', 'target_id', $uid->uid, '=')
+    ->fieldCondition('field_estado_publicaci_n', 'value', 3, '=');
+    $result = $query->execute();
 
-  foreach ($result['node'] as $nid => $value) {
-    $node_child = node_load($value->nid);
-    $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
-    $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
-    $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['values'][] = array('title' => $node_father->title, 'nid' => $node_father->nid, 'puntos' => $node_child->field_puntaje['und'][0]['value']);
-  }
-  foreach ($pub_user_type as $nid => $value) {
-    $e = taxonomy_term_load( $nid );
-    foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
-      $field_collection_item_value = $field_puntaje['value']; 
-      $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
-      if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-        $type = '';
-        switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
-          case 'field_puntaje_acumulado':
-           $type = 'Academico';
-            break;
-          case 'field_acumulado_general':
-           $type = 'General';
-            break;
-          case 'field_puntaje_br':
-           $type = 'BR';
-            break;
+    foreach ($result['node'] as $nid => $value) {
+      $node_child = node_load($value->nid);
+      $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
+      if (isset($node_father->field_date) && !empty($node_father->field_date) && $node_father->field_date['und'][0]['value'] > $date_query) {
+        $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
+        $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['values'][] = array(
+          'nid' => $node_father->nid,
+          'title' => $node_father->title,
+          'points' => $node_child->field_puntaje['und'][0]['value'],
+          'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
+          'charge' => taxonomy_term_load($node_father->field_role_within_publication['und'][0]['tid'])->name
+        );
+      }
+    }
+
+    foreach ($pub_user_type as $nid => $value) {
+      $e = taxonomy_term_load( $nid );
+      foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
+        $field_collection_item_value = $field_puntaje['value']; 
+        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
+        if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
+          $type = '';
+          switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
+            case 'field_puntaje_acumulado':
+             $type = 'Academico';
+              break;
+            case 'field_acumulado_general':
+             $type = 'General';
+              break;
+            case 'field_puntaje_br':
+             $type = 'BR';
+              break;
+          }
+          $pub_user_type[$nid]['acumula'] = $type;
         }
-        $pub_user_type[$nid]['acumula'] = $type;
       }
     }
   }
-  /**/
 
   $html = '<table class="requirements__publications">';
   foreach ($requirements['publications'] as $keyg => $group) {
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
     }
-    $html .= '<tr><td colspan="6">';
-    $html .= '<table class="requirements__publications">';
-    $html .= '<tr>';
-    $html .= '<th>Nombre requisito</th>';
-    $html .= '<th>Valor requisito</th>';
-    $html .= '<th>Valor actual</th>';
-    $html .= '<th>Tipo puntaje</th>';
-    $html .= '<th>Calificación</th>';
-    $html .= '<th>Aprobación</th>';
-    $html .= '<th>Observaciones</th>';
-    $html .= '</tr>';
+    $html .= '<tr><td colspan="6">
+    <table class="requirements__publications">
+    <tr>
+      <th>Nombre requisito</th>
+      <th>Valor requisito</th>
+      <th>Valor actual</th>
+      <th>Tipo puntaje</th>
+      <th>Calificación</th>
+      <th>Aprobación</th>
+      <th>Observaciones</th>
+    </tr>';
 
     foreach ($group['conditions'] as $keyc => $condition) {
       $form['rq_publiacion'][$keyg][$keyc] = array(
@@ -173,7 +197,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $pub_user_type_f =  '';
           }
 
-          $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')'.$pub_user_type_f .'</td>';
+          $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
           break;
@@ -197,6 +221,21 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
+
+      if (isset($pub_user_type[$condition['concept']])) {
+        $sub_html = '<table style="text-align: center;"><tr><th>Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Rol</th><th style="text-align: center;">Tipo Publicación</th></tr>';
+        foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
+          $sub_html .= '<tr><td style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['charge'].'</td><td>'.$name.'</td></tr>';
+        }
+        $sub_html .= '</table>';
+        $html .= '
+        <tr>
+          <td colspan="7">
+            <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
+            <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+          </td>
+        </tr>';
+      }
     }
     $html .= '</table></td></tr>';
   }
