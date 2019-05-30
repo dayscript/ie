@@ -633,7 +633,7 @@ function _banrep_plan_carrera_query_pubxusr( $uid, $ctype, $serie )
 function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, $usuario_publicacion)
 {
   //Consultando la ruta del usuario.
-  $comparacion = false;
+  $comparacion = FALSE;
   $ruta_usuario = $usuario_publicacion->field_ruta[LANGUAGE_NONE][0]['target_id'];
   //Sacando información de la publicación (Tipo de publicación)
   $escalafon_id= $usuario_publicacion->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
@@ -645,7 +645,6 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
         ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_id);
 
   $result_query = $query->execute();
-
   if (!empty($result_query['node'])){
     $nid = key($result_query['node']);
     $node_requisito = node_load($nid);
@@ -662,8 +661,17 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
       $fecha_comparacion = intval($usuario_publicacion->field_date_last_score[LANGUAGE_NONE][0]['value']);
     }
 
+    if($comparar_con_fecha == 4){
+
+      if(isset($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0])) {
+        $fecha_comparacion = intval($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0]['value']);
+      } else {
+        $fecha_comparacion = intval($usuario_publicacion->field_date_admission[LANGUAGE_NONE][0]['value']);
+      }
+      
+    }
     if($fecha_publicacion >= $fecha_comparacion){
-      $comparacion = true;
+      $comparacion = TRUE;
     }
   }
 
@@ -709,6 +717,10 @@ function banrep_plan_carrera_views_pre_render(&$view) {
 
           if($comparar_con_fecha == 3){
             $fecha_comparacion = intval($author->field_date_last_score[LANGUAGE_NONE][0]['value']);
+          }
+
+          if($comparar_con_fecha == 4){
+            $fecha_comparacion = intval($author->field_last_redemption_date[LANGUAGE_NONE][0]['value']);
           }
 
           if($fecha_publicacion >= $fecha_comparacion){

@@ -508,6 +508,16 @@ function _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($publicacion, $
       $fecha_comparacion = intval($usuario_publicacion->field_date_last_score[LANGUAGE_NONE][0]['value']);
     }
 
+    if($comparar_con_fecha == 4){
+
+      if(isset($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0])) {
+        $fecha_comparacion = intval($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0]['value']);
+      } else {
+        $fecha_comparacion = intval($usuario_publicacion->field_date_admission[LANGUAGE_NONE][0]['value']);
+      }
+      
+    }
+
     if($fecha_publicacion >= $fecha_comparacion){
       $comparacion = true;
     }
@@ -556,6 +566,16 @@ function banrep_gestion_ppi_views_pre_render(&$view) {
 
           if($comparar_con_fecha == 3){
             $fecha_comparacion = intval($author->field_date_last_score[LANGUAGE_NONE][0]['value']);
+          }
+
+          if($comparar_con_fecha == 4){
+
+            if(isset($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0])) {
+              $fecha_comparacion = intval($usuario_publicacion->field_last_redemption_date[LANGUAGE_NONE][0]['value']);
+            } else {
+              $fecha_comparacion = intval($usuario_publicacion->field_date_admission[LANGUAGE_NONE][0]['value']);
+            }
+            
           }
 
           if($fecha_publicacion >= $fecha_comparacion){
