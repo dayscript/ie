@@ -582,6 +582,40 @@ function _get_training_by_tid($uid,$tid) {
 
 }
 
+function update_redemption_date($uid){
+  $user = user_load($uid);
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'entityform')
+    ->entityCondition('bundle', 'user_redemption')
+    ->fieldCondition('field_aprobado', 'value', APROBADO)
+    ->fieldCondition('users', 'uid', $uid)
+    ->fieldOrderBy('field_act_date_end', 'value', 'DESC');
+  
+  $result = $query->execute();
+  $nids = array_keys($result['entityform']);
+  $data = entity_load_multiple($nids); 
+
+  $last_date = 0;
+  foreach ($data as $key) {
+    foreach ($key as $key2 => $value2) {
+      if($key2 == 'field_act_date_end'){
+        if($value2['und'][0]['value'] != NULL ){
+          if($last_date == 0){
+            $last_date = $value2['und'][0]['value'];
+          } else {
+            if($last_date < $value2['und'][0]['value']){
+              $last_date = $value2['und'][0]['value'];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //Guardar el campo de usuario 
+  update_fields($user, $last_date, 'field_last_redemption_date');
+}
+
 function calculate_profile_data($uid, $date_update){
 
   //Cargar la data del usuario

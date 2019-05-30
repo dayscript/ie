@@ -12,7 +12,7 @@ function banrep_plan_carrera_page($uid) {
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
     return 'No existe plan de carrera';
   }
-
+  update_redemption_date($uid);
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements($scale, $route, $usuario->uid);

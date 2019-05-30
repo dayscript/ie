@@ -30,6 +30,15 @@ function banrep_plan_carrera_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['profile/redemption/add'] = array(
+    'title' => '',
+    'page callback' => 'update_redemption_date',
+    'page arguments' => array(3),
+    'access callback' => true,
+    'file' => 'banrep_plan_carrera.functions.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
