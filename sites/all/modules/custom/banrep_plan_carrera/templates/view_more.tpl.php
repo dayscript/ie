@@ -4,15 +4,16 @@
   $titles = $variables['titles'];
 ?>
 <div >
-    <a class="test-link" href="#"> Lista de Publicaciones</a>
+    <a class="test-link" href="#"> <?php print $label?></a>
     <div class="test-link-content hidden">
         <table>
-        <tr>
-            <th>Titulo</th>
-            <th>Fecha de aprobado</th>
-            <th>Puntos</th>
-
-        </tr>
+        <?php
+            print '<tr>';
+            foreach ($titles as $key) {
+                print '<td>' . $key . '</td>';
+            }
+            print '</tr>';
+        ?>
 
         <?php
             foreach ($lista as $key => $value) {

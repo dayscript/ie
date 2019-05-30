@@ -113,7 +113,7 @@ function get_publications_requirements($items, $uid) {
           break;
       }
       $data_list = get_list_x_term($idCondition, $uid);
-      $titles = ['Titulo', 'Fecha de aprobado', 'Puntos'];
+      $titles = ['Titulo', 'Fecha de aprobado', 'Puntos', 'Cargo Empleado', 'Tipo de publicación', 'ROL'];
       $requirements[$cont_group]['conditions'][$cont_condition]['operator']     = $rule->field_operador['und'][0]['value'];
       $requirements[$cont_group]['conditions'][$cont_condition]['type']         = $type;
       $requirements[$cont_group]['conditions'][$cont_condition]['value']        = $rule->field_cantidad_puntaje['und'][0]['value'];
@@ -128,6 +128,7 @@ function get_publications_requirements($items, $uid) {
 }
 
 function get_list_x_term($tid, $uid){
+  $resultList = [];
   $query = new EntityFieldQuery();
   $type_id = _get_concept_id_publications($tid);
   // Traer todas las publicaciones activas por usuario y por tipo
@@ -144,26 +145,65 @@ function get_list_x_term($tid, $uid){
   $lista_pub = [];
 
   foreach ($data as $key => $value) {
-    $idP = [$value->field_publicacion['und'][0]['target_id']];
+    $idK = $key;
+    $idP = [$value->field_publicacion[LANGUAGE_NONE][0]['target_id']];
     $entity_publication = entity_load('node', $idP);
-
-    if(!empty($entity_publication) && $entity_publication->field_pub_type['und'][0]['value'] == $type_id){
-      foreach ($value as $key1 => $value1) {
-        if($key1 == 'title'){
-          $lista_pub[$key]['title'] = $value1;
-        }elseif ($key1 == 'revision_timestamp') {
-          $lista_pub[$key]['timestamp'] = date("d-m-Y", $value1);
-        }elseif ($key1 == 'field_puntaje') {
-          if($value->field_puntaje){
-            $lista_pub[$key]['score'] = $value1;
-          }else {
-            $lista_pub[$key]['score'] = 0;
+    $type_id_node;
+    $isPublication = FALSE;
+    foreach ($entity_publication as $key0 => $value0) {
+      foreach ($value0 as $field => $val) {
+        if ($field == 'field_pub_type') {
+          if($val[LANGUAGE_NONE][0]['value'] == $type_id){
+            $type_id_node = $val[LANGUAGE_NONE][0]['value'];
+            $tax = taxonomy_term_load($type_id_node);
+            $lista_pub[$idK]['name_type_pub'] = $tax->name;
+            $isPublication = TRUE;
           }
+        }elseif ($field == 'field_role_within_publication') {
+          $id_rol = $val[LANGUAGE_NONE][0]['tid'];
+          $tax = taxonomy_term_load($id_rol);
+          $lista_pub[$idK]['name_rol'] = $tax->name;
         }
       }
+     
+    }
+    if($isPublication){
+      foreach ($value as $key1 => $value1) {
+        if($key1 == 'title'){
+          $lista_pub[$idK]['title'] = $value1;
+        }elseif ($key1 == 'revision_timestamp') {
+          $lista_pub[$idK]['timestamp'] = date("d-m-Y", $value1);
+        }elseif ($key1 == 'field_puntaje') {
+          if($value->field_puntaje){
+            $lista_pub[$idK]['score'] = $value1;
+          }else {
+            $lista_pub[$idK]['score'] = 0;
+          }
+        }elseif ($key1 == 'field_user_reference') {
+          $idU = $value1[LANGUAGE_NONE][0]['target_id'];
+          $entity_user = user_load($idU);
+          $tax = taxonomy_term_load($entity_user->field_position[LANGUAGE_NONE][0]['tid']);
+          $lista_pub[$idK]['position_user'] = $tax->name;
+        }
+      }
+
+    }else{
+      $lista_pub[$idK] = []; 
     }
   }
-  return $lista_pub;
+  
+  // crear lista ordenada
+  foreach ($lista_pub as $key3 => $value3) {
+    if(count($value3) == 6){
+      $resultList[$key3]['titulo'] = $value3['title'];
+      $resultList[$key3]['fecha'] = $value3['timestamp'];
+      $resultList[$key3]['puntos'] = $value3['score'];
+      $resultList[$key3]['cargo'] = $value3['position_user'];
+      $resultList[$key3]['tipo_pub'] = $value3['name_type_pub'];
+      $resultList[$key3]['rol'] = $value3['name_rol'];
+    }
+  }
+  return $resultList;
 }
 
 function get_table_list_view_more($list, $label, $titles){
@@ -206,7 +246,7 @@ function get_training_requirements($items) {
       $requirements[$cont]['operator'] = 'O';
     }
     $cont_condition = 0;
-    foreach ($rule->field_formacion_y_desarrollo['und'] as $key => $value) {
+    foreach ($rule->field_formacion_y_desarrollo[LANGUAGE_NONE] as $key => $value) {
       $requirements[$cont][$cont_condition] = $value['tid'];
       $cont_condition++;
     }
