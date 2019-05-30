@@ -593,7 +593,7 @@ function update_redemption_date($uid){
   
   $result = $query->execute();
   $nids = array_keys($result['entityform']);
-  $data = entity_load_multiple($nids); 
+  $data = entity_load('entityform',$nids); 
 
   $last_date = 0;
   foreach ($data as $key) {
