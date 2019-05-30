@@ -1456,23 +1456,29 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       unset($node->concept_target_id);
       unset($node->concept_name);
       unset($node->concept_type);
+
+
+      if(!isset($node->nid)){
+        node_save($node);
+      }
+
+
       if (isset($node->nid) && !isset($node->vid)) {
         // $node->vid = $node->nid;
       }
-
-      //delete entity collection if exists
-      if(isset($node->field_co_authors[LANGUAGE_NONE])){
-        foreach ($node->field_co_authors[LANGUAGE_NONE] as $key => $value) {
-          // Build array of field collection values.
-          $field_collection_item_values[] = $value['value'];
-        
-          // Unset them.  
-          unset($node->field_co_authors[LANGUAGE_NONE][$key]);
-        }
-        entity_delete_multiple('field_collection_item', $field_collection_item_values);
-      } 
-
-      node_save($node);
+      
+      if(isset($node->nid)){
+          $node_entity = node_load($node->nid);
+          if(isset($node_entity->field_co_authors[LANGUAGE_NONE])){
+            foreach ($node_entity->field_co_authors[LANGUAGE_NONE] as $key => $value) {
+              $items_id[] = $value['value']; 
+            }
+            $result = entity_delete_multiple('field_collection_item', $items_id);
+            unset($node_entity->field_co_authors);
+            node_save($node_entity);
+          }
+      }
+      
       if (isset($node->nid)) {
         
         if(count($co_authors) > 0){
@@ -1481,9 +1487,11 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
             if( is_numeric($key) ){
               $values = array();
               $values['field_name'] = 'field_co_authors';
-                
+              
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
+
+
               $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var(str_replace('-','',$item['name']['co_authors_author']),FILTER_SANITIZE_NUMBER_INT);
               if( $item['name']['rol_within_publication'] != '-1' && !empty($item['name']['rol_within_publication']) ){
                 $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $item['name']['rol_within_publication']; 
@@ -1492,16 +1500,16 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
                 
               }
               
-              $entity->save();
+              $entity->save(true);
               $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
             }
           }
           
           $node->field_co_authors[LANGUAGE_NONE] = $collections;
-          node_save($node);
+          
         }
-        // $co_authors = array_merge($main_author_ref, $co_authors);
-        
+        $co_authors = array_merge($main_author_ref, $co_authors);
+        node_save($node);
         _publication_create_co_authors_banco($node->nid, $co_authors);
       }
       $form_state['storage_publication'] = drupal_json_encode($node);

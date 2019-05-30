@@ -8,7 +8,7 @@
 /**
  * Funcion que cargar los requisitos de ascenso.
  */
-function get_requirements($scale, $route, $type = '') {
+function get_requirements_ppi($scale, $route, $type = '') {
   $query = db_select('field_data_field_ruta_plan_carrera', 'r');
   $query->addField('r', 'entity_id', 'nid');
   $query->join('field_data_field_escalafon_actual', 's', 's.entity_id = r.entity_id');
@@ -20,24 +20,24 @@ function get_requirements($scale, $route, $type = '') {
     $requirements                 = array();
     if (empty($type)) {
       $requirements['nid']          = $result->nid;
-      $requirements['general']      = get_general_requirements($node);
-      $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und']);
-      $requirements['time']         = get_time_requirements($node->field_requisitos_tiempo['und']);
-      $requirements['training']     = get_training_requirements($node->field_req_formacion_desempeno['und']);
+      $requirements['general']      = get_general_requirements_ppi($node);
+      $requirements['publications'] = get_publications_requirements_ppi($node->field_requisitos_publicaciones['und']);
+      $requirements['time']         = get_time_requirements_ppi($node->field_requisitos_tiempo['und']);
+      $requirements['training']     = get_training_requirements_ppi($node->field_req_formacion_desempeno['und']);
     }
     else {
       switch ($type) {
         case 'general':
-        $requirements = get_general_requirements($node);
+        $requirements = get_general_requirements_ppi($node);
           break;
         case 'publications':
-        $requirements = get_publications_requirements($node->field_requisitos_publicaciones['und']);
+        $requirements = get_publications_requirements_ppi($node->field_requisitos_publicaciones['und']);
           break;
         case 'time':
-        $requirements = get_time_requirements($node->field_requisitos_tiempo['und']);
+        $requirements = get_time_requirements_ppi($node->field_requisitos_tiempo['und']);
           break;
         case 'training':
-        $requirements = get_training_requirements($node->field_req_formacion_desempeno['und']);
+        $requirements = get_training_requirements_ppi($node->field_req_formacion_desempeno['und']);
           break;
       }
     }
@@ -51,7 +51,7 @@ function get_requirements($scale, $route, $type = '') {
 /**
  * Funcion que carga los campos generales de la tabla de requisitos.
  */
-function get_general_requirements($node) {
+function get_general_requirements_ppi($node) {
   $general = array();
   $general['date_start_pub'] = 1;
   $general['lugar_posgrado'] = NULL;
@@ -68,7 +68,7 @@ function get_general_requirements($node) {
 /**
  * Funcion que cargar el fieldcollection de requerimientos de tiempo.
  */
-function get_time_requirements($items) {
+function get_time_requirements_ppi($items) {
   $requirements = array();
   foreach ($items as $item) {
     $rule = field_collection_item_load($item['value']);
@@ -80,7 +80,7 @@ function get_time_requirements($items) {
 /**
  * Funcion que carga los requirimientos de publicaciones.
  */
-function get_publications_requirements($items) {
+function get_publications_requirements_ppi($items) {
   $requirements = array();
   $cont_group = 0;
   foreach ($items as $group) {
@@ -119,7 +119,7 @@ function get_publications_requirements($items) {
 /**
  * Funcion que carga los requisitos de formacion y desarrollo.
  */
-function get_training_requirements($items) {
+function get_training_requirements_ppi($items) {
   $requirements = array();
   $cont = 0;
   foreach ($items as $item) {
@@ -141,7 +141,7 @@ function get_training_requirements($items) {
 /**
  * Funcion que carga los conceptos de publicacion.
  */
-function _get_concept_publications($tids) {
+function _get_concept_publications_ppi($tids) {
   $tids = explode(',', $tids);
   $terms = taxonomy_term_load_multiple($tids);
   $name = '';
@@ -165,13 +165,13 @@ function _get_concept_publications($tids) {
 /**
  * Funcion que carga la experiencia del usuario.
  */
-function _get_time_user($usuario, $type) {
+function _get_time_user_ppi($usuario, $type) {
   $experiencia = new stdClass();
   $experiencia->years = 0;
   switch ($type) {
     case 'A':
     case 'B':
-      $experiencia = _get_experience($usuario->uid, 'field_date_admission');
+      $experiencia = _get_experience_ppi($usuario->uid, 'field_date_admission');
       if ($type == 'B') {
         foreach ($usuario->field_studies_carried_out['und'] as $value) {
           $rule = field_collection_item_load($value['value']);
@@ -193,11 +193,11 @@ function _get_time_user($usuario, $type) {
       break;
 
     case 'C':
-      $experiencia = _get_experience($usuario->uid, 'field_date_last_score');
+      $experiencia = _get_experience_ppi($usuario->uid, 'field_date_last_score');
       break;
 
     case 'D':
-      $experiencia = _get_experience($usuario->uid, 'field_fecha_penultimo_puntaje');
+      $experiencia = _get_experience_ppi($usuario->uid, 'field_fecha_penultimo_puntaje');
       break;
 
   }
@@ -207,7 +207,7 @@ function _get_time_user($usuario, $type) {
 /**
  * Funcion que retorna la experiendcia del usuari que esta aplicando al ascenso.
  */
-function _get_experience($uid, $field) {
+function _get_experience_ppi($uid, $field) {
   $experiencia = 0;
   $query = db_select('field_data_' . $field, 'e');
   $query->addField('e', $field . '_value', 'date');
@@ -224,7 +224,7 @@ function _get_experience($uid, $field) {
 /**
  * Función que calcula el puntaje o la cantidad de publicaciones del usuario.
  */
-function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALSE, $type = 'CANTIDAD', $start_pub = 1, $is_activity = FALSE) {
+function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = FALSE, $type = 'CANTIDAD', $start_pub = 1, $is_activity = FALSE) {
   $star_date = NULL;
   if ($start_pub > 1) {
     $usuario = user_load($uid);
@@ -340,7 +340,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
 /**
  * Funcion que carga el nodo log de ascenso.
  */
-function _get_node_log($uid, $rid, $flag_return_node = TRUE) {
+function _get_node_log_ppi($uid, $rid, $flag_return_node = TRUE) {
   $query = db_select('node', 'n');
   $query->addField('n', 'nid', 'nid');
   $query->join('field_data_field_usuario', 'u', 'u.entity_id = n.nid');
@@ -378,7 +378,7 @@ function _get_node_log($uid, $rid, $flag_return_node = TRUE) {
 /**
  * Funcion que carga las reglas del log.
  */
-function _get_log_by_rule($rule, $nid) {
+function _get_log_by_rule_ppi($rule, $nid) {
   $items = db_select('field_data_field_reglas', 'i');
   $items->fields('i', array('field_reglas_value'));
   $items->condition('i.entity_id', $nid, '=');
@@ -393,7 +393,7 @@ function _get_log_by_rule($rule, $nid) {
 }
 
 
-function _get_links_nodes($tid){
+function _get_links_nodes_ppi($tid){
 
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
@@ -431,7 +431,7 @@ function _get_links_nodes($tid){
 /**
  * Funcion que carga los nodos de tipo formacion del usuario por concepto.
  */
-function _get_training_by_tid($uid,$tid) {
+function _get_training_by_tid_ppi($uid,$tid) {
   $files = array();
   if (is_numeric($tid) && $tid > 0) {
     $query = db_select('node', 'n');

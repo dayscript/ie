@@ -831,8 +831,6 @@ function banrep_core_node_presave($node) {
     }
     if ($estado_publicacion === '3') {
       $node->status = NODE_PUBLISHED;
-      _generate_response_sepi($node);
-
     }
   }
   elseif ($node->type == 'blog') {
