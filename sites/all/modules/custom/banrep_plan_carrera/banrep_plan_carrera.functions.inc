@@ -588,7 +588,7 @@ function update_redemption_date($uid){
   $query->entityCondition('entity_type', 'entityform')
     ->entityCondition('bundle', 'user_redemption')
     ->fieldCondition('field_aprobado', 'value', APROBADO)
-    ->fieldCondition('users', 'uid', $uid)
+    ->propertyCondition('uid', $uid)
     ->fieldOrderBy('field_act_date_end', 'value', 'DESC');
   
   $result = $query->execute();
