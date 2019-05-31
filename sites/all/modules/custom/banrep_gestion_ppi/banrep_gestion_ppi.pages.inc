@@ -95,7 +95,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     foreach ($result['node'] as $nid => $value) {
       $node_child = node_load($value->nid);
       $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
-      if (isset($node_father->field_date) && !empty($node_father->field_date) && $node_father->field_date['und'][0]['value'] > $date_query) {
+      if (isset($node_father->field_date) && !empty($node_father->field_date) && isset($date_query) && !empty($date_query) && $node_father->field_date['und'][0]['value'] > $date_query) {
         $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
         $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['values'][] = array(
           'nid' => $node_father->nid,
