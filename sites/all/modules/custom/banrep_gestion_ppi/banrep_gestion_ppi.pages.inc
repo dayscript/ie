@@ -99,10 +99,11 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $pos_father = _search_father_taxonomy_term($node_father->field_pub_type['und'][0]['value'], $node_father->field_role_within_publication['und'][0]['tid']);
         $pub_user_type[$pos_father]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
         $pub_user_type[$pos_father]['values'][] = array(
-          'nid' => $node_father->nid,
+          'nid' => $node_child->nid,
           'title' => $node_father->title,
           'points' => $node_child->field_puntaje['und'][0]['value'],
           'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
+          'type' => taxonomy_term_load($node_father->field_pub_type['und'][0]['value'])->name,
           'charge' => taxonomy_term_load($node_father->field_role_within_publication['und'][0]['tid'])->name
         );
       }
@@ -188,7 +189,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
 
-          if(isset($pub_user_type[$condition['concept']])){
+          /*if(isset($pub_user_type[$condition['concept']])){
             $pub_user_type_f = '<br><a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a><div class="pub_dropdown_'.$condition['concept'].'" style="display: none;"><ul>';
             foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
               $pub_user_type_f .= '<li>'.$value['title'].'</li>';
@@ -196,9 +197,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $pub_user_type_f .= '</ul></div>';
           }else {
             $pub_user_type_f =  '';
-          }
+          }*/
 
-          $html .= '<td>' . $condition['concept'].$operator . $name . ' (' . $condition['type'] . ')</td>';
+          $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
           break;
@@ -226,7 +227,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       if (isset($pub_user_type[$condition['concept']])) {
         $sub_html = '<table style="text-align: center;"><tr><th>Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Rol</th><th style="text-align: center;">Tipo Publicación</th></tr>';
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
-          $sub_html .= '<tr><td style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['charge'].'</td><td>'.$name.'</td></tr>';
+          $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['charge'].'</td><td>'.$value['type'].'</td></tr>';
         }
         $sub_html .= '</table>';
         $html .= '
