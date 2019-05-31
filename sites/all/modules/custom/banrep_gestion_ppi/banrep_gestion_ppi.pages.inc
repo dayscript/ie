@@ -95,17 +95,39 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     foreach ($result['node'] as $nid => $value) {
       $node_child = node_load($value->nid);
       $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
+
       if (isset($node_father->field_date) && !empty($node_father->field_date) && isset($date_query) && !empty($date_query) && $node_father->field_date['und'][0]['value'] > $date_query) {
-        $pos_father = _search_father_taxonomy_term($node_father->field_pub_type['und'][0]['value'], $node_father->field_role_within_publication['und'][0]['tid']);
-        $pub_user_type[$pos_father]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
-        $pub_user_type[$pos_father]['values'][] = array(
-          'nid' => $node_child->nid,
-          'title' => $node_father->title,
-          'points' => $node_child->field_puntaje['und'][0]['value'],
-          'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
-          'type' => taxonomy_term_load($node_father->field_pub_type['und'][0]['value'])->name,
-          'charge' => taxonomy_term_load($node_father->field_role_within_publication['und'][0]['tid'])->name
-        );
+        $tax_father = $node_father->field_pub_type['und'][0]['value'];
+        if (isset($node_father->field_co_authors['und'])) {
+          foreach ($node_father->field_co_authors['und'] as $key => $entity_item) {
+            $field_collection_id = $entity_item['value'];
+            $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
+            $co_autor = taxonomy_term_load($field_collection->field_co_autor['und'][0]['tid']);
+            if (isset($co_autor) && $co_autor->field_user_reference['und'][0]['target_id'] == $user_ppi->uid) {
+              $tax_child = $field_collection->field_role_within_publicat['und'][0]['tid'];
+            }
+          }
+        }
+        
+        if ($node_child->field_main_author['und'][0]['value'] == 1) {
+          $role = taxonomy_term_load($node_father->field_role_within_publication['und'][0]['tid'])->name;
+        }
+        if ($node_child->field_main_author['und'][0]['value'] == 0 && isset($tax_child)) {
+          $role = taxonomy_term_load($tax_child)->name;
+        }
+
+        $pos_father = _search_father_taxonomy_term($tax_father, $tax_child);
+        foreach ($pos_father as $key) {
+          $pub_user_type[$key]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
+          $pub_user_type[$key]['values'][] = array(
+            'nid' => $node_child->nid,
+            'title' => $node_father->title,
+            'points' => $node_child->field_puntaje['und'][0]['value'],
+            'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
+            'type' => taxonomy_term_load($pos_father[0])->name,//$node_father->field_pub_type['und'][0]['value']
+            'charge' => $role
+          );
+        }
       }
     }
 
@@ -188,7 +210,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $name = 'PUBLICACIONES';
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
-          
+
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
@@ -325,16 +347,32 @@ function _search_father_taxonomy_term($tfather, $tchild){
   $terms = [];
 
   foreach ($tree as $term) {
-    if($term->depth == 0){
-      $father = $term->tid;
-      $terms[$term->tid] = array('tid' => $term->tid, 'name' => $term->name);
-    }else {
-      $terms[$father]['values'][$term->tid] = array('tid' => $term->tid, 'name' => $term->name);
+    switch ($term->depth) {
+      case 0:
+        $father = $term->tid;
+        $terms[$father] = array('tid' => $term->tid, 'name' => $term->name);
+        break;
+      case 1:
+        $child = $term->tid;
+        $terms[$father]['childs'][$child] = array('tid' => $term->tid, 'name' => $term->name);
+        break;
+      case 2:
+        $childs = $term->tid;
+        $terms[$father]['childs'][$child]['childs'][$childs] = array('tid' => $term->tid, 'name' => $term->name);
+        break;
     }
   }
-  
-  if(isset($terms[$tfather]['values'][$tchild])){
-    return $tchild;
+  $tfather = ($tfather==1) ? 20724 : $tfather;//Ajuste para ID de Capítulos de libro
+  $find = array($tfather);
+  foreach ($terms[$tfather]['childs'] as $terms_) {
+    if ($terms_['tid'] == $tchild) {
+      $find = array($tfather, $tchild);
+    }
+    foreach ($terms_['childs'] as $term_) {
+      if ($term_['tid'] == $tchild) {
+        $find = array($tfather, $tchild);
+      }
+    }
   }
-  return $tfather;
+  return $find;
 }
