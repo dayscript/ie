@@ -96,8 +96,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $node_child = node_load($value->nid);
       $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
       if (isset($node_father->field_date) && !empty($node_father->field_date) && isset($date_query) && !empty($date_query) && $node_father->field_date['und'][0]['value'] > $date_query) {
-        $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
-        $pub_user_type[$node_father->field_pub_type['und'][0]['value']]['values'][] = array(
+        $pos_father = _search_father_taxonomy_term($node_father->field_pub_type['und'][0]['value'], $node_father->field_role_within_publication['und'][0]['tid']);
+        $pub_user_type[$pos_father]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
+        $pub_user_type[$pos_father]['values'][] = array(
           'nid' => $node_father->nid,
           'title' => $node_father->title,
           'points' => $node_child->field_puntaje['und'][0]['value'],
@@ -197,7 +198,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $pub_user_type_f =  '';
           }
 
-          $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
+          $html .= '<td>' . $condition['concept'].$operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
           break;
@@ -324,4 +325,25 @@ function _output_comments ($name_item,$nid_log){
      }
   }
   return $output_comments;
+}
+
+function _search_father_taxonomy_term($tfather, $tchild){
+  $name = 'categorias_de_conceptos';
+  $voc = taxonomy_vocabulary_machine_name_load($name);
+  $tree = taxonomy_get_tree($voc->vid);
+  $terms = [];
+
+  foreach ($tree as $term) {
+    if($term->depth == 0){
+      $father = $term->tid;
+      $terms[$term->tid] = array('tid' => $term->tid, 'name' => $term->name);
+    }else {
+      $terms[$father]['values'][$term->tid] = array('tid' => $term->tid, 'name' => $term->name);
+    }
+  }
+  
+  if(isset($terms[$tfather]['values'][$tchild])){
+    return $tchild;
+  }
+  return $tfather;
 }
