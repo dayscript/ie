@@ -188,17 +188,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $name = 'PUBLICACIONES';
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
-
-          /*if(isset($pub_user_type[$condition['concept']])){
-            $pub_user_type_f = '<br><a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a><div class="pub_dropdown_'.$condition['concept'].'" style="display: none;"><ul>';
-            foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
-              $pub_user_type_f .= '<li>'.$value['title'].'</li>';
-            }
-            $pub_user_type_f .= '</ul></div>';
-          }else {
-            $pub_user_type_f =  '';
-          }*/
-
+          
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
