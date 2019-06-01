@@ -34,6 +34,7 @@ function get_requirements($scale, $route, $uid, $type = '') {
         $requirements = get_general_requirements($node);
           break;
         case 'publications':
+        
         $requirements = get_publications_requirements($node->field_requisitos_publicaciones['und'], $uid);
           break;
         case 'time':
@@ -89,15 +90,15 @@ function get_publications_requirements($items, $uid) {
   $cont_group = 0;
   foreach ($items as $group) {
     $item = field_collection_item_load($group['value']);
+    
     $operator_g = isset($item->field_operador['und'][0]['value']) ? $item->field_operador['und'][0]['value'] : '';
     $conditions = $item->field_condicion['und'];
     $cont_condition = 0;
     $requirements[$cont_group]['operator'] = $operator_g;
     foreach ($conditions as $condition) {
-
       $rule = field_collection_item_load($condition['value']);
       $type = $rule->field_tipo_requisito['und'][0]['value'];
-      $idCondition = $rule->field_concept_type['und'][0]['tid'];
+      $idCondition= '';
 
       switch ($type) {
         case 'CANTIDAD':
@@ -108,7 +109,9 @@ function get_publications_requirements($items, $uid) {
           $concept = array();
           foreach ($rule->field_concept_type['und'] as $taxonomy) {
             $concept[] = $taxonomy['tid'];
+            $idCondition = $taxonomy['tid'];
           }
+
           $requirements[$cont_group]['conditions'][$cont_condition]['concept'] = implode(',', $concept);
           break;
       }
@@ -127,10 +130,10 @@ function get_publications_requirements($items, $uid) {
   return $requirements;
 }
 
-function get_list_x_term($tid, $uid){
+function get_list_x_term($idCondition, $uid){
   $resultList = [];
   $query = new EntityFieldQuery();
-  $type_id = _get_concept_id_publications($tid);
+  $idType = _get_concept_id_publications($idCondition);
   // Traer todas las publicaciones activas por usuario y por tipo
   $query->entityCondition('entity_type', 'node')
   ->entityCondition('bundle', 'pub_user')
@@ -141,19 +144,17 @@ function get_list_x_term($tid, $uid){
   $result = $query->execute();
   $nids = array_keys($result['node']);
   $data = node_load_multiple($nids);
- 
   $lista_pub = [];
 
   foreach ($data as $key => $value) {
     $idK = $key;
     $idP = [$value->field_publicacion[LANGUAGE_NONE][0]['target_id']];
-    $entity_publication = entity_load('node', $idP);
+    $entity_publication = node_load('node', $idP);
     $type_id_node;
     $isPublication = FALSE;
-    foreach ($entity_publication as $key0 => $value0) {
-      foreach ($value0 as $field => $val) {
+    foreach ($entity_publication as $field => $val) {
         if ($field == 'field_pub_type') {
-          if($val[LANGUAGE_NONE][0]['value'] == $type_id){
+          if($val[LANGUAGE_NONE][0]['value'] == $idType){
             $type_id_node = $val[LANGUAGE_NONE][0]['value'];
             $tax = taxonomy_term_load($type_id_node);
             $lista_pub[$idK]['name_type_pub'] = $tax->name;
@@ -163,9 +164,7 @@ function get_list_x_term($tid, $uid){
           $id_rol = $val[LANGUAGE_NONE][0]['tid'];
           $tax = taxonomy_term_load($id_rol);
           $lista_pub[$idK]['name_rol'] = $tax->name;
-        }
-      }
-     
+        }   
     }
     if($isPublication){
       foreach ($value as $key1 => $value1) {
@@ -223,12 +222,11 @@ function get_concept_type($rule){
         if($puntajes = field_collection_item_load($concept_type->field_puntajes[LANGUAGE_NONE][0]['value'])){
           //Cargar la data
           if(isset($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'])){
-            $result = $puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+            $result = get_name_acumulado($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
           }
         }
       }
     }
-    
   }
   return $result;
 }
@@ -255,6 +253,22 @@ function get_training_requirements($items) {
   return $requirements;
 }
 
+function get_name_acumulado($name_machine){
+  $type = '-';
+  switch ($name_machine) {
+    case 'field_puntaje_acumulado':
+     $type = 'Academico';
+      break;
+    case 'field_acumulado_general':
+     $type = 'General';
+      break;
+    case 'field_puntaje_br':
+     $type = 'BR';
+      break;
+  }
+  return $type;
+}
+
 /**
  * Funcion que carga los conceptos de publicacion.
  */
@@ -270,7 +284,6 @@ function _get_concept_publications($tids) {
       $name = $term->name;
     }
   }
-
   return $name;
 
 }
@@ -280,10 +293,15 @@ function _get_concept_publications($tids) {
  */
 function _get_concept_id_publications($tid) {
   $result = NULL;
-  $term = taxonomy_term_load($tid);
+  $term = taxonomy_get_parents($tid);
 
-  if($term->tid){
-    $result = $term->tid;
+  if(empty(reset($term))) {
+    $result = $tid;
+  }else{
+    $data = reset($term);
+    if($data->tid){
+      $result = $data->tid;
+    }
   }
   return $result;
 }
