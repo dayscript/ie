@@ -213,6 +213,7 @@ function discount_points($entity, $type, $points){
       case 'user_redemption':
         $user = user_load($entity->uid);
         $message = array('msj' => 'Redención actualizada correctamente', 'type' => 'status');
+        $user->field_last_redemption_date[LANGUAGE_NONE][0]['value'] = time();
         break;
       case 'user_discount':
         $user = user_load($entity->field_usuario[LANGUAGE_NONE][0]['target_id']);
