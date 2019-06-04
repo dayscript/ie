@@ -167,15 +167,17 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $key = 211;
       $node = node_load($value->nid);
       
-      $pub_user_type[$key]['type'] = $key;
-      $pub_user_type[$key]['values'][] = array(
-        'nid' => $node->nid,
-        'title' => $node->title,
-        'points' => $node->field_puntaje['und'][0]['value'],
-        'date' => isset($node->changed) ? date( "m/d/Y", $node->changed) : '',
-        'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
-        'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
-      );
+      if(isset($node->changed) && !empty($node->changed) && isset($date_query) && !empty($date_query) && $node->changed > $date_query){
+        $pub_user_type[$key]['type'] = $key;
+        $pub_user_type[$key]['values'][] = array(
+          'nid' => $node->nid,
+          'title' => $node->title,
+          'points' => $node->field_puntaje['und'][0]['value'],
+          'date' => isset($node->changed) ? date( "m/d/Y", $node->changed) : '',
+          'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
+          'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
+        );
+      }
     }
   }
 
