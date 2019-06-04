@@ -125,7 +125,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'points' => $node_child->field_puntaje['und'][0]['value'],
             'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
             'type' => taxonomy_term_load($pos_father[0])->name,//$node_father->field_pub_type['und'][0]['value']
-            'charge' => $role
+            'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            'charge' => $role,
+            'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
         }
       }
@@ -152,6 +154,28 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           $pub_user_type[$nid]['acumula'] = $type;
         }
       }
+    }
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'activity')
+    ->propertyCondition('uid', $uid->uid)
+    ->fieldCondition('field_act_wf_status', 'value', 20, '=');
+    $result = $query->execute();
+    
+    foreach ($result['node'] as $nid => $value) {
+      $key = 211;
+      $node = node_load($value->nid);
+      
+      $pub_user_type[$key]['type'] = $key;
+      $pub_user_type[$key]['values'][] = array(
+        'nid' => $node->nid,
+        'title' => $node->title,
+        'points' => $node->field_puntaje['und'][0]['value'],
+        'date' => isset($node->changed) ? date( "m/d/Y", $node->changed) : '',
+        'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
+        'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
+      );
     }
   }
 
@@ -237,15 +261,45 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $html .= "</tr>";
 
       if (isset($pub_user_type[$condition['concept']])) {
-        $sub_html = '<table style="text-align: center;"><tr><th>Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Rol</th><th style="text-align: center;">Tipo Publicación</th></tr>';
+
+        switch ($condition['concept']) {
+          case '201'://Articulo
+          case '2951'://Doc trabajo
+          case '20708'://Otros Doc
+            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Tipo Publicación</th></tr>';
+            break;
+          case '211'://Actividades
+            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Actividad</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Aprobado por</th></tr>';
+            break;
+          default:
+            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Tipo Publicación</th><th style="text-align: center;">Rol</th></tr>';
+            break;
+        }
+        
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
-          $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['charge'].'</td><td>'.$value['type'].'</td></tr>';
+          switch ($condition['concept']) {
+            case '201'://Articulo
+            case '20708'://Otros Doc
+            $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+              break;
+            case '2951'://Doc trabajo
+            
+              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td></tr>';
+              break;
+            case '211'://Actividades
+              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['charge'].'</td></tr>';
+              break;
+            default:
+              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td><td>'.$value['charge'].'</td></tr>';
+              break;
+          }
         }
         $sub_html .= '</table>';
+        $list = ($condition['concept']==211) ? 'Listado de Actividades': 'Listado de publicaciones';
         $html .= '
         <tr>
           <td colspan="7">
-            <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
+            <a id="'.$condition['concept'].'" class="pub_dropdown">'.$list.'</a>
             <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
           </td>
         </tr>';
