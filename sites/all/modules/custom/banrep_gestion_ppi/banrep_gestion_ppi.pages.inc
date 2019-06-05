@@ -160,13 +160,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     }
 
     foreach ($pub_user_type as $nid => $value) {
-      dpm($nid);dpm($e);
       $e = taxonomy_term_load( $nid );
       foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
         if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-          $type = '';dpm($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
+          $type = '';
           switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
             case 'field_puntaje_acumulado':
              $type = 'Academico';
