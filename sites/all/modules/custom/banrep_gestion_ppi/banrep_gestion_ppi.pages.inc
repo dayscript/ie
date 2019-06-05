@@ -131,6 +131,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'charge' => $role,
             'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
+          $pub_user_type[$key]['total_points'] += (isset($node_child->field_puntaje['und'][0]['value']) && !empty($node_child->field_puntaje['und'][0]['value'])) ? $node_child->field_puntaje['und'][0]['value'] : 0;
         }
       }
     }
@@ -156,6 +157,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
           'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
         );
+        $pub_user_type[$key]['total_points'] += (isset($node->field_puntaje['und'][0]['value']) && !empty($node->field_puntaje['und'][0]['value'])) ? $node->field_puntaje['und'][0]['value'] : 0;
       }
     }
 
@@ -181,7 +183,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         }
       }
     }
-
   }
 
   $html = '<table class="requirements__publications">';
@@ -242,7 +243,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
-          $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
+          $html .= '<td>' . $pub_user_type[$condition['concept']]['total_points'] . '</td>'; // falta para libros //$info_user . $input_value
           break;
       }
 
