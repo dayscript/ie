@@ -115,8 +115,22 @@ function get_publications_requirements($items, $uid) {
           $requirements[$cont_group]['conditions'][$cont_condition]['concept'] = implode(',', $concept);
           break;
       }
-      $data_list = get_list_x_term($idCondition, $uid);
-      $titles = ['Titulo', 'Fecha de aprobado', 'Puntos', 'Cargo Empleado', 'Tipo de publicación', 'ROL'];
+      
+      $typeList = getTypeList($idCondition);
+      $titles = '';
+      switch ($typeList) {
+        case '1':
+          $titles = ['Titulo', 'Fecha de aprobado', 'Puntos', 'Cargo Empleado', 'APROBADO POR'];
+          break;
+        case '2':
+          $titles = ['Titulo', 'Fecha de aprobado', 'Puntos', 'Cargo Empleado', 'Tipo de publicación'];
+          break;
+        default:
+          $titles = ['Titulo', 'Fecha de aprobado', 'Puntos', 'Cargo Empleado', 'Tipo de publicación', 'ROL'];
+          break;
+      }
+
+      $data_list = get_list_x_term($idCondition, $uid, $typeList);
       $requirements[$cont_group]['conditions'][$cont_condition]['operator']     = $rule->field_operador['und'][0]['value'];
       $requirements[$cont_group]['conditions'][$cont_condition]['type']         = $type;
       $requirements[$cont_group]['conditions'][$cont_condition]['value']        = $rule->field_cantidad_puntaje['und'][0]['value'];
@@ -130,7 +144,32 @@ function get_publications_requirements($items, $uid) {
   return $requirements;
 }
 
-function get_list_x_term($idCondition, $uid){
+function getTypeList($idCondition){
+  $response = '';
+  $idType = _get_concept_id_publications($idCondition);
+  $tax = taxonomy_term_load($idType);
+
+  switch ($tax->name) {
+    case 'Actividades BR':
+      $response = '1';
+      break;
+      
+    case 'Articulos':
+      $response = '2';
+      break;
+    
+    case 'Otras publicaciones':
+      $response = '2';
+      break;
+
+    default:
+      $response = '3';
+      break;
+  }
+  return $response;
+}
+
+function get_list_x_term($idCondition, $uid, $typeList){
   $resultList = [];
   $query = new EntityFieldQuery();
   $idType = _get_concept_id_publications($idCondition);
@@ -168,20 +207,21 @@ function get_list_x_term($idCondition, $uid){
     }
     if($isPublication){
       foreach ($value as $key1 => $value1) {
+
         if($key1 == 'title'){
           $lista_pub[$idK]['title'] = $value1;
         }elseif ($key1 == 'revision_timestamp') {
           $lista_pub[$idK]['timestamp'] = date("d-m-Y", $value1);
         }elseif ($key1 == 'field_puntaje') {
           if($value->field_puntaje){
-            $lista_pub[$idK]['score'] = $value1;
+            $lista_pub[$idK]['score'] = $value1['und'][0]['value'];
           }else {
             $lista_pub[$idK]['score'] = 0;
           }
         }elseif ($key1 == 'field_user_reference') {
           $idU = $value1[LANGUAGE_NONE][0]['target_id'];
           $entity_user = user_load($idU);
-          $tax = taxonomy_term_load($entity_user->field_position[LANGUAGE_NONE][0]['tid']);
+          $tax = taxonomy_term_load($entity_user->field_usr_escalafon[LANGUAGE_NONE][0]['tid']);
           $lista_pub[$idK]['position_user'] = $tax->name;
         }
       }
@@ -198,8 +238,18 @@ function get_list_x_term($idCondition, $uid){
       $resultList[$key3]['fecha'] = $value3['timestamp'];
       $resultList[$key3]['puntos'] = $value3['score'];
       $resultList[$key3]['cargo'] = $value3['position_user'];
-      $resultList[$key3]['tipo_pub'] = $value3['name_type_pub'];
-      $resultList[$key3]['rol'] = $value3['name_rol'];
+      switch ($typeList) {
+        case '1':
+          $resultList[$key3]['tipo_pub'] = '-';
+          break;
+        case '2':
+          $resultList[$key3]['tipo_pub'] = $value3['name_type_pub'];
+          break;
+        default:
+          $resultList[$key3]['tipo_pub'] = $value3['name_type_pub'];
+          $resultList[$key3]['rol'] = $value3['name_rol'];
+          break;
+      }
     }
   }
   return $resultList;
@@ -642,7 +692,9 @@ function calculate_profile_data($uid, $date_update){
   calculate_accumulated_general($user);
 
   // Calcular puntaje academico
-  calculate_score_training($user);
+  // Esta suma ya se estaba haciendo y no se informo cuando se realizo el desarrollo
+  // por esta razon esta comentariada esta linea
+  //calculate_score_training($user);
 
   // Calcular puntaje BR
   
