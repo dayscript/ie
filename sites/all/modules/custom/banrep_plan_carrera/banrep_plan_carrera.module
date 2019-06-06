@@ -740,29 +740,6 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $user, $state){
 function banrep_plan_carrera_log_points($user, $type, $pjprevious, $pjnew) {
   $results = '';
   switch ($type) {
-    case 'pub_user':
-      if(in_array('Admin GT', $user->roles)){
-        $usuario_log = user_load($user->uid);
-        $nombre = '';
-        if (isset($usuario_log->field_full_name[LANGUAGE_NONE][0]['value']) && !empty($usuario_log->field_full_name[LANGUAGE_NONE][0]['value'])) {
-          $nombre = $usuario_log->field_full_name[LANGUAGE_NONE][0]['value'];
-        }   
-        if (!empty($usuario_log->name)) {
-          $nombre .= ' - ' . $usuario_log->name[LANGUAGE_NONE][0]['value'];
-        }
-        else {
-          $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
-        }
-
-        $format = '%s - %s - %s - %s - %s - %s';
-        $datelog = date('d/m/Y h:i:s');
-        $puntajeanterior = 'Puntaje Anterior '.$puntaje_anterior;
-        $puntajenuevo = 'Puntaje Nuevo '.$puntaje_digitado;
-        $subject = 'Estado: '. $estado_ant .' a '. $estado;
-        $pub_status = str_replace( array('3','2','4'), array('Aprobado','Pendiente por aprobación','No Aprobado'), $subject);
-        $results = sprintf($format, $datelog, $field_on_save , $pub_status, $puntajeanterior, $puntajenuevo, $nombre);
-      }
-      break;
     case 'activity':
       if (in_array('Admin GT', $user->roles)) {
         $nombre = '';
