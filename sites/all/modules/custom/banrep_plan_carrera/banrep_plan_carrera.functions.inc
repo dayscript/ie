@@ -259,7 +259,9 @@ function get_list_x_term($idCondition, $uid, $typeList){
 }
 
 function get_table_list_view_more($list, $label, $titles){
-  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') .'/js/test.js');
+  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') .'/js/actions.js');
+  drupal_add_css(drupal_get_path('module', 'banrep_plan_carrera') . '/css/styles-table.css');
+
   return theme('view-more', array(
     'list' => $list,
     'label' => $label,
