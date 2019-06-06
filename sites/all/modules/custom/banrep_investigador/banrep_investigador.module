@@ -597,7 +597,7 @@ function banrep_investigador_block_view($delta = '') {
 }
 
 function banrep_investigador_node_presave($node) {
-  if ($node->type == 'activity') {
+  /*if ($node->type == 'activity') {
     $user = user_load($node->uid); 
     $e = taxonomy_term_load( $node->field_concept_category[LANGUAGE_NONE][1]['tid'] );
     if (isset($node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid']) && !empty($node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'])) {
@@ -628,5 +628,5 @@ function banrep_investigador_node_presave($node) {
           }
       }
     }
-  }
+  }*/
 }
