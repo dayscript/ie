@@ -134,8 +134,8 @@ function banrep_plan_carrera_node_presave($node) {
             //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
             $puntaje += $puntaje_actual;
             
-            /*$userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
-            user_save($userPub);*/
+            $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
+            user_save($userPub);
 
             //Guardando puntaje especifico
             $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
@@ -280,13 +280,13 @@ function banrep_plan_carrera_node_presave($node) {
       $estado_ant = $node->original->field_act_wf_status[LANGUAGE_NONE][0]['value'];
 
       if ($estado == 20 && $estado_ant != 20 && ( in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
-        /*$userPub = user_load($node->uid);
+        $userPub = user_load($node->uid);
         $puntaje_anterior =  $node->original->field_puntaje[LANGUAGE_NONE][0]['value'];
         $puntaje_actual = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
         //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
         $puntaje = $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] + $puntaje_actual;
         $userPub->field_puntaje_br[LANGUAGE_NONE][0]['value'] = $puntaje;
-        user_save($userPub);*/
+        user_save($userPub);
 
         if (in_array('Admin GT', $user->roles)) {
           $nombre = "";

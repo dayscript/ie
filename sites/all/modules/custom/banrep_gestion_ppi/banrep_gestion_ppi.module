@@ -94,9 +94,8 @@ function banrep_gestion_ppi_node_presave($node) {
              //$puntaje = $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] - $puntaje_anterior;
              $puntaje += $puntaje_actual;
              
-             /*Posible acumulacion doble
              $userPub->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] = $puntaje;
-             user_save($userPub);*/
+             user_save($userPub);
 
              //Guardando puntaje especifico
              $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $puntaje_actual;
