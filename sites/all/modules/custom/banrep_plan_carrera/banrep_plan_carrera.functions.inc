@@ -148,7 +148,6 @@ function getTypeList($idCondition){
   $response = '';
   $idType = _get_concept_id_publications($idCondition);
   $tax = taxonomy_term_load($idType);
-
   switch ($tax->name) {
     case 'Actividades BR':
       $response = '1';
@@ -205,9 +204,9 @@ function get_list_x_term($idCondition, $uid, $typeList){
           $lista_pub[$idK]['name_rol'] = $tax->name;
         }   
     }
+
     if($isPublication){
       foreach ($value as $key1 => $value1) {
-
         if($key1 == 'title'){
           $lista_pub[$idK]['title'] = $value1;
         }elseif ($key1 == 'revision_timestamp') {
@@ -223,6 +222,10 @@ function get_list_x_term($idCondition, $uid, $typeList){
           $entity_user = user_load($idU);
           $tax = taxonomy_term_load($entity_user->field_usr_escalafon[LANGUAGE_NONE][0]['tid']);
           $lista_pub[$idK]['position_user'] = $tax->name;
+        }elseif ($key1 == 'field_usuario') {
+          $idus = $value1[LANGUAGE_NONE][0]['target_id'];
+          $entity_user = user_load($idus);
+          $lista_pub[$idK]['aprobado_por'] = $entity_user->name;
         }
       }
 
@@ -240,7 +243,7 @@ function get_list_x_term($idCondition, $uid, $typeList){
       $resultList[$key3]['cargo'] = $value3['position_user'];
       switch ($typeList) {
         case '1':
-          $resultList[$key3]['tipo_pub'] = '-';
+          $resultList[$key3]['tipo_pub'] = $value3['aprobado_por'];
           break;
         case '2':
           $resultList[$key3]['tipo_pub'] = $value3['name_type_pub'];
@@ -256,7 +259,9 @@ function get_list_x_term($idCondition, $uid, $typeList){
 }
 
 function get_table_list_view_more($list, $label, $titles){
-  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') .'/js/test.js');
+  drupal_add_js(drupal_get_path('module', 'banrep_plan_carrera') .'/js/actions.js');
+  drupal_add_css(drupal_get_path('module', 'banrep_plan_carrera') . '/css/styles-table.css');
+
   return theme('view-more', array(
     'list' => $list,
     'label' => $label,

@@ -397,8 +397,6 @@ function banrep_plan_carrera_node_presave($node) {
   }
 }
 
-
-
 /**
  * Implements hook_form_alter().
  */
