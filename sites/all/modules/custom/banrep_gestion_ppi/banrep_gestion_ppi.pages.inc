@@ -57,6 +57,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   '#title' => t('Requisitos de publicaciones y/o actividades'),
   '#tree' => TRUE,
   );
+  $moduleRoot = drupal_get_path('module', 'banrep_gestion_ppi');
+  $form['#attached']['css'][]= $moduleRoot.'/css/banrep_gestion_ppi.css';
 
   $user_ppi = user_load($uid->uid);
 
@@ -129,29 +131,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'charge' => $role,
             'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
-        }
-      }
-    }
-
-    foreach ($pub_user_type as $nid => $value) {
-      $e = taxonomy_term_load( $nid );
-      foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
-        $field_collection_item_value = $field_puntaje['value']; 
-        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
-        if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-          $type = '';
-          switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
-            case 'field_puntaje_acumulado':
-             $type = 'Academico';
-              break;
-            case 'field_acumulado_general':
-             $type = 'General';
-              break;
-            case 'field_puntaje_br':
-             $type = 'BR';
-              break;
-          }
-          $pub_user_type[$nid]['acumula'] = $type;
+          $pub_user_type[$key]['total_points'] += (isset($node_child->field_puntaje['und'][0]['value']) && !empty($node_child->field_puntaje['und'][0]['value'])) ? $node_child->field_puntaje['und'][0]['value'] : 0;
         }
       }
     }
@@ -177,6 +157,30 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
           'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
         );
+        $pub_user_type[$key]['total_points'] += (isset($node->field_puntaje['und'][0]['value']) && !empty($node->field_puntaje['und'][0]['value'])) ? $node->field_puntaje['und'][0]['value'] : 0;
+      }
+    }
+
+    foreach ($pub_user_type as $nid => $value) {
+      $e = taxonomy_term_load( $nid );
+      foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
+        $field_collection_item_value = $field_puntaje['value']; 
+        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
+        if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
+          $type = '';
+          switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
+            case 'field_puntaje_acumulado':
+             $type = 'Academico';
+              break;
+            case 'field_acumulado_general':
+             $type = 'General';
+              break;
+            case 'field_puntaje_br':
+             $type = 'BR';
+              break;
+          }
+          $pub_user_type[$nid]['acumula'] = $type;
+        }
       }
     }
   }
@@ -239,7 +243,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
-          $html .= '<td>' . $info_user . $input_value . '</td>'; // falta para libros
+          $html .= '<td>' . $pub_user_type[$condition['concept']]['total_points'] . '</td>'; // falta para libros //$info_user . $input_value
           break;
       }
 
@@ -268,13 +272,13 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '20708'://Otros Doc
-            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Tipo Publicación</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Publicación</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Actividad</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Aprobado por</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Actividad</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
             break;
           default:
-            $sub_html = '<table style="text-align: center;"><tr><th>Nombre Publicación</th><th style="text-align: center;">Fecha Aprobación</th><th style="text-align: center;">Puntos</th><th style="text-align: center;">Escalafón</th><th style="text-align: center;">Tipo Publicación</th><th style="text-align: center;">Rol</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Publicación</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
             break;
         }
         
@@ -282,17 +286,17 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           switch ($condition['concept']) {
             case '201'://Articulo
             case '20708'://Otros Doc
-            $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+            $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
               break;
             case '2951'://Doc trabajo
             
-              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td></tr>';
+              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td></tr>';
               break;
             case '211'://Actividades
-              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['charge'].'</td></tr>';
               break;
             default:
-              $sub_html .= '<tr><td id="'.$value['nid'].'" style="text-align: left;">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td><td>'.$value['charge'].'</td></tr>';
               break;
           }
         }
