@@ -540,60 +540,96 @@ function banrep_plan_carrera_theme($existing, $type, $theme, $path) {
 }
 
 function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $state, $statePrev = null){
-  
   switch ($node->type) {
     case 'pub_user':
-    /**/
     $userPub = user_load($uid);
-    $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE]; ## libro, capitulo, espe, documento, articulo
-    $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE]; ## chidren of field_pub_type taxonomy
+    $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE];
+    $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE];
     $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
-    foreach($authorsPub as $key => $author){
-      $collection = entity_load('field_collection_item', array($author['value']));
-      $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
-      if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
-        $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
-        foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
-          $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
-          if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-            $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
-            switch ($state) {
-              case '3':
-                $pj = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
-                $pjprevious = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
-                $pjnew =  $pjprevious + $pj;
-                
-                $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $pj;
+    if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {/*Publicaciones sin Rol*/
+      $e = taxonomy_term_load($nodePub->field_concept_type[LANGUAGE_NONE][0]['tid']);
+      foreach($e->field_puntajes['und'] as $field_puntaje) {
+        $field_collection_item_value = $field_puntaje['value']; 
+        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
+        if (isset($userPub->field_ruta['und'][0]['target_id']) && isset($field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) && $userPub->field_ruta['und'][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) {
+          $field_on_save =  $field_collection_value[key($field_collection_value)]->field_acomula_en['und'][0]['field_name'];
+          $field_on_points = $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'];
+          switch ($state) {
+            case '3':
+              $pj = $field_on_points;
+              $pjprevious = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
+              $pjnew =  $pjprevious + $pj;
+              
+              $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $pj;
 
-                $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
-                user_save($userPub);
-                
-                $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
-                _generate_response_sepi($node);
-                break;
-              default:
-                $pj = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
-                $pjprevious = (int)$userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] > 0  ? $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] : 0;
-                $pjnew =  (int)$pjprevious > 0 ? $pjprevious - $pj : 0;
+              $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
+              user_save($userPub);
+              
+              $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
+              _generate_response_sepi($node);
+              break;
+            default:
+              $pj = $field_on_points;
+              $pjprevious = (int)$userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] > 0  ? $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] : 0;
+              $pjnew =  (int)$pjprevious > 0 ? $pjprevious - $pj : 0;
 
-                $node->field_puntaje[LANGUAGE_NONE][0]['value'] -=  $pj;
+              $node->field_puntaje[LANGUAGE_NONE][0]['value'] -=  $pj;
 
-                $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
-                user_save($userPub);
+              $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
+              user_save($userPub);
 
-                $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
-                break;
-            }
+              $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
+              break;
           }
-        } 
+        }
+      }
+    }elseif (isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE])) {/*Publicaciones con Rol*/
+      foreach($authorsPub as $key => $author){
+        $collection = entity_load('field_collection_item', array($author['value']));
+        $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
+        if($userPub->uid == $author_tax->field_user_reference['und'][0]['target_id']){
+          $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
+          foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
+            $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
+            if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
+              $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+              switch ($state) {
+                case '3':
+                  $pj = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                  $pjprevious = $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'];
+                  $pjnew =  $pjprevious + $pj;
+                  
+                  $node->field_puntaje[LANGUAGE_NONE][0]['value'] = $pj;
+
+                  $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
+                  user_save($userPub);
+                  
+                  $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
+                  _generate_response_sepi($node);
+                  break;
+                default:
+                  $pj = $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
+                  $pjprevious = (int)$userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] > 0  ? $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] : 0;
+                  $pjnew =  (int)$pjprevious > 0 ? $pjprevious - $pj : 0;
+
+                  $node->field_puntaje[LANGUAGE_NONE][0]['value'] -=  $pj;
+
+                  $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] = $pjnew;
+                  user_save($userPub);
+
+                  $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
+                  break;
+              }
+            }
+          } 
+        }
       }
     }
-    /**/
     break;
     case 'activity':
       $userPub = user_load($uid);
       $e = taxonomy_term_load($node->field_concept_category[LANGUAGE_NONE][1]['tid']);
-      
+      /*Actividades sin Rol*/
       foreach($e->field_puntajes['und'] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
@@ -629,7 +665,6 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
       }
       break;
   }
-
 }
 
 function banrep_plan_carrera_log_points($user, $type, $pjprevious, $pjnew, $stprevious = null, $stnew = null) {
@@ -645,7 +680,6 @@ function banrep_plan_carrera_log_points($user, $type, $pjprevious, $pjnew, $stpr
     }else {
      $nombre = $usuario_log->name[LANGUAGE_NONE][0]['value']; 
     }
-  
     switch ($type) {
       case 'pub_user':
         $format = '%s - %s - %s - %s - %s - %s';
