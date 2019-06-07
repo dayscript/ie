@@ -62,13 +62,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
   $user_ppi = user_load($uid->uid);
 
-  $crumbs = array();
-  $crumbs[] = l(t('Home'), '');
-  $crumbs[] = l(t('Gestión de PPI'), 'admin/content/gestion-ppi');
-  $crumbs[] = l(t('Perfil'), 'profile/'.$user_ppi->uid);
-  $crumbs[] = l(t($user_ppi->name), 'profile/gestion-ppi/'.$user_ppi->uid);
-  drupal_set_breadcrumb($crumbs);
-
   if ($requirements['publications_req']) {
     switch ($requirements['publications_req']) {
       case '1'://Creación de usuario (Todo)
@@ -98,7 +91,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $node_child = node_load($value->nid);
       $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
 
-      if (isset($node_father->field_date) && !empty($node_father->field_date) && isset($date_query) && !empty($date_query) && $node_father->field_date['und'][0]['value'] > $date_query) {
+      $date_pub = search_date_publication($node_child->field_log_puntaje['und']);
+      if (isset($date_pub) && !empty($date_pub) && isset($date_query) && !empty($date_query) && $date_pub > $date_query) {
         $tax_father = $node_father->field_pub_type['und'][0]['value'];
         if (isset($node_father->field_co_authors['und'])) {
           foreach ($node_father->field_co_authors['und'] as $key => $entity_item) {
@@ -114,6 +108,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         if ($node_child->field_main_author['und'][0]['value'] == 1) {
           $role = taxonomy_term_load($node_father->field_role_within_publication['und'][0]['tid'])->name;
         }
+        if ($node_child->field_main_author['und'][0]['value'] == 1 && isset($tax_child)) {
+          $role = taxonomy_term_load($tax_child)->name;
+        }
         if ($node_child->field_main_author['und'][0]['value'] == 0 && isset($tax_child)) {
           $role = taxonomy_term_load($tax_child)->name;
         }
@@ -126,8 +123,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'nid' => $node_child->nid,
             'title' => $node_father->title,
             'points' => $node_child->field_puntaje['und'][0]['value'],
-            'date' => isset($node_father->field_act_date_start['und'][0]['value']) ? date( "m/d/Y", $node_father->field_act_date_start['und'][0]['value']) : '',
-            'type' => taxonomy_term_load($pos_father['values'][0])->name,//$node_father->field_pub_type['und'][0]['value']
+            'date' => date( "d/m/Y", $date_pub),
+            'type' => taxonomy_term_load($pos_father['values'][0])->name,
             'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
             'charge' => $role,
             'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
@@ -144,48 +141,25 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     ->fieldCondition('field_act_wf_status', 'value', 20, '=');
     $result = $query->execute();
    
-    $pos_father = _search_father_taxonomy_term(211, '', $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id']);
+    $key = 211;
+    $pos_father = _search_father_taxonomy_term($key, '', $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id']);
     foreach ($result['node'] as $nid => $value) {
-      $key = 211;
       $node = node_load($value->nid);
-      
-      if(isset($node->changed) && !empty($node->changed) && isset($date_query) && !empty($date_query) && $node->changed > $date_query){
+      $date_act = search_date_publication($node->field_log_puntaje['und']);
+      if (isset($date_act) && !empty($date_act) && isset($date_query) && !empty($date_query) && $date_act > $date_query) {
         $pub_user_type[$key]['acumula'] = $pos_father['acumula'];
         $pub_user_type[$key]['type'] = $key;
         $pub_user_type[$key]['values'][] = array(
           'nid' => $node->nid,
           'title' => $node->title,
           'points' => $node->field_puntaje['und'][0]['value'],
-          'date' => isset($node->changed) ? date( "m/d/Y", $node->changed) : '',
+          'date' => date( "d/m/Y", $date_act),
           'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
           'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
         );
         $pub_user_type[$key]['total_points'] += (isset($node->field_puntaje['und'][0]['value']) && !empty($node->field_puntaje['und'][0]['value'])) ? $node->field_puntaje['und'][0]['value'] : 0;
       }
     }
-
-    /*foreach ($pub_user_type as $nid => $value) {
-      $e = taxonomy_term_load( $nid );
-      foreach ($e->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
-        $field_collection_item_value = $field_puntaje['value']; 
-        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
-        if ($user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-          $type = '';
-          switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
-            case 'field_puntaje_acumulado':
-             $type = 'Academico';
-              break;
-            case 'field_acumulado_general':
-             $type = 'General';
-              break;
-            case 'field_puntaje_br':
-             $type = 'BR';
-              break;
-          }
-          $pub_user_type[$nid]['acumula'] = $type;
-        }
-      }
-    }*/
   }
 
   $html = '<table class="requirements__publications">';
@@ -275,13 +249,13 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '20708'://Otros Doc
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Publicación</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Actividad</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
             break;
           default:
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Nombre Publicación</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
             break;
         }
         
@@ -423,7 +397,7 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
         break;
       case 2:
         $childs = $term->tid;
-        $type = load_acumula_points($child, $uruta);
+        $type = load_acumula_points($childs, $uruta);
         $terms[$father]['acumula'] = ($type!=='') ? $type : $terms[$father]['acumula'];
         $terms[$father]['childs'][$child]['childs'][$childs] = array('tid' => $term->tid, 'name' => $term->name, 'acumula' => $type);
         break;
@@ -465,4 +439,16 @@ function load_acumula_points($tuid, $uruta) {
     }
   }
   return $type;
+}
+
+function search_date_publication($log) {
+  $date = '';
+  if (isset($log)) {
+    $date_endl = end($log)['value'];
+    $date_l = explode(' ', $date_endl);
+    $date_fl = explode('/', $date_l[0]);
+    $date_t = $date_fl[1].'/'.$date_fl[0].'/'.$date_fl[2];//Cambio de día x mes
+    $date = strtotime($date_t);
+  }
+  return $date;
 }

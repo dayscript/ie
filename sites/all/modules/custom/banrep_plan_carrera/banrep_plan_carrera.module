@@ -144,7 +144,7 @@ function banrep_plan_carrera_node_presave($node) {
                 foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
                   $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
                   if( $userPub->field_ruta[LANGUAGE_NONE][0]['target_id'] == $taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-                    $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];
+                    $field_on_save = $taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name'];dpm($field_on_save);
                     $puntaje_anterior = $node->field_puntaje[LANGUAGE_NONE][0]['value'];
                     $puntaje_digitado =  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
                     $userPub->{$field_on_save}[LANGUAGE_NONE][0]['value'] +=  $taxonomy_route->field_puntaje[LANGUAGE_NONE][0]['value'];
