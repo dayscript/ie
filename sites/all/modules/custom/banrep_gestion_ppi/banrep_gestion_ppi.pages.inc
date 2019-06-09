@@ -403,6 +403,8 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
         break;
     }
   }
+  
+  $$terms['20724']['childs'][$child] = $$terms['206']['childs'][$child];
   $tfather = ($tfather==1) ? 20724 : $tfather;//Ajuste para ID de Capítulos de libro
   $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tfather));
   foreach ($terms[$tfather]['childs'] as $terms_) {
