@@ -688,8 +688,8 @@ function _generate_response_sepi($pub_user){
   
   if (isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_sepi[LANGUAGE_NONE][0]['value'])) {
     $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
-  }elseif (isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_sepi[LANGUAGE_NONE][0]['value'])) {
-    $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
+  }elseif (isset($publication->field_identificador_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_identificador_sepi[LANGUAGE_NONE][0]['value'])) {
+    $sepi = $publication->field_identificador_sepi[LANGUAGE_NONE][0]['value'];
   }
   
   $user_document = $user->field_document_number[LANGUAGE_NONE][0]['value'];

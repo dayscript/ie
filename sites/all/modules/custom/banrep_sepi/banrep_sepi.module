@@ -169,8 +169,14 @@
                 foreach($co_authors as $index => $author){
                     $entity = entity_create('field_collection_item', $values);
                     $entity->setHostEntity('node', $node);
-                    $tid = ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
-
+                    if( !empty($author->correo) ){
+                        $tid = _get_autor_for_mail($author->correo);
+                    }elseif (empty($author->correo) && !empty($author->id)) {
+                        $tid = _get_autor_for_id_sepi($author->id);
+                    }else {
+                        $tid = _get_taxonomy_by_name( $author->nombre,'autores_externos' );
+                    }
+                   
                     $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = $tid;
                     if( !empty($author->rol) ){
                         $role_in_pub = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );
@@ -182,8 +188,12 @@
                         $node->field_other_co_authors[LANGUAGE_NONE][]['tid'] = $tid; 
                     }
 
-                    if( !empty($author->correo) ){
+                    if( !empty($author->correo) ){/*Autor Inerno*/
                         if( $term_id = _get_autor_for_mail($author->correo) ){
+                            _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
+                        }
+                    }elseif( !empty($author->id) ){/*Autor Externo*/
+                        if( $term_id = _get_autor_for_id_sepi($author->id) ){
                             _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
                         }
                     }
@@ -193,12 +203,22 @@
             
             default:
                 foreach($co_authors as $index => $author){
-                    $tid = ( empty($author->correo) ) ? _get_taxonomy_by_name( $author->nombre,'autores_externos' ): _get_autor_for_mail($author->correo);
+                    if( !empty($author->correo) ){
+                        $tid = _get_autor_for_mail($author->correo);
+                    }elseif (empty($author->correo) && !empty($author->id)) {
+                        $tid = _get_autor_for_id_sepi($author->id);
+                    }else {
+                        $tid = _get_taxonomy_by_name( $author->nombre,'autores_externos' );
+                    }
                     if($index != 0){
                         $node_wrapper->field_other_co_authors[] = $tid; 
                     }
-                    if( !empty($author->correo) ){
+                    if( !empty($author->correo) ){/*Autor Inerno*/
                         if( $term_id = _get_autor_for_mail($author->correo) ){
+                            _create_node_pub_user($node_wrapper,$term_id, $node_wrapper->field_concept->value() );
+                        }
+                    }elseif( !empty($author->id) ){/*Autor Externo*/
+                        if( $term_id = _get_autor_for_id_sepi($author->id) ){
                             _create_node_pub_user($node_wrapper,$term_id, $node_wrapper->field_concept->value() );
                         }
                     }
