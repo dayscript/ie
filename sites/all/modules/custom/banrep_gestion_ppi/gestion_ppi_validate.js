@@ -7,11 +7,11 @@
   Drupal.behaviors.plan_carrera_validate = {
     attach: function (context, settings) {
 
-        var form = $("#banrep-plan-carrera-form");
-        $('#banrep-plan-carrera-form input[type="checkbox"]').click(function(){
+        var form = $("#banrep-gestion-ppi-form");
+        $('#banrep-gestion-ppi-form input[type="checkbox"]').click(function(){
             $(this).parent().next().find('textarea').addClass('validar');
         });
-        $('#banrep-plan-carrera-form .form-submit').click(function(event){
+        $('#banrep-gestion-ppi-form .form-submit').click(function(event){
           event.preventDefault();
           var validate_rules = {};
           var validate_messages = {};
