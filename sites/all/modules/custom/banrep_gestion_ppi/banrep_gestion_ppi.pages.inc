@@ -226,7 +226,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
       $calificacion = 'No cumple';
       $checked = '';
-      dpm($info_user);
       if ($pub_user_type[$condition['concept']]['total_points'] >= $condition['value']) {
         $checked    = "checked";
         $calificacion = 'Cumple';
