@@ -278,12 +278,27 @@
             ->fieldCondition('field_user_reference', 'target_id', $user->uid, '=');
             $result = $query->execute();
             return key($result['taxonomy_term']);
-
         }else{
             return null;
         }
     }
 
+
+    /**
+     * function to get tid in author taxonomy
+     */
+    function _get_autor_for_id_sepi($id_sepi){
+        if(isset($id_sepi)) {
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'taxonomy_term')
+            ->entityCondition('bundle', 'autores_externos')
+            ->fieldCondition('field_sepi', 'value', $id_sepi, '=');
+            $result = $query->execute();
+            return key($result['taxonomy_term']);
+        }else{
+            return null;
+        }
+    }
 
     /**
      * function to get tid by name of taxonomy
