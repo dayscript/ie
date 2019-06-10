@@ -205,7 +205,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             if (isset($condition['concept'])) {
               $concepts  = explode(',', $condition['concept']);
               $is_activity = FALSE;
-              if (isset($concepts[0]) && $concepts[0] == 211) {
+              if (isset($condition['concept']) && $condition['concept'] == 211) {
                 $is_activity = TRUE;
               }
               $size    = count($concepts);
@@ -226,7 +226,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
       $calificacion = 'No cumple';
       $checked = '';
-      if ($info_user >= $condition['value']) {
+      dpm($info_user);
+      if ($pub_user_type[$condition['concept']]['total_points'] >= $condition['value']) {
         $checked    = "checked";
         $calificacion = 'Cumple';
       }
