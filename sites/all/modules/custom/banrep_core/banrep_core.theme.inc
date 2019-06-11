@@ -126,7 +126,7 @@ function theme_banrep_user_top_zone($variables) {
                           </a>
                         </li>
                         <li>
-                          <a href="#">
+                          <a href="/'.$language->language.'/admin/people/reporte-investigadores-por-puntos">
                           <i class="fa fa-angle-right" aria-hidden="true"></i> Listado control (tbd)
                           </a>
                         </li>
@@ -236,7 +236,7 @@ function theme_banrep_user_top_zone($variables) {
                        <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Aprobado para cambio de cargo') .' </a>
                     </li>
                     <li>
-                       <a href="#">
+                       <a href="/'.$language->language.'/admin/people/reporte-investigadores-por-puntos">
                        <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Listado control (tbd)') .' </a>
                     </li>';
     }
