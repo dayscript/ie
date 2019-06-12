@@ -745,7 +745,7 @@ function _generate_response_sepi($pub_user){
       "paginas"            => ( isset($publication->field_page[LANGUAGE_NONE][0]['value']) )      ? $publication->field_page[LANGUAGE_NONE][0]['value'] : '',
       "anopublicacion"     => ( isset($publication->field_publication_year[LANGUAGE_NONE][0]['value']) ) ? $publication->field_publication_year[LANGUAGE_NONE][0]['value'] : '',
       "fecha_publicacion"  => isset($publication->field_date[LANGUAGE_NONE][0]['value']) ? date('Y-m-d', $publication->field_date[LANGUAGE_NONE][0]['value']) : '',
-      "fecha_aceptacion"   => ( isset($publication->field_date[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_date[LANGUAGE_NONE][0]['value']) : '',
+      "fecha_aceptacion"   => ( isset($publication->field_act_date_start[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_act_date_start[LANGUAGE_NONE][0]['value']) : '',
       "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value'] : '',
       "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value'] : '',
       "archivo_aprobacion" => isset($publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value']) ? $publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value'] : ''
