@@ -131,11 +131,12 @@ function get_publications_requirements($items, $uid) {
       }
 
       $data_list = get_list_x_term($idCondition, $uid, $typeList);
+
       $requirements[$cont_group]['conditions'][$cont_condition]['operator']     = $rule->field_operador['und'][0]['value'];
       $requirements[$cont_group]['conditions'][$cont_condition]['type']         = $type;
       $requirements[$cont_group]['conditions'][$cont_condition]['value']        = $rule->field_cantidad_puntaje['und'][0]['value'];
       $requirements[$cont_group]['conditions'][$cont_condition]['html']         = get_table_list_view_more($data_list, 'Lista de Publicaciones' ,$titles);
-      $requirements[$cont_group]['conditions'][$cont_condition]['concept_type'] = get_concept_type($rule);
+      $requirements[$cont_group]['conditions'][$cont_condition]['concept_type'] = get_concept_type($rule, $uid);
       $cont_condition++;
     }
     $cont_group++;
@@ -269,15 +270,21 @@ function get_table_list_view_more($list, $label, $titles){
   ));
 }
 
-function get_concept_type($rule){
+function get_concept_type($rule, $uid){
+  $usuario = user_load($uid);
+  $idRuta = $usuario->field_ruta[LANGUAGE_NONE][0]['target_id'];
   $result = '-';
   if(isset($rule->field_concept_type[LANGUAGE_NONE][0]['tid'])){
     if($concept_type = taxonomy_term_load($rule->field_concept_type[LANGUAGE_NONE][0]['tid'])){
-      if(isset($concept_type->field_puntajes[LANGUAGE_NONE][0]['value'])){
-        if($puntajes = field_collection_item_load($concept_type->field_puntajes[LANGUAGE_NONE][0]['value'])){
-          //Cargar la data
-          if(isset($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'])){
-            $result = get_name_acumulado($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
+      if(isset($concept_type->field_puntajes[LANGUAGE_NONE])){
+        foreach ($concept_type->field_puntajes[LANGUAGE_NONE] as $k => $v) {
+          if($puntajes = field_collection_item_load($v['value'])){
+            if($puntajes->field_ruta[LANGUAGE_NONE][0]['target_id']== $idRuta){
+              if(isset($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'])){
+                $result = get_name_acumulado($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
+                break;
+              }
+            }
           }
         }
       }
@@ -453,7 +460,6 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
   }
   else {
     if ($flag_is_node) {
-     
       $query = db_select('node', 'n');
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
@@ -464,7 +470,7 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
       $query->condition('ep.field_estado_publicaci_n_value', 3, '=');
       $query->condition('u.field_user_reference_target_id', $uid, '=');
     }else {
-
+      
       $query = db_select('node', 'n');
       $query->join('field_data_field_user_reference', 'u', 'u.entity_id = n.nid');
       $query->join('field_data_field_publicacion', 'p', 'p.entity_id = n.nid');
@@ -494,6 +500,18 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
       elseif ( $id_type_publication == 20723 ){
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_pub_type_value', 20723, '=');
+      }
+      elseif ( $id_type_publication == 2951 ){
+        $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_pub_type_value', 2951, '=');
+      }
+      elseif ( $id_type_publication == 211 ){
+        $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_pub_type_value', 211, '=');
+      }
+      elseif ( $id_type_publication == 20724 ){
+        $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
+        $query->condition('c.field_pub_type_value', 20724, '=');
       }
       else {
         $query->join('field_data_field_concept_type', 'c', 'c.entity_id = p.field_publicacion_target_id');

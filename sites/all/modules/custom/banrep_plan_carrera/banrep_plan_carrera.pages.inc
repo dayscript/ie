@@ -4,10 +4,12 @@
  * Defines banrep_core module functionality.
  */
 module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions');
+module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.rules');
 /**
  * Callback del menu que arma el html del detalle de ascenso.
  */
 function banrep_plan_carrera_page($uid) {
+  //calculo_prof_experto_375($uid);
   $usuario = user_load($uid);
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
     return 'No existe plan de carrera';
@@ -161,13 +163,12 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
             $size    = count($concepts);
             $name    = _get_concept_publications($condition['concept']);
             $info_user = _get_publications_user($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
-
+            
           }
         }
         if(empty($condition['serie']) && empty($condition['concept']) ){
           $name = 'PUBLICACIONES';
           $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
-          
         }
         $html .= '<td>' . $operator . $name . ' (' . $condition['type'] . ')</td>';
         $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
@@ -268,7 +269,6 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
         $html .= '<td>'. $name . $strFiles.'</td>';
         $html .= '<td>'.$info_user.'</td>';
         $html .= '<td>'. $calificacion .'</td>';
-        
         $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
         $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
       $html .= '</tr>';
@@ -277,121 +277,11 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
 
   
   $html .= '</table>';
-
-//   foreach ($requirements['training'] as $keyg => $group) {
-//   if (isset($group['operator']) && !empty($group['operator'])) {
-//     $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
-//   }
-//   $html .= '<tr><td colspan="6">';
-//   $html .= '<table class="requirements__publications">';
-//   $html .= '<tr>';
-//   $html .= '<th>Nombre requisito</th>';
-//   $html .= '<th>Valor requisito</th>';
-//   $html .= '<th>Valor actual</th>';
-//   $html .= '<th>Calificación</th>';
-//   $html .= '<th>Aprobación</th>';
-//   $html .= '<th>Observaciones</th>';
-//   $html .= '</tr>';
-//   $flag_first_condition = TRUE;
-//   foreach ($group as $keyc => $condition) {
-//     $html .= "<tr>";
-//     if ($keyc == 'operator') {
-//     continue;
-//     }
-//     if ($flag_first_condition) {
-//     $operator = '';
-//     $flag_first_condition = FALSE;
-//     }
-//     else {
-//     $operator = 'Y ';
-//     }
-//     $name = _get_concept_publications($condition);
-//     $files = _get_training_by_tid($uid->uid,$condition);
-//     $info_user = FALSE;
-//     $strFiles = "";
-//     if (count($files) > 0 ) {
-//     $info_user = TRUE;
-//     $strFiles = "<br/><ul>";
-//     	foreach($files as $arfile) {
-//     	  $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
-//     	}
-//     	$strFiles .= "</ul>";
-//     }
-//     $html .= '<td>' . $operator . $name . $strFiles . '</td>';
-//     $html .= '<td>1</td>';
-//     $html .= '<td>' . $info_user . '</td>';
-
-//     $calificacion = 'No cumple';
-//     $checked = '';
-//     if ($info_user) {
-//     $checked = "checked";
-//     $calificacion = 'Cumple';
-//     }
-
-//     $html .= '<td>' . $calificacion . '</td>';
-
-//     $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
-//     $comments = _output_comments($name_item, $nid_log);
-//     if (isset($comments['html']) && !empty($comments['html'])) {
-//     if ($comments['aprobado'] == 1) {
-//       $checked = 'checked';
-//     }
-//     else {
-//       $checked = '';
-//     }
-//     }
-//     $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
-//     $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
-//     $html .= "</tr>";
-//   }
-//   $html .= '</table></td></tr>';
-//   }
   $html .= '</table>';
   $form['rq_formacion']['html'] = array(
   '#markup' => $html,
   );
-  /*if (in_array('Admin GT', $user->roles)) {
-  $form['rq_administrativos'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Requisitos administrativos'),
-    '#tree' => TRUE,
-  );
-  $html = '<table class="requirements__administrative">';
-  $html .= '<tr>';
-  $html .= '<th>Nombre requisito</th>';
-  $html .= '<th>Aprobación</th>';
-  $html .= '<th>Observaciones</th>';
-  $html .= '</tr>';
-  $requirements__administrative = array(
-    1 => 'Requerimientos en términos de conocimiento',
-    2 => 'Requerimientos de experiencia',
-    3 => 'Plan de formación durante su permanencia en el cargo',
-    4 => 'Nivel de funciones y complejidad del cargo',
-    5 => 'Indicadores de desempeño:  resultados y competencias para cada nivel',
-  );
-  foreach ($requirements__administrative as $key => $value) {
-    $name_item = 'rq_administrative_' . $key;
-    $comments = _output_comments($name_item, $nid_log);
-    $checked = '';
-    if (isset($comments['html']) && !empty($comments['html'])) {
-    if ($comments['aprobado'] == 1) {
-      $checked = 'checked';
-    }
-    else {
-      $checked = '';
-    }
-    }
-    $html .= '<tr>';
-    $html .= '<td>' . $value . '</td>';
-    $html .= '<td><input type="checkbox" name="' . $name_item . '_aprobado" ' . $checked . '></td>';
-    $html .= '<td> <textarea rows="3" cols="20" name="rq_administrative_' . $key . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
-    $html .= '</tr>';
-  }
-  $html .= '</table>';
-  $form['rq_administrativos']['html'] = array(
-    '#markup' => $html,
-  );
-  }*/
+
   $form['submit'] = array(
   '#type' => 'submit',
   '#value' => t('Update'),

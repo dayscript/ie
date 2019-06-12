@@ -1,10 +1,11 @@
 <?php
 
-function calculo_prof_experto_375(){
+function calculo_prof_experto_375($uid){
     // Tres artículos publicados en la serie de Borradores de Economía
-    
+    $economy = contar_nodes($uid, 3, 'pub_user', 'Borradores de Economia');
     
     //o en la serie Documentos de Economía Regional 
+    $regionalEcon = contar_nodes($uid, 3, 'pub_user', 'Ensayos Sobre Economía Regional (ESER)');
     
     //o 7 puntos académicos por publicaciones en revistas incluidas en el listado oficial del plan de carrera. 
     
@@ -13,7 +14,22 @@ function calculo_prof_experto_375(){
 
     // Los dos anteriores requisitos rigen desde el momento en que fue nombrado en el cargo de Profesional Especializado. 
 
+
     // Contar con título de maestría en el país o en el exterior. 
+    $maestria = FALSE;
+    $user = user_load($uid);
+    if($user->field_academics_profiles){
+        $study = field_collection_item_load($user->field_studies_carried_out[LANGUAGE_NONE][0]['value']);
+        dpm($study);
+        foreach ($study as $title => $value) {
+            if($title =='field_nivel_estudio'){
+                if($value[LANGUAGE_NONE][0]['value'] == 'maestria'){
+                    $maestria = TRUE;
+                }
+            }
+        }
+    }
+    
 
     // El tiempo acumulado de experiencia desde su nombramiento como profesional debe ser mínimo de 5 años sin contar con los años de estudio en el exterior.
 
@@ -91,21 +107,43 @@ function prof_expert_375(){
 
 }
 
-function contar_articulos($uid, $num, $type){
+function contar_nodes($uid, $num, $type, $filter) {
     $response = FALSE;
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', 'article')
+    ->entityCondition('bundle', $type)
     ->fieldCondition('field_user_reference', 'target_id', $uid)
-    ->fieldCondition('field_estado_publicaci_n', 'value', APROBADO)
-    ->fiedlCondition('field_concept_type', 'value', $type);
+    ->fieldCondition('field_estado_publicaci_n', 'value', APROBADO);
+    // ->fiedlCondition('field_pub_type', 'value', $type)
 
-    $result = $query->execute()->rowCount();
-
-    if($result >= $num){
-        $response = TRUE;
+    $result = $query->execute();
+    $nids = array_keys($result['node']);
+    $data = node_load_multiple($nids);
+    
+    $contador = 0;
+    foreach ($data as $key => $value) {
+        foreach ($value as $k => $v) {
+            //dpm($k);
+            if ($k == 'field_publicacion') {
+                $publi = node_load($v['und'][0]['target_id']);
+                foreach ($publi as $title => $valor) {
+                    if($title == 'field_pub_serie'){
+                        if ($valor['und'][0]['value'] == $filter) {
+                            $contador ++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    if($contador >= $num){
+        $response = TRUE;
+    }
     return $response;
-  
+}
+
+function academycs_points($uid) {
+
+
 }
