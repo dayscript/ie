@@ -688,8 +688,6 @@ function _generate_response_sepi($pub_user){
   
   if (isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_sepi[LANGUAGE_NONE][0]['value'])) {
     $sepi = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
-  }elseif (isset($publication->field_identificador_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_identificador_sepi[LANGUAGE_NONE][0]['value'])) {
-    $sepi = $publication->field_identificador_sepi[LANGUAGE_NONE][0]['value'];
   }
   
   $user_document = $user->field_document_number[LANGUAGE_NONE][0]['value'];
@@ -733,7 +731,10 @@ function _generate_response_sepi($pub_user){
       "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
       "autor"         => [ 
         'nombre' => $user->field_full_name[LANGUAGE_NONE][0]['value'],
-        'puntos' => (string)$pub_user->field_puntaje['und'][0]['value'] 
+        'correo' => isset($user->name) ? $user->name : '',
+        'id' => isset($user->field_document_number['und'][0]['value']) ? $user->field_document_number['und'][0]['value'] : '',
+        'rol' => '',
+        'puntaje' => (string)$pub_user->field_puntaje['und'][0]['value'] 
       ],
       "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) )         ? $publication->field_url[LANGUAGE_NONE][0]['url'] : '',
       "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) )         ? $publication->field_doi[LANGUAGE_NONE][0]['url'] : '',
@@ -743,11 +744,11 @@ function _generate_response_sepi($pub_user){
       "numero"             => ( isset($publication->field_number[LANGUAGE_NONE][0]['value']) )    ? $publication->field_number[LANGUAGE_NONE][0]['value'] : '',
       "paginas"            => ( isset($publication->field_page[LANGUAGE_NONE][0]['value']) )      ? $publication->field_page[LANGUAGE_NONE][0]['value'] : '',
       "anopublicacion"     => ( isset($publication->field_publication_year[LANGUAGE_NONE][0]['value']) ) ? $publication->field_publication_year[LANGUAGE_NONE][0]['value'] : '',
-      "fecha_publicacion"  => '',
-      "fecha_aceptacion"   => ( isset($publication->field_date[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d',$publication->field_date[LANGUAGE_NONE][0]['value']) : '',
+      "fecha_publicacion"  => isset($publication->field_date[LANGUAGE_NONE][0]['value']) ? date('Y-m-d', $publication->field_date[LANGUAGE_NONE][0]['value']) : '',
+      "fecha_aceptacion"   => ( isset($publication->field_act_date_start[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_act_date_start[LANGUAGE_NONE][0]['value']) : '',
       "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value'] : '',
       "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value'] : '',
-      "archivo_aprobacion" => null
+      "archivo_aprobacion" => isset($publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value']) ? $publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value'] : ''
   ];
 
   file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
