@@ -717,8 +717,9 @@ function _generate_response_sepi($pub_user){
     '201'   => 'Artículo' ,
     '20662' => 'Revista Espe' ,
     '206'   => 'Libro',
-    '1'     => 'Capitulo de libro' ,
+    '1' => 'Capitulo de libro',
     '2951'  => 'Documento de trabajo',
+    '20754' => 'Documento en conferencia',
     '20708' => 'Otros Documentos',
   );
   
@@ -726,7 +727,7 @@ function _generate_response_sepi($pub_user){
       "keywords"      => $tags,
       "cod_jel"       => $jel_code,
       "titulo"        => ( !empty($publication->title) ) ? $publication->title:'',
-      "tipopub"       => taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
+      "tipopub"       => isset($types[$publication->field_pub_type[LANGUAGE_NONE][0]['value']]) ? $types[$publication->field_pub_type[LANGUAGE_NONE][0]['value']] : '',// taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
       "clasificacion" => taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name,
       "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
       "autor"         => [ 
