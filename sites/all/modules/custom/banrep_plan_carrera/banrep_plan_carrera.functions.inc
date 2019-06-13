@@ -289,21 +289,6 @@ function get_concept_type($rule, $uid){
         }
       }
     }
-  }elseif (isset($rule->field_pub_type[LANGUAGE_NONE]) && isset($rule->field_concept_type[LANGUAGE_NONE])) {/*Publicaciones con Rol*/
-    $authorsPub = $rule->field_co_authors[LANGUAGE_NONE];
-    foreach($authorsPub as $key => $author){
-      $collection = entity_load('field_collection_item', array($author['value']));
-      $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);
-      if($usuario->uid == $author_tax->field_user_reference['und'][0]['target_id']){
-        $author_rol = taxonomy_term_load($collection[$author['value']]->field_role_within_publicat[LANGUAGE_NONE][0]['tid']);
-        foreach($author_rol->field_puntajes[LANGUAGE_NONE] as $key => $reference){
-          $taxonomy_route = entity_load('field_collection_item', [$reference['value']])[$reference['value']];
-          if($taxonomy_route->field_ruta[LANGUAGE_NONE][0]['target_id'] == $idRuta) {
-            $result = get_name_acumulado($taxonomy_route->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
-          }
-        } 
-      }
-    }
   }
   return $result;
 }

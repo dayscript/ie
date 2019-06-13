@@ -713,43 +713,51 @@ function _generate_response_sepi($pub_user){
     $tags = implode(',',$tid_name);
   }
 
+  foreach($publication->field_co_authors[LANGUAGE_NONE] as $key => $author){
+     $tax = entity_load('field_collection_item', [$author['value']]);
+     $author_tax = taxonomy_term_load($tax[key($tax)]->field_co_autor[LANGUAGE_NONE][0]['tid']);
+     if ($author_tax->field_user_reference[LANGUAGE_NONE][0]['target_id'] == $user->uid) { 
+       $author_rol = taxonomy_term_load($tax[key($tax)]->field_role_within_publicat['und'][0]['tid'])->name;
+     }
+  }
+
   $types = array(
     '201'   => 'Artículo' ,
     '20662' => 'Revista Espe' ,
     '206'   => 'Libro',
-    '1'     => 'Capitulo de libro' ,
+    '1' => 'Capitulo de libro',
     '2951'  => 'Documento de trabajo',
+    '20754' => 'Documento en conferencia',
     '20708' => 'Otros Documentos',
   );
   
   $save_data = [ 
-      "keywords"      => $tags,
-      "cod_jel"       => $jel_code,
-      "titulo"        => ( !empty($publication->title) ) ? $publication->title:'',
-      "tipopub"       => taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
-      "clasificacion" => taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name,
-      "concepto"      => node_load($publication->field_concept['und'][0]['target_id'])->title,
+      "keywords"      => ( isset($tags) && !empty($tags) ) ? $tags : '',
+      "cod_jel"       => ( isset($jel_code ) && !empty($jel_code ) ) ? $jel_code : '',
+      "titulo"        => ( isset($publication->title) && !empty($publication->title) ) ? $publication->title : '',
+      "tipopub"       => ( isset($types[$publication->field_pub_type[LANGUAGE_NONE][0]['value']]) && !empty($types[$publication->field_pub_type[LANGUAGE_NONE][0]['value']]) ) ? $types[$publication->field_pub_type[LANGUAGE_NONE][0]['value']] : '',// taxonomy_term_load($publication->field_pub_type[LANGUAGE_NONE][0]['value'])->name,
+      "clasificacion" => ( isset(taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name) ) ? taxonomy_term_load($publication->field_concept_type[LANGUAGE_NONE][0]['tid'])->name : '',
+      "concepto"      => ( isset($publication->field_concept['und'][0]['target_id']) && !empty($publication->field_concept['und'][0]['target_id']) ) ? node_load($publication->field_concept['und'][0]['target_id'])->title : '',
       "autor"         => [ 
-        'nombre' => $user->field_full_name[LANGUAGE_NONE][0]['value'],
-        'correo' => isset($user->name) ? $user->name : '',
-        'id' => isset($user->field_document_number['und'][0]['value']) ? $user->field_document_number['und'][0]['value'] : '',
-        'rol' => '',
-        'puntaje' => (string)$pub_user->field_puntaje['und'][0]['value'] 
+        'nombre' => ( isset($user->field_full_name[LANGUAGE_NONE][0]['value'])  && !empty($user->field_full_name[LANGUAGE_NONE][0]['value']) ) ? $user->field_full_name[LANGUAGE_NONE][0]['value'] : '',
+        'correo' => ( isset($user->name)  && !empty($user->name) ) ? $user->name : '',
+        'id' => ( isset($user->field_document_number['und'][0]['value'])  && !empty($user->field_document_number['und'][0]['value']) ) ? $user->field_document_number['und'][0]['value'] : '',
+        'rol' => ( isset($author_rol) && !empty($author_rol) ) ? $author_rol : '',
+        'puntaje' => ( isset($pub_user->field_puntaje['und'][0]['value'])  && !empty($pub_user->field_puntaje['und'][0]['value']) ) ? (string)$pub_user->field_puntaje['und'][0]['value'] : ''
       ],
-      "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) )         ? $publication->field_url[LANGUAGE_NONE][0]['url'] : '',
-      "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) )         ? $publication->field_doi[LANGUAGE_NONE][0]['url'] : '',
-      "editorial"          => ( isset($publication->field_editorial[LANGUAGE_NONE][0]['value']) ) ? $publication->field_editorial[LANGUAGE_NONE][0]['value'] : '',
-      "ciudad"             => ( isset($publication->field_pub_city[LANGUAGE_NONE][0]['value']) )  ? $publication->field_pub_city[LANGUAGE_NONE][0]['value'] : '',
-      "volumen"            => ( isset($publication->field_volumen[LANGUAGE_NONE][0]['value']) )   ? $publication->field_volumen[LANGUAGE_NONE][0]['value'] : '',
-      "numero"             => ( isset($publication->field_number[LANGUAGE_NONE][0]['value']) )    ? $publication->field_number[LANGUAGE_NONE][0]['value'] : '',
-      "paginas"            => ( isset($publication->field_page[LANGUAGE_NONE][0]['value']) )      ? $publication->field_page[LANGUAGE_NONE][0]['value'] : '',
-      "anopublicacion"     => ( isset($publication->field_publication_year[LANGUAGE_NONE][0]['value']) ) ? $publication->field_publication_year[LANGUAGE_NONE][0]['value'] : '',
-      "fecha_publicacion"  => isset($publication->field_date[LANGUAGE_NONE][0]['value']) ? date('Y-m-d', $publication->field_date[LANGUAGE_NONE][0]['value']) : '',
-      "fecha_aceptacion"   => ( isset($publication->field_act_date_start[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_act_date_start[LANGUAGE_NONE][0]['value']) : '',
-      "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value'] : '',
-      "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value'] : '',
-      "archivo_aprobacion" => isset($publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value']) ? $publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value'] : ''
+      "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) && !empty($publication->field_url[LANGUAGE_NONE][0]['url']) ) ? $publication->field_url[LANGUAGE_NONE][0]['url'] : '',
+      "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) && !empty($publication->field_doi[LANGUAGE_NONE][0]['url']) ) ? $publication->field_doi[LANGUAGE_NONE][0]['url'] : '',
+      "editorial"          => ( isset($publication->field_editorial[LANGUAGE_NONE][0]['value']) && !empty($publication->field_editorial[LANGUAGE_NONE][0]['value']) ) ? $publication->field_editorial[LANGUAGE_NONE][0]['value'] : '',
+      "ciudad"             => ( isset($publication->field_pub_city[LANGUAGE_NONE][0]['value']) && !empty($publication->field_pub_city[LANGUAGE_NONE][0]['value']) ) ? $publication->field_pub_city[LANGUAGE_NONE][0]['value'] : '',
+      "volumen"            => ( isset($publication->field_volumen[LANGUAGE_NONE][0]['value']) && !empty($publication->field_volumen[LANGUAGE_NONE][0]['value']) ) ? $publication->field_volumen[LANGUAGE_NONE][0]['value'] : '',
+      "numero"             => ( isset($publication->field_number[LANGUAGE_NONE][0]['value']) && !empty($publication->field_number[LANGUAGE_NONE][0]['value']) ) ? $publication->field_number[LANGUAGE_NONE][0]['value'] : '',
+      "paginas"            => ( isset($publication->field_page[LANGUAGE_NONE][0]['value']) && !empty($publication->field_page[LANGUAGE_NONE][0]['value']) ) ? $publication->field_page[LANGUAGE_NONE][0]['value'] : '',
+      "anopublicacion"     => ( isset($publication->field_publication_year[LANGUAGE_NONE][0]['value']) && !empty($publication->field_publication_year[LANGUAGE_NONE][0]['value']) ) ? $publication->field_publication_year[LANGUAGE_NONE][0]['value'] : '',
+      "fecha_publicacion"  => ( isset($publication->field_date[LANGUAGE_NONE][0]['value']) && !empty($publication->field_date[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_date[LANGUAGE_NONE][0]['value']) : '',
+      "fecha_aceptacion"   => ( isset($publication->field_act_date_start[LANGUAGE_NONE][0]['value']) && !empty($publication->field_act_date_start[LANGUAGE_NONE][0]['value']) ) ? date('Y-m-d', $publication->field_act_date_start[LANGUAGE_NONE][0]['value']) : '',
+      "titulo_otroidioma"  => ( isset($publication->field_title_en[LANGUAGE_NONE][0]['value']) && !empty($publication->field_title_en[LANGUAGE_NONE][0]['value']) ) ? $publication->field_title_en[LANGUAGE_NONE][0]['value'] : '',
+      "identificador_sepi" => ( isset($publication->field_sepi[LANGUAGE_NONE][0]['value']) && !empty($publication->field_sepi[LANGUAGE_NONE][0]['value']) ) ? $publication->field_sepi[LANGUAGE_NONE][0]['value'] : '',
+      "archivo_aprobacion" => ( isset($publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value']) && !empty($publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value']) ) ? $publication->field_archivo_de_aprobacion[LANGUAGE_NONE][0]['value'] : ''
   ];
-
   file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
 }
