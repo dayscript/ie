@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
   
-    Drupal.behaviors.banrep_redemption = {
+    Drupal.behaviors.banrep_training = {
       attach: function(context, settings) {
         var select = $('select[name="field_studies_carried_out[und][0][field_req_formacion_desempeno][und][0][field_formacion_y_desarrollo][und][hierarchical_select][selects][0]"]');
         var elements_formacion = [
@@ -15,12 +15,14 @@
           '#edit-field-studies-carried-out-und-0-field-descripcion'
         ];
 
+
         select.change(function(){
-            if($(this).val() == settings.banrep_redemption.REQ_FORMATION_ID_DESEMPENO){
+            console.log(settings);
+            if($(this).val() == settings.banrep_training.REQ_FORMATION_ID_DESEMPENO){
               hidden(elements_formacion);
               show(elements_desempeno);
             }
-            if($(this).val() == settings.banrep_redemption.REQ_FORMATION_ID_FORMACION){
+            if($(this).val() == settings.banrep_training.REQ_FORMATION_ID_FORMACION){
               show(elements_formacion);
               hidden(elements_desempeno);
             }

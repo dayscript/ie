@@ -644,6 +644,18 @@ function hs_taxonomy_hierarchical_select_root_level($params) {
     }
   }
 
+  //custom condition implements in hook
+  if( $params['vid'] == 24){
+    if( isset( $params['field_show_default'] ) ){
+      foreach($terms as $key => $term){
+        if(taxonomy_term_load($term->tid)->field_show_default[LANGUAGE_NONE][0]['value'] == $params['field_show_default']){
+          unset($terms[$key]);
+        }
+      }
+    }
+  }
+
+  
   return _hs_taxonomy_hierarchical_select_terms_to_options($terms);
 }
 
@@ -671,6 +683,27 @@ function hs_taxonomy_hierarchical_select_children($parent, $params) {
       }
     }
   }
+
+    //custom condition implements in hook
+    if( $params['vid'] == 24){
+      if( isset( $params['field_show_default'] ) ){
+        foreach($terms as $key => $term){
+          if(taxonomy_term_load($term->tid)->field_show_default[LANGUAGE_NONE][0]['value'] == $params['field_show_default']){
+            unset($terms[$key]);
+          }
+        }
+      }
+
+      if( isset($params['tids_hidden']) ){
+        foreach($terms as $key => $term){
+          if(in_array( $term->tid, $params['tids_hidden'] )){
+            unset($terms[$key]);
+          }
+        }
+      }
+    }
+  
+  
 
   return _hs_taxonomy_hierarchical_select_terms_to_options($terms);
 }

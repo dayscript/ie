@@ -1,0 +1,120 @@
+<?php
+
+module_load_include('inc', 'banrep_training', 'banrep_training');
+
+/**
+ * Implemets hook_form_alter();
+ * 
+ */
+
+function banrep_training_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  $form['field_studies_carried_out'][LANGUAGE_NONE]['add_more']['#access'] = false;
+  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_training') . '/js/forms.js';
+  $visible_conditions = array(
+    'REQ_FORMATION_ID_DESEMPENO' => REQ_FORMATION_ID_DESEMPENO,
+    'REQ_FORMATION_ID_FORMACION' => REQ_FORMATION_ID_FORMACION
+  );
+  
+  drupal_add_js(array('banrep_training' => $visible_conditions), 'setting');
+}
+
+
+function banrep_training_field_widget_form_alter(&$element, &$form_state, $context){
+  
+  
+  switch ($element['#field_name']) {
+    case 'field_formacion_y_desarrollo':
+      global $user;
+      $user = user_load($user->uid);
+      $user_scale = ( isset($user->field_usr_escalafon[LANGUAGE_NONE][0]['tid']) ) ? $user->field_usr_escalafon[LANGUAGE_NONE][0]['tid']:null;
+      $user_route = ( isset($user->field_ruta[LANGUAGE_NONE][0]['target_id'] ) ) ? $user->field_ruta[LANGUAGE_NONE][0]['target_id']:null;  
+
+      
+      // validation for entity node type requirements
+      if(isset($context['form']['#entity']->type) && $context['form']['#entity']->type == 'requirements'){
+        $element['#config']['params']['field_show_default'] = 1;
+      }
+
+
+      // validation for field_collection_item
+      if( isset($context['form']['#bundle']) && $context['form']['#bundle'] == 'field_studies_carried_out'){
+          
+        if( is_null($user_route) or is_null($user_scale) ){
+          drupal_set_message('Por favor verifique la configuración del usuario antes de continuar','warning');
+          break;
+        }
+
+
+        $requiremets_nids = banrep_training_get_user_requiremets($user_scale,$user_route);
+        $requiremets = [];
+        $requiremets_to_hide = [15340,20711,15341,15342];
+        foreach ($requiremets_nids as $key => $requiremet) {
+          $requiremets_field_collection = node_load($requiremet->nid)->field_req_formacion_desempeno['und'];
+          foreach ($requiremets_field_collection as $key => $collection) {
+            $tid = entity_load('field_collection_item', array($collection['value']));
+            $found = array_search($tid[key($tid)]->field_formacion_y_desarrollo['und'][0]['tid'], $requiremets_to_hide);
+            if( $found !== false ){
+              unset($requiremets_to_hide[$found]);
+            }
+          }
+        }
+        
+        $element['#config']['params']['tids_hidden'] = $requiremets_to_hide;
+      }
+
+      break;
+    
+    default:
+      # code...
+      break;
+  }
+
+}
+
+
+// hook_form_FORM_ID_alter
+function banrep_training_form_requirements_node_form_alter(&$form, &$form_state, $form_id){
+
+  $form['field_req_formacion_desempeno'][LANGUAGE_NONE][0]['field_formacion_y_desarrollo']['#config']['module'] = 'banrep_training';
+}
+
+function banrep_training_hierarchical_select_params($params) {
+  
+  return hs_taxonomy_hierarchical_select_params($params); 
+}
+function banrep_training_hierarchical_select_root_level($params, $dropbox = FALSE) {
+  
+  return hs_taxonomy_hierarchical_select_root_level($params, $dropbox); 
+}
+function banrep_training_hierarchical_select_children($parent, $params, $dropbox = FALSE) {
+ 
+  return hs_taxonomy_hierarchical_select_children($parent, $params, $dropbox = FALSE);
+}
+function banrep_training_hierarchical_select_lineage($item, $params) {
+ 
+  return hs_taxonomy_hierarchical_select_lineage($item, $params);
+}
+function banrep_training_hierarchical_select_valid_item($item, $params) {
+ 
+  return hs_taxonomy_hierarchical_select_valid_item($item, $params);
+}
+function banrep_training_hierarchical_select_item_get_label($item, $params) {
+ 
+  return hs_taxonomy_hierarchical_select_item_get_label($item, $params);
+}
+function banrep_training_hierarchical_select_create_item($label, $parent, $params) {
+ 
+  return hs_taxonomy_hierarchical_select_create_item($label, $parent, $params);
+}
+function banrep_training_hierarchical_select_entity_count($item, $params) {
+ 
+  return hs_taxonomy_hierarchical_select_entity_count($item, $params);
+}
+function banrep_training_hierarchical_select_implementation_info() {
+ 
+  return hs_taxonomy_hierarchical_select_implementation_info();
+}
+function banrep_training_hierarchical_select_config_info() {
+ 
+  return hs_taxonomy_hierarchical_select_config_info();
+}
