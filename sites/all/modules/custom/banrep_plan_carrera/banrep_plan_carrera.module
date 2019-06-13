@@ -62,6 +62,10 @@ function banrep_plan_carrera_mail($key, &$message, $params) {
       $message['body'][] = '<h3>Estimado Usuario,</h3>';
       $message['body'][] = '<p>Le informamos que su solicitud de ascenso a sido aprobada y se encuentra en estado: APROBADO PARA CAMBIO DE CARGO';
       break;
+    case 'email_change_state':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['body'];
+      break;
   }
 }
 
