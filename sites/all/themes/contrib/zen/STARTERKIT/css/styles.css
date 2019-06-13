@@ -1821,3 +1821,12 @@ tr.drag-previous {
 .tree-child-horizontal {
   background-position: -11px center;
 }
+
+.listado-control .view-header {
+ padding-top: 50px; 
+}
+
+.listado-control .view-filters {
+  position: absolute;
+  top: 0;
+}
