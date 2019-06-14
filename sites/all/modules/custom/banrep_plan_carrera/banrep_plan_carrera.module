@@ -22,14 +22,14 @@ function banrep_plan_carrera_menu() {
   );
 
 
-  $items['profile/plan/carrera/%'] = array(
+  /*$items['profile/plan/carrera/%'] = array(
     'title' => '',
     'page callback' => 'banrep_plan_carrera_page',
     'page arguments' => array(3),
     'access callback' => true,
     'file' => 'banrep_plan_carrera.pages.inc',
     'type' => MENU_CALLBACK,
-  );
+  );*/
 
   $items['profile/redemption/add'] = array(
     'title' => '',

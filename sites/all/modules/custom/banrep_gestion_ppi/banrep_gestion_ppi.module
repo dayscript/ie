@@ -8,6 +8,14 @@ function banrep_gestion_ppi_menu() {
     'file' => 'banrep_gestion_ppi.pages.inc',
     'type' => MENU_CALLBACK,
   );
+  $items['profile/plan/carrera/%'] = array(
+    'title' => '',
+    'page callback' => 'banrep_gestion_ppi_page',
+    'page arguments' => array(3),
+    'access callback' => true,
+    'file' => 'banrep_gestion_ppi.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
