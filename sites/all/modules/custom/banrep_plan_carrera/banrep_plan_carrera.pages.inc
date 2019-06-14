@@ -282,6 +282,58 @@ function banrep_plan_carrera_form($form, &$form_state, $requirements = array(), 
   '#markup' => $html,
   );
 
+  // Inicio Requisitos puntaje Acumuado 
+
+  
+  $html = '<table class="requirements__publications">';
+
+  $form['rq_puntaje_acumulado'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Requisitos puntaje acumulado'),
+    '#tree' => TRUE,
+  );
+
+  $html .= '<tr><td colspan="6">';
+  $html .= '<table class="requirements__publications">';
+    $html .= '<tr>';
+    $html .= '<th>Nombre requisito</th>';
+    $html .= '<th>Valor requisito</th>';
+    $html .= '<th>Valor actual</th>';
+    $html .= '<th>Calificación</th>';
+    $html .= '<th>Aprobación</th>';
+    $html .= '<th>Observaciones</th>';
+    $html .= '</tr>';
+    $html .= '<tbody>';
+    foreach ($requirements['accumulated'] as $keyg => $group) {
+      $keyc = 0;
+
+      if ($group['aprobado']) {
+        $checked = 'checked';
+      }
+      else {
+        $checked = '';
+      }
+      
+      $html .= '<tr>';
+        $html .= '<td>'. $group['name'] .'</td>';
+        $html .= '<td>'. $group['val_requisito'] .'</td>';
+        $html .= '<td>'. $group['val_user'] .'</td>';
+        $html .= '<td>'. $group['calificacion'] .'</td>';
+        $html .= '<td><input type="checkbox" name="rq_ac_acumulado' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+      $html .= '</tr>';
+    }
+    $html .= '</tbody>';
+
+  
+  $html .= '</table>';
+  $html .= '</table>';
+  $form['rq_puntaje_acumulado']['html'] = array(
+  '#markup' => $html,
+  );
+
+  // Fin Requisitos puntaje Acumuado 
+
   $form['submit'] = array(
   '#type' => 'submit',
   '#value' => t('Update'),
