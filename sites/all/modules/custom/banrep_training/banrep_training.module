@@ -9,6 +9,7 @@ module_load_include('inc', 'banrep_training', 'banrep_training');
 
 function banrep_training_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
   $form['field_studies_carried_out'][LANGUAGE_NONE]['add_more']['#access'] = false;
+  $form['field_studies_carried_out'][LANGUAGE_NONE][0]['field_req_formacion_desempeno'][LANGUAGE_NONE]['add_more']['#access'] = false;
   $form['#attached']['js'][] = drupal_get_path('module', 'banrep_training') . '/js/forms.js';
   $visible_conditions = array(
     'REQ_FORMATION_ID_DESEMPENO' => REQ_FORMATION_ID_DESEMPENO,
@@ -16,6 +17,7 @@ function banrep_training_form_user_training_entityform_edit_form_alter(&$form, &
   );
   
   drupal_add_js(array('banrep_training' => $visible_conditions), 'setting');
+
 }
  
 
@@ -35,10 +37,12 @@ function banrep_training_field_widget_form_alter(&$element, &$form_state, $conte
         $element['#config']['params']['field_show_default'] = 1;
       }
 
+      
 
+ 
       // validation for field_collection_item
       if( isset($context['form']['#bundle']) && $context['form']['#bundle'] == 'field_studies_carried_out'){
-          
+        
         if( is_null($user_route) or is_null($user_scale) ){
           drupal_set_message('Por favor verifique la configuración del usuario antes de continuar','warning');
           break;
@@ -62,6 +66,17 @@ function banrep_training_field_widget_form_alter(&$element, &$form_state, $conte
         $element['#config']['params']['tids_hidden'] = $requiremets_to_hide;
       }
 
+      break;
+    
+    case 'field_req_formacion_desempeno':
+      
+      if( isset($context['form']['#field_name']) && $context['form']['#field_name'] == 'field_studies_carried_out'){
+        $element['remove_button']['#access'] = false;
+      }
+      break;
+
+    case 'field_studies_carried_out':
+          $element['remove_button']['#access'] = false;
       break;
     
     default:
