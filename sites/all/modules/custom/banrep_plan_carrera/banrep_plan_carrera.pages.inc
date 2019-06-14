@@ -9,7 +9,6 @@ module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.rules');
  * Callback del menu que arma el html del detalle de ascenso.
  */
 function banrep_plan_carrera_page($uid) {
-  validate_change_state($uid);
   $usuario = user_load($uid);
   if (!isset($usuario->uid) || $usuario->uid <= 0) {
     return 'No existe plan de carrera';
