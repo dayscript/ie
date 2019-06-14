@@ -355,6 +355,7 @@
             'Libro'=> '206',
             'Capitulo de libro' => '1',
             'Capítulo de libro' => '1',
+            'Capítulo libro' => '1',
             'Documento de trabajo'=> '2951',
             'Otros Documentos'=>'20708',
         );
