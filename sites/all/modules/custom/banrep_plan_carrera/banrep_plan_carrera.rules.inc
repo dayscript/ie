@@ -250,7 +250,7 @@ function validate_change_state($uid){
             // MARCADO_PARA_ REVISION|MARCADO PARA REVISIÓN
             update_fields($entity_user, 'MARCADO_PARA_ REVISION', 'field_estado_plan_carrera');
             //Notificar email
-            send_email($entity_user, 'leandroromeroramirez@gmail.com');
+            send_email($entity_user, 'sblancca@banrep.gov.co');
 
         }
     }
@@ -316,4 +316,16 @@ function send_email($user, $email){
       ),
     );
     drupal_mail('banrep_plan_carrera', 'email_change_state', $email, language_default(), $params);
+}
+
+function get_ids_all_user(){
+    $response = FALSE;
+    $query = 'SELECT DISTINCT(ur.uid)
+    FROM {users_roles} AS ur
+    WHERE ur.rid IN (:rids)';
+
+    $result = db_query($query, array(':rids' => array(4,5)));
+    $uids = $result->fetchCol();
+
+    return $uids;
 }
