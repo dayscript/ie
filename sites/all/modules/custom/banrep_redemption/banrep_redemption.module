@@ -89,24 +89,7 @@ function banrep_redemption_entity_update($entity, $type){
   }
 }
 
-/**
- * Implemets hook_form_alter();
- * 
- */
 
-function banrep_redemption_form_user_training_entityform_edit_form_alter(&$form, &$form_state, $form_id){
- 
-  
-  $form['field_studies_carried_out'][LANGUAGE_NONE]['add_more']['#access'] = false;
-  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/forms.js';
-  $visible_conditions = array(
-    'REQ_FORMATION_ID_DESEMPENO' => REQ_FORMATION_ID_DESEMPENO,
-    'REQ_FORMATION_ID_FORMACION' => REQ_FORMATION_ID_FORMACION
-  );
-  
-  drupal_add_js(array('banrep_redemption' => $visible_conditions), 'setting');
-  
-}
 
 
 /**
@@ -229,5 +212,5 @@ function discount_points($entity, $type, $points){
     return $message;
   } catch (Exception $e) {
     return array('msj' => 'Descuento no realizado' . ' ' . $e->getMessage(), 'type' => 'error');
-  }
+  } 
 }
