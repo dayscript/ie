@@ -337,9 +337,9 @@ function get_accumulated_requirements($node , $uid) {
 
 
   //Calificación
-  $cal_punt_acum = evalu_acumulate($puntaje_acumulado, $user_punt_acum) ? 'CUMPLE' : 'NO CUMPLE';
-  $cal_punt_br = evalu_acumulate($puntaje_br, $user_punt_br) ? 'CUMPLE' : 'NO CUMPLE';
-  $cal_punt_gen = evalu_acumulate($puntaje_gen, $user_punt_gen) ? 'CUMPLE' : 'NO CUMPLE';
+  $cal_punt_acum = evalu_acumulate($puntaje_acumulado, $user_punt_acum) ? 'Cumple' : 'No Cumple';
+  $cal_punt_br = evalu_acumulate($puntaje_br, $user_punt_br) ? 'Cumple' : 'No Cumple';
+  $cal_punt_gen = evalu_acumulate($puntaje_gen, $user_punt_gen) ? 'Cumple' : 'No Cumple';
 
   //Aprobacion
   $aprob_punt_acum = evalu_acumulate($puntaje_acumulado, $user_punt_acum);
@@ -370,7 +370,7 @@ function get_accumulated_requirements($node , $uid) {
 function evalu_acumulate($val_requ, $val_user){
   $response = FALSE;
 
-  if($val_user >= $val_requ){
+  if($val_requ > 0 && $val_user >= $val_requ){
     $response = TRUE;
   }
   return $response;

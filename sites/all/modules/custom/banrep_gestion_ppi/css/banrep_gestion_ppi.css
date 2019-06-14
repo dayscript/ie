@@ -1,4 +1,4 @@
-.requirements__publications textarea {
+.requirements__publications textarea, .requirements__time textarea {
 	border: 1px solid lightgray;
 }
 .table-list-pub th {

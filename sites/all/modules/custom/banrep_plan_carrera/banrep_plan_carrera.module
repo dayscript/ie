@@ -4,6 +4,7 @@
  * Defines banrep_core module functionality.
  */
 module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.functions');
+module_load_include('inc', 'banrep_plan_carrera', 'banrep_plan_carrera.rules');
 /**
  * Implements hook_menu().
  */
@@ -21,14 +22,14 @@ function banrep_plan_carrera_menu() {
   );
 
 
-  $items['profile/plan/carrera/%'] = array(
+  /*$items['profile/plan/carrera/%'] = array(
     'title' => '',
     'page callback' => 'banrep_plan_carrera_page',
     'page arguments' => array(3),
     'access callback' => true,
     'file' => 'banrep_plan_carrera.pages.inc',
     'type' => MENU_CALLBACK,
-  );
+  );*/
 
   $items['profile/redemption/add'] = array(
     'title' => '',
@@ -704,4 +705,14 @@ function banrep_plan_carrera_log_points($user, $type, $pjprevious, $pjnew, $stpr
     }
   }
   return array('value' => $results);
+}
+
+/**
+ * Implements hook_cron().
+ */ 
+function banrep_plan_carrera_cron() {
+  $all_users = get_ids_all_user();
+  foreach ($all_users as $key => $value) {
+    validate_change_state($value);
+  }
 }

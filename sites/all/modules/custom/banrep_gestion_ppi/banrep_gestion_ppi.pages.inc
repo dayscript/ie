@@ -16,7 +16,7 @@ function banrep_gestion_ppi_page($uid) {
 
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
-  $requirements = get_requirements_ppi($scale, $route);
+  $requirements = get_requirements_ppi($scale, $route, $usuario->uid);
   $form     = drupal_get_form('banrep_gestion_ppi_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
@@ -42,6 +42,9 @@ function banrep_gestion_ppi_page($uid) {
  */
 function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $uid = NULL) {
   global $user;
+
+  $perfil_active = (arg()[1]=='plan' && arg()[2]=='carrera') ? 'plan_carrera' : 'gestion_ppi';
+
   $form = array();
   $nid_log = _get_node_log_ppi($uid->uid, $requirements['nid'], FALSE);
   $form['rid'] = array(
@@ -52,6 +55,58 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     '#type' => 'hidden',
     '#value' => $uid->uid,
   );
+  /*Requisito de tiempo*/
+  if ($perfil_active == 'plan_carrera') {
+    $form['rq_tiempo'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Requisitos de tiempo'),
+      '#tree' => TRUE,
+    );
+    $tipo_tiempo = list_allowed_values(field_info_field('field_pcr_tipo_tiempo'));
+    $html = '<table class="requirements__time">';
+      $html .= '<tr>';
+      $html .= '<th>Nombre requisito</th>';
+      $html .= '<th>Valor requisito</th>';
+      $html .= '<th>Valor actual</th>';
+      $html .= '<th>Calificación</th>';
+      $html .= '<th>Aprobación</th>';
+      $html .= '<th>Observaciones</th>';
+      $html .= '</tr>';
+      foreach ($requirements['time'] as $key => $value) {
+        $info_user = _get_time_user($uid, $key);
+        $html .= '<tr>';
+        $html .= '<td>' . $tipo_tiempo[$key] . '</td>';
+        $html .= '<td>' . $value . '</td>';
+        $html .= '<td>' . $info_user . '</td>';
+        $checked = "";
+        $calificacion = 'No cumple';
+        if ($info_user >= $value) {
+          $checked = "checked";
+          $calificacion = 'Cumple';
+        }
+        $html .= '<td>' . $calificacion . '</td>';
+        $name_item = 'rq_tiempo_' . $key;
+        $comments = _output_comments($name_item, $nid_log);
+        if (isset($comments['html']) && !empty($comments['html'])) {
+          if ($comments['aprobado'] == 1) {
+          $checked = 'checked';
+          }
+          else {
+          $checked = '';
+          }
+        }
+        $html .= '<td> <input type="checkbox" class="condition" name="rq_tiempo_' . $key . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td><textarea rows="3" cols="20" name="rq_tiempo_' . $key . '_observaciones"></textarea>' . $comments['html'] . '  </td>';
+        $html .= '</tr>';
+      }
+    $html .= '</table>';
+
+    $form['rq_tiempo']['html'] = array(
+    '#markup' => $html,
+    );
+  }
+  /*Requisito de tiempo*/
+  /*Requisitos de publicaciones y/o actividades*/
   $form['rq_publiacion'] = array(
   '#type' => 'fieldset',
   '#title' => t('Requisitos de publicaciones y/o actividades'),
@@ -130,6 +185,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
           $pub_user_type[$key]['total_points'] += (isset($node_child->field_puntaje['und'][0]['value']) && !empty($node_child->field_puntaje['und'][0]['value'])) ? $node_child->field_puntaje['und'][0]['value'] : 0;
+          $pub_user_type[$key]['count_pub'] = count($pub_user_type[$key]['values']);
         }
       }
     }
@@ -158,6 +214,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
         );
         $pub_user_type[$key]['total_points'] += (isset($node->field_puntaje['und'][0]['value']) && !empty($node->field_puntaje['und'][0]['value'])) ? $node->field_puntaje['und'][0]['value'] : 0;
+        $pub_user_type[$key]['count_pub'] = count($pub_user_type[$key]['values']);
       }
     }
   }
@@ -218,15 +275,17 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
 
+          $puntaje_type_concept = ($condition['type'] == 'PUNTAJE') ? $pub_user_type[$condition['concept']]['total_points'] : $pub_user_type[$condition['concept']]['count_pub'];
+
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
-          $html .= '<td>' . $pub_user_type[$condition['concept']]['total_points'] . '</td>'; // falta para libros //$info_user . $input_value
+          $html .= '<td>' . $puntaje_type_concept . '</td>'; // falta para libros //$info_user . $input_value
           break;
       }
 
       $calificacion = 'No cumple';
       $checked = '';
-      if ($pub_user_type[$condition['concept']]['total_points'] >= $condition['value']) {
+      if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($puntaje_type_concept) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
         $checked    = "checked";
         $calificacion = 'Cumple';
       }
@@ -295,7 +354,137 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   $form['rq_publiacion']['html'] = array(
     '#markup' => $html,
   );
+  /*Requisitos de publicaciones y/o actividades*/
+  /*Requisitos formación desarrollo y desempeño*/
+    if ($perfil_active == 'plan_carrera') {
+      $form['rq_publiacion']['html'] = array(
+      '#markup' => $html,
+      );
+
+      $html = '<table class="requirements__publications">';
+
+      $form['rq_formacion'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Requisitos formación desarrollo y desempeño'),
+      '#tree' => TRUE,
+      );
+
+      $html .= '<tr><td colspan="6">';
+      $html .= '<table class="requirements__publications">';
+      $html .= '<tr>';
+      $html .= '<th></th>';
+
+      $html .= '<th>Nombre requisito</th>';
+      $html .= '<th>Valor requisito</th>';
+      $html .= '<th>Valor actual</th>';
+      $html .= '<th>Calificación</th>';
+      $html .= '<th>Aprobación</th>';
+      $html .= '<th>Observaciones</th>';
+      $html .= '</tr>';
+      $html .= '<tbody>';
+      foreach ($requirements['training'] as $keyg => $group) {
+
+        $name = _get_concept_publications($group[0]);
+        $files = _get_training_by_tid($uid->uid,$group[0]);
+        $info_user = FALSE;
+        $strFiles = "";
+        $keyc = 0;
+        if (count($files) > 0 ) {
+          $info_user = TRUE;
+          $strFiles = "<br/><ul>";
+          foreach($files as $arfile) {
+            $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
+          }
+          $strFiles .= "</ul>";
+        }
+
+        $calificacion = 'No cumple';
+        $checked = '';
+        if ($info_user) {
+          $checked = "checked";
+          $calificacion = 'Cumple';
+        }
+
+        $name_item = 'rq_formacion_' . $keyg . '_' . $keyc;
+        $comments = _output_comments($name_item, $nid_log);
+        if (isset($comments['html']) && !empty($comments['html'])) {
+          if ($comments['aprobado'] == 1) {
+            $checked = 'checked';
+          }
+          else {
+            $checked = '';
+          }
+        }
+
+        $html .= '<tr>';
+          $html .= '<td>'. $group['operator'] .'</td>';
+          $html .= '<td>'. $name . $strFiles.'</td>';
+          $html .= '<td>'.$info_user.'</td>';
+          $html .= '<td>'.count($group[0]).'</td>';
+          $html .= '<td>'. $calificacion .'</td>';
+          $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+          $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+        $html .= '</tr>';
+      }
+      $html .= '</tbody>';
+
+
+      $html .= '</table>';
+      $html .= '</table>';
+      $form['rq_formacion']['html'] = array(
+      '#markup' => $html,
+      );
+  }
+  /*Requisitos formación desarrollo y desempeño*/
+  /*Requisitos puntaje acumulado*/ 
+  $html = '<table class="requirements__publications">';
+
+  $form['rq_puntaje_acumulado'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Requisitos puntaje acumulado'),
+    '#tree' => TRUE,
+  );
+
+  $html .= '<tr><td colspan="6">';
+  $html .= '<table class="requirements__publications">';
+    $html .= '<tr>';
+    $html .= '<th>Nombre requisito</th>';
+    $html .= '<th>Valor requisito</th>';
+    $html .= '<th>Valor actual</th>';
+    $html .= '<th>Calificación</th>';
+    $html .= '<th>Aprobación</th>';
+    $html .= '<th>Observaciones</th>';
+    $html .= '</tr>';
+    $html .= '<tbody>';
+    foreach ($requirements['accumulated'] as $keyg => $group) {
+      $keyc = 0;
+
+      if (isset($group['val_requisito']) && !empty($group['val_requisito']) && $group['val_requisito'] > 0 && $group['aprobado']) {
+        $checked = 'checked';
+      }
+      else {
+        $checked = '';
+      }
+      
+      $html .= '<tr>';
+        $html .= '<td>'. $group['name'] .'</td>';
+        $html .= '<td>'. $group['val_requisito'] .'</td>';
+        $html .= '<td>'. $group['val_user'] .'</td>';
+        $html .= '<td>'. $group['calificacion'] .'</td>';
+        $html .= '<td><input type="checkbox" name="rq_ac_acumulado' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+      $html .= '</tr>';
+    }
+    $html .= '</tbody>';
+
   
+  $html .= '</table>';
+  $html .= '</table>';
+  $form['rq_puntaje_acumulado']['html'] = array(
+  '#markup' => $html,
+  );
+  /*Requisitos puntaje acumulado*/
+
   $form['submit'] = array(
   '#type' => 'submit',
   '#value' => t('Update'),
