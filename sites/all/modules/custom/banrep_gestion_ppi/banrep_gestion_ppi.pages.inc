@@ -285,7 +285,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
       $calificacion = 'No cumple';
       $checked = '';
-      if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
+      if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($puntaje_type_concept) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
         $checked    = "checked";
         $calificacion = 'Cumple';
       }
@@ -420,6 +420,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           $html .= '<td>'. $group['operator'] .'</td>';
           $html .= '<td>'. $name . $strFiles.'</td>';
           $html .= '<td>'.$info_user.'</td>';
+          $html .= '<td>'.count($group[0]).'</td>';
           $html .= '<td>'. $calificacion .'</td>';
           $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
           $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
@@ -458,7 +459,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     foreach ($requirements['accumulated'] as $keyg => $group) {
       $keyc = 0;
 
-      if ($group['aprobado']) {
+      if (isset($group['val_requisito']) && !empty($group['val_requisito']) && $group['val_requisito'] > 0 && $group['aprobado']) {
         $checked = 'checked';
       }
       else {
