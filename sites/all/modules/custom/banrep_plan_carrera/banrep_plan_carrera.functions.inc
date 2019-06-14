@@ -27,6 +27,7 @@ function get_requirements($scale, $route, $uid, $type = '') {
       $requirements['publications'] = get_publications_requirements($node->field_requisitos_publicaciones['und'], $uid);
       $requirements['time']         = get_time_requirements($node->field_requisitos_tiempo['und']);
       $requirements['training']     = get_training_requirements($node->field_req_formacion_desempeno['und']);
+      $requirements['accumulated']     = get_accumulated_requirements($node, $uid);
     }
     else {
       switch ($type) {
@@ -42,6 +43,9 @@ function get_requirements($scale, $route, $uid, $type = '') {
           break;
         case 'training':
         $requirements = get_training_requirements($node->field_req_formacion_desempeno['und']);
+          break;
+        case 'accumulated':
+          $requirements = get_accumulated_requirements($node, $uid);
           break;
       }
     }
@@ -313,6 +317,63 @@ function get_training_requirements($items) {
     $cont++;
   }
   return $requirements;
+}
+
+function get_accumulated_requirements($node , $uid) {
+
+  $requirements = array();
+  $user = user_load($uid);
+
+  $cont = 0;
+  // Puntaje del requerimiento
+  $puntaje_acumulado = isset($node->field_puntaje_acumulado['und'])? $node->field_puntaje_acumulado['und'][0]['value'] : 0;
+  $puntaje_br = isset($node->field_puntaje_br['und'])? $node->field_puntaje_br['und'][0]['value'] : 0;
+  $puntaje_gen = isset($node->field_acumulado_general['und'])? $node->field_acumulado_general['und'][0]['value'] : 0;
+
+  // Puntaje de usuario
+  $user_punt_acum = isset($user->field_puntaje_acumulado['und'])? $user->field_puntaje_acumulado['und'][0]['value'] : 0;
+  $user_punt_br = isset($user->field_puntaje_br['und'])? $user->field_puntaje_br['und'][0]['value'] : 0;
+  $user_punt_gen = isset($user->field_acumulado_general['und'])? $user->field_acumulado_general['und'][0]['value'] : 0;
+
+
+  //Calificación
+  $cal_punt_acum = evalu_acumulate($puntaje_acumulado, $user_punt_acum) ? 'CUMPLE' : 'NO CUMPLE';
+  $cal_punt_br = evalu_acumulate($puntaje_br, $user_punt_br) ? 'CUMPLE' : 'NO CUMPLE';
+  $cal_punt_gen = evalu_acumulate($puntaje_gen, $user_punt_gen) ? 'CUMPLE' : 'NO CUMPLE';
+
+  //Aprobacion
+  $aprob_punt_acum = evalu_acumulate($puntaje_acumulado, $user_punt_acum);
+  $aprob_punt_br = evalu_acumulate($puntaje_br, $user_punt_br);
+  $aprob_punt_gen = evalu_acumulate($puntaje_gen, $user_punt_gen);
+
+  $requirements['academico']['name'] = 'Acumulado Academico';
+  $requirements['academico']['val_requisito'] = $puntaje_acumulado;
+  $requirements['academico']['val_user'] = $user_punt_acum;
+  $requirements['academico']['calificacion'] = $cal_punt_acum;
+  $requirements['academico']['aprobado'] = $aprob_punt_acum;
+
+  $requirements['br']['name'] = 'Acumulado BR';
+  $requirements['br']['val_requisito'] = $puntaje_br;
+  $requirements['br']['val_user'] = $user_punt_br;
+  $requirements['br']['calificacion'] = $cal_punt_br;
+  $requirements['br']['aprobado'] = $aprob_punt_br;
+
+  $requirements['gnral']['name'] = 'Acumulado General';
+  $requirements['gnral']['val_requisito'] = $puntaje_gen;
+  $requirements['gnral']['val_user'] = $user_punt_gen;
+  $requirements['gnral']['calificacion'] = $cal_punt_gen;
+  $requirements['gnral']['aprobado'] = $aprob_punt_gen;
+
+  return $requirements;
+}
+
+function evalu_acumulate($val_requ, $val_user){
+  $response = FALSE;
+
+  if($val_user >= $val_requ){
+    $response = TRUE;
+  }
+  return $response;
 }
 
 function get_name_acumulado($name_machine){
@@ -719,8 +780,7 @@ function calculate_profile_data($uid, $date_update){
   // por esta razon esta comentariada esta linea
   //calculate_score_training($user);
 
-  // Calcular puntaje BR
-  
+
   // Fecha penultimo puntaje
   $last_date = $user->field_date_last_score['und'][0]['value'];
   // pasar esta fecha a la anterior
