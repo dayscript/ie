@@ -698,7 +698,7 @@ function hs_taxonomy_hierarchical_select_children($parent, $params) {
         foreach($terms as $key => $term){
           if(in_array( $term->tid, $params['tids_hidden'] )){
             unset($terms[$key]);
-          }
+          } 
         }
       }
     }
