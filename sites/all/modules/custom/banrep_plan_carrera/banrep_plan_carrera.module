@@ -551,8 +551,9 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
     $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE];
     $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
     if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {/*Publicaciones sin Rol*/
-      $e = taxonomy_term_load($nodePub->field_concept_type[LANGUAGE_NONE][0]['tid']);
-      foreach($e->field_puntajes['und'] as $field_puntaje) {
+      $concept = node_load($nodePub->field_concept[LANGUAGE_NONE][0]['target_id']);
+      $end_concept = taxonomy_term_load(end($concept->field_concept_category[LANGUAGE_NONE])['tid']);
+      foreach($end_concept->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
         if (isset($userPub->field_ruta['und'][0]['target_id']) && isset($field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) && $userPub->field_ruta['und'][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) {
