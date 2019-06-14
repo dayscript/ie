@@ -17,7 +17,7 @@ function banrep_training_form_user_training_entityform_edit_form_alter(&$form, &
   
   drupal_add_js(array('banrep_training' => $visible_conditions), 'setting');
 }
-
+ 
 
 function banrep_training_field_widget_form_alter(&$element, &$form_state, $context){
   
