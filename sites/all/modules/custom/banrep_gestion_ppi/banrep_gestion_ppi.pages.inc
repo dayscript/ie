@@ -285,7 +285,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
       $calificacion = 'No cumple';
       $checked = '';
-      if ($puntaje_type_concept >= $condition['value']) {
+      if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
         $checked    = "checked";
         $calificacion = 'Cumple';
       }
