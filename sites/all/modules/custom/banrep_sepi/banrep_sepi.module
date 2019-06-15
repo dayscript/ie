@@ -137,9 +137,6 @@
         unset($node_wrapper->field_co_authors);
         $node_wrapper->field_other_co_authors = null;
         
-    
-        
-        
         $node_wrapper->save();
         
         array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
