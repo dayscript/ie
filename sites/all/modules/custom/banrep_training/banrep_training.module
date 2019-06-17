@@ -43,9 +43,7 @@ function banrep_training_field_widget_form_alter(&$element, &$form_state, $conte
       // validation for entity node type requirements
       if(isset($context['form']['#entity']->type) && $context['form']['#entity']->type == 'requirements'){
         $element['#config']['params']['field_show_default'] = 1;
-      }
-
-      
+      }      
 
  
       // validation for field_collection_item
@@ -59,7 +57,7 @@ function banrep_training_field_widget_form_alter(&$element, &$form_state, $conte
 
         $requiremets_nids = banrep_training_get_user_requiremets($user_scale,$user_route);
         $requiremets = [];
-        $requiremets_to_hide = [15343,15344,15345,15339,15340,20711,15341,15342];
+        $requiremets_to_hide = [15343,15344,15345,15339,15340,20711,15341,15342,15334,15346];
         foreach ($requiremets_nids as $key => $requiremet) {
           $requiremets_field_collection = node_load($requiremet->nid)->field_req_formacion_desempeno['und'];
           foreach ($requiremets_field_collection as $key => $collection) {
