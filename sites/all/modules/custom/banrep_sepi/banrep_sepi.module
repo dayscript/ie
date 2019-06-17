@@ -79,7 +79,7 @@
         $node_wrapper->field_mag_name   = (!empty($publication['contents']->revista) ? $publication['contents']->editorial:null );
         $node_wrapper->field_pub_serie  = (!empty($publication['contents']->serie) ? $publication['contents']->editorial:null );
         $node_wrapper->field_editorial  = (!empty($publication['contents']->editorial) ? $publication['contents']->editorial:null );
-        $node_wrapper->field_isbn       = (!empty($publication['contents']->field_isbn) ? $publication['contents']->field_isbn:null );
+        $node_wrapper->field_isbn       = (!empty($publication['contents']->isbn) ? $publication['contents']->isbn:null );
 
         if( !empty($publication['contents']->fecha_aceptacion) ){
             $node_wrapper->field_act_date_start   =  strtotime($publication['contents']->fecha_aceptacion);
