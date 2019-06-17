@@ -389,7 +389,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $info_user = FALSE;
         $strFiles = "";
         $keyc = 0;
-        if (count($files) > 0 ) {
+        if (count($files[$group[0]]) > 0 ) {
           $info_user = TRUE;
         }
 
