@@ -389,13 +389,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $info_user = FALSE;
         $strFiles = "";
         $keyc = 0;
-        if (count($files) > 0 ) {
+        if (count($files[$group[0]]) > 0 ) {
           $info_user = TRUE;
-          $strFiles = "<br/><ul>";
-          foreach($files as $arfile) {
-            $strFiles .= "<li><a href='".$arfile['url']."' target='_blank'>".$arfile['name']."</a></li>";
-          }
-          $strFiles .= "</ul>";
         }
 
         $calificacion = 'No cumple';
@@ -416,15 +411,34 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           }
         }
 
+        $info_user_count = !empty($files[$group[0]]) ? count($files[$group[0]]) : '';
+
         $html .= '<tr>';
-          $html .= '<td>'. $group['operator'] .'</td>';
-          $html .= '<td>'. $name . $strFiles.'</td>';
-          $html .= '<td>'.$info_user.'</td>';
-          $html .= '<td>'.count($group[0]).'</td>';
-          $html .= '<td>'. $calificacion .'</td>';
-          $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
-          $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
+        $html .= '<td>'. $group['operator'] .'</td>';
+        $html .= '<td id="'.$group[0].'">'. $name .'</td>';
+        $html .= '<td>'.$info_user.'</td>';
+        $html .= '<td>'.$info_user_count.'</td>';
+        $html .= '<td>'. $calificacion .'</td>';
+        $html .= '<td><input type="checkbox" name="rq_formacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
+        $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
         $html .= '</tr>';
+
+        if (count($files[$group[0]]) > 0) {
+          $strFiles = '<table class="table-list-pub"><tr><th></th><th>Título</th><th>Año</th></tr><tbody>';
+          foreach ($files[$group[0]] as $key => $item) {
+            $title_fd = !empty($item['title']) ? $item['title'] : $item['description'];
+            $strFiles .= '<tr><td></td><td>'. $title_fd .'</td><td>'. $item['year'].'</td></tr>';
+          }
+          $strFiles .= '</tbody></table>';
+
+          $html .= '
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de requisitos</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$strFiles.'</div>
+            </td>
+          </tr>';
+        }
       }
       $html .= '</tbody>';
 

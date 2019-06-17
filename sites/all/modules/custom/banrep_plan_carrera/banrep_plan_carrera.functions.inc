@@ -711,7 +711,7 @@ function _get_links_nodes($tid){
  */
 function _get_training_by_tid($uid,$tid) {
   $files = array();
-  if (is_numeric($tid) && $tid > 0) {
+  /*if (is_numeric($tid) && $tid > 0) {
     $query = db_select('node', 'n');
     $query->addField('n', 'nid', 'nid');
     $query->addField('f', 'field_re_attach_doc_fid', 'fid');
@@ -728,8 +728,39 @@ function _get_training_by_tid($uid,$tid) {
         $files[] = array('url' => $url, 'name' => $file->origname);
       }
     }
-  }
+  }*/
 
+
+  //$uid=934;
+  //$tid=20711;
+
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'entityform')
+  ->entityCondition('bundle', 'user_training')
+  ->propertyCondition('uid', $uid);
+  $result = $query->execute();
+  //dpm($result);
+
+  $nids = array_keys($result['entityform']);
+
+  $entityforms = entity_load('entityform',$nids);
+  foreach($entityforms as $key => $entityform){
+  $item_collection = entity_load('field_collection_item', array($entityform->field_studies_carried_out['und'][0]['value']));
+    if( $item_collection[key($item_collection)]->field_aprobado['und'][0]['value']  == 1) {
+      $result2[] = $item_collection;
+      $tax_term = entity_load('field_collection_item', array($item_collection[key($item_collection)]->field_req_formacion_desempeno['und'][0]['value']));
+      $tax_term_key = $tax_term[key($tax_term)]->field_formacion_y_desarrollo['und'][0]['tid'];
+      $files[$tax_term_key][] = array(
+        'title' => $item_collection[key($item_collection)]->field_titulo['und'][0]['value'],
+        'description' => $item_collection[key($item_collection)]->field_descripcion['und'][0]['value'],
+        'university' => $item_collection[key($item_collection)]->field_university['und'][0]['value'],
+        'year' => $item_collection[key($item_collection)]->field_year['und'][0]['value'],
+        'file_uri' => $item_collection[key($item_collection)]->field_support_file['und'][0]['uri'],
+        'file_name' => $item_collection[key($item_collection)]->field_support_file['und'][0]['filename'],
+      );
+    }
+  }
   return $files;
 
 }
