@@ -411,11 +411,11 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           }
         }
 
-        $info_user_count = !empty($files) ? count($files) : '';
+        $info_user_count = !empty($files[$group[0]]) ? count($files[$group[0]]) : '';
 
         $html .= '<tr>';
         $html .= '<td>'. $group['operator'] .'</td>';
-        $html .= '<td>'. $name .'</td>';
+        $html .= '<td id="'.$group[0].'">'. $name .'</td>';
         $html .= '<td>'.$info_user.'</td>';
         $html .= '<td>'.$info_user_count.'</td>';
         $html .= '<td>'. $calificacion .'</td>';
@@ -423,9 +423,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $html .= '<td> <textarea rows="3" cols="20" name="rq_formacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . '</td>';
         $html .= '</tr>';
 
-        if (count($files) > 0) {
+        if (count($files[$group[0]]) > 0) {
           $strFiles = '<table class="table-list-pub"><tr><th></th><th>Título</th><th>Año</th></tr><tbody>';
-          foreach ($files as $key => $item) {
+          foreach ($files[$group[0]] as $key => $item) {
             $title_fd = !empty($item['title']) ? $item['title'] : $item['description'];
             $strFiles .= '<tr><td></td><td>'. $title_fd .'</td><td>'. $item['year'].'</td></tr>';
           }

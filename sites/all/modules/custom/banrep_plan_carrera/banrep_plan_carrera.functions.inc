@@ -749,7 +749,9 @@ function _get_training_by_tid($uid,$tid) {
   $item_collection = entity_load('field_collection_item', array($entityform->field_studies_carried_out['und'][0]['value']));
     if( $item_collection[key($item_collection)]->field_aprobado['und'][0]['value']  == 1) {
       $result2[] = $item_collection;
-      $files[] = array(
+      $tax_term = entity_load('field_collection_item', array($item_collection[key($item_collection)]->field_req_formacion_desempeno['und'][0]['value']));
+      $tax_term_key = $tax_term[key($tax_term)]->field_formacion_y_desarrollo['und'][0]['tid'];
+      $files[$tax_term_key][] = array(
         'title' => $item_collection[key($item_collection)]->field_titulo['und'][0]['value'],
         'description' => $item_collection[key($item_collection)]->field_descripcion['und'][0]['value'],
         'university' => $item_collection[key($item_collection)]->field_university['und'][0]['value'],
