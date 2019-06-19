@@ -40,6 +40,25 @@
      */
     function _create_node_publication($publication){
         
+        switch ($publication->$publication['contents']->tipopub) {
+            case 'actividad':
+                _create_activity($publication);    
+                break;
+
+            case 'trabajo_en_curso':
+                break;
+
+            default:
+                _create_publication($publication);
+                break;
+        }
+    
+        return $publication;
+
+    }
+
+
+    function _create_publication($publication){
         $result = null;
         $nid = 0;
         
@@ -148,10 +167,11 @@
         if(is_array($publication['contents']->coautores) ){
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
-    
-        return $publication;
 
+        return $publication;
     }
+
+
 
     /**
      * function to create authors in publication
