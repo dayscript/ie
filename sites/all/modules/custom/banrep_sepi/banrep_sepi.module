@@ -334,10 +334,12 @@
             ->entityCondition('bundle', 'autores_externos')
             ->fieldCondition('field_sepi', 'value', $id_sepi, '=');
             $result = $query->execute();
-            return key($result['taxonomy_term']);
-        }else{
-            return null;
+            if($result['taxonomy_term']){
+                return key($result['taxonomy_term']);
+            }
         }
+            return null;
+        
     }
 
     /**
@@ -390,7 +392,7 @@
     function _get_points_for_role_and_route($uid, $tid){
         $term = taxonomy_term_load($tid);
         $user = user_load($uid);
-        if(isset($term->field_puntajes)){
+        if(isset($term->field_puntajes[LANGUAGE_NONE])){
             $collections = $term->field_puntajes[LANGUAGE_NONE];
             foreach($collections as $index => $item_collection){
                 $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
