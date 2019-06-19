@@ -80,7 +80,7 @@ function banrep_plan_carrera_node_presave($node) {
     case 'pub_user':
       $estado = (isset($node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']) ) ?
                 $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']:null;
-                
+
       $estado_ant = $node->original->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
       
       $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
@@ -423,9 +423,11 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
 {
   //Consultando la ruta del usuario.
   $comparacion = FALSE;
-  $ruta_usuario = $usuario_publicacion->field_ruta[LANGUAGE_NONE][0]['target_id'];
+  $ruta_usuario = ( isset($usuario_publicacion->field_ruta[LANGUAGE_NONE][0]['target_id']) ) ?
+                    $usuario_publicacion->field_ruta[LANGUAGE_NONE][0]['target_id']:null;
   //Sacando información de la publicación (Tipo de publicación)
-  $escalafon_id= $usuario_publicacion->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+  $escalafon_id = ( isset($usuario_publicacion->field_usr_escalafon[LANGUAGE_NONE][0]['tid']) ) ? 
+                    $usuario_publicacion->field_usr_escalafon[LANGUAGE_NONE][0]['tid']:null;
   // obteniendo nodo requisitos para determinar si se acumula el puntaje de la publicación        
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
