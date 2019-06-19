@@ -713,7 +713,7 @@ function _generate_response_sepi($pub_user){
     $tags = implode(',',$tid_name);
   }
 
-  if(isset($publication->field_co_authors[LANGUAGE_NONE]) && is_array($publication->field_co_authors[LANGUAGE_NONE] ) )
+  if(isset($publication->field_co_authors[LANGUAGE_NONE]) && is_array($publication->field_co_authors[LANGUAGE_NONE] ) ){
     foreach($publication->field_co_authors[LANGUAGE_NONE] as $key => $author){
         $tax = entity_load('field_collection_item', [$author['value']]);
         $author_tax = taxonomy_term_load($tax[key($tax)]->field_co_autor[LANGUAGE_NONE][0]['tid']);
