@@ -78,7 +78,9 @@ function banrep_plan_carrera_node_presave($node) {
   global $user;
   switch($node->type){
     case 'pub_user':
-      $estado = $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado = (isset($node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']) ) ?
+                $node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']:null;
+                
       $estado_ant = $node->original->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'];
       
       $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
