@@ -40,7 +40,7 @@
      */
     function _create_node_publication($publication){
         
-        switch ($publication->$publication['contents']->tipopub) {
+        switch ($publication['contents']->tipopub) {
             case 'actividad':
                 _create_activity($publication);    
                 break;
