@@ -390,14 +390,15 @@
     function _get_points_for_role_and_route($uid, $tid){
         $term = taxonomy_term_load($tid);
         $user = user_load($uid);
-        $collections = $term->field_puntajes[LANGUAGE_NONE];
-        foreach($collections as $index => $item_collection){
-            $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
-            if( $collection->field_ruta['und'][0]['target_id'] == $user->field_ruta['und'][0]['target_id'] ){
-                return $collection->field_puntaje['und'][0]['value'];
+        if(isset($term->field_puntajes)){
+            $collections = $term->field_puntajes[LANGUAGE_NONE];
+            foreach($collections as $index => $item_collection){
+                $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
+                if( $collection->field_ruta['und'][0]['target_id'] == $user->field_ruta['und'][0]['target_id'] ){
+                    return $collection->field_puntaje['und'][0]['value'];
+                }
             }
         }
-
         return 0;
 
     }
