@@ -396,7 +396,9 @@
             $collections = $term->field_puntajes[LANGUAGE_NONE];
             foreach($collections as $index => $item_collection){
                 $collection = entity_load('field_collection_item', array($item_collection['value']))[$item_collection['value']];
-                if( isset($collection->field_ruta[LANGUAGE_NONE] ) && $collection->field_ruta[LANGUAGE_NONE][0]['target_id'] == $user->field_ruta['und'][0]['target_id'] ){
+                if( isset($collection->field_ruta[LANGUAGE_NONE] ) && isset($user->field_ruta[LANGUAGE_NONE] ) &&
+                    $collection->field_ruta[LANGUAGE_NONE][0]['target_id'] == $user->field_ruta[LANGUAGE_NONE][0]['target_id'] 
+                    ){
                     return $collection->field_puntaje['und'][0]['value'];
                 }
             }
