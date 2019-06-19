@@ -161,10 +161,12 @@
         
         $node_wrapper->save();
         
-        array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
+        if( isset($publication['contents']->coautores) && isset($publication['contents']->autor_principal) ) {
+            array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
+        }
         
         
-        if(is_array($publication['contents']->coautores) ){
+        if(isset($publication['contents']->coautores) && is_array($publication['contents']->coautores) ){
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
