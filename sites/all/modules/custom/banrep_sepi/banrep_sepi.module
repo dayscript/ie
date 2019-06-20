@@ -82,15 +82,6 @@
 
         $node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
-        // $node_wrapper->field_jel = [];
-        // if( !empty($publication['contents']->cod_jel) ){
-        //     $codes = [];
-        //     $terms = explode(',', $publication['contents']->cod_jel);
-        //     foreach ($terms as $key => $term) {
-        //         $codes[] =  _get_taxonomy_by_name($term, $vocabulary = 'jel');
-        //     }
-        //     $node_wrapper->field_jel->set($codes);
-        // }
 
         $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
         
@@ -98,14 +89,52 @@
             $node_wrapper->field_usuario = $author_tid;
         }   
           
-        $node_wrapper->body->set(['value' =>$publication['contents']->objetivo ]);
-        
+        $node_wrapper->body->set(['value' => $publication['contents']->descripcion ]);
 
-     
+        if( !empty($publication['contents']->fecha_inicio) ){
+            $node_wrapper->field_act_date_start   =  strtotime($publication['contents']->fecha_inicio);
+        }
+
+        if( !empty($publication['contents']->fecha_cierre) ){
+            $node_wrapper->field_act_date_end   =  strtotime($publication['contents']->fecha_cierre);
+        }
+
+        $node_wrapper->field_year = (!empty($publication['contents']->annio) ? $publication['contents']->annio:null);
+
+             
         
+        if( !empty( $publication['contents']->clasificacion ) ){
+            $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->clasificacion, 'categorias_de_conceptos')); 
+        }
+        if( !empty( $publication['contents']->concepto ) ){
+            $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->concepto, 'categorias_de_conceptos')); 
+        }
+
+    
+        if( isset($category_concept) ) {
+           $node_wrapper->field_concept_category =  $category_concept;
+        }
+
+        if( $publication['contents']->Aprobadopor ){
+            $aproved_tid =taxonomy_term_load(_get_autor_for_mail( $publication['contents']->Aprobadopor ));
+            if( isset($aproved_tid->field_user_reference['und'][0]['target_id']) ){
+                $node_wrapper->field_usuario = $aproved_tid->field_user_reference['und'][0]['target_id'];
+            }
+         }
+
+         if( !empty($publication['contents']->autor_principal) ){
+            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo ));
+            if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
+                dpm($author_tid);
+                $node_wrapper->author = $author_tid->field_user_reference['und'][0]['target_id'];
+                $node_wrapper->field_puntaje = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null ;
+
+            }
+         }
+
         $node_wrapper->save();
         
-                
+    
         
         //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
 
