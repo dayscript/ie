@@ -95,7 +95,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 function banrep_gestion_ppi_user_presave(&$edit, $account, $category)
 {
   $uid = $account->uid;
-  $escalafon_actual = $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+  $escalafon_actual = (isset($account->field_usr_escalafon[LANGUAGE_NONE][0]['tid']) ) ? $account->field_usr_escalafon[LANGUAGE_NONE][0]['tid']:null;
   $escalafon_nuevo = $edit['field_usr_escalafon'][LANGUAGE_NONE][0]['tid'];
 
   if($escalafon_nuevo !== $escalafon_actual){
