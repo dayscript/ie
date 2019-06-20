@@ -105,7 +105,7 @@ function banrep_plan_carrera_node_presave($node) {
       break;
 
     case 'activity':
-      $estado = $node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'];
+      $estado = (isset($node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid'])) ? $node->field_act_wf_status[LANGUAGE_NONE][0]['workflow']['workflow_sid']:null;
       $estado_ant = $node->original->field_act_wf_status[LANGUAGE_NONE][0]['value'];
       if ($estado == 20 && $estado_ant != 20 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         banrep_plan_carrera_add_subtract_points($node->uid, $node, null, $user, $estado);
