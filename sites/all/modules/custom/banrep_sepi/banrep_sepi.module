@@ -46,6 +46,7 @@
                 break;
 
             case 'Trabajos en Curso':
+                _create_trabajo_en_curso($publication);
                 break;
 
             default:
@@ -56,6 +57,46 @@
         return $publication;
 
     }
+
+    function _create_trabajo_en_curso($publication){
+        if( !empty($publication['contents']->autor_principal) ){
+            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo ));
+            if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
+                
+                $user = user_load($author_tid->field_user_reference['und'][0]['target_id']);
+                //Delete field collection existents
+                $collections = field_get_items('user', $user, 'field_trabajos_en_curso');
+                if(!is_null($collections)){
+                    foreach($collections as $key => $collection){
+                        $item = field_collection_field_get_entity($collection);
+                        $item->delete();
+                    }
+                }
+
+                // create new fiel collections items
+                $collection = entity_create('field_collection_item', array('field_name' => 'field_trabajos_en_curso'));
+                $collection->setHostEntity('user', $user);
+                $collection->save(true);
+                $collection_wrapper = entity_metadata_wrapper('field_collection_item', $collection);
+                $collection_wrapper->field_titulo_trabajo     = $publication['contents']->titulo;
+                $collection_wrapper->field_objetivo_trabajo   = $publication['contents']->objetivo;
+                $collection_wrapper->field_identificador_sepi = $publication['contents']->identificador_sepi;
+                $collection_wrapper->field_estado_trabajo     = $publication['contents']->estado;
+                if( !empty($publication['contents']->cod_jel) ){
+                    $codes = [];
+                    $terms = explode(',', $publication['contents']->cod_jel);
+                    foreach ($terms as $key => $term) {
+                        $codes[] =  _get_taxonomy_by_name(trim($term), $vocabulary = 'areas_tematicas');
+                    }
+                   $collection_wrapper->field_areas_tematicas->set($codes);
+                }
+                $collection_wrapper->save();
+            }
+        }
+    }
+
+
+
 
     function _create_activity($publication){
         $query = new EntityFieldQuery();
@@ -122,15 +163,14 @@
             }
          }
 
-         if( !empty($publication['contents']->autor_principal) ){
+        if( !empty($publication['contents']->autor_principal) ){
             $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo ));
             if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
-                dpm($author_tid);
                 $node_wrapper->author = $author_tid->field_user_reference['und'][0]['target_id'];
                 $node_wrapper->field_puntaje = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null ;
 
             }
-         }
+        }
 
         $node_wrapper->save();
         
