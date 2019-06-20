@@ -75,7 +75,7 @@
   
         }else{ // create entity
             
-            $entity = entity_create($entity_type, array('type' => 'publication'));
+            $entity = entity_create($entity_type, array('type' => 'activity'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
         
         }
