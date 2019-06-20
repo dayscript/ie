@@ -82,15 +82,15 @@
 
         $node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
-        $node_wrapper->field_jel = [];
-        if( !empty($publication['contents']->cod_jel) ){
-            $codes = [];
-            $terms = explode(',', $publication['contents']->cod_jel);
-            foreach ($terms as $key => $term) {
-                $codes[] =  _get_taxonomy_by_name($term, $vocabulary = 'jel');
-            }
-            $node_wrapper->field_jel->set($codes);
-        }
+        // $node_wrapper->field_jel = [];
+        // if( !empty($publication['contents']->cod_jel) ){
+        //     $codes = [];
+        //     $terms = explode(',', $publication['contents']->cod_jel);
+        //     foreach ($terms as $key => $term) {
+        //         $codes[] =  _get_taxonomy_by_name($term, $vocabulary = 'jel');
+        //     }
+        //     $node_wrapper->field_jel->set($codes);
+        // }
 
         $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
         
