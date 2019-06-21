@@ -767,34 +767,43 @@ function _generate_response_sepi($pub_user){
 }
 
 function _generate_response_sepi_activity($pub_user){
-  $user_document = $user->field_document_number[LANGUAGE_NONE][0]['value'];
+  
+  $pub_user = entity_metadata_wrapper('node', $pub_user->nid);
+  $user     = entity_metadata_wrapper('user', $pub_user->author->value()->uid);
+
+
+  $user_document = $user->field_document_number->value();
   $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
   $enviroment = 'dev';
   $path_out = 'private://'.'sepi-out-'.$enviroment;
 
-  $user = user_load($pub_user->uid);
-
-  foreach($pub_user->field_concept_category['und'] as $key => $term){
+  foreach($pub_user->field_concept_category->value() as $key => $term){
     $tax[]= taxonomy_term_load($term['tid'])->name;
   }
 
-
-
   $save_data = [
-    "titulo" => $pub_user->title,
+    "titulo" => $pub_user->title->value(),
     "tipopub" => 'Actividad',
     "clasificacion" => $tax[0],
     "concepto" => $tax[1],
-    "autor_principal" => [ "nombre" => $user->field_names['und'][0]['value'].' '.$user->field_surnames['und'][0]['value'] ,"correo" => $user->name, "id" => "", "rol" => "", "puntaje" => $pub_user->field_puntaje['und'][0]['value'] ],
-    "descripcion" => $pub_user->body['und'][0]['value'],
-    "annio" => $pub_user->field_year['und'][0]['value'],
-    "fecha_inicio" => $pub_user->field_act_date_start['und'][0]['value'],
-    "fecha_cierre" => $pub_user->field_act_date_end['und'][0]['value'],
-    "identificador_sepi" => $pub_user->field_identificador_sepi['und'][0]['value'],
-    "Aprobadopor" => user_load($pub_user->field_usuario['und'][0]['target_id'])->name,
-    "archivo_aprobacion" => $pub_user->field_archivo_de_aprobacion['und'][0]['value']
+    "autor_principal" => 
+      [ 
+        "nombre" => $user->field_names->value().' '.$user->field_surnames->value() ,
+        "correo" => $user->name->value(), 
+        "id" => "", 
+        "rol" => "", 
+        "puntaje" => $pub_user->field_puntaje->value(), 
+      ],
+    "descripcion" => $pub_user->body->value(),
+    "annio" => $pub_user->field_year->value(),
+    "fecha_inicio" => $pub_user->field_act_date_start->value(),
+    "fecha_cierre" => $pub_user->field_act_date_end->value(),
+    "identificador_sepi" => $pub_user->field_identificador_sepi->value(),
+    "Aprobadopor" => user_load( $pub_user->field_usuario->value() )->name,
+    "archivo_aprobacion" => $pub_user->field_archivo_de_aprobacion->value()
   ];
 
   file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
 
 }
+
