@@ -767,7 +767,11 @@ function _generate_response_sepi($pub_user){
 }
 
 function _generate_response_sepi_activity($pub_user){
-
+  $user_document = $user->field_document_number[LANGUAGE_NONE][0]['value'];
+  $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
+  $enviroment = 'dev';
+  $path_out = 'private://'.'sepi-out-'.$enviroment;
+  
   $user = user_load($pub_user->uid);
 
   $save_data = [
