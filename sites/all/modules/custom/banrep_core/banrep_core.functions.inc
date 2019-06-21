@@ -765,3 +765,27 @@ function _generate_response_sepi($pub_user){
   ];
   file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
 }
+
+function _generate_response_sepi_activity($pub_user){
+
+  
+  $save_data = [
+    
+    "titulo" => $pub_user->title,
+    "tipopub" => 'Actividad',
+    "clasificacion" => '',
+    "concepto" => '',
+    "autor_principal" => [ "nombre" => "Luz Adriana Flórez","correo" => "lflorefl@banrep.gov.co", "id" => "", "rol" => "", "puntaje" => $pub_user->field_puntaje['und'][0]['value'] ],
+    "descripcion" => $pub_user->body['und'][0]['value'],
+    "annio" => $pub_user->field_year['und'][0]['value'],
+    "fecha_inicio" => $pub_user->field_act_date_start['und'][0]['value'],
+    "fecha_cierre" => $pub_user->field_act_date_end['und'][0]['value'],
+    "identificador_sepi" => $pub_user->field_identificador_sepi['und'][0]['value'],
+    "Aprobadopor" => user_load($pub_user->field_usuario['und'][0]['target_id'])->mail,
+    "archivo_aprobacion" => $pub_user->field_archivo_de_aprobacion['und'][0]['value']
+    
+  ];
+
+  file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
+
+}
