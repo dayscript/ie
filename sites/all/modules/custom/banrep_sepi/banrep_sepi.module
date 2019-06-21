@@ -172,7 +172,7 @@
             }
         }
 
-        if($publication['contents']->archivo_aprobacion){
+        if(!empty(publication['contents']->archivo_aprobacion)){
             $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
          }
 
