@@ -117,7 +117,7 @@ function banrep_plan_carrera_node_presave($node) {
       if ($estado == 3 && $estado_ant != 3 && (in_array('Admin GT', $user->roles) || in_array('caie', $user->roles))) {
         _generate_response_sepi($node);    
       }
-      
+      _generate_response_sepi($node);    
       break;
 
     case 'redemption':

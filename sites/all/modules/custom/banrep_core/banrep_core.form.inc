@@ -1485,27 +1485,39 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
           
           foreach($co_authors as $key => $item){  
             if( is_numeric($key) ){
+              
+              $collections = field_get_items('node', $node, 'field_co_authors');
+              if(!is_null($collections)){
+                  foreach($collections as $key => $collection){ 
+                      $item_collection = field_collection_field_get_entity($collection);
+                      if($item_collection){
+                        $item_collection->delete();
+                      }
+                      
+                  }
+              }
+
               $values = array();
               $values['field_name'] = 'field_co_authors';
               
               $entity = entity_create('field_collection_item', $values);
               $entity->setHostEntity('node', $node);
+              $collection_wrapper = entity_metadata_wrapper('field_collection_item', $entity);
 
-
-              $entity->field_co_autor[LANGUAGE_NONE][0]['tid'] = (int) filter_var(str_replace('-','',$item['name']['co_authors_author']),FILTER_SANITIZE_NUMBER_INT);
+              $collection_wrapper->field_co_autor = (int) filter_var(str_replace('-','', $item['name']['co_authors_author']), FILTER_SANITIZE_NUMBER_INT);
               if( $item['name']['rol_within_publication'] != '-1' && !empty($item['name']['rol_within_publication']) ){
-                $entity->field_role_within_publicat[LANGUAGE_NONE][0]['tid'] = $item['name']['rol_within_publication']; 
+                $collection_wrapper->field_role_within_publicat = $item['name']['rol_within_publication']; 
               }
               elseif( $item['name']['rol_within_publication'] == '-1' ){
                 
               }
               
-              $entity->save(true);
-              $collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
+              $collection_wrapper->save(true);
+              //$collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
             }
           }
           
-          $node->field_co_authors[LANGUAGE_NONE] = $collections;
+          //$node->field_co_authors[LANGUAGE_NONE] = $collections;
           
         }
         $co_authors = array_merge($main_author_ref, $co_authors);
