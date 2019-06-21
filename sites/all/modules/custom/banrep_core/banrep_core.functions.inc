@@ -771,14 +771,20 @@ function _generate_response_sepi_activity($pub_user){
   $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
   $enviroment = 'dev';
   $path_out = 'private://'.'sepi-out-'.$enviroment;
-  
+
   $user = user_load($pub_user->uid);
+
+  foreach($pub_user->field_concept_category['und'] as $key => $term){
+    $tax[]= taxonomy_term_load($term['tid'])->name;
+  }
+
+
 
   $save_data = [
     "titulo" => $pub_user->title,
     "tipopub" => 'Actividad',
-    "clasificacion" => '',
-    "concepto" => '',
+    "clasificacion" => $tax[0],
+    "concepto" => $tax[1],
     "autor_principal" => [ "nombre" => $user->field_names['und'][0]['value'].' '.$user->field_surnames['und'][0]['value'] ,"correo" => $user->name, "id" => "", "rol" => "", "puntaje" => $pub_user->field_puntaje['und'][0]['value'] ],
     "descripcion" => $pub_user->body['und'][0]['value'],
     "annio" => $pub_user->field_year['und'][0]['value'],
