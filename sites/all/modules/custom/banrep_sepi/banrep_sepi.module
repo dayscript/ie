@@ -303,6 +303,7 @@
         if(isset($publication['contents']->cp) && !empty($publication['contents']->cp)){
 
             foreach($publication['contents']->cp as $key => $chapter){
+                $chapter['contents']=$chapter;
                 _create_publication($chapter);
             }
 
