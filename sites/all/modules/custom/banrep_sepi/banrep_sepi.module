@@ -308,7 +308,7 @@
             }
 
         }
-        dpm($publication);
+        
         return $publication;
     }
 
@@ -337,45 +337,45 @@
 
                 foreach($co_authors as $index => $author){
 
-                    // $collection = entity_create('field_collection_item', array('field_name' => 'field_co_authors'));
+                    $collection = entity_create('field_collection_item', array('field_name' => 'field_co_authors'));
                     
-                    // $collection->setHostEntity('node', $node);
+                    $collection->setHostEntity('node', $node);
                     
-                    // $collection->save(true);
-                    // $collection_wrapper = entity_metadata_wrapper('field_collection_item', $collection);
+                    $collection->save(true);
+                    $collection_wrapper = entity_metadata_wrapper('field_collection_item', $collection);
 
-                    // if( !empty($author->correo) ){
-                    //     $tid = _get_autor_for_mail($author->correo);
-                    // }elseif (empty($author->correo) && !empty($author->id)) {
-                    //     $tid = _get_autor_for_id_sepi($author->id);
-                    // }else {
-                    //     $tid = _get_taxonomy_by_name( $author->nombre,'autores_externos' );
-                    // }
+                    if( !empty($author->correo) ){
+                        $tid = _get_autor_for_mail($author->correo);
+                    }elseif (empty($author->correo) && !empty($author->id)) {
+                        $tid = _get_autor_for_id_sepi($author->id);
+                    }else {
+                        $tid = _get_taxonomy_by_name( $author->nombre,'autores_externos' );
+                    }
                    
-                    // $collection_wrapper->field_co_autor = $tid;
+                    $collection_wrapper->field_co_autor = $tid;
 
-                    // if( !empty($author->rol) ){
-                    //     $role_in_pub = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );
-                    //     $collection_wrapper->field_role_within_publicat = $role_in_pub ;    
-                    // }                      
-                    // $collection_wrapper->save(TRUE);
+                    if( !empty($author->rol) ){
+                        $role_in_pub = _get_taxonomy_by_name( $author->rol,'categorias_de_conceptos' );
+                        $collection_wrapper->field_role_within_publicat = $role_in_pub ;    
+                    }                      
+                    $collection_wrapper->save(TRUE);
 
                     
-                    // if($index != 0 && !is_null($tid) ){
-                    //     $node->field_other_co_authors[LANGUAGE_NONE][]['tid'] = $tid; 
-                    //     node_save($node);
+                    if($index != 0 && !is_null($tid) ){
+                        $node->field_other_co_authors[LANGUAGE_NONE][]['tid'] = $tid; 
+                        node_save($node);
 
-                    // }
+                    }
 
-                    // if( !empty($author->correo) ){/*Autor Inerno*/
-                    //     if( $term_id = _get_autor_for_mail($author->correo) ){
-                    //         _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
-                    //     }
-                    // }elseif( !empty($author->id) ){/*Autor Externo*/
-                    //     if( $term_id = _get_autor_for_id_sepi($author->id) ){
-                    //         _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
-                    //     }
-                    // }
+                    if( !empty($author->correo) ){/*Autor Inerno*/
+                        if( $term_id = _get_autor_for_mail($author->correo) ){
+                            _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
+                        }
+                    }elseif( !empty($author->id) ){/*Autor Externo*/
+                        if( $term_id = _get_autor_for_id_sepi($author->id) ){
+                            _create_node_pub_user($node_wrapper,$term_id, ( isset($role_in_pub) ? $role_in_pub:null ));
+                        }
+                    }
                 }
                 break;
             
