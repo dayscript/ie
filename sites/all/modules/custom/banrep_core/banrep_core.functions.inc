@@ -777,15 +777,17 @@ function _generate_response_sepi_activity($pub_user){
   $enviroment = 'dev';
   $path_out = 'private://'.'sepi-out-'.$enviroment;
 
-  foreach($pub_user->field_concept_category->value() as $key => $term){
-    $tax[]= taxonomy_term_load($term['tid'])->name;
+  if(!empty($pub_user->field_concept_category->value())){
+    foreach($pub_user->field_concept_category->value() as $key => $term){
+      $tax[]= taxonomy_term_load($term['tid'])->name;
+    }
   }
 
   $save_data = [
     "titulo" => $pub_user->title->value(),
     "tipopub" => 'Actividad',
-    "clasificacion" => $tax[0],
-    "concepto" => $tax[1],
+    "clasificacion" => isset($tax[0]) ? $tax[0]:null,
+    "concepto" => isset($tax[1]) ? $tax[1]:null,
     "autor_principal" => 
       [ 
         "nombre" => $user->field_names->value().' '.$user->field_surnames->value() ,
