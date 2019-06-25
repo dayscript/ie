@@ -180,9 +180,7 @@
         
     
         
-        $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
-
-        dpm($publication);
+        //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
 
         return $publication;
 
@@ -310,7 +308,7 @@
             }
 
         }
-
+        dpm($publication);
         return $publication;
     }
 
