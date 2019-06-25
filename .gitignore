@@ -6,3 +6,9 @@ sites/all/themes/custom/banrep/node_modules
 # Ignore paths that contain user-generated content.
 sites/*/files
 sites/*/private
+
+# Ignore Drupal's file directory MAC OSX
+.DS_Store
+*/.DS_Store
+*/*/.DS_Store
+
