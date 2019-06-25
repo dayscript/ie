@@ -300,6 +300,14 @@
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
+        if(isset($publication['contents']->cp) && !empty($publication['contents']->cp)){
+
+            foreach($publication['contents']->cp as $key => $chapter){
+                _create_publication($chapter);
+            }
+
+        }
+
         return $publication;
     }
 
