@@ -779,8 +779,8 @@ function _generate_response_sepi_activity($pub_user){
 
   if(!empty($pub_user->field_concept_category->value())){
     foreach($pub_user->field_concept_category->value() as $key => $term){
-      if( $name = taxonomy_term_load($term['tid'])->name){
-        $tax[]= $name;
+      if(isset(taxonomy_term_load($term['tid'])->name)){
+        $tax[]= taxonomy_term_load($term['tid'])->name;  
       }
     }
   }
