@@ -109,6 +109,7 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
             $node_wrapper->field_concept_category = $category_concepts;
+            dpm('nid', $nid);
             $node_wrapper->field_book_related = $nid;
             foreach($category_concepts as $category){ 
                 $node_wrapper->field_concept_category[] = $category['tid'];
