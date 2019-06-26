@@ -49,7 +49,7 @@
                 _create_trabajo_en_curso($publication);
                 break;
 
-            case 'Capítulo de libro':
+            case 'Capítulo libro':
                 _create_capitulo_de_libro($publication);
                 break;
 
