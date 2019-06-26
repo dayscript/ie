@@ -1,3 +1,4 @@
+
 <?php
 
 function prof_lider_430($uid){
@@ -54,9 +55,11 @@ function invs_568($uid){
     // 3 años en el cargo de Investigador Júnior.
     // 215 -> Taxonomia -> Investigador Junior
     $time = calc_position_corp($entity_user, 215, 3);
+    
     //Acumular 40 puntos. Al menos 14 deben corresponder a puntos BR.
     $puntajeAcademico = user_points($entity_user->field_puntaje_acumulado, 26);
     $puntajeBR = user_points($entity_user->field_puntaje_br, 14);
+
     if($puntajeBR && $puntajeAcademico && $time ){
         $response = TRUE;
     }
@@ -157,7 +160,7 @@ function contar_nodes($uid, $num, $type, $filter) {
     return $response;
 }
 
-function user_points($num, $field) {
+function user_points($field, $num) {
     $response = FALSE;
 
     if(isset($field[LANGUAGE_NONE])){
@@ -205,9 +208,10 @@ function degrees($field, $title){
 }
 
 function calc_position_corp($user_entity, $idTaxPos, $num){
-
+    $response = FALSE;
     $isPosition = FALSE;
     // Calcula el cargo de la empresa
+  
     if(isset($user_entity->field_position['und'])){
         foreach ($user_entity->field_position['und'] as $key => $val) {
             if($val['tid'] == $idTaxPos){
@@ -243,13 +247,13 @@ function validate_change_state($uid){
         
         foreach ($serchTo[key($serchTo)] as $key => $value) {
             //Obtener el eslafon inicial de la busqueda realizada
-            
-            if($key == 'field_escalafon_actual' && isset($value->field_escalafon_actual['und'])){
-                $response = homologo_requirements($uid, $value->field_escalafon_actual['und'][0]['tid']);
-                break;
-            }elseif( $key == 'field_escalafon_actual' ){
-                $response = homologo_requirements($uid, $value['und'][0]['tid']);
-                break;
+            foreach ($value as $k => $val) {
+                if($k == 'field_escalafon_final'){
+                    if (isset($val['und'])) {
+                        $response = homologo_requirements($uid, $val['und'][0]['tid']);
+                        break;
+                    }
+                }
             }
 
         }
@@ -283,6 +287,7 @@ function getRequirements($idScal, $idPlan){
 
 function homologo_requirements($uid, $idScal){
     $response = FALSE;
+
     // Nombre PN 494 - 568 -> Actual = 20663 -> Final = 20664
     // Nombre PN 568 - 654-> Actual = 20664 -> Final = 20666
     // Nombre PN 430 - 494-> Actual = 20665 -> Final = 20663

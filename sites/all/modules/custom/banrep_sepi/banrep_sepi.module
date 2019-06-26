@@ -49,6 +49,10 @@
                 _create_trabajo_en_curso($publication);
                 break;
 
+            case 'Capítulo de libro':
+                _create_capitulo_de_libro($publication);
+                break;
+
             default:
                 _create_publication($publication);
                 break;
@@ -57,6 +61,69 @@
         return $publication;
 
     }
+
+    function _create_capitulo_de_libro($publication){
+
+        // $publication['contents']->concepto;
+        // $publication['contents']->clasificacion;
+        // $publication['contents']->tipopub;
+        
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'concept')
+        ->propertyCondition('title', $publication['contents']->concepto, '=');
+        $result = $query->execute();
+        $nid =  _get_nid($result);
+        $entity_type = 'node';
+
+        $category_concepts = [
+            [ 'tid' => 20724 ] ,
+            [ 'tid' => _get_taxonomy_by_name( $publication['contents']->clasificacion, $vocabulary = 'categorias_de_conceptos') ]
+        ];
+        
+        if( !is_null($nid) && is_numeric($nid) ){ // update entity
+            // return $publication;    
+            $node = node_load($nid);
+            $node_wrapper = entity_metadata_wrapper($entity_type, $node);
+            $query = new EntityFieldQuery();
+            // Verifica si el nodo tiene las caracteristicas de concepto
+            // si no, las asigna
+            $query->entityCondition('entity_type', 'node')
+                    ->entityCondition('bundle', 'concept')
+                    ->propertyCondition('nid', $node_wrapper->nid->value(), '=')
+                    ->fieldCondition('field_concept_category', 'tid', array($category_concepts[0]),'IN')
+                    ->fieldCondition('field_concept_category', 'tid', array($category_concepts[1]),'IN');
+            $result = $query->execute();
+            
+            if(empty($result)){
+                foreach($category_concepts as $category){
+                    $node_wrapper->field_concept_category[] = $category['tid'];
+                }
+                $node_wrapper->save();
+            }
+
+      
+        }else{ // create entity
+            
+            $entity = entity_create($entity_type, array('type' => 'concept'));
+            $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
+            $node_wrapper->title = $publication['contents']->concepto;
+            $node_wrapper->field_concept_category = $category_concepts;
+            foreach($category_concepts as $category){ 
+                $node_wrapper->field_concept_category[] = $category['tid'];
+                
+            }
+            $node_wrapper->save();
+            
+        
+        }
+
+        // dpm($node_wrapper->nid->value());
+        
+        _create_publication($publication);
+
+    }
+
 
     function _create_trabajo_en_curso($publication){
         if( !empty($publication['contents']->autor_principal) ){
@@ -271,6 +338,7 @@
         }
 
         if( !empty($publication['contents']->concepto) ){
+            dpm($publication['contents']->concepto);
             $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto);
         }
         
@@ -304,7 +372,7 @@
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                _create_publication($chapter);
+                _create_node_publication($chapter);
             }
 
         }
@@ -525,10 +593,12 @@
      * function to get tid by name in taxonomy
      */
     function _get_type_publication( $name, $vocabulary = 'categorias_de_conceptos' ){
+        
         $tid = key(taxonomy_get_term_by_name($name, $vocabulary) );
         if( $tid ){
             return $tid;
         }
+
         $types = array(
             'Artículo' => '201',
             'Revista Espe' =>'20662',
@@ -538,7 +608,10 @@
             'Capítulo libro' => '1',
             'Documento de trabajo'=> '2951',
             'Otros Documentos'=>'20708',
+            'Capitulos de libro' => '1',
+            'Capitulos de libros' => '1',
         );
+
         return ( isset($types[$name]) ) ? $types[$name]:null;
     }
 
