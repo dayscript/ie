@@ -339,7 +339,7 @@
 
         if( !empty($publication['contents']->concepto) ){
             dpm($publication['contents']->concepto);
-            $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto);
+            $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto,'type');
         }
         
         
@@ -580,12 +580,18 @@
         return null;
     }
 
-    function _get_node_concept($title){
-        if($nodes = node_load_multiple(NULL, array("title" => $title)) ){
-            return key($nodes);
-        }else{
-            return null;
+    function _get_node_concept($title, $type = null){
+        if( !is_null($type) ){
+            if($nodes = node_load_multiple(NULL, array("title" => $title,'type'=>$type)) ){
+                return key($nodes);
+            }
         }
+        elseif($nodes = node_load_multiple(NULL, array("title" => $title)) ){
+            return key($nodes);
+        }
+            
+        return null;
+        
         
     }
 
