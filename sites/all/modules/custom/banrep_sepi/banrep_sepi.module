@@ -339,7 +339,7 @@
 
         if( !empty($publication['contents']->concepto) ){
             dpm($publication['contents']->concepto);
-            $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto,'type');
+            $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto,'concept');
         }
         
         
