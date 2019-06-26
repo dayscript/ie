@@ -28,7 +28,7 @@ function prof_lider_430($uid){
     }
     return $response;
 }
-
+ 
 function invs_junior_494($uid){
     $response = FALSE;
     $entity_user = user_load($uid);
@@ -39,6 +39,9 @@ function invs_junior_494($uid){
     // El tiempo acumulado de experiencia desde su nombramiento como Profesional deber ser mínimo de 9 años sin contar con los años de estudio en el exterior. 
     // ID 212 => Taxonomia => Profesional
     $time = calc_position_corp($entity_user, 212, 9);
+    dpm($degrees,'a');
+    dpm($puntajeAcademico,'b');
+    dpm($time,'c');
     if($degrees && $puntajeAcademico && $time ){
         $response = TRUE;
     }
@@ -237,12 +240,18 @@ function validate_change_state($uid){
         $planUser = $entity_user->field_ruta['und'][0]['target_id'];
         //Buscar ese esfalafon en Requisitos
         $serchTo = getRequirements($escalafonUser, $planUser);
-        foreach ($serchTo as $key => $value) {
+        
+        foreach ($serchTo[key($serchTo)] as $key => $value) {
             //Obtener el eslafon inicial de la busqueda realizada
+            
             if($key == 'field_escalafon_actual' && isset($value->field_escalafon_actual['und'])){
                 $response = homologo_requirements($uid, $value->field_escalafon_actual['und'][0]['tid']);
                 break;
+            }elseif( $key == 'field_escalafon_actual' ){
+                $response = homologo_requirements($uid, $value['und'][0]['tid']);
+                break;
             }
+
         }
         // Evaluar respuesta positiva 
         if($response){
@@ -285,6 +294,7 @@ function homologo_requirements($uid, $idScal){
     // Nombre PPI - Investigador Ppal. = 20666 -> Final = 20666
 
     // Pasarlo por el escalafon correpondiente y vallidarlo
+    dpm( 'idScal',$idScal );
     switch ($idScal) {
         case 20664:
             $response = invs_568($uid);
