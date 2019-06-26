@@ -616,6 +616,7 @@
             'Otros Documentos'=>'20708',
             'Capitulos de libro' => '1',
             'Capitulos de libros' => '1',
+
         );
 
         return ( isset($types[$name]) ) ? $types[$name]:null;
