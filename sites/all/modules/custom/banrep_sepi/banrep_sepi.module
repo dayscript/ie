@@ -38,7 +38,7 @@
     /**
      * Function to create the publication node
      */
-    function _create_node_publication($publication){
+    function _create_node_publication($publication, $nid = null){
         
         switch ($publication['contents']->tipopub) {
             case 'Actividad':
@@ -50,7 +50,7 @@
                 break;
 
             case 'Capítulo libro':
-                _create_capitulo_de_libro($publication);
+                _create_capitulo_de_libro($publication, $nid);
                 break;
 
             default:
@@ -62,7 +62,7 @@
 
     }
 
-    function _create_capitulo_de_libro($publication){
+    function _create_capitulo_de_libro($publication, $nid){
 
         // $publication['contents']->concepto;
         // $publication['contents']->clasificacion;
@@ -109,6 +109,7 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
             $node_wrapper->field_concept_category = $category_concepts;
+            $node_wrapper->field_book_related = $nid;
             foreach($category_concepts as $category){ 
                 $node_wrapper->field_concept_category[] = $category['tid'];
                 
@@ -372,7 +373,7 @@
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                _create_node_publication($chapter);
+                _create_node_publication($chapter,$node_wrapper->nid->value());
             }
 
         }
