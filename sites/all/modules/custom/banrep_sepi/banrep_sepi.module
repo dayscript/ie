@@ -40,6 +40,8 @@
      */
     function _create_node_publication($publication, $nid = null){
         
+        dpm('aca ',$nid);
+
         switch ($publication['contents']->tipopub) {
             case 'Actividad':
                 _create_activity($publication);    
@@ -62,8 +64,8 @@
 
     }
 
-    function _create_capitulo_de_libro($publication, $nid){
-
+    function _create_capitulo_de_libro($publication, $nid_related){
+        dpm('create: ',$nid_related);
         // $publication['contents']->concepto;
         // $publication['contents']->clasificacion;
         // $publication['contents']->tipopub;
@@ -109,8 +111,8 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
             $node_wrapper->field_concept_category = $category_concepts;
-            dpm('nid', $nid);
-            $node_wrapper->field_book_related = $nid;
+            $node_wrapper->field_book_related = $nid_related;
+
             foreach($category_concepts as $category){ 
                 $node_wrapper->field_concept_category[] = $category['tid'];
                 
@@ -340,7 +342,6 @@
         }
 
         if( !empty($publication['contents']->concepto) ){
-            dpm($publication['contents']->concepto);
             $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto,'concept');
         }
         
@@ -359,7 +360,9 @@
         $node_wrapper->field_co_authors = null;
         $node_wrapper->field_other_co_authors = null;
         
+
         $node_wrapper->save();
+        
         
         if( isset($publication['contents']->coautores) && isset($publication['contents']->autor_principal) ) {
             array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
@@ -374,7 +377,8 @@
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                _create_node_publication($chapter,$node_wrapper->nid->value());
+                dpm('desde',$node_wrapper->nid->value());
+                _create_node_publication($publication = $chapter, $nid = $node_wrapper->nid->value() );
             }
 
         }
