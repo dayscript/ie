@@ -38,10 +38,8 @@
     /**
      * Function to create the publication node
      */
-    function _create_node_publication($publication, $nid = null){
+    function _create_node_publication($publication, $node_wrapper = null){
         
-        dpm('aca ',$nid);
-
         switch ($publication['contents']->tipopub) {
             case 'Actividad':
                 _create_activity($publication);    
@@ -52,7 +50,7 @@
                 break;
 
             case 'Capítulo libro':
-                _create_capitulo_de_libro($publication, $nid);
+                _create_capitulo_de_libro($publication, $node_wrapper );
                 break;
 
             default:
@@ -64,8 +62,8 @@
 
     }
 
-    function _create_capitulo_de_libro($publication, $nid_related){
-        dpm('create: ',$nid_related);
+    function _create_capitulo_de_libro($publication, $node_wrapper_book){
+        
         // $publication['contents']->concepto;
         // $publication['contents']->clasificacion;
         // $publication['contents']->tipopub;
@@ -73,37 +71,21 @@
         $query = new EntityFieldQuery();
         $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'concept')
-        ->propertyCondition('title', $publication['contents']->concepto, '=');
+        ->propertyCondition('title', $node_wrapper_book->title->value(), '=');
         $result = $query->execute();
         $nid =  _get_nid($result);
         $entity_type = 'node';
 
         $category_concepts = [
-            [ 'tid' => 20724 ] ,
-            [ 'tid' => _get_taxonomy_by_name( $publication['contents']->clasificacion, $vocabulary = 'categorias_de_conceptos') ]
+            [ 'tid' => $node_wrapper_book->field_pub_type->value() ] ,
+            [ 'tid' => $node_wrapper_book->field_concept_type->value()[0]->tid ]
         ];
+
         
         if( !is_null($nid) && is_numeric($nid) ){ // update entity
             // return $publication;    
             $node = node_load($nid);
             $node_wrapper = entity_metadata_wrapper($entity_type, $node);
-            // $query = new EntityFieldQuery();
-            // // Verifica si el nodo tiene las caracteristicas de concepto
-            // // si no, las asigna
-            // $query->entityCondition('entity_type', 'node')
-            //         ->entityCondition('bundle', 'concept')
-            //         ->propertyCondition('nid', $node_wrapper->nid->value(), '=')
-            //         ->fieldCondition('field_concept_category', 'tid', array($category_concepts[0]),'IN')
-            //         ->fieldCondition('field_concept_category', 'tid', array($category_concepts[1]),'IN');
-            // $result = $query->execute();
-            
-            // if(empty($result)){
-            //     foreach($category_concepts as $category){
-            //         $node_wrapper->field_concept_category[] = $category['tid'];
-            //     }
-            //     $node_wrapper->save();
-            // }
-
       
         }else{ // create entity
             
@@ -112,18 +94,8 @@
             $node_wrapper->title = $publication['contents']->concepto;
             $node_wrapper->field_concept_category = $category_concepts;
             $node_wrapper->field_book_related = $nid_related;
-
-            foreach($category_concepts as $category){ 
-                $node_wrapper->field_concept_category[] = $category['tid'];
-                
-            }
             $node_wrapper->save();
-            
-        
         }
-
-        // dpm($node_wrapper->nid->value());
-        
         _create_publication($publication);
 
     }
@@ -378,7 +350,7 @@
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
                 dpm('desde',$node_wrapper->nid->value());
-                _create_node_publication($publication = $chapter, $nid = $node_wrapper->nid->value() );
+                _create_node_publication($publication = $chapter, $node_wrapper );
             }
 
         }
