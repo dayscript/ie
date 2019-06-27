@@ -349,7 +349,6 @@
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                dpm('desde',$node_wrapper->nid->value());
                 _create_node_publication($publication = $chapter, $node_wrapper );
             }
 

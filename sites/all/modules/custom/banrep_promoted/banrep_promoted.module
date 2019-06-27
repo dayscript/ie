@@ -1,0 +1,12 @@
+<?php
+    module_load_include('inc', 'banrep_promoted', 'banrep_promoted');
+
+
+    /**
+     * Implements hook_cron();
+    */
+    function banrep_promoted_cron(){
+        
+        _verificate_users_requiremets_completed();
+
+    }

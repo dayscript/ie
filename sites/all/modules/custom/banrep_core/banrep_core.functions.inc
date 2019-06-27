@@ -681,6 +681,58 @@ function _banrep_core_get_username_by_uid($uid){
  */
 
 function _generate_response_sepi($pub_user){
+
+
+
+  $user_publication = entity_metadata_wrapper('node', $pub_user);  
+  $publication      = entity_metadata_wrapper('node', $user_publication->field_publicacion->value());
+  $user             =  entity_metadata_wrapper('user', $user_publication->field_user_reference->value()); 
+
+  if ( !empty($publication->field_sepi->value()) ) {
+    $sepi = $publication->field_sepi->value() ;
+  }
+
+  $file_name = 'entrega'.$sepi.'_'.$user->field_document_number->value().'.json';
+  $enviroment = 'dev';
+  $path_out = 'private://'.'sepi-out-'.$enviroment;
+  $jel_code = '';
+  $tags = '';
+  
+  if( !empty( $publication->field_jel->value() ) ){
+    $tid_name = [];
+    foreach( $publication->field_jel->value() as $key => $taxonomy ){
+      $tid_name[] = $taxonomy->name;
+    }
+    $jel_code = implode(',',$tid_name);
+  }
+
+  if( !empty($publication->field_publication_tags->value()) ){
+    $tid_name = [];
+    foreach($publication->field_publication_tags->value() as $key => $taxonomy ){
+      $tid_name[] = $taxonomy->name;
+    }
+    $tags = implode(',',$tid_name);
+  }
+
+  
+  if( is_array( $publication->field_co_authors->value() ) ){
+    foreach($publication->field_co_authors->value() as $key => $author){
+      if( isset( $author->item_id ) ){  
+        $author_tax = entity_metadata_wrapper('field_collection_item', $author->item_id );
+        dpm($author_tax->field_co_autor->value()); 
+        dpm($author_tax->field_co_autor->value()->field_user_reference['uid']);
+        dpm($user->uid->value());
+        if ( $author_tax->field_co_autor->value()->field_user_reference['uid'] == $user->uid->value()) { 
+          $author_rol = $author->field_role_within_publicat->value()->name;
+          dpm($author_rol);
+        }
+      }
+    }
+  }
+
+}
+
+function _generate_response_sepi2($pub_user){
   
   $publication = node_load( $pub_user->field_publicacion[LANGUAGE_NONE][0]['target_id'] );
   
