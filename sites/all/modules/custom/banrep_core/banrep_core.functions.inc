@@ -747,7 +747,7 @@ function _generate_response_sepi($pub_user){
         'correo' => ( isset($user->name)  && !empty($user->name) ) ? $user->name : '',
         'id' => ( isset($user->field_document_number['und'][0]['value'])  && !empty($user->field_document_number['und'][0]['value']) ) ? $user->field_document_number['und'][0]['value'] : '',
         'rol' => ( isset($author_rol) && !empty($author_rol) ) ? $author_rol : '',
-        'puntaje' => ( isset($pub_user->field_puntaje['und'][0]['value'])  && !empty($pub_user->field_puntaje['und'][0]['value']) ) ? (string)$pub_user->field_puntaje['und'][0]['value'] : ''
+        'puntaje' => ( isset($pub_user->field_puntaje['und'][0]['value'])  && !empty($pub_user->field_puntaje['und'][0]['value']) ) ? (string)$pub_user->field_puntaje['und'][0]['value'] : 0,
       ],
       "url"                => ( isset($publication->field_url[LANGUAGE_NONE][0]['url']) && !empty($publication->field_url[LANGUAGE_NONE][0]['url']) ) ? $publication->field_url[LANGUAGE_NONE][0]['url'] : '',
       "doi"                => ( isset($publication->field_doi[LANGUAGE_NONE][0]['url']) && !empty($publication->field_doi[LANGUAGE_NONE][0]['url']) ) ? $publication->field_doi[LANGUAGE_NONE][0]['url'] : '',
