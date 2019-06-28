@@ -733,7 +733,7 @@ function _generate_response_sepi($pub_user){
     '20754' => 'Documento en conferencia',
     '20708' => 'Otros Documentos',
   );
-  dpm($publication->field_concept_type->value());
+  dpm($publication->field_concept_type->value()[0]);
   $save_data = [ 
     "keywords"      => ( isset($tags) && !empty($tags) ) ? $tags : '',
     "cod_jel"       => ( isset($jel_code ) && !empty($jel_code ) ) ? $jel_code : '',
