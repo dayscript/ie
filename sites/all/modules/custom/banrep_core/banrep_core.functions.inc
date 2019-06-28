@@ -739,7 +739,7 @@ function _generate_response_sepi($pub_user){
     "cod_jel"       => ( isset($jel_code ) && !empty($jel_code ) ) ? $jel_code : '',
     "titulo"        => ( !empty($publication->title->value() ) ) ? $publication->title->value() : '',
     "tipopub"       => ( !empty($types[$publication->field_pub_type->value()]) ) ? $types[$publication->field_pub_type->value()] : '',
-    "clasificacion" => ( !empty($publication->field_concept_type->value() ) ) ? $publication->field_concept_type->value()->name : '',
+    "clasificacion" => ( !empty($publication->field_concept_type->value() ) ) ? $publication->field_concept_type->value()[0]->name : '',
     "concepto"      => ( !empty($publication->field_concept->value() ) ) ? $publication->field_concept->value()->title : '',
     "autor"         => [ 
           'nombre'  => ( !empty($user->field_full_name->value() ) ) ? $user->field_full_name->value(): '',
