@@ -743,7 +743,7 @@ function _generate_response_sepi($pub_user){
     "concepto"      => ( !empty($publication->field_concept->value() ) ) ? $publication->field_concept->value()->title : '',
     "autor"         => [ 
           'nombre'  => ( !empty($user->field_full_name->value() ) ) ? $user->field_full_name->value(): '',
-          'correo'  => ( !empty($user->name->value() ) ) ? $user->name->value() : '',
+          'correo'  => ( !empty($user->name->value() ) ) ? $user->name->value() : '', 
           'id'      => ( !empty($user->field_document_number->value() ) ) ? $user->field_document_number->value() : '',
           'rol'     => ( isset($author_rol) && !empty($author_rol) ) ? $author_rol : '',
           'puntaje' => ( !empty($user_publication->field_puntaje->value() ) ) ? (string)$user_publication->field_puntaje->value() : 0,
