@@ -862,7 +862,7 @@ function _get_all_publications_user_for_value($idUser) {
   foreach ($data as $key) {
     foreach ($key as $key2 => $value2) {
       if($key2 == 'field_puntaje'){
-        if($value2['und'][0]['value'] != NULL ){
+        if(isset($value2['und']) && $value2['und'][0]['value'] != NULL ){
           $puntaje = $value2['und'][0]['value'];
           // Realiza la suma de los puntos de las publicaciones
           $suma = $suma + $puntaje;
