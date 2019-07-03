@@ -5,9 +5,12 @@
  * Form module functionality for the banrep_core module.
  */
 
+
+
 /**
  *  Form builder; the publication form.
  */
+
 function publications_add_form($form, &$form_state) {
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publications_node_form.js', array('scope'=>'footer'));
   $form_state['step'] = isset($form_state['step']) ? $form_state['step'] : 1;
@@ -126,6 +129,7 @@ function publications_add_form($form, &$form_state) {
 /**
  * Render form elements for step #1
  */
+
 function _publications_add_form_step_1(&$form, &$form_state, &$publication = NULL) {
   // Add Custom Concept:
   $custom_concept_add_form = drupal_get_form('custom_concept_add_form');
@@ -196,6 +200,7 @@ function _publications_add_form_step_1(&$form, &$form_state, &$publication = NUL
 /**
  * Render form elements for step #1 Left content
  */
+
 function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publication = NULL) {
   $form['query']['left_column']['title'] = [
     '#type' => 'textfield',
@@ -522,7 +527,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
     }
   }
 
- //aca
+ 
   $form['query']['right_column']['pub_type'] = [
     '#type' => 'select',
     '#title' => t('Publication type'),
@@ -1626,7 +1631,7 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
         ],
       ],
     ],
-    '#prefix' => '',
+    '#prefix' => '', 
     '#suffix' => '',
   ];
   //$concept_type = get_input_value_from_publication($publication, 'concept_type', -1);

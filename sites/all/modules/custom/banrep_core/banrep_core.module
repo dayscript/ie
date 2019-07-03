@@ -86,11 +86,11 @@ function banrep_core_menu() {
   );
 
   // path with autocomplete function for concepts type article
-  $items['article/autocomplete/%'] = array(
+  $items['article/autocomplete/%/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
-    'page arguments' => array(2),
+    'page arguments' => array(2,3),
     'type' => MENU_CALLBACK
   );
 
@@ -4830,7 +4830,6 @@ function get_books_type_options(){
     foreach ($terms as $key => $term){
       if( !$term->depth ){
         $options[$term->tid] = $term->name;
-        $options[20725] = 'Capitulo de Libros - BR+Org. Mult.';
       }
     }
   }
