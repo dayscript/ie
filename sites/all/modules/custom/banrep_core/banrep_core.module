@@ -4830,6 +4830,7 @@ function get_books_type_options(){
     foreach ($terms as $key => $term){
       if( !$term->depth ){
         $options[$term->tid] = $term->name;
+        $options[20725] = 'Capitulo de Libros - BR+Org. Mult.';
       }
     }
   }
