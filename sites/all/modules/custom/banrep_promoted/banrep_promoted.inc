@@ -18,7 +18,7 @@ function _verificate_users_requiremets_completed(){
         $message = 'Validating :'. $user_entity->name->value();
         watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
         if(_validate_user_requirements($user_entity)){
-
+            drupal_mail('banrep_promoted', 'user_promoted', 'aacevedo@dayscript.com', $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
         }
     }
 }
@@ -142,7 +142,7 @@ function _validate_requiremets_of_time($user_entity,$user_requiremets){
                 case 'B': // years of experience without external studies
                     // dpm($type);
                     // dpm($time);
-                    $now_diference = ($user_entity->created->value() - time()) / 31556926 % 12; 
+                    $now_diference = ( time() - $user_entity->created->value() ) / 31556926 % 12; 
                     if( $now_diference < $time ){
                         $validate = false;
                     }
@@ -150,7 +150,7 @@ function _validate_requiremets_of_time($user_entity,$user_requiremets){
                 case 'C': //years of experience from last points
                     // dpm($type);
                     // dpm($time);
-                    $now_diference = ( $user_entity->field_date_last_score->value() - time()) / 31556926 % 12;
+                    $now_diference = ( time() - $user_entity->field_date_last_score->value() ) / 31556926 % 12;
                     if( $now_diference < $time ){
                         $validate = false;
                     }
@@ -158,7 +158,7 @@ function _validate_requiremets_of_time($user_entity,$user_requiremets){
                 case 'D': //years of experience from penultimate points
                     // dpm($type);
                     // dpm($time);
-                    $now_diference = ( $user_entity->field_fecha_penultimo_puntaje->value() - time()) / 31556926 % 12;
+                    $now_diference = ( time() - $user_entity->field_fecha_penultimo_puntaje->value() ) / 31556926 % 12;
                     if( $now_diference < $time ){
                         $validate = false;
                     }
