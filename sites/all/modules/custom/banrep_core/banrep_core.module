@@ -57,6 +57,8 @@ define('SERVICES_FORM_NID_7', '1933');
 define('SERVICES_FORM_NID_8', '1935');
 define('SERVICES_FORM_NID_9', '1936');
 
+define('BOOK_CHAPTER_CHAPTER_OF_BOOK','20724');
+
 define('REPEC_API_URL', 'http://citec.repec.org/api/plain/');
 
 /**
@@ -1527,7 +1529,7 @@ function vinculo_add_form($form, &$form_state) {
 function _get_concepts($concept_category_parent = NULL, $concept_category_child = NULL, $concept_source = NULL, $name = NULL, $format = 'autocomplete', $limit = 4, $flag = FALSE){
 
   if( $concept_category_parent == PUB_TYPE_BOOK_CHAPTER ){
-    $concept_category_parent = 20724;
+    $concept_category_parent = BOOK_CHAPTER_CHAPTER_OF_BOOK;
     $concept_category_child = NULL;
   }
 
