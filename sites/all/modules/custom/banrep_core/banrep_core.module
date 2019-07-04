@@ -86,11 +86,11 @@ function banrep_core_menu() {
   );
 
   // path with autocomplete function for concepts type article
-  $items['article/autocomplete/%/%'] = array(
+  $items['article/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
-    'page arguments' => array(2,3),
+    'page arguments' => array(2),
     'type' => MENU_CALLBACK
   );
 
@@ -1524,9 +1524,14 @@ function vinculo_add_form($form, &$form_state) {
     return $form;
 }
 
-function _get_concepts($concept_category_parent = NULL, $concept_category_child = NULL, $concept_source = NUL, $name = NULL, $format = 'autocomplete', $limit = 4, $flag = FALSE){
-  global $user;
+function _get_concepts($concept_category_parent = NULL, $concept_category_child = NULL, $concept_source = NULL, $name = NULL, $format = 'autocomplete', $limit = 4, $flag = FALSE){
 
+  if( $concept_category_parent == PUB_TYPE_BOOK_CHAPTER ){
+    $concept_category_parent = 20724;
+    $concept_category_child = NULL;
+  }
+
+  global $user;
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'concept');
@@ -1570,7 +1575,8 @@ function _get_concepts($concept_category_parent = NULL, $concept_category_child 
        }
     }
   }
-
+  $matches[] = [$concept_category_parent.'|'.$concept_category_child.'|'.$concept_source.'|'.$name];
+  
   return $matches;
 }
 
@@ -1586,6 +1592,7 @@ function _concept_autocomplete($type_parent, $type_child, $string){
   // Conceptos del sistema.
   $matches += _get_concepts($type_parent, $type_child, $source = 'sistema', $name = $string);
   // Return the result to the form in json
+  
   drupal_json_output($matches);
 }
 

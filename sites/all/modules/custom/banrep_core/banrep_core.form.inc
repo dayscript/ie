@@ -2057,7 +2057,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
         ''
       ),
       '#description' => t(''),
-      '#autocomplete_path' => 'book_chapter/autocomplete/' . PUB_TYPE_BOOK . '/' . $key,
+      '#autocomplete_path' => 'book_chapter/autocomplete/' . PUB_TYPE_BOOK_CHAPTER . '/' . $key,
       '#size' => 46,
       '#maxlength' => 300,
       '#prefix' => '',
