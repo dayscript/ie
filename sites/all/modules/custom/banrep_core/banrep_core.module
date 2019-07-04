@@ -1577,7 +1577,6 @@ function _get_concepts($concept_category_parent = NULL, $concept_category_child 
        }
     }
   }
-  $matches[] = [$concept_category_parent.'|'.$concept_category_child.'|'.$concept_source.'|'.$name];
   
   return $matches;
 }
