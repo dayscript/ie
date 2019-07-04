@@ -56,14 +56,14 @@ function _validate_user_requirements($user_entity){
         }
 
 
-        if(!_validate_requirements_of_publications($user_entity,$user_requiremets)){
-            $message = 'user entity publications requirement is not succesfull';
-            watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
-            return false;
-        }else{
-            $message = 'user entity publications requirement is succesfull';
-            watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
-        }
+        // if(!_validate_requirements_of_publications($user_entity,$user_requiremets)){
+        //     $message = 'user entity publications requirement is not succesfull';
+        //     watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
+        //     return false;
+        // }else{
+        //     $message = 'user entity publications requirement is succesfull';
+        //     watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
+        // }
         
         return true;
     }
