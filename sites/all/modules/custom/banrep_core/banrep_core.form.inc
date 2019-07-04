@@ -1491,16 +1491,16 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
           foreach($co_authors as $key => $item){  
             if( is_numeric($key) ){
               
-              $collections = field_get_items('node', $node, 'field_co_authors');
-              if(!is_null($collections)){
-                  foreach($collections as $key => $collection){ 
-                      $item_collection = field_collection_field_get_entity($collection);
-                      if($item_collection){
-                        $item_collection->delete();
-                      }
+              // $collections = field_get_items('node', $node, 'field_co_authors');
+              // if(!is_null($collections)){
+              //     foreach($collections as $key => $collection){ 
+              //         $item_collection = field_collection_field_get_entity($collection);
+              //         if($item_collection){
+              //           $item_collection->delete();
+              //         }
                       
-                  }
-              }
+              //     }
+              // }
 
               $values = array();
               $values['field_name'] = 'field_co_authors';
