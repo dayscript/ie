@@ -350,11 +350,13 @@
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
+        $publication_father = $publication['contents'];
+
         if(isset($publication['contents']->cp) && !empty($publication['contents']->cp)){
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                _create_node_publication($publication = $chapter, $node_wrapper, $publication_father = $publication );
+                _create_node_publication($publication = $chapter, $node_wrapper, $publication_father );
             }
 
         }
