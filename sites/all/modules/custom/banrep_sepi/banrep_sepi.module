@@ -91,7 +91,7 @@
             $entity = entity_create($entity_type, array('type' => 'concept'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
-
+            $category_concepts = [];
             foreach($publication_father->categoria as $key => $index){
                 $category_concepts[] = [
                     [ 'tid' => _get_taxonomy_by_name($index[0], $vocabulary = 'categorias_de_conceptos') ] ,
