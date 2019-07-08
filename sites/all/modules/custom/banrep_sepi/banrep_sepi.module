@@ -359,6 +359,7 @@
         
         
         if(isset($publication['contents']->coautores) && is_array($publication['contents']->coautores) ){
+            dpm($publication['contents']->coautores, 'autores');
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
