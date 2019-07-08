@@ -23,7 +23,7 @@
             if(json_last_error() ){
                 dsm( json_last_error_msg(), 'error');
                 watchdog('banrep_sepi', 'Se ha encontrado un error: '.json_last_error_msg(). 'code: '.json_last_error() , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
-
+                exit;
             }
             
 
