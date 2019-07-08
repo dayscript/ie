@@ -93,7 +93,7 @@
             $node_wrapper->title = $publication['contents']->concepto;
 
             foreach($publication_father->categoria as $key => $index){
-                $category_concepts[$key] = [
+                $category_concepts[] = [
                     [ 'tid' => _get_taxonomy_by_name($index[0], $vocabulary = 'categorias_de_conceptos') ] ,
                     [ 'tid' => _get_taxonomy_by_name($index[1], $vocabulary = 'categorias_de_conceptos') ]
                 ];
