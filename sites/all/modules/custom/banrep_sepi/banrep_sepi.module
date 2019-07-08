@@ -272,7 +272,7 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
         
         }
-        dpm($publication); 
+        
 
         $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
         $node_wrapper->title            = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
@@ -357,8 +357,9 @@
             array_unshift($publication['contents']->coautores,$publication['contents']->autor_principal);
         }
         
-        
+        dpm($publication['contents']->coautores);
         if(isset($publication['contents']->coautores) && is_array($publication['contents']->coautores) ){
+            
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
 
