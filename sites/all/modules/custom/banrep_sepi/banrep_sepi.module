@@ -38,7 +38,7 @@
     /**
      * Function to create the publication node
      */
-    function _create_node_publication($publication, $node_wrapper = null){
+    function _create_node_publication($publication, $node_wrapper = null, $publication_father = null){
         
         switch ($publication['contents']->tipopub) {
             case 'Actividad':
@@ -50,7 +50,7 @@
                 break;
 
             case 'Capítulo libro':
-                _create_capitulo_de_libro($publication, $node_wrapper );
+                _create_capitulo_de_libro($publication, $node_wrapper, $publication_father );
                 break;
 
             default:
@@ -62,7 +62,7 @@
 
     }
 
-    function _create_capitulo_de_libro($publication, $node_wrapper_book){
+    function _create_capitulo_de_libro($publication, $node_wrapper_book, $publication_father){
         
         // $publication['contents']->concepto;
         // $publication['contents']->clasificacion;
@@ -92,7 +92,11 @@
             $entity = entity_create($entity_type, array('type' => 'concept'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
-            $node_wrapper->field_concept_category = $category_concepts;
+            $category_concepts = [
+                [ 'tid' => _get_taxonomy_by_name($publication_father->categoria[0][0], $vocabulary = 'categorias_de_conceptos') ] ,
+                [ 'tid' => _get_taxonomy_by_name($publication_father->categoria[0][1], $vocabulary = 'categorias_de_conceptos') ]
+            ];
+            $node_wrapper->field_concept_category = $category_concepts; 
             $node_wrapper->field_book_related = $nid_related;
             $node_wrapper->save();
         }
@@ -349,7 +353,7 @@
 
             foreach($publication['contents']->cp as $key => $value){
                 $chapter['contents'] = $value;
-                _create_node_publication($publication = $chapter, $node_wrapper );
+                _create_node_publication($publication = $chapter, $node_wrapper, $publication_father = $publication );
             }
 
         }
