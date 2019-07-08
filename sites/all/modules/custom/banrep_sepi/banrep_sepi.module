@@ -20,6 +20,13 @@
                 'contents' => json_decode($contents_file),
             ];
 
+            if(json_last_error() ){
+                dsm( json_last_error_msg(), 'error');
+                watchdog('banrep_sepi', 'Se ha encontrado un error: '.json_last_error_msg(). 'code: '.json_last_error() , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
+
+            }
+            
+
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
 
             watchdog('banrep_sepi', 'Procesamiento completo' , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
@@ -265,7 +272,7 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
         
         }
-        dpm($publication['contents']->tipopub); 
+        dpm($publication); 
 
         $node_wrapper->field_pub_type->set( _get_type_publication( $publication['contents']->tipopub ) );
         $node_wrapper->title            = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
