@@ -91,10 +91,17 @@
             $entity = entity_create($entity_type, array('type' => 'concept'));
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
             $node_wrapper->title = $publication['contents']->concepto;
-            $category_concepts = [
-                [ 'tid' => _get_taxonomy_by_name($publication_father->categoria[0][0], $vocabulary = 'categorias_de_conceptos') ] ,
-                [ 'tid' => _get_taxonomy_by_name($publication_father->categoria[0][1], $vocabulary = 'categorias_de_conceptos') ]
-            ];
+
+            foreach($publication_father->categoria as $key => $index){
+                $category_concepts[$key] = [
+                    [ 'tid' => _get_taxonomy_by_name($index[0], $vocabulary = 'categorias_de_conceptos') ] ,
+                    [ 'tid' => _get_taxonomy_by_name($index[1], $vocabulary = 'categorias_de_conceptos') ]
+                ];
+            }
+            // $category_concepts = [
+            //     [ 'tid' => _get_taxonomy_by_name($vocabulary = 'categorias_de_conceptos') ] ,
+            //     [ 'tid' => _get_taxonomy_by_name($publication_father->categoria[0][1], $vocabulary = 'categorias_de_conceptos') ]
+            // ];
             
             $node_wrapper->field_concept_category = $category_concepts; 
             $node_wrapper->field_book_related = $nid_related;
