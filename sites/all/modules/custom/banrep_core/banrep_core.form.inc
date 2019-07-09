@@ -1990,7 +1990,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
   // Field book_chapter form element starts
   $form['query']['right_column']['fieldset_publication_book_chapters'] = [
     '#type' => 'fieldset',
-    '#title' => t('Tipo de acumuladosss'),
+    '#title' => t('Tipo de acumulados'),
     '#prefix' =>
       '<div' .
       ' id="fieldset-wrapper-book_chapter"' .
