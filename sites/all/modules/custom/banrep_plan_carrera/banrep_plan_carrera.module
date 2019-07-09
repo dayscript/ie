@@ -467,7 +467,7 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
     }
   }
 
-  return $comparacion;
+  return true;
 }
 
 /**
@@ -560,8 +560,6 @@ function banrep_plan_carrera_theme($existing, $type, $theme, $path) {
 function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $state, $statePrev = null){
   switch ($node->type) {
     case 'pub_user':
-    dpm($state,'state');
-
     $userPub = user_load($uid);
     $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE];
     $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE];
