@@ -467,7 +467,10 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
     }
   }
 
-  return $comparacion;
+  //return $comparacion;
+  // La comprobacion se realiza en gestion de ascenso
+  return TRUE;
+
 }
 
 /**
