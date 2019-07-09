@@ -282,6 +282,7 @@ function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = 
       }
       // elseif ($id_type_publication == 15349) {
       elseif ( $id_type_publication == 206  ) {
+        dpm($id_type_publication);
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_pub_type_value', 206, '=');
       }
@@ -339,7 +340,7 @@ function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = 
       }
       break;
   }
-  return $num_of_result;
+  return 10;
 }
 
 /**

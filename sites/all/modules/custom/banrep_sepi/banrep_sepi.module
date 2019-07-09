@@ -109,7 +109,7 @@
             // ];
             // dpm($category_concepts);
             $node_wrapper->field_concept_category = $category_concepts; 
-            $node_wrapper->field_book_related = $nid_related;
+            $node_wrapper->field_book_related = $node_wrapper_book->nid->value();
             $node_wrapper->save();
         }
         _create_publication($publication);
@@ -358,7 +358,6 @@
         }
         
         if(isset($publication['contents']->coautores) && is_array($publication['contents']->coautores) ){
-        dpm($publication['contents']->coautores);
             
             $publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
         }
@@ -429,7 +428,7 @@
                     
                     if($index != 0 && !is_null($tid) ){
                         $node->field_other_co_authors[] = [ 'tid' => $tid ]; 
-                        // node_save($node);
+                        node_save($node);
 
                     }
 
