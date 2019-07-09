@@ -560,6 +560,8 @@ function banrep_plan_carrera_theme($existing, $type, $theme, $path) {
 function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $state, $statePrev = null){
   switch ($node->type) {
     case 'pub_user':
+    dpm($state,'state');
+
     $userPub = user_load($uid);
     $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE];
     $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE];
@@ -567,7 +569,6 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
     if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {/*Publicaciones sin Rol*/
       $concept = node_load($nodePub->field_concept[LANGUAGE_NONE][0]['target_id']);
       $end_concept = taxonomy_term_load(end($concept->field_concept_category[LANGUAGE_NONE])['tid']);
-      dpm($state,'state');
       foreach($end_concept->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
