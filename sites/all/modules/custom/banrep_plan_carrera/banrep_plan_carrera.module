@@ -467,7 +467,7 @@ function _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($publicacion, 
     }
   }
 
-  return true;
+  return $comparacion;
 }
 
 /**
