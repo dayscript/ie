@@ -569,7 +569,15 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
     $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
     if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {/*Publicaciones sin Rol*/
       $concept = node_load($nodePub->field_concept[LANGUAGE_NONE][0]['target_id']);
-      $end_concept = taxonomy_term_load(end($concept->field_concept_category[LANGUAGE_NONE])['tid']);
+      foreach(  $concept->field_concept_category[LANGUAGE_NONE] as $key => $tax  ){
+        if($nodePub->field_concept['und'][0]['target_id'] == $tax['tid']){
+          $end_concept = taxonomy_term_load($tax['tid']);
+        }else{
+          drupal_set_message('No se ha podido localizar una configuracion adecuada.');
+        }
+      }
+      //$end_concept = taxonomy_term_load(end($concept->field_concept_category[LANGUAGE_NONE])['tid']);
+      
       foreach($end_concept->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
