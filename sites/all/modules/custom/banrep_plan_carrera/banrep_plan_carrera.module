@@ -570,9 +570,14 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
       foreach($end_concept->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
-        if (isset($userPub->field_ruta['und'][0]['target_id']) && isset($field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) && $userPub->field_ruta['und'][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) {
+        if (
+            isset($userPub->field_ruta['und'][0]['target_id']) && 
+            isset($field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) && 
+            $userPub->field_ruta['und'][0]['target_id'] == $field_collection_value[key($field_collection_value)]->field_ruta['und'][0]['target_id']) {
+
           $field_on_save =  $field_collection_value[key($field_collection_value)]->field_acomula_en['und'][0]['field_name'];
           $field_on_points = $field_collection_value[key($field_collection_value)]->field_puntaje['und'][0]['value'];
+          dpm($state,'state');
           switch ($state) {
             case '3':
               $pj = $field_on_points;
