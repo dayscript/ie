@@ -1990,7 +1990,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
   // Field book_chapter form element starts
   $form['query']['right_column']['fieldset_publication_book_chapters'] = [
     '#type' => 'fieldset',
-    '#title' => t('Tipo de acumulado'),
+    '#title' => t('Tipo de acumuladosss'),
     '#prefix' =>
       '<div' .
       ' id="fieldset-wrapper-book_chapter"' .
@@ -2011,7 +2011,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
     '#suffix' => '',
   ];
   $concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
-  $_books_type_options = get_books_type_options();
+  $_books_type_options = get_books_chapters_type_options();
 
   $form['query']['right_column']['fieldset_publication_book_chapters']['concept_type'] = [
     '#type' => 'select',

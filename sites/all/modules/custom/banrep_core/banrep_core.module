@@ -25,6 +25,8 @@ define('PUB_TYPE_ARTICLE', '201');
 define('PUB_TYPE_ARTICLE_TIPO_5', '3016');
 define('PUB_TYPE_BOOK', '206');
 define('PUB_TYPE_BOOK_CHAPTER', '1');
+define('PUB_TYPE_BOOK_CHAPTER_REAL', '20724');
+
 define('PUB_TYPE_WORK_DOCUMENT', '2951');
 define('PUB_TYPE_OTHER_DOCUMENT', '15317');
 define('PUB_TYPE_CONFERENCE_DOCUMENT', '2954');
@@ -4885,7 +4887,7 @@ function get_others_documents_type_options(){
  */
 function get_books_chapters_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
-  $parent_tid = PUB_TYPE_BOOK;
+  $parent_tid = PUB_TYPE_BOOK_CHAPTER_REAL;
   $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
   $options = [];
   if(!empty($terms)){
