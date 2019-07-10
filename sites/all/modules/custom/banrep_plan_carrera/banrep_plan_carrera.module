@@ -565,19 +565,20 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
     case 'pub_user':
     $userPub = user_load($uid);
     $pub_type = $nodePub->field_pub_type[LANGUAGE_NONE];
-    $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE];
+    $concept_types = $nodePub->field_concept_type[LANGUAGE_NONE][0]['tid'];
     $authorsPub = $nodePub->field_co_authors[LANGUAGE_NONE];
-    if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {/*Publicaciones sin Rol*/
+    $end_concept = NULL;
+
+    /*
+     * Publicaciones sin Rol
+     */
+    if (isset($nodePub->field_concept[LANGUAGE_NONE][0]['target_id'])) {
       $concept = node_load($nodePub->field_concept[LANGUAGE_NONE][0]['target_id']);
       foreach(  $concept->field_concept_category[LANGUAGE_NONE] as $key => $tax  ){
-        if($nodePub->field_concept['und'][0]['target_id'] == $tax['tid']){
+        if($concept_types == $tax['tid']){
           $end_concept = taxonomy_term_load($tax['tid']);
-        }else{
-          drupal_set_message('No se ha podido localizar una configuracion adecuada.');
         }
       }
-      //$end_concept = taxonomy_term_load(end($concept->field_concept_category[LANGUAGE_NONE])['tid']);
-      
       foreach($end_concept->field_puntajes[LANGUAGE_NONE] as $field_puntaje) {
         $field_collection_item_value = $field_puntaje['value']; 
         $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
@@ -616,9 +617,15 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
               $node->field_log_puntaje[LANGUAGE_NONE][] = banrep_plan_carrera_log_points($user, $node->type, $pjprevious, $pjnew, $statePrev, $state);
               break;
           }
+        }else{/* Si no encuentra una configuracion de ruta en el concepto que puntua*/
+          drupal_set_message('No se ha encontrado una ruta configurada. ','warning');
         }
       }
-    }elseif (isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE])) {/*Publicaciones con Rol*/
+    }
+    /*
+     *Publicaciones con Rol
+     */
+    elseif (isset($nodePub->field_pub_type[LANGUAGE_NONE]) && isset($nodePub->field_concept_type[LANGUAGE_NONE])) {
       foreach($authorsPub as $key => $author){
         $collection = entity_load('field_collection_item', array($author['value']));
         $author_tax = taxonomy_term_load($collection[$author['value']]->field_co_autor[LANGUAGE_NONE][0]['tid']);

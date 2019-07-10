@@ -327,10 +327,12 @@
        
         if( !empty($publication['contents']->clasificacion) ){
             $node_wrapper->field_concept_type = [];
-            $node_wrapper->field_concept_type->set( [_get_taxonomy_by_name($publication['contents']->clasificacion) ]);
+            $node_wrapper->field_concept_type->set( [_get_taxonomy_by_name($publication['contents']->clasificacion,$vocabulary = 'categorias_de_conceptos') ]);
         }
 
         if( !empty($publication['contents']->concepto) ){
+
+            
             $node_wrapper->field_concept = _get_node_concept($publication['contents']->concepto,'concept');
         }
         
@@ -348,7 +350,13 @@
         unset($node_wrapper->field_co_authors);
         $node_wrapper->field_co_authors = null;
         $node_wrapper->field_other_co_authors = null;
-        
+
+        if(isset($publication['contents']->coautores)){
+            foreach($publication['contents']->coautores as $key => $author){
+                $node_wrapper->field_other_co_authors[] = $tid = _get_autor_for_mail($author->correo);
+            }
+
+        }
 
         $node_wrapper->save();
         
