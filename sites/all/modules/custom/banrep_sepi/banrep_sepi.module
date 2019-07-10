@@ -327,7 +327,7 @@
        
         if( !empty($publication['contents']->clasificacion) ){
             $node_wrapper->field_concept_type = [];
-            $node_wrapper->field_concept_type->set( [_get_type_publication($publication['contents']->clasificacion) ]);
+            $node_wrapper->field_concept_type->set( [_get_taxonomy_by_name($publication['contents']->clasificacion) ]);
         }
 
         if( !empty($publication['contents']->concepto) ){
