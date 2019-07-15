@@ -172,17 +172,23 @@ function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_m
  */
 
 function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  
+  
   $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/discount_form.js';
   drupal_add_js(array('banrep_discount' => ['discount' => $_GET["id"]]), 'setting');
 
   if(isset($_GET["id"])) {
-    $user = user_load($_GET["id"]);
+    $user = entity_metadata_wrapper('user', $_GET['id']);    
 
-    $form['field_usuario'][LANGUAGE_NONE][0]['target_id']['#default_value'] = array($user->name.' ('.$user->uid.')');
 
-    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_acumulado_general[LANGUAGE_NONE][0]['value']) ? $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] : 0;
-    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_puntaje_br[LANGUAGE_NONE][0]['value']) ? $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] : 0;
-    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = isset($user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value']) ? $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] : 0;
+    $form['field_usuario'][LANGUAGE_NONE][0]['target_id']['#default_value'] = array($user->name->value().' ('.$user->uid->value().')');
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value']     = !empty( $user->field_acumulado_general->value() ) ? $user->field_acumulado_general->value() : 0;
+    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value']  = !empty( $user->field_puntaje_br->value() ) ? $user->field_puntaje_br->value() : 0;
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = !empty( $user->field_puntaje_acumulado->value() ) ? $user->field_puntaje_acumulado->value() : 0;
+
+    $form['field_fecha_ing_inves'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves->value() ; 
+    $form['field_fecha_ing_inves_junior'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves_junior->value();
+    $form['field_fecha_ing_inves_principal'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves_principal->value();
   }
 }
 
