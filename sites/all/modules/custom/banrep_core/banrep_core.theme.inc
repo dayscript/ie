@@ -232,6 +232,10 @@ function theme_banrep_user_top_zone($variables) {
                        <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Gestionar investigadores') .' </a>
                     </li>
                     <li>
+                       <a href="/' . $language->language . '/admin/content/gestionar-publicaciones">
+                       <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Gestionar publicaciones') .' </a>
+                    </li>
+                    <li>
                        <a href="/' . $language->language . '/admin/aprobados-para-cambio-de-cargo">
                        <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Aprobado para cambio de cargo') .' </a>
                     </li>
