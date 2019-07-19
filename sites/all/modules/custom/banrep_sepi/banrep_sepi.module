@@ -231,11 +231,12 @@
             }
         }
 
-        if(!empty($publication['contents']->archivo_aprobacion)){
-            $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
-         }
+        // if( isset($publication['contents']->archivo_aprobacion) && !empty($publication['contents']->archivo_aprobacion)){
+        //     $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
+        //  }
 
-        $node_wrapper->field_act_wf_status = 20;
+        $node_wrapper->field_act_wf_status->set(20);
+        dpm('OK');
         $node_wrapper->save();
         
     
