@@ -238,7 +238,9 @@
         
         
         $node_wrapper->save();
+        $node_wrapper->uid = 934;
         $node_wrapper->field_act_wf_status->set(20);
+
         $node_wrapper->save();
     
         
