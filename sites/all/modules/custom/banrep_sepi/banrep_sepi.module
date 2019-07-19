@@ -238,10 +238,7 @@
         
         
         $node_wrapper->save();
-        $node_wrapper->author = 934;
-        $node_wrapper->field_act_wf_status->set(20);
 
-        $node_wrapper->save();
     
         
         //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
