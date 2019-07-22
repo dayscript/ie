@@ -245,7 +245,13 @@
         $transition = new WorkflowTransition();
         $transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
         workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
-        banrep_plan_carrera_add_subtract_points($node->uid, $node, null, user_load(934), '20');
+        
+        $user = entity_metadata_wrapper('user', $node->uid);
+
+        $user->field_puntaje_br = $user->field_puntaje_br->value() + $publication['contents']->autor_principal->puntaje;
+        $user->save();
+
+
         return $publication;
 
 
