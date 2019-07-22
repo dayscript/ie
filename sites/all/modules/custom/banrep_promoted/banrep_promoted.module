@@ -41,14 +41,15 @@
             '!sitename' => variable_get('site_name', 'Drupal'),
             '!name'     => $params['user']->name->value(),
             '!uid'      => $params['user']->uid->value(),
-            '!mail'     => $params['user']->mail->value()
+            '!mail'     => $params['user']->mail->value(),
+            '!link'     => $base_url.'/'.$language.'/profile/plan/carrera/'.$params['user']->uid->value()
         );
 
         switch ($key) {
             case 'user_promoted':
                 $message['subject'] = t('Notificación recibida desde [!sitename]',
                 $variables, array('langcode' => $language->language));
-                $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a :', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
+                $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a : !url', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
                 break;
             
             default:
