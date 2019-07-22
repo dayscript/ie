@@ -248,7 +248,7 @@
         
         $user = entity_metadata_wrapper('user', $node->uid);
 
-        $user->field_puntaje_br = $user->field_puntaje_br->value() + $publication['contents']->autor_principal->puntaje;
+        $user->field_puntaje_br = $user->field_puntaje_br->value() + $pjnew;
         $user->save();
 
 
