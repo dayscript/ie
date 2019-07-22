@@ -19,13 +19,13 @@ function _verificate_users_requiremets_completed(){
         watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
         if(_validate_user_requirements($user_entity)){
             drupal_mail('banrep_promoted', 'user_promoted', 'aacevedo@dayscript.com', $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
-            $user_entity->field_estado_plan_carrera = 'APROBADO_PARA_CAMBIO_DE_CARGO';
+            $user_entity->field_estado_plan_carrera = 'MARCADO_PARA_ REVISION';
             $user_entity->save();
         }
     }
 }
 
-
+ 
 function _validate_user_requirements($user_entity){
 
     /* Variables*/
