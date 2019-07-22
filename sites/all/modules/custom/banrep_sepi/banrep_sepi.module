@@ -244,7 +244,7 @@
         $transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
         workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
         //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
- 
+        _generate_response_sepi_activity($node);
         return $publication;
 
 
