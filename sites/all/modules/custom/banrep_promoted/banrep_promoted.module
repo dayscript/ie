@@ -49,7 +49,7 @@
             case 'user_promoted':
                 $message['subject'] = t('Notificación recibida desde [!sitename]',
                 $variables, array('langcode' => $language->language));
-                $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a : !url', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
+                $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a : !link', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
                 break;
             
             default:
