@@ -234,8 +234,9 @@
         if( isset($publication['contents']->archivo_aprobacion) && !empty($publication['contents']->archivo_aprobacion)){
             $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
          }
-
         
+        $pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
+        $node_wrapper->field_log_puntaje[] = banrep_plan_carrera_log_points($user, $node->type, 0, $pjnew, 19, 20);
         
         $node_wrapper->save();
 
@@ -244,7 +245,7 @@
         $transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
         workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
         //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
-        _generate_response_sepi_activity($node);
+        
         return $publication;
 
 
