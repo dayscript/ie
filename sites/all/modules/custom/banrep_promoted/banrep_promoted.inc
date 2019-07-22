@@ -18,7 +18,12 @@ function _verificate_users_requiremets_completed(){
         $message = 'Validating :'. $user_entity->name->value();
         watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
         if(_validate_user_requirements($user_entity)){
-            drupal_mail('banrep_promoted', 'user_promoted', 'aacevedo@dayscript.com', $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
+            $to = array(
+                'aacevedo@dayscript.com',
+                'myafarinc@gmail.com',
+                'ariel.acevedo@afar.systems'
+            );
+            drupal_mail('banrep_promoted', 'user_promoted', $to, $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
             $user_entity->field_estado_plan_carrera = 'MARCADO_PARA_ REVISION';
             $user_entity->save();
         }
