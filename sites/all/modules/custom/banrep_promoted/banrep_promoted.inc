@@ -1,6 +1,8 @@
 <?php
 
 function _verificate_users_requiremets_completed(){
+    global $language;
+    $language = $language->language;
     $message = '';
     $type = 'banrep_promoted';
 
