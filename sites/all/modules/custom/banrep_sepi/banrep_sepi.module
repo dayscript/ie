@@ -236,7 +236,7 @@
          }
         
         $pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
-        $node_wrapper->field_log_puntaje->set( banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20) );
+        $node_wrapper->field_log_puntaje->set([ 'value' => banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20) ]) ;
         
         
         $node_wrapper->save();
