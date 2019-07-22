@@ -235,18 +235,17 @@
             $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
          }
         
-        $pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
-        $node_wrapper->field_log_puntaje->set( [banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20)] );
         
+        
+        //$pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
+        //$node_wrapper->field_log_puntaje->set( [banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20)] );
         
         $node_wrapper->save();
-
         $node = node_load($node_wrapper->nid->value());
         $transition = new WorkflowTransition();
         $transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
         workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
-        //$publication['contents']->coautores = _create_coauthors($publication['contents']->coautores, $node_wrapper);
-        
+        banrep_plan_carrera_add_subtract_points($node->uid, $node, null, user_load(934), 20);
         return $publication;
 
 
