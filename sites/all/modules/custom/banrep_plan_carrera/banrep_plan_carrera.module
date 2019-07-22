@@ -673,6 +673,7 @@ function banrep_plan_carrera_add_subtract_points($uid, $node, $nodePub, $user, $
     }
     break;
     case 'activity':
+      dpm('entro');
       $userPub = user_load($uid);
       $e = taxonomy_term_load($node->field_concept_category[LANGUAGE_NONE][1]['tid']);
       /*Actividades sin Rol*/
