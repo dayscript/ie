@@ -35,7 +35,11 @@
     * Implements hook_mail().
     */
     function banrep_promoted_mail($key, &$message, $params) {
+        global $base_url;
         $language = $message['language'];
+        if(is_null($language)){
+            global $language;
+        }
 
         $variables = array(
             '!sitename' => variable_get('site_name', 'Drupal'),
