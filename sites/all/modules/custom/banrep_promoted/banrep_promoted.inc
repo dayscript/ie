@@ -18,8 +18,10 @@ function _verificate_users_requiremets_completed(){
         $message = 'Validating :'. $user_entity->name->value();
         watchdog($type, $message, $variables = array(), $severity = WATCHDOG_NOTICE, $link = NULL); 
         if(_validate_user_requirements($user_entity)){
-            $to = 'aacevedo@dayscript.com,myafarinc@gmail.com,ariel.acevedo@afar.systems';
-            drupal_mail('banrep_promoted', 'user_promoted', $to, $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
+            for ($i=1; $i < 6 ; $i++) { 
+                $to[] = variable_get('banrep_promoted_mail_'.$i);
+            }
+            drupal_mail('banrep_promoted', 'user_promoted', implode(',',$to), $language, $params = [ 'user' => $user_entity ], $from = NULL, $send = TRUE);
             $user_entity->field_estado_plan_carrera = 'MARCADO_PARA_ REVISION';
             $user_entity->save();
         }
@@ -300,4 +302,22 @@ function _calc_results_of_condition($user_entity,$item_condition){
 
 
     return $validate;
+}
+
+function _banrep_promoted_mails_form($form_state, $variable){
+
+    
+    for ($i=1; $i < 6; $i++) { 
+        $form['current_posts_max']['banrep_promoted_mail_'.$i] = array(
+            '#type' => 'textfield',
+            '#title' => t('Direccion de correo No '.$i),
+            '#default_value' => variable_get('banrep_promoted_mail_'.$i, null),
+            '#size' => 50,
+            '#maxlength' => 50,
+            '#description' => t('Escriba una direccion de correo electronico'),
+            '#required' => FALSE,
+          );
+    }
+    return system_settings_form($form);
+
 }

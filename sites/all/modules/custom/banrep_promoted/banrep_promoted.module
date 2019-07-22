@@ -1,6 +1,25 @@
 <?php
     module_load_include('inc', 'banrep_promoted', 'banrep_promoted');
 
+     /**
+     * Implements hook_cron();
+    */
+
+    function banrep_promoted_menu(){
+
+        $items['admin/promoted-cron/to-notify'] = array(
+            'page callback' => 'drupal_get_form',
+            'page arguments' => array('_banrep_promoted_mails_form'), 
+            'access callback' => TRUE,
+            'type' => MENU_SUGGESTED_ITEM,
+          );
+
+        return $items;
+    }
+
+
+
+
 
     /**
      * Implements hook_cron();
@@ -13,29 +32,29 @@
 
 
     /**
-* Implements hook_mail().
-*/
-function banrep_promoted_mail($key, &$message, $params) {
-    $language = $message['language'];
+    * Implements hook_mail().
+    */
+    function banrep_promoted_mail($key, &$message, $params) {
+        $language = $message['language'];
 
-    $variables = array(
-        '!sitename' => variable_get('site_name', 'Drupal'),
-        '!name'     => $params['user']->name->value(),
-        '!uid'      => $params['user']->uid->value(),
-        '!mail'     => $params['user']->mail->value()
-    );
+        $variables = array(
+            '!sitename' => variable_get('site_name', 'Drupal'),
+            '!name'     => $params['user']->name->value(),
+            '!uid'      => $params['user']->uid->value(),
+            '!mail'     => $params['user']->mail->value()
+        );
 
-    switch ($key) {
-        case 'user_promoted':
-            $message['subject'] = t('Notificación recibida desde [!sitename]',
-            $variables, array('langcode' => $language->language));
-            $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a :', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
-            break;
-        
-        default:
-            # code...
-            break;
-    }
+        switch ($key) {
+            case 'user_promoted':
+                $message['subject'] = t('Notificación recibida desde [!sitename]',
+                $variables, array('langcode' => $language->language));
+                $message['body'][] = t('El usuario !name a completado los requisitos para cambio de cargo, puede verificar ingresando a :', $variables, array('langcode' => $language->language) ); //t("Recuerda tus datos de acceso:");
+                break;
+            
+            default:
+                # code...
+                break;
+        }
 
 
    }
