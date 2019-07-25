@@ -89,6 +89,16 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
         }
       }
     break;
+    case 'user_redemption_entityform_edit_form':
+
+      if(!in_array('caie', $user->roles) || !in_array('Admin GT', $user->roles)) {
+        $form['field_observaciones']['#access']  = false;
+        $form['field_aprobado']['#access']  = false;
+        $form['field_descuento_puntos_general']['#access']  = false;
+        $form['field_descuento_puntos_br']['#access']  = false;
+        $form['field_descuento_puntos_academico']['#access']  = false;
+      }
+    break;
   }
 }
 
