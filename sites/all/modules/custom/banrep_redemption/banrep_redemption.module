@@ -144,7 +144,7 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
   
   
   $form['#validate'][] = '_banrep_redemption_form_user_redemption_entityform_edit_form_validate_max';
-
+  
 }
 
 /**

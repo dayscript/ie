@@ -87,7 +87,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
                'enabled' => array( 'select[name="field_act_wf_status[und][0][workflow][workflow_sid]"]' => array('value' => '20') )
               );
         } else {
-
+          
           $form['field_puntaje']['#disabled'] = TRUE;
         }
       }
@@ -100,9 +100,21 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
         $form['field_descuento_puntos_br']['#access']  = false;
         $form['field_descuento_puntos_academico']['#access']  = false;
         $form['field_espe_requiremets']['#access'] = false;
+        
+      }else{
+        $select_field_beneficios_options = 
+        taxonomy_term_load($form['field_beneficios']['und']['#default_value'][0]);
+
+        $form['field_descuento_puntos_br'][LANGUAGE_NONE][0]['value']['#default_value'] = 
+        $select_field_beneficios_options->field_puntaje_br[LANGUAGE_NONE][0]['value'];
+
+        $form['field_descuento_puntos_academico'][LANGUAGE_NONE][0]['value']['#default_value'] = 
+        $select_field_beneficios_options->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+
+        $form['field_descuento_puntos_general'][LANGUAGE_NONE][0]['value']['#default_value'] = 
+        $select_field_beneficios_options->field_puntaje[LANGUAGE_NONE][0]['value'];      
+
       }
-      
-      
       if(empty($form['field_espe_requiremets']['und']['#default_value'])){
         $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$user->uid) );
         $field_collection_requiremets = $field_collection_requirements_publications->field_requisitos_publicaciones->value();
@@ -118,7 +130,6 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
           }
         $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[0]) ? 1:0;
         $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[1]) ? 1:0;
-        dpm($validate)                ;
       }
     }
       
