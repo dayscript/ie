@@ -1,4 +1,7 @@
 <?php
+
+module_load_include('inc', 'banrep_promoted', 'banrep_promoted');
+
 function banrep_gestion_ppi_menu() {
   $items['profile/gestion-ppi/%'] = array(
     'title' => 'Gestión Plan de Promoción a la Investigación',
@@ -90,17 +93,38 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
       }
     break;
     case 'user_redemption_entityform_edit_form':
-
       if(!in_array('caie', $user->roles) || !in_array('Admin GT', $user->roles)) {
         $form['field_observaciones']['#access']  = false;
         $form['field_aprobado']['#access']  = false;
         $form['field_descuento_puntos_general']['#access']  = false;
         $form['field_descuento_puntos_br']['#access']  = false;
         $form['field_descuento_puntos_academico']['#access']  = false;
+        $form['field_espe_requiremets']['#access'] = false;
       }
+      
+      
+      if(empty($form['field_espe_requiremets']['und']['#default_value'])){
+        $field_collection_requirements_publications = _load_requirements_for_user(  entity_metadata_wrapper('user',$user->uid) );
+        $field_collection_requiremets = $field_collection_requirements_publications->field_requisitos_publicaciones->value();
+        if( !empty( $field_collection_requiremets ) ){
+          foreach( $field_collection_requiremets as $key => $requirement_publication ){
+              $publication_requirement = entity_metadata_wrapper('field_collection_item', $requirement_publication->item_id );
+              foreach($publication_requirement->field_condicion->value() as $key => $condition){
+                  $item_condition = entity_metadata_wrapper('field_collection_item', $condition->item_id );
+                  if( $item_condition->field_concept_type->value()[0]->tid  ==  20662){
+                    $validate = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
+                  }
+              }
+          }
+        $form['field_espe_requiremets']['und']['#default_value'] = ($validate) ? 1:0;        
+      }
+    }
+      
     break;
   }
 }
+
+
 
 function banrep_gestion_ppi_user_presave(&$edit, $account, $category)
 {
