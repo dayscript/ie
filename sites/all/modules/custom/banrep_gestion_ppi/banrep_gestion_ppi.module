@@ -101,6 +101,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
         $form['field_descuento_puntos_academico']['#access']  = false;
         $form['field_espe_requiremets']['#access'] = false;
         
+
       }else{
         $select_field_beneficios_options = 
         taxonomy_term_load($form['field_beneficios']['und']['#default_value'][0]);
@@ -129,7 +130,9 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
               }
           }
         $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[0]) ? 1:0;
+        $form['field_espe_req_coordinador']['#disabled'] = TRUE;
         $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[1]) ? 1:0;
+        $form['field_espe_req_contribuyente']['#disabled'] = TRUE;
       }
     }
       

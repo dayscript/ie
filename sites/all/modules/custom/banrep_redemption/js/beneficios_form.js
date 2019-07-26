@@ -10,8 +10,7 @@
         var max_value_br = parseInt($('#edit-field-puntaje-br-und-0-value').val());
         var max_academico = parseInt($('#edit-field-puntaje-acumulado-und-0-value').val());
         var max_general = parseInt($('#edit-field-puntaje-und-0-value').val());
-
-
+        
         select.change(function(){
             var tid = $(this).val();
             if( tid != '_none'){
@@ -24,6 +23,9 @@
                 $(general).val(0);
             }
         })
+
+
+
 
         // br.change(function(){
         //     if( parseInt($(this).val()) > max_value_br ){
