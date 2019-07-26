@@ -9,8 +9,9 @@ function _verificate_users_requiremets_completed(){
     $entity_type = 'user';
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'user')
-          ->propertyCondition('uid',0,'<>');
+          ->propertyCondition('uid',0,'<>')
         //   ->propertyCondition('uid',19,'=');
+         ->fieldCondition('field_estado_plan_carrera', 'value', 'MARCADO_PARA_ REVISION', '!=');
     $users = $query->execute()['user'];
        
     foreach($users as $uid => $user){
