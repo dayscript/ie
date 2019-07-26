@@ -160,14 +160,14 @@ function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_m
 
     foreach($fields as $key => $field){
       if( $form_state['values'][$key][LANGUAGE_NONE][0]['value'] > $form_state['values'][$field][LANGUAGE_NONE][0]['value']  ){
-        form_set_error($key, 'No se puede crear la solicitud debido a que no cumple con los requisitos');
+        form_set_error($key, 'No se puede crear la solicitud debido a que no cumple con los requisitos de puntaje');
         return;
       } 
     }
 
     if($form_state['values']['field_espe_req_coordinador'][LANGUAGE_NONE][0]['value'] == 0 &&
        $form_state['values']['field_espe_req_contribuyente'][LANGUAGE_NONE][0]['value'] == 0 ){
-        form_set_error('field_espe_req_coordinador', 'No se puede crear la solicitud debido a que no cumple con los requisitos');
+        form_set_error('field_espe_req_coordinador', 'No se puede crear la solicitud debido a que no cumple con los requisitos de revista espe');
        }
   }
 
