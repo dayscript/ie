@@ -131,6 +131,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 
 
                     $validate[$item_condition->field_concept_type->value()[0]->tid] = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
+                    dpm($validate);
                   }
               }
           }
