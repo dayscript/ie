@@ -292,7 +292,7 @@ function _calc_results_of_condition($user_entity,$item_condition){
                 }
             }
 
-            if($user_points < $item_condition->field_cantidad_puntaje->value() ){
+            if($user_points <= $item_condition->field_cantidad_puntaje->value() ){
                 return false;
             }
 
