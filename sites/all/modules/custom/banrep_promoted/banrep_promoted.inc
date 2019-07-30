@@ -261,7 +261,7 @@ function _calc_results_of_condition($user_entity,$item_condition){
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle','pub_user')
-        ->fieldCondition('field_user_reference','target_id',$user,'=');
+        ->fieldCondition('field_user_reference','target_id',$user_entity->uid->value(),'=');
     $result = $query->execute();
     $user_pubs = array_keys($result['node']);
 
