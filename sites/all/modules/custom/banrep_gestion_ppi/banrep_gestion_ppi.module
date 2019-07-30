@@ -128,13 +128,16 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
                       $item_condition->field_concept_type->value()[0]->tid  ==  20723||
                       $item_condition->field_concept_type->value()[0]->tid  ==  20722
                      ){
-                    $validate[] = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
+
+
+
+                    $validate[$item_condition->field_concept_type->value()[0]->tid] = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
                   }
               }
           }
-        $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[0]) ? 1:0;
+        $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[20722]) ? 1:0;
         $form['field_espe_req_coordinador']['#disabled'] = TRUE;
-        $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[1]) ? 1:0;
+        $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[20723]) ? 1:0;
         $form['field_espe_req_contribuyente']['#disabled'] = TRUE;
       }
     }
