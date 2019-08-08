@@ -741,6 +741,8 @@ function _generate_response_sepi($pub_user){
     "tipopub"       => ( !empty($types[$publication->field_pub_type->value()]) ) ? $types[$publication->field_pub_type->value()] : '',
     "clasificacion" => ( !empty($publication->field_concept_type->value() ) ) ? $publication->field_concept_type->value()[0]->name : '',
     "concepto"      => ( !empty($publication->field_concept->value() ) ) ? $publication->field_concept->value()->title : '',
+    "categoria"     => ( isset($publication->field_concept_type->value()[0]->name) ) ? $publication->field_concept_type->value()[0]->name:"",
+    "isbn"          => ( !empty($publication->field_isbn->value() ) ) ? $publication->field_isbn->value() : '',
     "autor"         => [ 
           'nombre'  => ( !empty($user->field_full_name->value() ) ) ? $user->field_full_name->value(): '',
           'correo'  => ( !empty($user->name->value() ) ) ? $user->name->value() : '', 
