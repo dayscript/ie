@@ -145,7 +145,7 @@
                     $codes = [];
                     $terms = explode(',', $publication['contents']->cod_jel);
                     foreach ($terms as $key => $term) {
-                        $codes[] =  _get_taxonomy_by_name(trim($term), $vocabulary = 'areas_tematicas');
+                        $codes[] =  _get_taxonomy_by_name(trim($term), $vocabulary = 'jel');
                     }
                    $collection_wrapper->field_areas_tematicas->set($codes);
                 }
