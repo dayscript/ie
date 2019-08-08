@@ -746,7 +746,7 @@ function _generate_response_sepi($pub_user){
           'correo'  => ( !empty($user->name->value() ) ) ? $user->name->value() : '', 
           'id'      => ( !empty($user->field_document_number->value() ) ) ? $user->field_document_number->value() : '',
           'rol'     => ( isset($author_rol) && !empty($author_rol) ) ? $author_rol : '',
-          'puntaje' => ( !empty($user_publication->field_puntaje->value() ) ) ? (string)$user_publication->field_puntaje->value() : 0,
+          'puntaje' => ( !empty($user_publication->field_puntaje->value() ) ) ? (string)$user_publication->field_puntaje->value() : "0",
     ],
     "url"                => ( !empty( $publication->field_url->value() ) ) ? $publication->field_url->value()['url'] : '',
     "doi"                => ( !empty($publication->field_doi->value()) ) ? $publication->field_doi->value()['url'] : '',
