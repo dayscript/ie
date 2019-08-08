@@ -251,7 +251,10 @@
         $user->field_puntaje_br = $user->field_puntaje_br->value() + $pjnew;
         $user->save();
 
-
+        $file_name = 'entrega'.$publication['contents']->identificador_sepi.'_'.$user->field_document_number->value().'.json';
+        $enviroment = 'dev';
+        $path_out = 'private://'.'sepi-out-'.$enviroment;
+        file_save_data(json_encode($publication['contents']), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
         return $publication;
 
 
