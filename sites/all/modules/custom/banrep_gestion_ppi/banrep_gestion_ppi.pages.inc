@@ -630,7 +630,7 @@ function load_acumula_points($tuid, $uruta) {
     $field_collection_item_value = $field_puntaje['value']; 
     $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
     if ($uruta == $field_collection_value[key($field_collection_value)]->field_ruta[LANGUAGE_NONE][0]['target_id']) {
-      switch ($field_collection_value[key($field_collection_value)]->field_acomula_en[LANGUAGE_NONE][0]['field_name']) {
+      switch ($field_collection_value[key($field_collection_value)]->field_acumula_en[LANGUAGE_NONE][0]['field_name']) {
         case 'field_puntaje_acumulado':
          $type = 'Academico';
           break;

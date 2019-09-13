@@ -284,8 +284,8 @@ function get_concept_type($rule, $uid){
         foreach ($concept_type->field_puntajes[LANGUAGE_NONE] as $k => $v) {
           if($puntajes = field_collection_item_load($v['value'])){
             if($puntajes->field_ruta[LANGUAGE_NONE][0]['target_id']== $idRuta){
-              if(isset($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name'])){
-                $result = get_name_acumulado($puntajes->field_acomula_en[LANGUAGE_NONE][0]['field_name']);
+              if(isset($puntajes->field_acumula_en[LANGUAGE_NONE][0]['field_name'])){
+                $result = get_name_acumulado($puntajes->field_acumula_en[LANGUAGE_NONE][0]['field_name']);
                 break;
               }
             }
