@@ -4,7 +4,7 @@
      * Implements hook_cron();
     */
     function banrep_sepi_cron(){
-        $enviroment = 'dev';
+        $enviroment = 'prod';
         $path_in = 'private://'.'sepi-in-'.$enviroment;
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         $files_in_folder = [];
@@ -556,7 +556,7 @@
      * function to get tid in author taxonomy
      */
     function _get_autor_for_mail($mail){
-        if($user = user_load_by_mail($mail)) {
+        if($user = user_load_by_name($mail)) {
             $query = new EntityFieldQuery();
             $query->entityCondition('entity_type', 'taxonomy_term')
             ->entityCondition('bundle', 'autores_externos')

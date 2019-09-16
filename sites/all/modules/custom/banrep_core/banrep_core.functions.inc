@@ -691,7 +691,7 @@ function _generate_response_sepi($pub_user){
   }
 
   $file_name = 'entrega'.$sepi.'_'.$user->field_document_number->value().'.json';
-  $enviroment = 'dev';
+  $enviroment = 'prod';
   $path_out = 'private://'.'sepi-out-'.$enviroment;
   $jel_code = '';
   $tags = '';
