@@ -57,6 +57,7 @@
                 break;
 
             case 'Capítulo libro':
+            case 'Capítulo de libro':
                 _create_capitulo_de_libro($publication, $node_wrapper, $publication_father );
                 break;
 
