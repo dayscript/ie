@@ -154,7 +154,7 @@ if ( isset($node->field_other_co_authors['und']) ) {
   // foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
   //   $visible_authors .= $info_autor_vis['name_format'] . ', ';
   // }
-
+  dpm($co_authors);
   foreach ($co_authors as $key_vis => $info_autor_vis) {
     $visible_authors .= $info_autor_vis['name_format'] . ', ';
   }
