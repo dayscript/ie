@@ -139,6 +139,9 @@ if ( isset($node->field_other_co_authors['und']) ) {
     }
   }
 }
+if($node->nid = 25280){
+    dpm($co_authors);
+}
 
 
 
