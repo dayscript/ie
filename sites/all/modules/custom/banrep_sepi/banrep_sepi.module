@@ -354,7 +354,7 @@
         
         // $node_wrapper->field_role_within_publication->set();
         
-        $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
+        $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id );
         
         if( !is_null($author_tid) ){ 
             $node_wrapper->field_main_author_reference = $author_tid;
@@ -556,14 +556,26 @@
     /**
      * function to get tid in author taxonomy
      */
-    function _get_autor_for_mail($mail){
+    function _get_autor_for_mail($mail, $id_sepi = null){
         if($user = user_load_by_name($mail)) {
             $query = new EntityFieldQuery();
             $query->entityCondition('entity_type', 'taxonomy_term')
             ->entityCondition('bundle', 'autores_externos')
             ->fieldCondition('field_user_reference', 'target_id', $user->uid, '=');
             $result = $query->execute();
-            return key($result['taxonomy_term']);
+            if(key($result['taxonomy_term'])){
+                return key($result['taxonomy_term']);
+            }else{
+                $query = new EntityFieldQuery();
+                $query->entityCondition('entity_type', 'taxonomy_term')
+                ->entityCondition('bundle', 'autores_externos')
+                ->fieldCondition('field_sepi', 'value', $id_sepi, '=');
+                $result = $query->execute();
+                if(key($result['taxonomy_term'])){
+                    return key($result['taxonomy_term']);
+                }
+            }
+            
         }else{
             return null;
         }
