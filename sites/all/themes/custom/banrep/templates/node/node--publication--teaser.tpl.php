@@ -157,7 +157,7 @@ if($node->nid == 25280){
   // foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
   //   $visible_authors .= $info_autor_vis['name_format'] . ', ';
   // }
-  dpm($co_authors);
+  
   foreach ($co_authors as $key_vis => $info_autor_vis) {
     $visible_authors .= $info_autor_vis['name_format'] . ', ';
   }
