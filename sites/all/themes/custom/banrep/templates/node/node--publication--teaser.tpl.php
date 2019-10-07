@@ -126,7 +126,8 @@ if ($node->field_main_author_reference['und']) {
   }
 }
 if ( isset($node->field_other_co_authors['und']) ) {
-  if ($node->field_other_co_authors['und'] && $tid_role_edition) {
+  // if ($node->field_other_co_authors['und'] && $tid_role_edition) {
+  if ($node->field_other_co_authors['und']) {
     foreach ($node->field_other_co_authors['und'] as $key_other => $co_author) {
       $full_name = array(
         array(
