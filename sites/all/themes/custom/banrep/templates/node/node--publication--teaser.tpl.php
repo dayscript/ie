@@ -151,9 +151,14 @@ if ( isset($node->field_other_co_authors['und']) ) {
 
   $limit = 3;
   $visible_authors = '';
-  foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
+  // foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
+  //   $visible_authors .= $info_autor_vis['name_format'] . ', ';
+  // }
+
+  foreach ($co_authors as $key_vis => $info_autor_vis) {
     $visible_authors .= $info_autor_vis['name_format'] . ', ';
   }
+
   $hidden_authors = '';
   if (count($co_authors) > $limit) {
     foreach (array_slice($co_authors, $limit) as $key_hidd => $info_autor_hidd) {
