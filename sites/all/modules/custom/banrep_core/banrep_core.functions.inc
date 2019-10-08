@@ -729,9 +729,10 @@ function _generate_response_sepi($pub_user){
     '201'   => 'Artículo' ,
     '206'   => 'Libro',
     '2951'  => 'Documento de trabajo',
-    '20662' => 'Revista Espe' ,
+    '20662' => 'Revista ESPE' ,
     '20754' => 'Documento en conferencia',
     '20708' => 'Otros Documentos',
+    '20685' => 'Revista ESPE'
   );
   
   $save_data = [ 
