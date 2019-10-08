@@ -11010,6 +11010,10 @@ form .form-textarea {
   border-bottom: none !important;
 }
 
+.group-autores-destacado .field-collection-view .view-mode-nombre_apellidos {
+  float: left;
+}
+
 #banrep-plan-carrera-form .group-requirements-publications {
   border: 1px dashed;
   padding: 10px;

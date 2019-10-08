@@ -203,7 +203,10 @@
     display: inline-block;
     margin: 0 10px 0 0;
     padding: 0!important;
-    border-bottom: none !important
+    border-bottom: none !important;
+    .view-mode-nombre_apellidos{
+      float: left;
+    }
   }
 }
 
