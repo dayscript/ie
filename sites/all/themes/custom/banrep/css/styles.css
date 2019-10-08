@@ -11004,6 +11004,13 @@ form .form-textarea {
   top: 4.3em;
 }
 
+.group-autores-destacado .field-collection-view {
+  display: inline-block;
+  margin: 0 10px 0 0;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
 #banrep-plan-carrera-form .group-requirements-publications {
   border: 1px dashed;
   padding: 10px;

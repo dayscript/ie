@@ -203,3 +203,10 @@
 #block-superfish-1 .sf-menu li:hover > ul, #block-superfish-1 .sf-menu li.sfHover > ul {
   top: 4.3em;
 }
+
+.group-autores-destacado .field-collection-view {
+  display: inline-block;
+  margin: 0 10px 0 0;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
