@@ -210,3 +210,7 @@
   padding: 0 !important;
   border-bottom: none !important;
 }
+
+.group-autores-destacado .field-collection-view .view-mode-nombre_apellidos {
+  float: left;
+}
