@@ -596,8 +596,7 @@
                 return key($result['taxonomy_term']);
             }
         }
-            return null;
-        
+        return null;
     }
 
     /**
