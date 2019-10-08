@@ -4498,7 +4498,6 @@ form table ul {
 form table th.form-table__narrow-column,
 td .checkbox,
 th .checkbox {
-  width: -moz-min-content;
   width: -webkit-min-content;
   text-align: center;
 }
