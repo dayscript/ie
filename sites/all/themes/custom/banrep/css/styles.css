@@ -11029,7 +11029,7 @@ form .form-textarea {
 }
 
 .view-display-id-block .field-content div.field-collection-view {
-  margin-bottom: 10px;
+  margin: 0 0 10px 0px;
   border-bottom: none !important;
   padding: 0;
 }
