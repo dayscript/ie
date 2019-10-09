@@ -227,39 +227,36 @@
   margin-bottom: 0.5em;
 }
 
-.view-display-id-block_4 .field-content > div{
-  margin:0;
+.view-display-id-block_4 { 
+ .field-content {
+    & > div{
+      margin:0;
 
-   }
-
-.view-display-id-block_4 .field-content .view-mode-profile_resume{
-  padding:0;
-   }
-
-.view-display-id-block_4 .field-content .field-name-field-co-autor{
-  padding:0;
-   }
-
-.view-display-id-block_4 .field-content .group-left{
-  padding:0;
-  width: auto;
-  margin-right: 10px;
+    }
+    .view-mode-profile_resume{
+      padding:0;
+    }
+    .field-name-field-co-autor{
+      padding:0;
+    }
+    .group-left{
+      padding:0;
+      width: auto;
+      margin-right: 10px;
+    }
+    .group-right{
+      padding:0;
+      width:66.666%
+    }
+    .field-name-title a{
+      font-weight: bold;
+      color: #003E6C;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    .field-name-field-city a{
+      color: #ce4f57;
+      font-size:15px
+    }
   }
-.view-display-id-block_4 .field-content .group-right{
-  padding:0;
-  width:66.666%
-   }
-
-.view-display-id-block_4 .field-content .field--name-field-full-name2{
-  font-weight: bold;
-    color: #003E6C;
-    margin-top: 10px;
-    display: inline-block;
 }
-.view-display-id-block_4 .field-name-field-city a{
-  
-  color: #ce4f57;
-  font-size:15px
-}
-
-
