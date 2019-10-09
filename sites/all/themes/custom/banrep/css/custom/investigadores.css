@@ -215,6 +215,10 @@
   float: left;
 }
 
+#block-views-autor-investigacion-block .view-display-id-block {
+  display: none;
+}
+
 .field-collection-view.clearfix.view-mode-author-field-collection {
   background: #fff;
   font-size: 0.9em;
@@ -224,44 +228,40 @@
   margin-bottom: 0.5em;
 }
 
-.view-display-id-block_4 .views-row-1 {
+.view-display-id-block .views-row-1 {
   background: #818284 !important;
 }
 
-.view-display-id-block_4 .field-content div.field-collection-view {
+.view-display-id-block .field-content div.field-collection-view {
   margin-bottom: 10px;
   border-bottom: none !important;
   padding: 0;
 }
 
-.view-display-id-block_4 .field-content > div {
-  margin: 0;
-}
-
-.view-display-id-block_4 .field-content .view-mode-profile_resume {
+.view-display-id-block .field-content div.field-collection-view .view-mode-profile_resume {
   padding: 0;
 }
 
-.view-display-id-block_4 .field-content .field-name-field-co-autor {
+.view-display-id-block .field-content div.field-collection-view .field-name-field-co-autor {
   padding: 0;
 }
 
-.view-display-id-block_4 .field-content .group-left {
+.view-display-id-block .field-content div.field-collection-view .group-left {
   padding: 0;
   width: auto;
   margin-right: 10px;
 }
 
-.view-display-id-block_4 .field-content .group-right {
+.view-display-id-block .field-content div.field-collection-view .group-right {
   padding: 0;
   width: 66.666%;
 }
 
-.view-display-id-block_4 .field-content .field-type-image img {
+.view-display-id-block .field-content div.field-collection-view .field-type-image img {
   display: block;
 }
 
-.view-display-id-block_4 .field-content .field-name-title a {
+.view-display-id-block .field-content div.field-collection-view .field-name-title a {
   font-weight: bold;
   color: #3079c1;
   margin-top: 10px;
@@ -270,13 +270,13 @@
   line-height: 1.4em;
 }
 
-.view-display-id-block_4 .field-content .field-name-field-city {
+.view-display-id-block .field-content div.field-collection-view .field-name-field-city {
   color: #d3656b;
   font-size: 1.1em;
   line-height: 1.4em;
 }
 
-.view-display-id-block_4 .field-content .field-name-field-position {
+.view-display-id-block .field-content div.field-collection-view .field-name-field-position {
   color: #8e9295;
   font-size: 1.1em;
   line-height: 1.4em;
