@@ -11047,9 +11047,8 @@ form .form-textarea {
   width: 66.666%;
 }
 
-.view-display-id-block_4 .field-content h2 {
-  color: #0079c1;
-  font-size: 15px;
+.view-display-id-block_4 .field-content .field--name-field-full-name2 {
+  font-weight: bold;
 }
 
 .view-display-id-block_4 .field-name-field-city a {
