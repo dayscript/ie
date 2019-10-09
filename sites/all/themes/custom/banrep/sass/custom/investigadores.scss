@@ -223,6 +223,10 @@
 
 
 .view-display-id-block {
+
+  span.views-label{
+    display: none;
+  }
   .views-row-1{
     background: #818284!important;
   }
