@@ -11051,11 +11051,20 @@ form .form-textarea {
   color: #003E6C;
   margin-top: 10px;
   display: inline-block;
+  font-size: 1em;
+  line-height: 1.4em;
 }
 
-.view-display-id-block_4 .field-content .field-name-field-city a {
-  color: #ce4f57;
-  font-size: 15px;
+.view-display-id-block_4 .field-content .field-name-field-city {
+  color: #3681c5;
+  font-size: 1em;
+  line-height: 1.4em;
+}
+
+.view-display-id-block_4 .field-content .field-name-field-position {
+  color: #8e9295;
+  font-size: 1em;
+  line-height: 1.4em;
 }
 
 #banrep-plan-carrera-form .group-requirements-publications {
