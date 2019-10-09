@@ -229,61 +229,63 @@
   margin-bottom: 0.5em;
 }
 
+
 .view-display-id-block {
   .views-row-1{
     background: #818284!important;
   }
   
- .field-content {
+  .field-content {
 
-  div.field-collection-view{
-    margin-bottom: 10px;
-    border-bottom: none!important;
-    padding:0;
-  }
-
-    & > div{
-      margin:0;
-
-    }
-    .view-mode-profile_resume{
+    div.field-collection-view{
+      margin-bottom: 10px;
+      border-bottom: none!important;
       padding:0;
-    }
-    .field-name-field-co-autor{
-      padding:0;
-    }
-    .group-left{
-      padding:0;
-      width: auto;
-      margin-right: 10px;
-    }
-    .group-right{
-      padding:0;
-      width:66.666%
-    }
-
-    .field-type-image img{
-      display: block;
-    }
     
-    .field-name-title a{
-      font-weight: bold;
-      color: #3079c1;
-      margin-top: 10px;
-      display: inline-block;
-      font-size: 1.1em;
-      line-height: 1.4em;
-    }
-    .field-name-field-city {
-      color: #d3656b;
-      font-size: 1.1em;
-      line-height: 1.4em;
-    }
-    .field-name-field-position {
-      color: #8e9295;
-      font-size: 1.1em;
-    line-height: 1.4em;
 
+      // & > div{
+      //   margin:0;
+
+      // }
+      .view-mode-profile_resume{
+        padding:0;
+      }
+      .field-name-field-co-autor{
+        padding:0;
+      }
+      .group-left{
+        padding:0;
+        width: auto;
+        margin-right: 10px;
+      }
+      .group-right{
+        padding:0;
+        width:66.666%
+      }
+
+      .field-type-image img{
+        display: block;
+      }
+      
+      .field-name-title a{
+        font-weight: bold;
+        color: #3079c1;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 1.1em;
+        line-height: 1.4em;
+      }
+      .field-name-field-city {
+        color: #d3656b;
+        font-size: 1.1em;
+        line-height: 1.4em;
+      }
+      .field-name-field-position {
+        color: #8e9295;
+        font-size: 1.1em;
+      line-height: 1.4em;
+
+      }
     }
   }
 }
