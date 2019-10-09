@@ -11024,6 +11024,15 @@ form .form-textarea {
   margin-bottom: 0.5em;
 }
 
+.view-display-id-block_4 .views-row-1 {
+  background: #818284;
+}
+
+.view-display-id-block_4 .field-content div.field-collection-view {
+  margin: 0;
+  border-bottom: none !important;
+}
+
 .view-display-id-block_4 .field-content > div {
   margin: 0;
 }
@@ -11045,6 +11054,10 @@ form .form-textarea {
 .view-display-id-block_4 .field-content .group-right {
   padding: 0;
   width: 66.666%;
+}
+
+.view-display-id-block_4 .field-content .field-type-image img {
+  display: block;
 }
 
 .view-display-id-block_4 .field-content .field-name-title a {
