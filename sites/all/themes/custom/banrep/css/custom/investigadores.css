@@ -247,9 +247,11 @@
   width: 66.666%;
 }
 
-.view-display-id-block_4 .field-content h2 {
-  color: #0079c1;
-  font-size: 15px;
+.view-display-id-block_4 .field-content .field--name-field-full-name2 {
+  font-weight: bold;
+  color: #003E6C;
+  margin-top: 10px;
+  display: inline-block;
 }
 
 .view-display-id-block_4 .field-name-field-city a {
