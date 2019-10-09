@@ -211,7 +211,9 @@
 }
 
 #block-views-autor-investigacion-block{
-
+.view-display-id-block{
+  display:none;
+}
 }
 
 .view-display-id-block_4{
@@ -227,7 +229,7 @@
   margin-bottom: 0.5em;
 }
 
-.view-display-id-block_4 {
+.view-display-id-block {
   .views-row-1{
     background: #818284!important;
   }
