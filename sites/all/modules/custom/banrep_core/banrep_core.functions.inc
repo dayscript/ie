@@ -735,7 +735,7 @@ function _generate_response_sepi($pub_user){
     '20685' => 'Revista ESPE'
   );
   
-  $publication_type = taxonomy_term_load( $publication->field_pub_type->value() );
+  //$publication_type = taxonomy_term_load( $publication->field_pub_type->value() );
 
   
 
@@ -743,7 +743,7 @@ function _generate_response_sepi($pub_user){
     "keywords"      => ( isset($tags) && !empty($tags) ) ? $tags : '',
     "cod_jel"       => ( isset($jel_code ) && !empty($jel_code ) ) ? $jel_code : '',
     "titulo"        => ( !empty($publication->title->value() ) ) ? $publication->title->value() : '',
-    "tipopub"       => ( $publication_type ) ? $publication_type->name : '',
+    "tipopub"       => ( isset($types[$publication->field_pub_type->value()]) ) ? $types[$publication->field_pub_type->value()] : '',
     "clasificacion" => ( !empty($publication->field_concept_type->value() ) ) ? $publication->field_concept_type->value()[0]->name : '',
     "concepto"      => ( !empty($publication->field_concept->value() ) ) ? $publication->field_concept->value()->title : '',
     "categoria"     => ( isset($publication->field_concept_type->value()[0]->name) ) ? $publication->field_concept_type->value()[0]->name:"",
