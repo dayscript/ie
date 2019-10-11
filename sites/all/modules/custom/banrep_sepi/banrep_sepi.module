@@ -120,7 +120,7 @@
 
     function _create_trabajo_en_curso($publication){
         if( !empty($publication['contents']->autor_principal) ){
-            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo ));
+            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id) );
             if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
                 
                 $user = user_load($author_tid->field_user_reference['und'][0]['target_id']);
