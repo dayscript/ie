@@ -577,8 +577,16 @@
             }
             
         }else{
-            return null;
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'taxonomy_term')
+            ->entityCondition('bundle', 'autores_externos')
+            ->fieldCondition('field_sepi', 'value', $id_sepi, '=');
+            $result = $query->execute();
+            if(key($result['taxonomy_term'])){
+                return key($result['taxonomy_term']);
+            }
         }
+        return null;
     }
 
 
