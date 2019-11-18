@@ -214,7 +214,7 @@
     
         if( isset($category_concept) ) {
            $node_wrapper->field_concept_category =  $category_concept;
-        }
+        } 
 
         if( $publication['contents']->Aprobadopor ){
             $aproved_tid =taxonomy_term_load(_get_autor_for_mail( $publication['contents']->Aprobadopor ));
@@ -224,7 +224,7 @@
          }
 
         if( !empty($publication['contents']->autor_principal) ){
-            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo ));
+            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id ));
             if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
                 $node_wrapper->author = $author_tid->field_user_reference['und'][0]['target_id'];
                 $node_wrapper->field_puntaje = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null ;
