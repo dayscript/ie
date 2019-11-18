@@ -184,7 +184,7 @@
         $node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
 
-        $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo );
+        $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id );
         
         if( !is_null($author_tid) ){ 
             $node_wrapper->field_usuario = $author_tid;
