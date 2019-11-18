@@ -142,8 +142,8 @@
                 $collection_wrapper->field_objetivo_trabajo   = $publication['contents']->objetivo;
                 $collection_wrapper->field_identificador_sepi = $publication['contents']->identificador_sepi;
                 $collection_wrapper->field_estado_trabajo     = $publication['contents']->estado;
-                $collection_wrapper->field_act_date_end       = strtotime($publication['contents']->fecha_inicio);
-                $collection_wrapper->field_act_date_start     = strtotime($publication['contents']->fecha_cierre);
+                $collection_wrapper->field_act_date_end       = strtotime($publication['contents']->fecha_cierre);
+                $collection_wrapper->field_act_date_start     = strtotime($publication['contents']->fecha_inicio);
                 if( !empty($publication['contents']->cod_jel) ){
                     $codes = [];
                     $terms = explode(',', $publication['contents']->cod_jel);
