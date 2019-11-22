@@ -223,6 +223,10 @@
   margin-bottom: 0.5em;
 }
 
+.view-id-ruta_del_investigador .view-display-id-block span.views-label {
+  display: inline-block !important;
+}
+
 .view-display-id-block span.views-label {
   display: none;
 }
@@ -280,3 +284,5 @@
   font-size: 1.1em;
   line-height: 1.4em;
 }
+
+/*# sourceMappingURL=investigadores.css.map */
