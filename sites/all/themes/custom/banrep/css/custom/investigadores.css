@@ -299,4 +299,10 @@
 
 .view-id-lista_de_publicaciones .field-items .field-items {
   display: inline-block;
+  margin: 0px 10px;
+  float: left;
+}
+
+.view-id-lista_de_publicaciones .field-items .field-items .vocabulary-autores-externos {
+  float: left;
 }
