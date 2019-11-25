@@ -303,6 +303,12 @@
   float: left;
 }
 
+.view-id-lista_de_publicaciones .field-items .field-items .field {
+  display: inline-block;
+}
+
 .view-id-lista_de_publicaciones .field-items .vocabulary-autores-externos {
   float: left;
 }
+
+/*# sourceMappingURL=investigadores.css.map */

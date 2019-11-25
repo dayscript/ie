@@ -11101,6 +11101,10 @@ form .form-textarea {
   float: left;
 }
 
+.view-id-lista_de_publicaciones .field-items .field-items .field {
+  display: inline-block;
+}
+
 .view-id-lista_de_publicaciones .field-items .vocabulary-autores-externos {
   float: left;
 }
@@ -11485,3 +11489,5 @@ form .form-textarea {
 .footer-nuevo .text-right {
   text-align: right;
 }
+
+/*# sourceMappingURL=styles.css.map */
