@@ -1,0 +1,314 @@
+.filtros-vista {
+  padding: 20px 20px 10px;
+  margin-bottom: 10px;
+}
+
+.filtros-vista .views-exposed-form .views-exposed-widget {
+  float: none;
+  display: block;
+  padding-right: 0;
+}
+
+.filtros-vista .form-text {
+  width: 100%;
+}
+
+.filtros-vista .form-select {
+  width: 100%;
+}
+
+.filtros-vista .form-submit {
+  background-color: color("naranja-brc");
+  color: white;
+}
+
+.filtros-vista label {
+  display: block;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.item-grupo {
+  display: block;
+  position: relative;
+  margin-bottom: 30px;
+  border-bottom: 2px dotted #e6e6e6;
+  padding-bottom: 25px;
+}
+
+.item-grupo img {
+  display: block;
+  vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 19px 0px;
+  padding: 2px;
+  border: 1px solid color("grey");
+}
+
+.item-grupo .titulo {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  text-transform: inherit;
+}
+
+.item-grupo .titulo a {
+  color: #284874;
+  font-weight: 600;
+  line-height: 21px;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.item-grupo .titulo a:hover {
+  text-decoration: underline;
+}
+
+.item-grupo .box-color-group {
+  color: #fff;
+  text-align: center;
+  font-weight: 300;
+  line-height: 21px;
+  font-size: 13px;
+}
+
+.item-grupo p {
+  font-size: 12px;
+  margin: 0.6rem 0;
+  line-height: 17px;
+}
+
+.item-grupo.views-row-last {
+  border-bottom: none;
+}
+
+.blog-grupo {
+  background: color("grey-extra-light");
+  padding-bottom: 10px !important;
+}
+
+.blog-grupo .block__title {
+  background-color: color("azul-oscuro-brc");
+  color: white;
+  border: none;
+  padding: 5px 10px;
+}
+
+.blog-grupo .pd-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.item-blog {
+  margin-bottom: 20px;
+  border-left: 3px solid color("naranja-brc");
+  padding: 0 10px;
+  margin-left: 10px;
+}
+
+.item-blog .fecha {
+  font-size: 11px;
+  color: color("grey");
+}
+
+.item-blog .titulo {
+  margin: 0;
+  padding: 0;
+}
+
+.item-blog .titulo a {
+  color: color("azul-oscuro-brc");
+  text-decoration: none;
+}
+
+.item-blog .titulo a:hover {
+  text-decoration: underline;
+}
+
+.item-blog .titulo a:visited {
+  color: color("azul-oscuro-brc");
+}
+
+.item-blog.views-row-last {
+  border-bottom: none;
+}
+
+#user-training-entityform-edit-form table tr {
+  background-color: #fff !important;
+}
+
+#user-training-entityform-edit-form .group-header, #user-training-entityform-edit-form .group-left, #user-training-entityform-edit-form .group-right, #user-training-entityform-edit-form .group-footer {
+  display: inline-block;
+  margin: 20px 0px;
+}
+
+#user-training-entityform-edit-form .group-header > div {
+  min-width: 100%;
+  margin: 10px 0px;
+}
+
+#user-training-entityform-edit-form .group-footer > div {
+  max-width: 330px;
+  display: inline-block;
+  margin: 17px 50px;
+}
+
+#user-training-entityform-edit-form #edit-field-studies-carried-out-und-0-field-fecha-inicio-estudio-und-0-value label {
+  display: none;
+}
+
+#user-training-entityform-edit-form #edit-field-studies-carried-out-und-0-field-fecha-fin-estudio-und-0-value label {
+  display: none;
+}
+
+.view-ruta-del-investigador li div .field-content {
+  color: #860024;
+}
+
+.view-ruta-del-investigador li div .field-content a {
+  color: #860024;
+}
+
+#block-superfish-1 .block__title {
+  display: none;
+}
+
+#block-superfish-1 ul li {
+  background-color: #163e6b;
+  font-size: 0.6875rem;
+  line-height: 1.5rem;
+  text-transform: uppercase;
+  border-right: 1px solid #0079c1;
+  margin: 0;
+  padding: 0;
+}
+
+#block-superfish-1 ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 18px;
+  margin: 0;
+  display: block;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+#block-superfish-1 ul li a .sf-sub-indicator {
+  position: initial;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#block-superfish-1 .sf-menu li:hover > ul, #block-superfish-1 .sf-menu li.sfHover > ul {
+  top: 4.3em;
+}
+
+.group-autores-destacado .field-collection-view {
+  display: inline-block;
+  margin: 0 10px 0 0;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.group-autores-destacado .field-collection-view .view-mode-nombre_apellidos {
+  float: left;
+}
+
+.field-collection-view.clearfix.view-mode-author-field-collection {
+  background: #fff;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  overflow: hidden;
+  margin-bottom: 0.5em;
+}
+
+.view-id-ruta_del_investigador .view-content .views-row-1 {
+  background: #fff !important;
+}
+
+.view-id-ruta_del_investigador span.views-label {
+  display: inline-block !important;
+}
+
+.view-display-id-block span.views-label {
+  display: none;
+}
+
+.view-display-id-block .views-row-1 {
+  background: #818284;
+}
+
+.view-display-id-block .field-content div.field-collection-view {
+  margin: 0 0 10px 0px;
+  border-bottom: none !important;
+  padding: 0;
+}
+
+.view-display-id-block .field-content div.field-collection-view .view-mode-profile_resume {
+  padding: 0;
+}
+
+.view-display-id-block .field-content div.field-collection-view .field-name-field-co-autor {
+  padding: 0;
+}
+
+.view-display-id-block .field-content div.field-collection-view .group-left {
+  padding: 0;
+  width: auto;
+  margin-right: 10px;
+}
+
+.view-display-id-block .field-content div.field-collection-view .group-right {
+  padding: 0;
+  width: 66.666%;
+}
+
+.view-display-id-block .field-content div.field-collection-view .field-type-image img {
+  display: block;
+}
+
+.view-display-id-block .field-content div.field-collection-view .field-name-title a {
+  font-weight: bold;
+  color: #3079c1;
+  margin-top: 10px;
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 1.4em;
+}
+
+.view-display-id-block .field-content div.field-collection-view .field-name-field-city {
+  color: #d3656b;
+  font-size: 1.1em;
+  line-height: 1.4em;
+}
+
+.view-display-id-block .field-content div.field-collection-view .field-name-field-position {
+  color: #8e9295;
+  font-size: 1.1em;
+  line-height: 1.4em;
+}
+
+.view-id-ruta_del_investigador .view-content li.views-row.views-row-1.views-row-odd.views-row-first.views-row-last.col-lg-12.col-md-12 {
+  background-color: white !important;
+}
+
+.view-id-ruta_del_investigador .view-content .view-display-id-block span.views-label {
+  display: inline-block !important;
+}
+
+.view-id-lista_de_publicaciones ol {
+  padding: 0 !important;
+}
+
+.view-id-lista_de_publicaciones ol li {
+  list-style: none;
+}
+
+.view-id-lista_de_publicaciones ol li .field {
+  display: inline-block;
+  float: left;
+  margin: 0 10px 0 0;
+}
+
+/*# sourceMappingURL=investigadores.css.map */
