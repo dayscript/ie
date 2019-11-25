@@ -292,3 +292,7 @@
 .view-id-ruta_del_investigador .view-content li.views-row.views-row-1.views-row-odd.views-row-first.views-row-last.col-lg-12.col-md-12 {
   background-color: white !important;
 }
+
+.view-id-ruta_del_investigador .view-content .view-display-id-block span.views-label {
+  display: inline-block !important;
+}

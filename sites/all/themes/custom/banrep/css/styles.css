@@ -11092,6 +11092,10 @@ form .form-textarea {
   background-color: white !important;
 }
 
+.view-id-ruta_del_investigador .view-content .view-display-id-block span.views-label {
+  display: inline-block !important;
+}
+
 #banrep-plan-carrera-form .group-requirements-publications {
   border: 1px dashed;
   padding: 10px;
