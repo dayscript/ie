@@ -307,7 +307,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         switch ($condition['concept']) {
           case '201'://Articulo
           case '2951'://Doc trabajo
-          case '20708'://Otros Doc
+          case '15317'://Otros Doc
             $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
@@ -321,7 +321,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
           switch ($condition['concept']) {
             case '201'://Articulo
-            case '20708'://Otros Doc
+            case '15317'://Otros Doc
             $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
               break;
             case '2951'://Doc trabajo
