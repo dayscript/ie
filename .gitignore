@@ -20,7 +20,7 @@ robots.txt
 sites/all/README.txt
 sites/all/modules/README.txt
 sites/all/themes/README.txt
-sites/all/themes/custom/banrep/node_modules
+sites/all/themes/custom/banrep/node_modules/*
 
 # Ignore everything but the "sites" folder ( for non core developer )
 # web.config
