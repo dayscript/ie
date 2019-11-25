@@ -1,0 +1,112 @@
+form {
+  margin-bottom: 25px;
+}
+
+form .form-item label {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.42857143;
+}
+
+form input.form-text {
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  border-radius: 0px;
+  height: 34px;
+  padding: 6px 12px;
+}
+
+form select {
+  text-transform: none;
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  height: 34px;
+  padding: 6px 12px;
+}
+
+form div.image-widget-data {
+  float: left;
+}
+
+form .form-managed-file input.form-file {
+  border: 1px solid #e0e0e0;
+  font: normal 500 1em/1.4em "Open Sans", Arial, sans-serif;
+  max-width: 100%;
+  padding: 5px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  margin-right: 20px;
+}
+
+form .form-managed-file .form-submit {
+  margin: 0;
+}
+
+form .form-item div.description, form fieldset p {
+  margin: 5px 0;
+  line-height: 1.231em;
+  color: #666;
+  font-size: 13px;
+  font-weight: 100;
+}
+
+form .form-required, form .form-type-managed-file strong {
+  color: #de0000;
+  font-weight: 500;
+}
+
+form .text-format-wrapper fieldset {
+  background: transparent;
+  border: none;
+  margin: 0;
+  position: relative;
+  margin-bottom: 2em;
+  padding: 10px 2px;
+}
+
+form .text-format-wrapper fieldset .fieldset-wrapper {
+  background: transparent;
+  border: none;
+  padding: 0 6px;
+}
+
+form .text-format-wrapper fieldset .fieldset-wrapper .filter-help {
+  font-size: 0.923em;
+  padding: 2px 0 0 0;
+}
+
+form .text-format-wrapper fieldset .fieldset-wrapper .filter-guidelines {
+  font-size: 0.923em;
+  padding: 2px 0 0 0;
+}
+
+form ul.tips {
+  margin: 5px 0;
+  line-height: 1.231em;
+  font-size: 0.923em;
+  color: #666;
+  list-style-type: disc;
+  list-style-image: none;
+}
+
+form .form-actions {
+  margin-top: 15px;
+}
+
+form .form-actions .form-submit {
+  margin-right: 15px;
+}
+
+/*# sourceMappingURL=form.css.map */

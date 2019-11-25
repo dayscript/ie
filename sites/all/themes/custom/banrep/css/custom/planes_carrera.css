@@ -1,0 +1,69 @@
+#banrep-plan-carrera-form .group-requirements-publications {
+  border: 1px dashed;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+#banrep-plan-carrera-form textarea {
+  border: 1px solid lightgray;
+  width: 100%;
+  margin-top: 5px;
+}
+
+#banrep-plan-carrera-form .comment {
+  padding: 10px;
+  border-bottom: 3px solid #d9d9d9;
+  font-style: italic;
+}
+
+#banrep-plan-carrera-form .form-text {
+  margin-left: 10px;
+}
+
+.text-red {
+  color: #860024;
+}
+
+.user-rgister-data div {
+  margin: 7px 0px;
+}
+
+.group-puntajes > div {
+  max-width: 33.3333%;
+  float: left;
+  margin: 0 23px 0 0;
+}
+
+.group-descuentos {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.views-label-field-acumulado-general, .views-label-field-puntaje-acumulado,
+.views-field-field-puntaje-br,
+.views-field-field-usr-escalafon {
+  margin-bottom: 10px;
+}
+
+.views-label-field-acumulado-general, .views-label-field-puntaje-acumulado,
+.views-field-field-puntaje-br,
+.views-field-field-usr-escalafon,
+.views-label-field-date-admission,
+.views-label-field-fecha-penultimo-puntaje,
+.views-label-field-date-last-score {
+  padding: 0 !important;
+}
+
+.views-field-field-date-admission .field-content,
+.views-field-field-fecha-penultimo-puntaje .field-content,
+.views-field-field-date-last-score .field-content {
+  padding: 0 !important;
+}
+
+#edit-field-studies-carried-out-und-0-field-support-file {
+  min-width: 100% !important;
+  padding: 0px 49px !important;
+  margin: 0 !important;
+}
+
+/*# sourceMappingURL=planes_carrera.css.map */
