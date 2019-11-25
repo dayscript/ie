@@ -554,7 +554,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
   // Box Para Documento de trabajo
   _get_fieldset_publication_work_document($form, $form_state, $publication);
   // Box Para Documento de trabajo
-  _get_fieldset_publication_other_document($form, $form_state, $publication);
+  // _get_fieldset_publication_other_document($form, $form_state, $publication);
   // Box Para Documento en conferencia
   _get_fieldset_publication_conference_document($form, $form_state, $publication);
   // Box Para espe
