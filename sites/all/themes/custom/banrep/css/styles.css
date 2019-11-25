@@ -11095,6 +11095,19 @@ form .form-textarea {
   display: inline-block !important;
 }
 
+.view-id-lista_de_publicaciones .field-items .field-items {
+  margin: 0px 10px;
+  float: left;
+}
+
+.view-id-lista_de_publicaciones .field-items .vocabulary-autores-externos {
+  float: left;
+}
+
+.view-id-lista_de_publicaciones .field-items .vocabulary-autores-externos .field {
+  display: inline-block;
+}
+
 #banrep-plan-carrera-form .group-requirements-publications {
   border: 1px dashed;
   padding: 10px;
