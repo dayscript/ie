@@ -1,0 +1,97 @@
+.bg-gris-extra-claro {
+  background: color("grey-extra-light");
+}
+
+.bg-azul-claro {
+  background: color("azul-brc");
+}
+
+.bg-azul-oscuro {
+  background: color("azul-oscuro-brc");
+}
+
+.titulo {
+  color: color("azul-oscuro-brc");
+  font-size: 14px;
+  line-height: 19px;
+  padding-bottom: 10px;
+  margin: 10px 0;
+}
+
+.resumen p {
+  font-size: 13px;
+  line-height: 18px;
+  margin: 5px 0;
+}
+
+.serie-seminario {
+  margin: 10px 0;
+  padding: 20px 10px;
+}
+
+.serie-seminario .btn {
+  text-decoration: none;
+}
+
+.calendario-eventos {
+  padding: 10px 20px;
+  margin-bottom: 5px;
+}
+
+.noticia-destacada {
+  padding: 10px 20px;
+  margin-bottom: 5px;
+}
+
+.calendario-eventos .portlet-title {
+  border-top: 1px dotted #757474;
+  padding: 0;
+  min-height: 45px;
+  margin-bottom: 10px;
+  display: block;
+  border-bottom: 1px dotted #757474;
+  padding-top: 8px;
+  color: color("azul-oscuro-brc");
+  margin-right: 0px;
+  margin-left: 0px;
+  position: relative;
+}
+
+.calendario-eventos .portlet-title .caption {
+  color: color("azul-oscuro-brc");
+}
+
+.calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right h1, .calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right a, .calendario-eventos .view-eventos .node-event.node-teaser .item-info .info-right h3 {
+  color: #284874;
+  font-weight: 500;
+}
+
+.calendario-eventos .view-eventos .view-footer a {
+  color: #284874;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.item-seminario {
+  background-color: color("grey-extra-light");
+  padding: 10px;
+}
+
+.item-seminario .titulo {
+  margin: 0 0 5px;
+  padding: 0;
+}
+
+.item-seminario .titulo a {
+  color: color("azul-oscuro-brc");
+  text-decoration: none;
+}
+
+.item-seminario .titulo a:hover {
+  text-decoration: underline;
+}
+
+.item-seminario .fecha {
+  font-size: 12px;
+  color: color("azul-oscuro-brc");
+}
