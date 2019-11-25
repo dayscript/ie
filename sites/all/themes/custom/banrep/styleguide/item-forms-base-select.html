@@ -174,6 +174,47 @@ styling of <code>&lt;select&gt;</code>, unless a <code>border</code> property is
             <summary>
                               Markup: <code>base/forms/forms-select.twig</code>
                           </summary>
+<<<<<<< HEAD
+            <pre class="hljs"><code class="language-twig"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"selectDropdown"</span>&gt;</span>A standard drop-down<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"selectDropdown"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 1<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 2<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 3<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">optgroup</span> <span class="hljs-attr">label</span>=<span class="hljs-string">"More options"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 4<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 5<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">optgroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"selectMultiItem"</span>&gt;</span>A multi-item select field<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"selectMultiItem"</span> <span class="hljs-attr">multiple</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 1<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 2<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 3<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">optgroup</span> <span class="hljs-attr">label</span>=<span class="hljs-string">"More options"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 4<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 5<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">optgroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"selectDisabled"</span>&gt;</span>A disabled drop-down<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"</span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"selectDisabled"</span> <span class="hljs-attr">disabled</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 1<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 2<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 3<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">optgroup</span> <span class="hljs-attr">label</span>=<span class="hljs-string">"More options"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 4<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>Option 5<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">optgroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+=======
             <pre class="hljs"><code class="language-twig">&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;for&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;selectDropdown&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;A standard drop-down&lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;&lt;span class=&quot;hljs-name&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;hljs-template-variable&quot;&gt;{{modifier_class}}&lt;/span&gt;&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;hljs-tag&quot;&gt;&lt;span class=&quot;hljs-string&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;hljs-attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt;&quot;selectDropdown&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
@@ -213,6 +254,7 @@ styling of <code>&lt;select&gt;</code>, unless a <code>border</code> property is
   &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;select&lt;/span&gt;&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;hljs-tag&quot;&gt;&amp;lt;/&lt;span class=&quot;hljs-name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
 &lt;/span&gt;</code></pre>
+>>>>>>> 8789a21b77f82f23e727fd190b3b62adcb65f5e0
           </details>
               
               <div class="kss-source kss-style">
