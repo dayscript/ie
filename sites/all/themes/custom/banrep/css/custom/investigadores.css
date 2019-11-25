@@ -297,4 +297,14 @@
   display: inline-block !important;
 }
 
+.view-id-lista_de_publicaciones li {
+  list-style: none;
+}
+
+.view-id-lista_de_publicaciones li .field {
+  display: inline-block;
+  float: left;
+  margin: 0 10px 0 0;
+}
+
 /*# sourceMappingURL=investigadores.css.map */
