@@ -11095,6 +11095,10 @@ form .form-textarea {
   display: inline-block !important;
 }
 
+.view-id-lista_de_publicaciones .field-items .field-items {
+  display: inline-block;
+}
+
 #banrep-plan-carrera-form .group-requirements-publications {
   border: 1px dashed;
   padding: 10px;
@@ -11475,5 +11479,3 @@ form .form-textarea {
 .footer-nuevo .text-right {
   text-align: right;
 }
-
-/*# sourceMappingURL=styles.css.map */
