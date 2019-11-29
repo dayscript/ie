@@ -247,14 +247,15 @@ function validate_change_state($uid){
         
         foreach ($serchTo[key($serchTo)] as $key => $value) {
             //Obtener el eslafon inicial de la busqueda realizada
-            foreach ($value as $k => $val) {
-                if($k == 'field_escalafon_final'){
-                    if (isset($val['und'])) {
-                        $response = homologo_requirements($uid, $val['und'][0]['tid']);
-                        break;
-                    }
+            
+            //foreach ($value as $k => $val) {
+            if($key == 'field_escalafon_final'){
+                if (isset($val['und'])) {
+                    $response = homologo_requirements($uid, $value['und'][0]['tid']);
+                    break;
                 }
             }
+            //}
 
         }
         // Evaluar respuesta positiva 
