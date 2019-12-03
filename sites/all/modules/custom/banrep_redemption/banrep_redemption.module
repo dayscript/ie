@@ -185,7 +185,7 @@ function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form,
   if(isset($_GET["id"])) {
     $user = entity_metadata_wrapper('user', $_GET['id']);    
 
-
+ 
     $form['field_usuario'][LANGUAGE_NONE][0]['target_id']['#default_value'] = array($user->name->value().' ('.$user->uid->value().')');
     $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value']     = !empty( $user->field_acumulado_general->value() ) ? $user->field_acumulado_general->value() : 0;
     $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value']  = !empty( $user->field_puntaje_br->value() ) ? $user->field_puntaje_br->value() : 0;
