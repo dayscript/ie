@@ -124,16 +124,16 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
               $publication_requirement = entity_metadata_wrapper('field_collection_item', $requirement_publication->item_id );
               foreach($publication_requirement->field_condicion->value() as $key => $condition){
                   $item_condition = entity_metadata_wrapper('field_collection_item', $condition->item_id );
-                  if( $item_condition->field_concept_type->value()[0]->tid  ==  20723||
-                      $item_condition->field_concept_type->value()[0]->tid  ==  20722
+                  if( $item_condition->field_concept_type->value()[0]->tid  ==  21237||
+                      $item_condition->field_concept_type->value()[0]->tid  ==  21236
                      ){
                       $validate[$item_condition->field_concept_type->value()[0]->tid] = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
                   }
               }
           }
-        $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[20723]) ? 1:0;
+        $form['field_espe_req_coordinador']['und']['#default_value'] = ($validate[21237]) ? 1:0;
         $form['field_espe_req_coordinador']['#disabled'] = TRUE;
-        $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[20722]) ? 1:0;
+        $form['field_espe_req_contribuyente']['und']['#default_value'] = ($validate[21236]) ? 1:0;
         $form['field_espe_req_contribuyente']['#disabled'] = TRUE;
       }
     }
