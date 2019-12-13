@@ -100,7 +100,6 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
         $form['field_descuento_puntos_br']['#access']  = false;
         $form['field_descuento_puntos_academico']['#access']  = false;
         $form['field_espe_requiremets']['#access'] = false;
-        
 
       }else{
         $select_field_beneficios_options = 
