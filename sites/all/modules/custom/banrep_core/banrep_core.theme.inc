@@ -27,8 +27,8 @@ function theme_banrep_user_top_zone($variables) {
 
     $user_info = user_load($user->uid);
     $route = isset($user_info->field_ruta['und'][0]['target_id']) ? $user_info->field_ruta['und'][0]['target_id'] : 0;
-    
-    if ($route == 15321) {
+    $scale = isset($user_info->field_usr_escalafon[LANGUAGE_NONE][0]['tid']) ? $user_info->field_usr_escalafon[LANGUAGE_NONE][0]['tid'] : 0;
+    if ($route == 15321 || $scale == 21243) {
       $item_redemption = '
       <li>
          <a href="/' . $language->language . '/profile/redemption/add">
