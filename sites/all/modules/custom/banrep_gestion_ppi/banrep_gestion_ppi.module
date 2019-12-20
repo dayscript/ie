@@ -50,11 +50,12 @@ function banrep_gestion_ppi_mail($key, &$message, $params) {
  */
 function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
-  global $user;
+  
 
   switch ($form_id)
   {
     case 'pub_user_node_form':
+      global $user;
       if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
       {
           # they change values for force the state the field to disabled
@@ -69,6 +70,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
       break;
     case 'activity_node_form':
     case 'redemption_node_form':
+      global $user;
       
       if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
       {
