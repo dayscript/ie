@@ -570,9 +570,9 @@ function _get_publications_user($uid, $id_type_publication, $flag_is_node = FALS
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_pub_type_value', 211, '=');
       }
-      elseif ( $id_type_publication == 20724 ){
+      elseif ( $id_type_publication == 21204 ){
         $query->join('field_data_field_pub_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
-        $query->condition('c.field_pub_type_value', 20724, '=');
+        $query->condition('c.field_pub_type_value', 21204, '=');
       }
       else {
         $query->join('field_data_field_concept_type', 'c', 'c.entity_id = p.field_publicacion_target_id');

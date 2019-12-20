@@ -59,7 +59,7 @@ define('SERVICES_FORM_NID_7', '1933');
 define('SERVICES_FORM_NID_8', '1935');
 define('SERVICES_FORM_NID_9', '1936');
 
-define('BOOK_CHAPTER_CHAPTER_OF_BOOK','20724');
+define('BOOK_CHAPTER_CHAPTER_OF_BOOK','21204');
 
 define('REPEC_API_URL', 'http://citec.repec.org/api/plain/');
 
