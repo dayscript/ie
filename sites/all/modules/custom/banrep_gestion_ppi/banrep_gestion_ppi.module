@@ -51,12 +51,7 @@ function banrep_gestion_ppi_mail($key, &$message, $params) {
 function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
   
-  if($form['#entity']->is_new)    {
-    global $user;
-    $uid = $user->uid;
-  }else{
-    $uid = $form['#entity']->uid;
-  }
+  global $user;
   
   $user = user_load($uid);
 
@@ -101,7 +96,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
       }
     break;
     case 'user_redemption_entityform_edit_form':
-      dpm($user->roles);
+      
       if(!in_array('caie', $user->roles) || !in_array('Admin GT', $user->roles)) {
         $form['field_observaciones']['#access']  = false;
         $form['field_aprobado']['#access']  = false;
