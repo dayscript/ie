@@ -96,11 +96,8 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
     break;
     case 'user_redemption_entityform_edit_form':
       
-      if($form['#entity']->uid){
-         $user = user_load($form['#entity']->uid);
-      }else{
-        global $user;
-      }
+      global $user;
+      $user_entity = ( $form['#entity']->is_new ) ? NULL:$form['#entity']->uid;
 
 
       if(!in_array('caie', $user->roles) || !in_array('Admin GT', $user->roles)) {
@@ -126,7 +123,10 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 
       }
       if(empty($form['field_espe_requiremets']['und']['#default_value'])){
-        $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$user->uid) );
+
+        $uid = ( is_null( $user_entity ) ) ? $user->uid: $user_entity;
+        $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$uid) );
+
         $field_collection_requiremets = $field_collection_requirements_publications->field_requisitos_publicaciones->value();
         if( !empty( $field_collection_requiremets ) ){
           foreach( $field_collection_requiremets as $key => $requirement_publication ){
@@ -136,7 +136,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
                   if( $item_condition->field_concept_type->value()[0]->tid  ==  21237||
                       $item_condition->field_concept_type->value()[0]->tid  ==  21236
                      ){
-                      $validate[$item_condition->field_concept_type->value()[0]->tid] = _calc_results_of_condition(entity_metadata_wrapper('user',$user->uid),$item_condition);
+                      $validate[$item_condition->field_concept_type->value()[0]->tid] = _calc_results_of_condition(entity_metadata_wrapper('user',$uid),$item_condition);
                   }
               }
           }
