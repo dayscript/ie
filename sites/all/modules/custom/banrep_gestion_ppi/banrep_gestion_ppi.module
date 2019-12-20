@@ -52,8 +52,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
   
   global $user;
-  
-  
+
   switch ($form_id)
   {
     case 'pub_user_node_form':
@@ -119,6 +118,9 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 
       }
       if(empty($form['field_espe_requiremets']['und']['#default_value'])){
+        if(!$form['#entity']->is_new){
+          $user = user_load($form['#entity']->uid);
+        }
         $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$user->uid) );
         $field_collection_requiremets = $field_collection_requirements_publications->field_requisitos_publicaciones->value();
         if( !empty( $field_collection_requiremets ) ){
