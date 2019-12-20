@@ -52,8 +52,6 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
   global $user;
 
-  dpm($form_id);
-
   switch ($form_id)
   {
     case 'pub_user_node_form':
@@ -71,7 +69,8 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
       break;
     case 'activity_node_form':
     case 'redemption_node_form':
-
+      dpm($form_id);
+      dpm($form);
       if(in_array('Admin GT', $user->roles) || in_array('administrator', $user->roles))
       {
 
