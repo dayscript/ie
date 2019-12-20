@@ -50,7 +50,13 @@ function banrep_gestion_ppi_mail($key, &$message, $params) {
  */
 function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
-  global $user;
+  
+  if(!$form['#entity']->is_new){
+    $user = $form['#entity']->uid;
+  }else{
+    global $user;
+  }
+  
 
   switch ($form_id)
   {
