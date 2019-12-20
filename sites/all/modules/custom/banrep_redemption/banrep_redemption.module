@@ -151,16 +151,8 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
  * Implements validation form function
  */
 function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_max($form, &$form_state){
-    
     global $user;  
-    
-    if(!$form['#entity']->is_new){
-     
-      $route = user_load($form['#entity']->uid);
-    
-    }else{
-      $route = $user;
-    }
+    $user = user_load($user->uid);
 
     $fields = [
       'field_descuento_puntos_br'        => 'field_puntaje_br',
@@ -177,7 +169,7 @@ function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_m
 
     $espe_coordinador = $form_state['values']['field_espe_req_coordinador'][LANGUAGE_NONE][0]['value'];
     $espe_contribuyente = $form_state['values']['field_espe_req_contribuyente'][LANGUAGE_NONE][0]['value'];
-    $user_rute = $route->field_ruta['und'][0]['target_id'];
+    $user_rute = $user->field_ruta['und'][0]['target_id'];
 
     if( $espe_coordinador == 0 && $espe_contribuyente == 0 && $user_rute != 21239){
         form_set_error('field_espe_req_coordinador', 'No se puede crear la solicitud debido a que no cumple con los requisitos de revista espe');

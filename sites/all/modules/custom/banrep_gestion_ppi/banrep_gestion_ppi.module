@@ -50,7 +50,6 @@ function banrep_gestion_ppi_mail($key, &$message, $params) {
  */
 function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
-  
   global $user;
 
   switch ($form_id)
@@ -94,7 +93,6 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
       }
     break;
     case 'user_redemption_entityform_edit_form':
-      
       if(!in_array('caie', $user->roles) || !in_array('Admin GT', $user->roles)) {
         $form['field_observaciones']['#access']  = false;
         $form['field_aprobado']['#access']  = false;
@@ -104,7 +102,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
         $form['field_espe_requiremets']['#access'] = false;
 
       }else{
-        $select_field_beneficios_options =  
+        $select_field_beneficios_options = 
         taxonomy_term_load($form['field_beneficios']['und']['#default_value'][0]);
 
         $form['field_descuento_puntos_br'][LANGUAGE_NONE][0]['value']['#default_value'] = 
@@ -118,14 +116,7 @@ function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 
       }
       if(empty($form['field_espe_requiremets']['und']['#default_value'])){
-        
-        if( $form['#entity']->is_new ){
-          $uid = $user->uid;
-        } else {
-          $uid = $form['#entity']->uid;
-        }
-
-        $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$uid) );
+        $field_collection_requirements_publications = _load_requirements_for_user( entity_metadata_wrapper('user',$user->uid) );
         $field_collection_requiremets = $field_collection_requirements_publications->field_requisitos_publicaciones->value();
         if( !empty( $field_collection_requiremets ) ){
           foreach( $field_collection_requiremets as $key => $requirement_publication ){
