@@ -147,7 +147,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $node_father = node_load($node_child->field_publicacion[LANGUAGE_NONE][0]['target_id']);
 
       $date_pub = search_date_publication($node_child->field_log_puntaje['und']);
-      if (isset($date_pub) && !empty($date_pub) && isset($date_query) && !empty($date_query) && $date_pub > $date_query || 1==1) {
+      if (isset($date_pub) && !empty($date_pub) && isset($date_query) && !empty($date_query) && $date_pub > $date_query) {
         $tax_father = $node_father->field_pub_type['und'][0]['value'];
         if (isset($node_father->field_co_authors['und'])) {
           foreach ($node_father->field_co_authors['und'] as $key => $entity_item) {
