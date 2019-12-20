@@ -151,8 +151,14 @@ function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$for
  * Implements validation form function
  */
 function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_max($form, &$form_state){
+    
     global $user;  
-    $user = user_load($user->uid);
+    
+    if(!$form['#entity']->is_new){
+     
+      $user = user_load($form['#entity']->uid);
+    
+    }
 
     $fields = [
       'field_descuento_puntos_br'        => 'field_puntaje_br',
