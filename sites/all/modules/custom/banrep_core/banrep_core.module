@@ -702,8 +702,8 @@ function banrep_core_block_view($delta = '') {
       drupal_add_js('https://support.ebscohost.com/eit/scripts/ebscohostsearch.js', 'external');
       drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/ebscohostsearch.js');
 
-      $options = [ 1 => 'Búsqueda General', 4 => 'Libros y Revistas'];
-      $search_options = [ 0 => 'Palabras Clave', 'TI' => 'Título', 'AU' => 'Autor' ];
+      $options = [ '1' => 'Búsqueda General', '4' => 'Libros y Revistas'];
+      $search_options = [ '' => 'Palabras Clave', 'TI' => 'Título', 'AU' => 'Autor' ];
       $data = [ 
         'options' => $options , 
         'search_options' => $search_options

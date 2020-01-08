@@ -5,7 +5,7 @@
   <div class="form-item form-type-select form-item-source">
     <select id="test" onchange="myScript()">
       <?php foreach ($data['options'] as $key => $value) : ?>
-         <option value="<?php echo $key?> "><?php echo t( $value ); ?></option>
+         <option value="<?php echo $key?>"><?php echo t( $value ); ?></option>
       <?php endforeach; ?>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
