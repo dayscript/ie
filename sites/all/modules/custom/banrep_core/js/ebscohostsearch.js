@@ -36,6 +36,16 @@ function myScript() {
   }
 }
 
+
+function DirectSearch(){
+	var form = document.direct;
+		if( form.text1.value == ""){
+			location.href = "https://itms.libsteps.com/BR/";
+		}	else {
+		form.submit();
+		}
+}
+
 function ebscoHostSearchOther(form, buff) {
   var ebscohostsearchtext = chkObject(form.ebscohostsearchtext, '');
   var ebscohostkeywords = chkObject(form.ebscohostkeywords, '');
