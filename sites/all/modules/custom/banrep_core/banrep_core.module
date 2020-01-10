@@ -702,7 +702,15 @@ function banrep_core_block_view($delta = '') {
       drupal_add_js('https://support.ebscohost.com/eit/scripts/ebscohostsearch.js', 'external');
       drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/ebscohostsearch.js');
 
-      $options = [ '1' => 'Búsqueda General', '4' => 'Libros y Revistas'];
+      $options = [ 
+        '1' => 'Búsqueda General', 
+        '3' => 'Databases', 
+        '4' => 'Books and Journals',
+        '5' => 'Researchers', 
+        '6' => 'CAIE', 
+        '7' => 'Seminars', 
+        '8' => 'ESPE'
+      ];
       $search_options = [ '' => 'Palabras Clave', 'TI' => 'Título', 'AU' => 'Autor' ];
       $data = [ 
         'options' => $options , 

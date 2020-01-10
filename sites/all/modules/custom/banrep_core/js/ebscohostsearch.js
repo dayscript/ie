@@ -9,8 +9,29 @@ function myScript() {
     case "1":
       document.getElementById("tabs-1").style.display = "block";
       break;
+    case "2":
+      document.getElementById("tabs-2").style.display="block";
+      break;
+    case "3":
+    document.getElementById("tabs-3").style.display="block";
+      break;
     case "4":
       document.getElementById("tabs-4").style.display = "block";
+      break;
+    case "5":
+      document.getElementById("tabs-5").style.display="block";
+      break;
+    case "52":
+    document.getElementById("tabs-52").style.display="block";
+      break;
+    case "6":
+    document.getElementById("tabs-6").style.display="block";
+      break;
+    case "7":
+    document.getElementById("tabs-7").style.display="block";
+      break;
+    case "8":
+    document.getElementById("tabs-8").style.display="block";
       break;
   }
 }
