@@ -52,7 +52,7 @@
       </form>
     </div>
     <div id="tabs-4" class="tabs-x" style="display:none;">
-      <form name="direct" action="http://itms.libsteps.com/BR/" method="post">
+      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">

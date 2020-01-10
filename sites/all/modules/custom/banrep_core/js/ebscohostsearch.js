@@ -40,8 +40,8 @@ function myScript() {
 function DirectSearch(){
 	var form = document.direct;
 		if( form.text1.value == ""){
-			location.href = "https://itms.libsteps.com/BR/";
-			
+      //location.href = "https://itms.libsteps.com/BR/";
+      window.open('https://itms.libsteps.com/BR/');
 		}else {
 			form.submit();
 		}
