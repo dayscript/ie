@@ -11491,3 +11491,9 @@ form .form-textarea {
 }
 
 /*# sourceMappingURL=styles.css.map */
+.node-type-publication .group-right .group-autores a {
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    color: #0079c1;
+}
