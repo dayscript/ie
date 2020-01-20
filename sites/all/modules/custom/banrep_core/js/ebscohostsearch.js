@@ -5,7 +5,7 @@ function myScript() {
     x[i].style.display = "none";
   }
   mySelect = document.getElementById("test").value;
-  console.log(mySelect)
+  
   switch (mySelect) {
     case "1":
       document.getElementById("tabs-1").style.display = "block";
@@ -14,7 +14,8 @@ function myScript() {
       document.getElementById("tabs-2").style.display="block";
       break;
     case "3":
-    document.getElementById("tabs-3").style.display="block";
+      console.log(mySelect)
+      document.getElementById("tabs-3").style.display="block";
       break;
     case "4":
       document.getElementById("tabs-4").style.display = "block";
