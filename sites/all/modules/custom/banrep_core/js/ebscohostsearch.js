@@ -5,6 +5,7 @@ function myScript() {
     x[i].style.display = "none";
   }
   mySelect = document.getElementById("test").value;
+  console.log(mySelect)
   switch (mySelect) {
     case "1":
       document.getElementById("tabs-1").style.display = "block";
