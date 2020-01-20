@@ -79,17 +79,20 @@
               <?php if ($main_menu): ?>
                 <nav class="main-menu" role="navigation">
                   <?php
-                  print theme('links__system_main_menu', array(
-                    'links' => $main_menu,
-                    'attributes' => array(
-                      'class' => array('navbar', 'clearfix'),
-                    ),
-                    'heading' => array(
-                      'text' => t('Main menu'),
-                      'level' => 'h2',
-                      'class' => array('visually-hidden'),
-                    ),
-                  )); ?>
+                  $block = block_load('superfish', 1);
+                  $output = render(_block_get_renderable_array(_block_render_blocks(array($block))));
+                  print $output;
+                  // print theme('links__system_main_menu', array(
+                  //   'links' => $main_menu,
+                  //   'attributes' => array(
+                  //     'class' => array('navbar', 'clearfix'),
+                  //   ),
+                  //   'heading' => array(
+                  //     'text' => t('Main menu'),
+                  //     'level' => 'h2',
+                  //     'class' => array('visually-hidden'),
+                  //   ),));
+                  ?>
                 </nav>
               <?php endif; ?>
             </div>
