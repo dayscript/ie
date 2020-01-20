@@ -11,48 +11,41 @@
     <i class="fa fa-caret-down" aria-hidden="true"></i>
   </div>
   <div class="form-item form-type-textfield form-item-keys">
-  <div id="tabs-1" class="tabs-x">
-               <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
-                <input type="hidden" name="m" value="direct">
-              <input type="hidden" name="skey" value="1031">
-              <input type="hidden" name="charset" value="utf-8">
-              <input type="hidden" name="userid" value="">
-              <input type="hidden" name="dbGroup" value="0" checked="">
-               <div class="searchArea">
-                  <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50"  />
-                  <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
-                  <div id="guidedFieldSelectors" class="inline-elements">
-                     <input type="radio" name="category1" value="0" checked="">
-                     <label class="label" for="guidedField_0"> <?php echo t('Full text'); ?></label>
-                     <input type="radio" name="category1" value="2">
-                     <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
-                     <input type="radio" name="category1" value="1">
-                     <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
-                     <input type="radio" name="category1" value="4">
-                     <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
-                  </div>
-                  <!-- <div id="guidedFieldSelectors" class="inline-elements">
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_0" value="" checked="checked" />
-                     <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_1" value="TI" />
-                     <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
-                     <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_2" value="AU" />
-                     <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
-                  </div> -->
-               </div>
-               <div id="limiterblock" style="display:none;">
-                  <div id="limitertitle"><?php echo t('Limit Results'); ?></div>
-                  <div class="limiter" >
-                     <input type="checkbox" id="chkFullText" name="chkFullText" checked="checked" />
-                     <label for="chkFullText"><?php echo t('Full Text'); ?></label>
-                  </div>
-                  <div class="limiter" >
-                     <input type="checkbox" id="chkCatalogOnly" name="chkCatalogOnly"  />
-                     <label for="chkCatalogOnly"><?php echo t('Only Catalog'); ?></label>
-                  </div>
-               </div>
-            </form>
-         </div>
+    <div id="tabs-1" class="tabs-x">
+      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+        <input type="hidden" name="m" value="direct">
+        <input type="hidden" name="skey" value="1031">
+        <input type="hidden" name="charset" value="utf-8">
+        <input type="hidden" name="userid" value="">
+        <input type="hidden" name="dbGroup" value="0" checked="">
+        <div class="searchArea">
+          <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50" />
+          <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
+          <div id="guidedFieldSelectors" class="inline-elements">
+            <input type="radio" name="category1" value="0" checked="">
+            <label class="label" for="guidedField_0"> <?php echo t('Full text'); ?></label>
+            <input type="radio" name="category1" value="2">
+            <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
+            <input type="radio" name="category1" value="1">
+            <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
+            <input type="radio" name="category1" value="4">
+            <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
+          </div>
+         
+        </div>
+        <div id="limiterblock" style="display:none;">
+          <div id="limitertitle"><?php echo t('Limit Results'); ?></div>
+          <div class="limiter">
+            <input type="checkbox" id="chkFullText" name="chkFullText" checked="checked" />
+            <label for="chkFullText"><?php echo t('Full Text'); ?></label>
+          </div>
+          <div class="limiter">
+            <input type="checkbox" id="chkCatalogOnly" name="chkCatalogOnly" />
+            <label for="chkCatalogOnly"><?php echo t('Only Catalog'); ?></label>
+          </div>
+        </div>
+      </form>
+    </div>
     <div id="tabs-3" class="tabs-x" style="display:none;">
       <form id="sbBD">
         <div class="searchArea">
@@ -71,7 +64,7 @@
         <div class="searchArea">
           <input class="ebscohostsearchtext" type="text" name="text1" value="" size="50">
           <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
-          
+
           <div id="category1" class="inline-elements">
             <input class="radio" type="radio" name="category1" id="guidedField_0" value="1" checked="checked">
             <label class="label" for="guidedField_0"> Titulo</label>
