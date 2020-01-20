@@ -17,6 +17,7 @@ function banrep_gestion_ppi_page($uid) {
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements_ppi($scale, $route, $usuario->uid);
+  dpm($requirements);
   $form     = drupal_get_form('banrep_gestion_ppi_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
@@ -155,7 +156,11 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
             $co_autor = taxonomy_term_load($field_collection->field_co_autor['und'][0]['tid']);
             if (isset($co_autor) && $co_autor->field_user_reference['und'][0]['target_id'] == $user_ppi->uid) {
-              $tax_child = $field_collection->field_role_within_publicat['und'][0]['tid'];
+              if(!empty($field_collection->field_role_within_publicat['und'][0]['tid'])) {
+                $tax_child = $field_collection->field_role_within_publicat['und'][0]['tid'];
+              }else{
+                $tax_child = $node_father->field_concept_type['und'][0]['tid'];
+              }
             }
           }
         }
@@ -171,6 +176,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         }
 
         $pos_father = _search_father_taxonomy_term($tax_father, $tax_child, $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id']);
+        
         foreach ($pos_father['values'] as $key) {
           $pub_user_type[$key]['acumula'] = $pos_father['acumula'];
           $pub_user_type[$key]['type'] = $node_father->field_pub_type[LANGUAGE_NONE][0]['value'];
@@ -179,7 +185,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'title' => $node_father->title,
             'points' => $node_child->field_puntaje['und'][0]['value'],
             'date' => date( "d/m/Y", $date_pub),
-            'type' => taxonomy_term_load($pos_father['values'][0])->name,
+            'type' => taxonomy_term_load($tax_father)->name,
+            //'type' => taxonomy_term_load($pos_father['values'][0])->name,
             'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
             'charge' => $role,
             'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
@@ -190,6 +197,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       }
     }
 
+    
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'activity')
@@ -257,6 +265,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $name    = node_load($condition['serie']);
             $name    = $name->title;
             $info_user = _get_publications_user_ppi($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
+            
           }
           else {
             if (isset($condition['concept'])) {
@@ -270,6 +279,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
               $info_user = _get_publications_user_ppi($uid->uid, $concepts[$size - 1], FALSE, $condition['type'], $requirements['general']['date_start_pub'],$is_activity);
             }
           }
+          
           if(empty($condition['serie']) && empty($condition['concept']) ){
             $name = 'PUBLICACIONES';
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
@@ -586,7 +596,7 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
   $tree = taxonomy_get_tree($voc->vid);
   $terms = [];
 
-  foreach ($tree as $term) {
+  foreach ($tree as $term) {  
     switch ($term->depth) {
       case 0:
         $father = $term->tid;
@@ -594,9 +604,11 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
         break;
       case 1:
         $child = $term->tid;
+        
         $type = load_acumula_points($child, $uruta);
         $terms[$father]['acumula'] = ($type!=='') ? $type : $terms[$father]['acumula'];
         $terms[$father]['childs'][$child] = array('tid' => $term->tid, 'name' => $term->name, 'acumula' => $type);
+        
         break;
       case 2:
         $childs = $term->tid;
@@ -607,7 +619,7 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
     }
   }
   
-  $$terms['21204']['childs'][$child] = $$terms['206']['childs'][$child];
+  $terms['21204']['childs'][$child] = $terms['206']['childs'][$child];
   $tfather = ($tfather==1) ? 21204 : $tfather;//Ajuste para ID de Capítulos de libro
   $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tfather));
   foreach ($terms[$tfather]['childs'] as $terms_) {
@@ -616,7 +628,7 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
     }
     foreach ($terms_['childs'] as $term_) {
       if ($term_['tid'] == $tchild) {
-        $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tfather, $tchild));
+        $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array( $tfather, $tchild));
       }
     }
   }

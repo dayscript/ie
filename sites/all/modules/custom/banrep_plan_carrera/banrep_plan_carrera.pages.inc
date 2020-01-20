@@ -17,6 +17,7 @@ function banrep_plan_carrera_page($uid) {
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements($scale, $route, $usuario->uid);
+  
   $form     = drupal_get_form('banrep_plan_carrera_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
