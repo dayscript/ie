@@ -12,7 +12,8 @@
   </div>
   <div class="form-item form-type-textfield form-item-keys">
   <div id="tabs-1" class="tabs-x">
-            <form id="ebscohostCustomSearchBox" action="" onsubmit="return ebscoHostSearchGo(this);" method="post">
+          <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+            <!-- <form id="ebscohostCustomSearchBox" action="" onsubmit="return ebscoHostSearchGo(this);" method="post"> -->
                <input id="ebscohostwindow" name="ebscohostwindow" type="hidden" value="1" />
                <input id="ebscohosturl" name="ebscohosturl" type="hidden" value="http://search.ebscohost.com/login.aspx?direct=true&site=eds-live&scope=site&type=0&custid=s5094900&groupid=main&profid=eds&mode=bool&lang=es&authtype=cookie,ip" />
                <input id="ebscohostsearchsrc" name="ebscohostsearchsrc" type="hidden" value="db" />
@@ -20,7 +21,8 @@
                <input id="ebscohostkeywords" name="ebscohostkeywords" type="hidden" value="" />
                <div class="searchArea">
                   <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="ebscohostsearchtext" type="text" size="50"  />
-                  <button class="submit"><i class="icon-buscar"></i></button>
+                  <!-- <button class="submit"><i class="icon-buscar"></i></button> -->
+                  <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
                   <div id="guidedFieldSelectors" class="inline-elements">
                      <input class="radio" type="radio" name="searchFieldSelector" id="guidedField_0" value="" checked="checked" />
                      <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
