@@ -144,9 +144,9 @@ function banrep_preprocess_page(&$variables, $hook) {
   $lang=$language->language;  
   if($lang=="es") {
     //$variables['logo']=base_path().path_to_theme()."/img/logo-banco-de-la-republica.png";
-    $variables['logo']='sites/all/themes/custom/banrep/logo.png';
+    $variables['logo']='/sites/all/themes/custom/banrep/logo.png';
   } else {
-    $variables['logo']='sites/all/themes/custom/banrep/logo-en.png';
+    $variables['logo']='/sites/all/themes/custom/banrep/logo-en.png';
   }
 
 
