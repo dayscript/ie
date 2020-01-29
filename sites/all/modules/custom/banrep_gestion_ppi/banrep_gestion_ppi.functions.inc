@@ -304,19 +304,23 @@ function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = 
       else {
         $query->join('field_data_field_concept_type', 'c', 'c.entity_id = p.field_publicacion_target_id');
         $query->condition('c.field_concept_type_tid', $id_type_publication, '=');
+        
       }
-
+      
       $query->condition('ep.field_estado_publicaci_n_value', 3, '=');
       $query->condition('n.type', 'pub_user', '=');
       $query->condition('u.field_user_reference_target_id', $uid, '=');
     }
   }
   
+  
 
   if (!is_null($start_date)) {
     $query->condition('n.created', $start_date, '>=');
   }
 
+  
+  
   switch ($type) {
     case 'CANTIDAD':
       $query->addField('n', 'nid', 'nid');
@@ -334,11 +338,18 @@ function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = 
       }
       $result = $query->execute()->fetchObject();
       
+    
+      
       if (isset($result->puntaje) && !is_null($result->puntaje)) {
         $num_of_result = $result->puntaje;
       }
       break;
   }
+
+  if($id_type_publication == 21194){
+    dpm($result);
+  }
+
   return $num_of_result;
 }
 

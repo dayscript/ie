@@ -85,6 +85,9 @@ function banrep_plan_carrera_node_presave($node) {
       
       $uid = $node->field_user_reference[LANGUAGE_NONE][0]['target_id'];
       $userPub = user_load($uid);
+      
+      $node->field_usr_escalafon[LANGUAGE_NONE][0]['tid'] = $userPub->field_usr_escalafon[LANGUAGE_NONE][0]['tid'];
+
       $pub_id  = $node->field_publicacion[LANGUAGE_NONE][0]['target_id'];
       $nodePub = node_load($pub_id);
       if( _banrep_plan_carrera_comprobar_fecha_puntacion_requisito($nodePub, $userPub) ){

@@ -537,7 +537,7 @@ function banrep_core_theme($existing, $type, $theme, $path) {
     ),
     'search_form' => array(
       'template' => 'templates/search-form',
-      'variables' => array(),
+      'variables' => array( 'data' => NULL ),
     ),
     'user_info_format' => array(
       'template' => 'templates/user-info-format',
@@ -701,9 +701,26 @@ function banrep_core_block_view($delta = '') {
     case 'br_search_form':
       drupal_add_js('https://support.ebscohost.com/eit/scripts/ebscohostsearch.js', 'external');
       drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/ebscohostsearch.js');
+
+      $options = [ 
+        '1' => 'Búsqueda General', 
+        '3' => 'Databases', 
+        '4' => 'Books and Journals',
+        '5' => 'Researchers', 
+        '6' => 'CAIE', 
+        '7' => 'Seminars', 
+        '8' => 'ESPE'
+      ];
+      $search_options = [ '' => 'Palabras Clave', 'TI' => 'Título', 'AU' => 'Autor' ];
+      $data = [ 
+        'options' => $options , 
+        'search_options' => $search_options
+        ];
+
       $block['subject'] = t('');
-      $block['content'] = theme('search_form'); // drupal_get_form('banrep_core_search_block_form');
+      $block['content'] = theme('search_form', array('data' => $data ) ); // drupal_get_form('banrep_core_search_block_form');
       break;
+
     case 'br_user_top_zone':
       global $user;
       $block['subject'] = t('');
