@@ -17,7 +17,6 @@ function banrep_gestion_ppi_page($uid) {
   $route    = $usuario->field_ruta['und'][0]['target_id'];
   $scale    = $usuario->field_usr_escalafon['und'][0]['tid'];
   $requirements = get_requirements_ppi($scale, $route, $usuario->uid);
-  dpm($requirements);
   $form     = drupal_get_form('banrep_gestion_ppi_form', $requirements, $usuario);
   $name = 'profile_info_order_' . $uid;
   $profile_info_order = variable_get($name, FALSE);
