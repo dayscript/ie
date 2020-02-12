@@ -15,6 +15,7 @@
         foreach($files_in_folder as $key => $file){
             watchdog('banrep_sepi', 'Procesando archivo '.$file->uri , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
             $contents_file = encodeToIso(file_get_contents($file->uri));
+            $contents_file = str_replace("\\", '/', $contents_file);
             $files[$file->name] = [ 
                 'metadata' =>$file, 
                 'contents' => json_decode($contents_file),
@@ -26,6 +27,9 @@
                 exit;
             }
             
+            if(isset( $files[$file->name]['contents']->archivo_aprobacion) && !empty($files[$file->name]['contents']->archivo_aprobacion)){
+                $files[$file->name]['contents']->archivo_aprobacion = str_replace("/", "\\", $files[$file->name]['contents']->archivo_aprobacion);
+            }
 
             $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
 

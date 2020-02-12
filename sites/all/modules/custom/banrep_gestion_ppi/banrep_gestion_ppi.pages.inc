@@ -117,6 +117,14 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
   $user_ppi = user_load($uid->uid);
 
+
+  $req = [];
+  foreach ($requirements['publications'] as $key => $reqpub) {
+       foreach ($reqpub['conditions'] as $key => $value) {
+        $req[] = $value['concept'];
+      }
+  }
+
   if ($requirements['publications_req']) {
     switch ($requirements['publications_req']) {
       case '1'://Creación de usuario (Todo)
@@ -174,7 +182,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           $role = taxonomy_term_load($tax_child)->name;
         }
 
-        $pos_father = _search_father_taxonomy_term($tax_father, $tax_child, $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id']);
+        $pos_father = _search_father_taxonomy_term($tax_father, $tax_child, $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'], $req);
         
         foreach ($pos_father['values'] as $key) {
           $pub_user_type[$key]['acumula'] = $pos_father['acumula'];
@@ -188,7 +196,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             //'type' => taxonomy_term_load($pos_father['values'][0])->name,
             'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
             'charge' => $role,
-            'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
+            'escalafon' => taxonomy_term_load($node_child->field_usr_escalafon['und'][0]['tid'])->name,//taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
           $pub_user_type[$key]['total_points'] += (isset($node_child->field_puntaje['und'][0]['value']) && !empty($node_child->field_puntaje['und'][0]['value'])) ? $node_child->field_puntaje['und'][0]['value'] : 0;
           $pub_user_type[$key]['count_pub'] = count($pub_user_type[$key]['values']);
@@ -205,7 +213,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     $result = $query->execute();
    
     $key = 211;
-    $pos_father = _search_father_taxonomy_term($key, '', $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id']);
+    $pos_father = _search_father_taxonomy_term($key, '', $user_ppi->field_ruta[LANGUAGE_NONE][0]['target_id'], $req);
     foreach ($result['node'] as $nid => $value) {
       $node = node_load($value->nid);
       $date_act = search_date_publication($node->field_log_puntaje['und']);
@@ -218,7 +226,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           'points' => $node->field_puntaje['und'][0]['value'],
           'date' => date( "d/m/Y", $date_act),
           'charge' => user_load($node->field_usuario['und'][0]['target_id'])->field_full_name['und'][0]['value'],
-          'escalafon' => taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
+          'escalafon' => taxonomy_term_load($node_child->field_usr_escalafon['und'][0]['tid'])->name,//taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
         );
         $pub_user_type[$key]['total_points'] += (isset($node->field_puntaje['und'][0]['value']) && !empty($node->field_puntaje['und'][0]['value'])) ? $node->field_puntaje['und'][0]['value'] : 0;
         $pub_user_type[$key]['count_pub'] = count($pub_user_type[$key]['values']);
@@ -589,7 +597,7 @@ function _output_comments ($name_item,$nid_log){
   return $output_comments;
 }
 
-function _search_father_taxonomy_term($tfather, $tchild, $uruta){
+function _search_father_taxonomy_term($tfather, $tchild, $uruta, $req){
   $name = 'categorias_de_conceptos';
   $voc = taxonomy_vocabulary_machine_name_load($name);
   $tree = taxonomy_get_tree($voc->vid);
@@ -622,12 +630,12 @@ function _search_father_taxonomy_term($tfather, $tchild, $uruta){
   $tfather = ($tfather==1) ? 21204 : $tfather;//Ajuste para ID de Capítulos de libro
   $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tfather));
   foreach ($terms[$tfather]['childs'] as $terms_) {
-    if ($terms_['tid'] == $tchild) {
-      $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tfather, $tchild));
+    if(in_array($tfather, $req) && in_array($tchild, $req) && $terms_['tid'] == $tchild){
+      $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tchild));
     }
     foreach ($terms_['childs'] as $term_) {
-      if ($term_['tid'] == $tchild) {
-        $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array( $tfather, $tchild));
+      if(in_array($tfather, $req) && in_array($tchild, $req) && $terms_['tid'] == $tchild){
+        $find = array('acumula' => $terms[$tfather]['acumula'], 'values' => array($tchild));
       }
     }
   }
