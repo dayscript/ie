@@ -237,7 +237,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     // '#description' => t('DOI link'),
   ];
 
-  $options = range(2019, 1990);
+  $options = range((int)date('Y'), 1990);
   $form['query']['left_column']['publication_year'] = [
     '#type' => 'select',
     '#title' => t('Publication year'),

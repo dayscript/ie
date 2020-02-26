@@ -8,34 +8,15 @@
         $path_in = 'private://'.'sepi-in-'.$enviroment;
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         $files_in_folder = [];
-        $files = [];
+
         watchdog('banrep_sepi', 'Iniciado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
         $files_in_folder = file_scan_directory($path_in, $mask = '/.*\.json$/', $options = array(), $depth = 0);
         
         foreach($files_in_folder as $key => $file){
             watchdog('banrep_sepi', 'Procesando archivo '.$file->uri , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
-            $contents_file = encodeToIso(file_get_contents($file->uri));
-            $contents_file = str_replace("\\", '/', $contents_file);
-            $files[$file->name] = [ 
-                'metadata' =>$file, 
-                'contents' => json_decode($contents_file),
-            ];
-
-            if(json_last_error() ){
-                dsm( json_last_error_msg(), 'error');
-                watchdog('banrep_sepi', 'Se ha encontrado un error: '.json_last_error_msg(). 'code: '.json_last_error() , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
-                exit;
-            }
-            
-            if(isset( $files[$file->name]['contents']->archivo_aprobacion) && !empty($files[$file->name]['contents']->archivo_aprobacion)){
-                $files[$file->name]['contents']->archivo_aprobacion = str_replace("/", "\\", $files[$file->name]['contents']->archivo_aprobacion);
-            }
-
-            $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
-
-            watchdog('banrep_sepi', 'Procesamiento completo' , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
+            $data = _depure_sepi_in($file);
+            watchdog('banrep_sepi', $data , $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
         }
-
         watchdog('banrep_sepi', 'Finalizado', $variables = array(), $severity = WATCHDOG_INFO, $link = NULL);
     }
 
@@ -50,21 +31,17 @@
      * Function to create the publication node
      */
     function _create_node_publication($publication, $node_wrapper = null, $publication_father = null){
-        
         switch ($publication['contents']->tipopub) {
             case 'Actividad':
                 _create_activity($publication);    
                 break;
-
             case 'Trabajos en Curso':
                 _create_trabajo_en_curso($publication);
                 break;
-
             case 'Capítulo libro':
             case 'Capítulo de libro':
-                _create_capitulo_de_libro($publication, $node_wrapper, $publication_father );
+                _create_capitulo_de_libro($publication, $node_wrapper, $publication_father);    
                 break;
-
             default:
                 _create_publication($publication);
                 break;
@@ -75,24 +52,20 @@
     }
 
     function _create_capitulo_de_libro($publication, $node_wrapper_book, $publication_father){
-        
-        // $publication['contents']->concepto;
-        // $publication['contents']->clasificacion;
-        // $publication['contents']->tipopub;
-        
-        $query = new EntityFieldQuery();
-        $query->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle', 'concept')
-        ->propertyCondition('title', $node_wrapper_book->title->value(), '=');
-        $result = $query->execute();
-        $nid =  _get_nid($result);
-        $entity_type = 'node';
+        if(isset($node_wrapper_book) && !empty($node_wrapper_book)){
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'node')
+            ->entityCondition('bundle', 'concept')
+            ->propertyCondition('title', $node_wrapper_book->title->value(), '=');
+            $result = $query->execute();
+            $nid =  _get_nid($result);
+            $entity_type = 'node';
 
-        $category_concepts = [
-            [ 'tid' => $node_wrapper_book->field_pub_type->value() ] ,
-            [ 'tid' => $node_wrapper_book->field_concept_type->value()[0]->tid ]
-        ];
-
+            $category_concepts = [
+                [ 'tid' => $node_wrapper_book->field_pub_type->value() ] ,
+                [ 'tid' => $node_wrapper_book->field_concept_type->value()[0]->tid ]
+            ];
+        }
         
         if( !is_null($nid) && is_numeric($nid) ){ // update entity
             // return $publication;    
@@ -324,7 +297,7 @@
            $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
         }
         
-        $node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? $publication['contents']->anopublicacion:null);
+        $node_wrapper->field_publication_year = (!empty($publication['contents']->anopublicacion) ? [$publication['contents']->anopublicacion] : null);
         
         $node_wrapper->field_jel = [];
         if( !empty($publication['contents']->cod_jel) ){
@@ -691,4 +664,55 @@
     }
 
 
+function _depure_sepi_in($file) {
+        $files = [];
+        $msj = '';
+
+        $contents_file = file_get_contents($file->uri);
+        $contents_file = encodeToIso($contents_file);
+        /*field archivo_aprobacion*/
+        $contents_file = str_replace("\\", '/', $contents_file);
+        /*salto de linea*/
+        $contents_file = preg_replace("/[\r\n|\n|\r]+/", " ", $contents_file);
+
+        
+        $files[$file->name] = [ 
+           'metadata' =>$file, 
+           'contents' => json_decode($contents_file)
+        ];
+
+       switch(json_last_error()) {
+            case JSON_ERROR_NONE: 
+                if(isset( $files[$file->name]['contents']->archivo_aprobacion) && !empty($files[$file->name]['contents']->archivo_aprobacion)){
+                    $files[$file->name]['contents']->archivo_aprobacion = str_replace("/", "\\", $files[$file->name]['contents']->archivo_aprobacion);
+                }
+            
+                try {
+                    $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
+                    $msj = 'Procesamiento completo';
+                } catch (Exception $e) {
+                    $msj = 'Se ha presentado un error en el procesamiento: '.$e->getMessage();
+                }
+                break;
+            case JSON_ERROR_DEPTH:
+                $msj = 'Se ha encontrado un error: Excedido tamaño máximo de la pila';
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                $msj = 'Se ha encontrado un error: Desbordamiento de buffer o los modos no coinciden';
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                $msj = 'Se ha encontrado un error: Encontrado carácter de control no esperado';
+            break;
+            case JSON_ERROR_SYNTAX:
+                $msj = 'Se ha encontrado un error: Error de sintaxis, verifique que el archivo JSON contenga simbolo ,';
+            break;
+            case JSON_ERROR_UTF8:
+                $msj = 'Se ha encontrado un error: Caracteres UTF-8 malformados, posiblemente codificados de forma incorrecta';
+            break;
+            default:
+                $msj = 'Se ha encontrado un error: Error desconocido';
+            break;
+        }
+        return $msj;
+    }
 
