@@ -325,22 +325,13 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
-	    //$sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
-	    /*------ Modificación para ajuste de fechas ------*/
-	    $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
-	    /*------ Modificación para ajuste de fechas ------*/
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
-	    /*------ Modificación para ajuste de fechas ------*/
-	    $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
-	    /*------ Modificación para ajuste de fechas ------*/
-            //$sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
             break;
           default:
-	    /*------ Modificación para ajuste de fechas ------*/
-	    $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
-	    /*------ Modificación para ajuste de fechas ------*/
-            //$sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
             break;
         }
         
