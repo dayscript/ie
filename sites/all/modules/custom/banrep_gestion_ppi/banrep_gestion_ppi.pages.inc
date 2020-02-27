@@ -105,6 +105,21 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     '#markup' => $html,
     );
   }
+
+  $user_ppi = user_load($uid->uid);
+
+  /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
+    $discounts = views_embed_view('descuento_puntos', 'block', $user_ppi->uid);
+    $form['position_discounts']['html'] = array(
+	'#markup' => "
+	    <span class='h4'><b>Descuentos por cambio de cargo</b></span>
+	    <div class='registro'>
+		<div class='row-container'>
+		    $discounts
+		</div>
+	   </div>"
+    );
+  /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
   /*Requisito de tiempo*/
   /*Requisitos de publicaciones y/o actividades*/
   $form['rq_publiacion'] = array(
@@ -114,9 +129,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   );
   $moduleRoot = drupal_get_path('module', 'banrep_gestion_ppi');
   $form['#attached']['css'][]= $moduleRoot.'/css/banrep_gestion_ppi.css';
-
-  $user_ppi = user_load($uid->uid);
-
 
   $req = [];
   foreach ($requirements['publications'] as $key => $reqpub) {
@@ -194,7 +206,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'date' => date( "d/m/Y", $date_pub),
             'type' => taxonomy_term_load($tax_father)->name,
             //'type' => taxonomy_term_load($pos_father['values'][0])->name,
-            'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            //'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            /* Modificación campo nuevo tipo de concepto */
+            'type_concept' => isset($node_child->field_tipo_concepto) ? 
+              taxonomy_term_load($node_child->field_tipo_concepto['und'][0]['tid'])->name :
+              taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            /* Modificación campo nuevo tipo de concepto */
             'charge' => $role,
             'escalafon' => taxonomy_term_load($node_child->field_usr_escalafon['und'][0]['tid'])->name,//taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
@@ -204,7 +221,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       }
     }
 
-    
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'activity')
@@ -318,23 +334,21 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
-
+      
       if (isset($pub_user_type[$condition['concept']])) {
-
         switch ($condition['concept']) {
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
             break;
           default:
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
             break;
         }
-        
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
           switch ($condition['concept']) {
             case '201'://Articulo

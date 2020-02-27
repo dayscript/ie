@@ -347,7 +347,7 @@ function _get_publications_user_ppi($uid, $id_type_publication, $flag_is_node = 
   }
 
   if($id_type_publication == 21194){
-    //dpm($result);
+   //dpm($result);
   }
 
   return $num_of_result;
