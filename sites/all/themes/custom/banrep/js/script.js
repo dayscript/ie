@@ -154,7 +154,7 @@ jQuery(document).ready(function(){
     if (jQuery('.page-caie').length) { 
       jQuery(".header__navbar .banrep-search-form .form-item-source select").val(1);
       jQuery(".tabs-x").hide();
-      jQuery("#tabs-1").show();
+      jQuery("#tabs-6").show();
 
     } else {
 

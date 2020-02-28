@@ -148,7 +148,6 @@
             .val()
           ;
           $('.visible-on-article').removeClass('hidden');
-          $('.form-item-query-right-column-fieldset-publication-articulos-article-21194').show();
           break;
         case Drupal.settings.banrep_core.PUB_TYPE_BOOK:
         case Drupal.settings.banrep_core.PUB_TYPE_BOOK_CHAPTER:
@@ -161,7 +160,6 @@
             .val()
           ;
           $('.visible-on-book').removeClass('hidden');
-          $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-21206').show();
           break;
         case Drupal.settings.banrep_core.PUB_TYPE_CONFERENCE_DOCUMENT:
           concept_type_child =
