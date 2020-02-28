@@ -255,7 +255,7 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
       'file_validate_extensions' => 'pdf',
       '_file_validate_unique' => array($file),
     ),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 }
 
