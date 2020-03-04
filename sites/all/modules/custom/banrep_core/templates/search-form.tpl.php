@@ -12,7 +12,7 @@
   </div>
   <div class="form-item form-type-textfield form-item-keys">
     <div id="tabs-1" class="tabs-x">
-      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
@@ -55,7 +55,7 @@
       </form>
     </div>
     <div id="tabs-4" class="tabs-x" style="display:none;">
-      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">

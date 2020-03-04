@@ -43,7 +43,7 @@ function DirectSearch(){
 	var form = document.direct;
 		if( form.text1.value == ""){
       //location.href = "https://itms.libsteps.com/BR/";
-      window.open('https://itms.libsteps.com/BR/');
+      window.open('https://s443-itms-libsteps-com.br.lsproxy.net/BR/');
 		}else {
 			form.submit();
 		}
