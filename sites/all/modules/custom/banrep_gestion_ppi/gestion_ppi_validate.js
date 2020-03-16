@@ -45,7 +45,8 @@
       sortTable('table-211');
       sortTable('table-2951');
       sortTable('table-21204');
-  
+      sortTable('draggableviews-table-dashboard-mis-publicaciones-block');
+      
       /* Basado en https://www.w3schools.com/howto/howto_js_sort_table.asp */
       function sortTable(tableId = null) {
         let table, rows, switching, i, x, y, shouldSwitch;
@@ -77,6 +78,11 @@
           }
         }
       }
+    }
+  }
+  Drupal.behaviors.dashboard_mis_publicaciones = {
+    attach: function (context, settings) {
+      console.log('yes');
     }
   }
 })(jQuery);
