@@ -129,6 +129,29 @@
         $(id).on('change', function() {updateConceptModalOptions();});
       }
     });
+
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    if(isIE) {
+      $('#edit-query-right-column-pub-type').change(function () {
+        $('.form-type-textfield').hide();
+        if($(this).val() === '201' ) {
+          $('#edit-query-right-column-fieldset-publication-articulos').find('.form-type-textfield').first().show();
+        }
+        if($(this).val() === '1') {
+          $('#edit-query-right-column-fieldset-publication-book-chapters').find('.form-type-textfield').first().show();
+        }
+      });
+      $('#edit-query-right-column-fieldset-publication-articulos-concept-type').change(function () {
+        $('.form-type-textfield').hide();
+        $('.form-item-query-right-column-fieldset-publication-articulos-article-' + $(this).val()).show();
+      });
+      $('#edit-query-right-column-fieldset-publication-book-chapters-concept-type').change(function () {
+        $('.form-type-textfield').hide();
+        $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-' + $(this).val()).show();
+      });
+    }
+
     /**
     * Update Concept modal options
     */
@@ -137,7 +160,6 @@
       var concept_type_child = '';
       $('.visible-on-article').addClass('hidden');
       $('.visible-on-book').addClass('hidden');
-      console.log(typeof pubType);
       switch (pubType) {
         case Drupal.settings.banrep_core.PUB_TYPE_ARTICLE:
           concept_type_child =
@@ -149,7 +171,6 @@
             .val()
           ;
           $('.visible-on-article').removeClass('hidden');
-          $('.form-item-query-right-column-fieldset-publication-articulos-article-21194').show();
           break;
         case Drupal.settings.banrep_core.PUB_TYPE_BOOK:
         case Drupal.settings.banrep_core.PUB_TYPE_BOOK_CHAPTER:
@@ -162,7 +183,6 @@
             .val()
           ;
           $('.visible-on-book').removeClass('hidden');
-          $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-21206').show();
           break;
         case Drupal.settings.banrep_core.PUB_TYPE_CONFERENCE_DOCUMENT:
           concept_type_child =
@@ -182,14 +202,6 @@
     }
     $('#edit-query-right-column-rol-within-publication').change(function(){
 
-    });
-    $('#edit-query-right-column-fieldset-publication-articulos-concept-type').change(function(){
-      $('.form-item-query-right-column-fieldset-publication-articulos-article-21194').show();
-      $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-21206').hide();
-    });
-    $('#edit-query-right-column-fieldset-publication-book-chapters-concept-type').change(function(){
-      $('.form-item-query-right-column-fieldset-publication-articulos-article-21194').hide();
-      $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-21206').show();
     });
   });
   Drupal.behaviors.formPub = {
