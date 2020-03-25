@@ -23,7 +23,7 @@
   </div>
   <div class="form-item form-type-textfield form-item-keys">
     <div id="tabs-1" class="tabs-x">
-      <form name="direct" action="view_search_results" method="get" target="_blank">
+      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
