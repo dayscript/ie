@@ -4,15 +4,26 @@
 <div class="form-container">
   <div class="form-item form-type-select form-item-source">
     <select id="test" onchange="myScript()">
-      <?php foreach ($data['options'] as $key => $value) : ?>
-      <option value="<?php echo $key?>"><?php echo t( $value ); ?></option>
-      <?php endforeach; ?>
+      <?php $show_options = ['1', '5', '7', '8']; ?>
+      <?php if(!strpos($_SERVER['REQUEST_URI'], 'caie')): ?>
+        <?php foreach ($data['options'] as $key => $value) : ?>
+          <?php foreach ($show_options AS $option) : ?>
+            <?php if($option == $key): ?>
+              <option value="<?php echo $key?>"><?php echo t( $value ); ?></option>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <?php foreach ($data['options'] as $key => $value) : ?>
+          <option value="<?php echo $key?>"><?php echo t( ($value == 'Búsqueda General') ? 'Escriba el término de búsqueda' : $value ); ?></option>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
   </div>
   <div class="form-item form-type-textfield form-item-keys">
     <div id="tabs-1" class="tabs-x">
-      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
+      <form name="direct" action="view_search_results" method="get" target="_blank">
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
