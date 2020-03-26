@@ -111,13 +111,13 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
     $discounts = views_embed_view('descuento_puntos', 'block', $user_ppi->uid);
     $form['position_discounts']['html'] = array(
-	'#markup' => "
-	    <span class='h4'><b>Descuentos por cambio de cargo</b></span>
-	    <div class='registro'>
-		<div class='row-container'>
-		    $discounts
-		</div>
-	   </div>"
+	    '#markup' => "
+	      <span class='h4'><b>Descuentos por cambio de cargo</b></span>
+        <div class='registro'>
+          <div class='row-container'>
+		        $discounts
+		      </div>
+	    </div>"
     );
   /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
   /*Requisito de tiempo*/
@@ -223,9 +223,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
 
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', 'activity')
-    ->propertyCondition('uid', $uid->uid)
-    ->fieldCondition('field_act_wf_status', 'value', 20, '=');
+      ->entityCondition('bundle', 'activity')
+      ->propertyCondition('uid', $uid->uid)
+      ->fieldCondition('field_act_wf_status', 'value', 20, '=');
     $result = $query->execute();
    
     $key = 211;
@@ -280,7 +280,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $comments = _output_comments($name_item, $nid_log);
       $html .= "<tr>";
       $input_value = '';
-     
+      
       switch ($condition['type']) {
         case 'PUNTAJE':
         case 'CANTIDAD':
@@ -289,8 +289,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $name    = $name->title;
             $info_user = _get_publications_user_ppi($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
             
-          }
-          else {
+          } else {
             if (isset($condition['concept'])) {
               $concepts  = explode(',', $condition['concept']);
               $is_activity = FALSE;
@@ -308,7 +307,19 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
 
-          $puntaje_type_concept = ($condition['type'] == 'PUNTAJE') ? $pub_user_type[$condition['concept']]['total_points'] : $pub_user_type[$condition['concept']]['count_pub'];
+          $puntaje_type_concept = ($condition['type'] == 'PUNTAJE') ? 
+            $pub_user_type[$condition['concept']]['total_points'] : 
+            $pub_user_type[$condition['concept']]['count_pub'];
+          
+          /* Consulta puntajes faltantes */
+          if(empty($puntaje_type_concept)) {
+            if ($condition['concept'] == '21236' || $condition['concept'] == '21237') {
+              if ($name == $pub_user_type['20685']['values'][0]['charge']) {
+                $puntaje_type_concept = $pub_user_type['20685']['values'][0]['points'];
+              }
+            }
+          }
+          /* Consulta puntajes faltantes */
 
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
@@ -329,6 +340,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           $checked = '';
         }
       }
+      
       $html .= '<td>'.$pub_user_type[$condition['concept']]['acumula'].'</td>';
       $html .= '<td>' . $calificacion . '</td>';
       $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
@@ -443,7 +455,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         }
 
         $info_user_count = !empty($files[$group[0]]) ? count($files[$group[0]]) : '';
-
+        
         $html .= '<tr>';
         $html .= '<td>'. $group['operator'] .'</td>';
         $html .= '<td id="'.$group[0].'">'. $name .'</td>';
