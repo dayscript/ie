@@ -48,16 +48,16 @@ function DirectSearch(type) {
         /*switch (type) {
             case '1':
             case '':
-                window.location.href = "/investiga/busqueda-general/texto-destacado";
+                window.location.href = "/busqueda-general/texto-destacado";
                 break;
             case '2':
-                window.location.href = "/investiga/busqueda-general/keyword";
+                window.location.href = "/busqueda-general/keyword";
                 break;
             case '3':
-                window.location.href = "/investiga/busqueda-general/titulo";
+                window.location.href = "/busqueda-general/titulo";
                 break;
             case '4':
-                window.location.href = "/investiga/busqueda-general/autor";
+                window.location.href = "/busqueda-general/autor";
                 break;
         }*/
 
@@ -143,7 +143,7 @@ function searchDatabases() {
 function searchResearchers() {
     var text_val = jQuery('#tabs-5 .searchArea #repoSearch').val();
     if (text_val != '') {
-        window.location.href = "/investigadores?nombre=" + text_val;
+        window.location.href = "dores?nombre=" + text_val;
     } else {
         return false;
     }

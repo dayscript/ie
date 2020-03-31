@@ -26,7 +26,7 @@
       <form name="direct" id="direct-search" 
         action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
           'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
-          '/investiga/busqueda-general/texto-destacado' ?>" 
+          '/busqueda-general/texto-destacado' ?>" 
         method="post" target="_blank"
       >
         <input type="hidden" name="m" value="direct">
@@ -74,7 +74,7 @@
       <form name="direct" id="direct-search" 
         action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
           'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
-          '/investiga/investiga/busqueda-general/texto-destacado' ?>" 
+          '/busqueda-general/texto-destacado' ?>" 
         method="post" target="_blank"
       >
         <input type="hidden" name="m" value="direct">
