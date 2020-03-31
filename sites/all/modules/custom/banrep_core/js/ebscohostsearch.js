@@ -14,7 +14,6 @@ function myScript() {
             document.getElementById("tabs-2").style.display = "block";
             break;
         case "3":
-            console.log(mySelect)
             document.getElementById("tabs-3").style.display = "block";
             break;
         case "4":
@@ -39,15 +38,30 @@ function myScript() {
 }
 
 
-function DirectSearch() {
+function DirectSearch(type) {
     var form = document.direct;
-    if (form.text1.value == "") {
-        //location.href = "https://itms.libsteps.com/BR/";
-        //window.open('https://s443-itms-libsteps-com.br.lsproxy.net/BR/');
+    var path = window.location.pathname;
+    if (form.text1.value == "" && path.indexOf('caie') >= 0) {
+        window.open('https://s443-itms-libsteps-com.br.lsproxy.net/BR/');
     } else {
         form.submit();
-    }
+        /*switch (type) {
+            case '1':
+            case '':
+                window.location.href = "/investiga/busqueda-general/texto-destacado";
+                break;
+            case '2':
+                window.location.href = "/investiga/busqueda-general/keyword";
+                break;
+            case '3':
+                window.location.href = "/investiga/busqueda-general/titulo";
+                break;
+            case '4':
+                window.location.href = "/investiga/busqueda-general/autor";
+                break;
+        }*/
 
+    }
     return false;
 }
 

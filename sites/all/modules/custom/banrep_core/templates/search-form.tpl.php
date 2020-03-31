@@ -23,7 +23,12 @@
   </div>
   <div class="form-item form-type-textfield form-item-keys">
     <div id="tabs-1" class="tabs-x">
-      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
+      <form name="direct" id="direct-search" 
+        action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
+          'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
+          '/investiga/busqueda-general/texto-destacado' ?>" 
+        method="post" target="_blank"
+      >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
@@ -31,7 +36,7 @@
         <input type="hidden" name="dbGroup" value="0" checked="">
         <div class="searchArea">
           <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50" />
-          <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
+          <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
           <div id="guidedFieldSelectors" class="inline-elements">
             <input type="radio" name="category1" value="0" checked="">
             <label class="label" for="guidedField_0"> <?php echo t('Full text'); ?></label>
@@ -66,7 +71,12 @@
       </form>
     </div>
     <div id="tabs-4" class="tabs-x" style="display:none;">
-      <form name="direct" action="https://s443-itms-libsteps-com.br.lsproxy.net/BR/" method="post" target="_blank">
+      <form name="direct" id="direct-search" 
+        action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
+          'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
+          '/investiga/investiga/busqueda-general/texto-destacado' ?>" 
+        method="post" target="_blank"
+      >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
@@ -74,7 +84,7 @@
         <input type="hidden" name="dbGroup" value="0"/ checked>
         <div class="searchArea">
           <input class="ebscohostsearchtext" type="text" name="text1" value="" size="50">
-          <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
+          <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
 
           <div id="category1" class="inline-elements">
             <input class="radio" type="radio" name="category1" id="guidedField_0" value="1" checked="checked">

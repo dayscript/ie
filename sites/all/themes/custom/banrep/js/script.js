@@ -17,6 +17,7 @@
     // To understand behaviors, see https://drupal.org/node/756722#behaviors
     Drupal.behaviors.my_custom_behavior = {
         attach: function(context, settings) {
+            var path = window.location.pathname;
             $('.language-switcher-locale-url .en a').html('EN');
             $('.language-switcher-locale-url .en span').html('EN');
             $('.language-switcher-locale-url .es a').html('ES');
@@ -40,6 +41,44 @@
                     $("#sbSC button").attr('onclick', 'searchCaieServices(2); return false;');
                 }
             });
+
+            if (path.indexOf('caie') == -1) {
+                var search_type = 'body_value';
+                $('input:radio[name="category1"]').change(function() {
+                    switch ($(this).val()) {
+                        case '0':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(1); return false;');
+                            $("#direct-search").attr('action', '/investiga/busqueda-general/texto-destacado');
+                            search_type = 'body_value';
+                            break;
+                        case '1':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(2); return false;');
+                            $("#direct-search").attr('action', '/investiga/busqueda-general/titulo');
+                            search_type = 'titulo';
+                            break;
+                        case '2':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(3); return false;');
+                            $("#direct-search").attr('action', '/investiga/busqueda-general/keyword');
+                            search_type = 'materias';
+                            break;
+                        case '4':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(4); return false;');
+                            $("#direct-search").attr('action', '/investiga/busqueda-general/autores');
+                            search_type = 'autor';
+                            break;
+                    }
+                });
+
+                $('#ebscohostsearchtext').change(function() {
+                    var old_attr = $("#direct-search").attr('action');
+                    if (search_type == 'materias') {
+                        $("#direct-search").attr('action', old_attr + '?materias=' + $(this).val() + '&materias_en=' + $(this).val());
+                    } else {
+                        $("#direct-search").attr('action', old_attr + '?' + search_type + '=' + $(this).val());
+                    }
+
+                });
+            }
 
             var form_search_sbss_id = "#sbSS"
             var form_search_sbss = $(form_search_sbss_id);
