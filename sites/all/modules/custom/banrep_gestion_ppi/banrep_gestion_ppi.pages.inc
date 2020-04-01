@@ -400,7 +400,8 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
               <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
             </td>
           </tr>';
-      } elseif($keyc == 1 && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+      //} elseif($keyc == 1 && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+      } elseif($name == $pub_user_type['20685']['values'][0]['charge'] && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
         $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
         
         foreach($pub_user_type['20685']['values'] AS $key => $value) {
