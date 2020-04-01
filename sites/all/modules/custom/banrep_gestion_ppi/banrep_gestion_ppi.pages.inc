@@ -251,6 +251,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   }
 
   $html = '<table class="requirements__publications">';
+  $has_points = false;
   foreach ($requirements['publications'] as $keyg => $group) {
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
@@ -311,22 +312,23 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $pub_user_type[$condition['concept']]['total_points'] : 
             $pub_user_type[$condition['concept']]['count_pub'];
           
-          /* Consulta puntajes faltantes */
+          /* Modificación Consulta puntajes faltantes */
           if(empty($puntaje_type_concept)) {
             if ($condition['concept'] == '21236' || $condition['concept'] == '21237') {
               if ($name == $pub_user_type['20685']['values'][0]['charge']) {
                 $puntaje_type_concept = $pub_user_type['20685']['values'][0]['points'];
+                $has_points = true;
               }
             }
           }
-          /* Consulta puntajes faltantes */
+          /* Modificación Consulta puntajes faltantes */
 
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $puntaje_type_concept . '</td>'; // falta para libros //$info_user . $input_value
           break;
       }
-
+      //capitulos_espe
       $calificacion = 'No cumple';
       $checked = '';
       if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($puntaje_type_concept) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
@@ -347,11 +349,20 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
       
+      /*if ($keyc == 1 && $has_points) {
+        $html .= "<a id='21236' class='pub_dropdown'>Listado de publicaciones</a>";
+        $html .= '<div class="pub_dropdown_21236" style="display:none">'.
+            //views_embed_view('capitulos_espe', 'block', $user_ppi->uid).
+            drupal_render(_block_get_renderable_array(_block_render_blocks(array(block_load('views', 'capitulos_espe', $user_ppi->uid))))).
+          '</div>';
+      }*/
+
       if (isset($pub_user_type[$condition['concept']])) {
         switch ($condition['concept']) {
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
+          case '21236':
             $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
@@ -362,6 +373,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             break;
         }
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
+
           switch ($condition['concept']) {
             case '201'://Articulo
             case '15317'://Otros Doc
@@ -382,12 +394,27 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $sub_html .= '</table>';
         $list = ($condition['concept']==211) ? 'Listado de Actividades': 'Listado de publicaciones';
         $html .= '
-        <tr>
-          <td colspan="7">
-            <a id="'.$condition['concept'].'" class="pub_dropdown">'.$list.'</a>
-            <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
-          </td>
-        </tr>';
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">'.$list.'</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+            </td>
+          </tr>';
+      } elseif($keyc == 1 && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+        $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+        
+        foreach($pub_user_type['20685']['values'] AS $key => $value) {
+          $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+        }
+
+        $sub_html .= '</table>';
+        $html .= '
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+            </td>
+          </tr>';
       }
     }
     $html .= '</table></td></tr>';
@@ -401,7 +428,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   /*Requisitos formación desarrollo y desempeño*/
     if ($perfil_active == 'plan_carrera') {
       $form['rq_publiacion']['html'] = array(
-      '#markup' => $html,
+        '#markup' => $html,
       );
 
       $html = '<table class="requirements__publications">';
@@ -549,6 +576,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   drupal_add_js(drupal_get_path('module', 'banrep_gestion_ppi') . '/gestion_ppi_validate.js');
   return $form;
 }
+
 function banrep_gestion_ppi_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];
