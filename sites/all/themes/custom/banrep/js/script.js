@@ -45,38 +45,44 @@
             if (path.indexOf('caie') == -1) {
                 var search_type = 'body_value';
                 $('input:radio[name="category1"]').change(function() {
+                    var text = $('#ebscohostsearchtext').val();
+                    var params;
+                    if (text.length > 0) {
+                        params = '=' + text;
+                    }
                     switch ($(this).val()) {
                         case '0':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(1); return false;');
-                            $("#direct-search").attr('action', '/busqueda-general/texto-destacado');
                             search_type = 'body_value';
+                            $("#direct-search").attr('action', '/busqueda-general/texto-destacado?');
                             break;
                         case '1':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(2); return false;');
-                            $("#direct-search").attr('action', '/busqueda-general/titulo');
                             search_type = 'titulo';
+                            $("#direct-search").attr('action', '/busqueda-general/titulo?');
                             break;
                         case '2':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(3); return false;');
-                            $("#direct-search").attr('action', '/busqueda-general/keyword');
                             search_type = 'materias';
+                            $("#direct-search").attr('action', '/busqueda-general/keyword?');
                             break;
                         case '4':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(4); return false;');
-                            $("#direct-search").attr('action', '/busqueda-general/autores');
                             search_type = 'autor';
+                            $("#direct-search").attr('action', '/busqueda-general/autores?');
                             break;
                     }
                 });
 
                 $('#ebscohostsearchtext').change(function() {
                     var old_attr = $("#direct-search").attr('action');
-                    if (search_type == 'materias') {
-                        $("#direct-search").attr('action', old_attr + '?materias=' + $(this).val() + '&materias_en=' + $(this).val());
-                    } else {
-                        $("#direct-search").attr('action', old_attr + '?' + search_type + '=' + $(this).val());
+                    if (params.length <= 0) {
+                        if (search_type == 'materias') {
+                            $("#direct-search").attr('action', old_attr + 'materias=' + $(this).val() + '&materias_en=' + $(this).val());
+                        } else {
+                            $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
+                        }
                     }
-
                 });
             }
 
