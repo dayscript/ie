@@ -44,9 +44,9 @@
 
             if (path.indexOf('caie') == -1) {
                 var search_type = 'body_value';
+                var params;
                 $('input:radio[name="category1"]').change(function() {
                     var text = $('#ebscohostsearchtext').val();
-                    var params;
                     if (text.length > 0) {
                         params = '=' + text;
                     }
