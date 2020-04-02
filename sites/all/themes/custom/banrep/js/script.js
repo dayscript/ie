@@ -54,22 +54,22 @@
                         case '0':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(1); return false;');
                             search_type = 'body_value';
-                            $("#direct-search").attr('action', '/busqueda-general/texto-destacado?');
+                            $("#direct-search").attr('action', '/busqueda-general/texto-destacado?' + (params.length > 0) ? search_type + params : '');
                             break;
                         case '1':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(2); return false;');
                             search_type = 'titulo';
-                            $("#direct-search").attr('action', '/busqueda-general/titulo?');
+                            $("#direct-search").attr('action', '/busqueda-general/titulo?' + (params.length > 0) ? search_type + params : '');
                             break;
                         case '2':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(3); return false;');
                             search_type = 'materias';
-                            $("#direct-search").attr('action', '/busqueda-general/keyword?');
+                            $("#direct-search").attr('action', '/busqueda-general/keyword?' + (params.length > 0) ? search_type + params : '');
                             break;
                         case '4':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(4); return false;');
                             search_type = 'autor';
-                            $("#direct-search").attr('action', '/busqueda-general/autores?');
+                            $("#direct-search").attr('action', '/busqueda-general/autores?' + (params.length > 0) ? search_type + params : '');
                             break;
                     }
                 });
