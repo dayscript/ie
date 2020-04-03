@@ -34,7 +34,7 @@
         <input type="hidden" name="charset" value="utf-8">
         <input type="hidden" name="userid" value="">
         <input type="hidden" name="dbGroup" value="0" checked="">
-        <div class="searchArea">
+        <div class="searchArea" style="min-width:430px">
           <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50" />
           <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
           <div id="guidedFieldSelectors" class="inline-elements">
@@ -46,6 +46,8 @@
             <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
             <input type="radio" name="category1" value="4">
             <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
+            <input type="radio" name="category1" value="5">
+            <label class="label" for="guidedField_2"> <?php echo t('JEL'); ?></label>
           </div>
          
         </div>

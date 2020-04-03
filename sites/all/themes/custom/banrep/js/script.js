@@ -71,6 +71,11 @@
                             search_type = 'autor';
                             $("#direct-search").attr('action', '/busqueda-general/autores?' + ((params.length > 0) ? search_type + params : ''));
                             break;
+                        case '5':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(5); return false;');
+                            search_type = 'jel';
+                            $("#direct-search").attr('action', '/busqueda-general/jel?' + ((params.length > 0) ? search_type + params : ''));
+                            break;
                     }
                 });
 
