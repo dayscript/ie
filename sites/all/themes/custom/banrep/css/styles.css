@@ -12071,7 +12071,8 @@ form .form-textarea {
 .view-busqueda-general #edit-materias-wrapper,
 .view-busqueda-general #edit-materias-en-wrapper,
 .view-busqueda-general #edit-titulo-wrapper,
-.view-busqueda-general #edit-autor-wrapper {
+.view-busqueda-general #edit-autor-wrapper,
+.view-busqueda-general #edit-jel-wrapper {
     display: none;
 }
 
