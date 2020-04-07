@@ -49,7 +49,7 @@
             <input type="radio" name="category1" value="5">
             <label class="label" for="guidedField_2"> <?php echo t('JEL'); ?></label>
           </div>
-         
+          <span id="alert-text" style="color:#860024;font-size:0.9rem;"></span>         
         </div>
         <div id="limiterblock" style="display:none;">
           <div id="limitertitle"><?php echo t('Limit Results'); ?></div>

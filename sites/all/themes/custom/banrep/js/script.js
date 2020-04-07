@@ -45,6 +45,18 @@
             if (path.indexOf('caie') == -1) {
                 var search_type = 'body_value';
                 var params = '';
+                $('#direct-search').on('submit', function(e) {
+                    if ($('#ebscohostsearchtext').val().length <= 0) {
+                        e.preventDefault();
+                        $('#ebscohostsearchtext').css({
+                            '-webkit-box-shadow': '2px -2px 26px 16px rgba(255,0,0,0.7)',
+                            '-moz-box-shadow': '2px -2px 26px 16px rgba(255,0,0,0.7)',
+                            'box-shadow': '2px -2px 26px 16px rgba(255,0,0,0.7)'
+                        });
+                        $('#alert-text').empty();
+                        $('#alert-text').text('Por favor ingrese el texto a buscar');
+                    }
+                });
                 $('input:radio[name="category1"]').change(function() {
                     var text = $('#ebscohostsearchtext').val();
                     if (text.length > 0) {
@@ -63,7 +75,7 @@
                             break;
                         case '2':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(3); return false;');
-                            search_type = 'materias';
+                            search_type = 'keyword';
                             $("#direct-search").attr('action', '/busqueda-general/keyword?' + ((params.length > 0) ? search_type + params : ''));
                             break;
                         case '4':
@@ -82,11 +94,7 @@
                 $('#ebscohostsearchtext').change(function() {
                     var old_attr = $("#direct-search").attr('action');
                     if (params.length <= 0) {
-                        if (search_type == 'materias') {
-                            $("#direct-search").attr('action', old_attr + 'materias=' + $(this).val() + '&materias_en=' + $(this).val());
-                        } else {
-                            $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
-                        }
+                        $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
                     }
                 });
             }
