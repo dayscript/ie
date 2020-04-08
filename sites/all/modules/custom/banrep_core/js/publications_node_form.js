@@ -129,6 +129,29 @@
         $(id).on('change', function() {updateConceptModalOptions();});
       }
     });
+
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    if(isIE) {
+      $('#edit-query-right-column-pub-type').change(function () {
+        $('.form-type-textfield').hide();
+        if($(this).val() === '201' ) {
+          $('#edit-query-right-column-fieldset-publication-articulos').find('.form-type-textfield').first().show();
+        }
+        if($(this).val() === '1') {
+          $('#edit-query-right-column-fieldset-publication-book-chapters').find('.form-type-textfield').first().show();
+        }
+      });
+      $('#edit-query-right-column-fieldset-publication-articulos-concept-type').change(function () {
+        $('.form-type-textfield').hide();
+        $('.form-item-query-right-column-fieldset-publication-articulos-article-' + $(this).val()).show();
+      });
+      $('#edit-query-right-column-fieldset-publication-book-chapters-concept-type').change(function () {
+        $('.form-type-textfield').hide();
+        $('.form-item-query-right-column-fieldset-publication-book-chapters-book-chapter-' + $(this).val()).show();
+      });
+    }
+
     /**
     * Update Concept modal options
     */

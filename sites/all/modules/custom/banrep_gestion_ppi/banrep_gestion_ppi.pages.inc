@@ -105,6 +105,21 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
     '#markup' => $html,
     );
   }
+
+  $user_ppi = user_load($uid->uid);
+
+  /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
+    $discounts = views_embed_view('descuento_puntos', 'block', $user_ppi->uid);
+    $form['position_discounts']['html'] = array(
+	    '#markup' => "
+	      <span class='h4'><b>Descuentos por cambio de cargo</b></span>
+        <div class='registro'>
+          <div class='row-container'>
+		        $discounts
+		      </div>
+	    </div>"
+    );
+  /* Modificación sprint 2 feb 2020 "agregar despliegue descuento de puntos " */
   /*Requisito de tiempo*/
   /*Requisitos de publicaciones y/o actividades*/
   $form['rq_publiacion'] = array(
@@ -114,9 +129,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   );
   $moduleRoot = drupal_get_path('module', 'banrep_gestion_ppi');
   $form['#attached']['css'][]= $moduleRoot.'/css/banrep_gestion_ppi.css';
-
-  $user_ppi = user_load($uid->uid);
-
 
   $req = [];
   foreach ($requirements['publications'] as $key => $reqpub) {
@@ -194,7 +206,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             'date' => date( "d/m/Y", $date_pub),
             'type' => taxonomy_term_load($tax_father)->name,
             //'type' => taxonomy_term_load($pos_father['values'][0])->name,
-            'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            //'type_concept' => taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            /* Modificación campo nuevo tipo de concepto */
+            'type_concept' => isset($node_child->field_tipo_concepto) ? 
+              taxonomy_term_load($node_child->field_tipo_concepto['und'][0]['tid'])->name :
+              taxonomy_term_load($node_father->field_concept_type['und'][0]['tid'])->name,
+            /* Modificación campo nuevo tipo de concepto */
             'charge' => $role,
             'escalafon' => taxonomy_term_load($node_child->field_usr_escalafon['und'][0]['tid'])->name,//taxonomy_term_load($user_ppi->field_usr_escalafon['und'][0]['tid'])->name
           );
@@ -204,12 +221,11 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       }
     }
 
-    
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
-    ->entityCondition('bundle', 'activity')
-    ->propertyCondition('uid', $uid->uid)
-    ->fieldCondition('field_act_wf_status', 'value', 20, '=');
+      ->entityCondition('bundle', 'activity')
+      ->propertyCondition('uid', $uid->uid)
+      ->fieldCondition('field_act_wf_status', 'value', 20, '=');
     $result = $query->execute();
    
     $key = 211;
@@ -235,6 +251,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   }
 
   $html = '<table class="requirements__publications">';
+  $has_points = false;
   foreach ($requirements['publications'] as $keyg => $group) {
     if (isset($group['operator']) && !empty($group['operator'])) {
       $html .= '<tr><td colspan="6" class="operator-groups-conditions">' . $group['operator'] . '</td></tr>';
@@ -264,7 +281,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
       $comments = _output_comments($name_item, $nid_log);
       $html .= "<tr>";
       $input_value = '';
-     
+      
       switch ($condition['type']) {
         case 'PUNTAJE':
         case 'CANTIDAD':
@@ -273,8 +290,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $name    = $name->title;
             $info_user = _get_publications_user_ppi($uid->uid, $condition['serie'], TRUE, $condition['type'], $requirements['general']['date_start_pub']);
             
-          }
-          else {
+          } else {
             if (isset($condition['concept'])) {
               $concepts  = explode(',', $condition['concept']);
               $is_activity = FALSE;
@@ -292,14 +308,27 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
             $info_user = user_load($uid->uid)->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
           }
 
-          $puntaje_type_concept = ($condition['type'] == 'PUNTAJE') ? $pub_user_type[$condition['concept']]['total_points'] : $pub_user_type[$condition['concept']]['count_pub'];
+          $puntaje_type_concept = ($condition['type'] == 'PUNTAJE') ? 
+            $pub_user_type[$condition['concept']]['total_points'] : 
+            $pub_user_type[$condition['concept']]['count_pub'];
+          
+          /* Modificación Consulta puntajes faltantes */
+          if(empty($puntaje_type_concept)) {
+            if ($condition['concept'] == '21236' || $condition['concept'] == '21237') {
+              if ($name == $pub_user_type['20685']['values'][0]['charge']) {
+                $puntaje_type_concept = $pub_user_type['20685']['values'][0]['points'];
+                $has_points = true;
+              }
+            }
+          }
+          /* Modificación Consulta puntajes faltantes */
 
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $puntaje_type_concept . '</td>'; // falta para libros //$info_user . $input_value
           break;
       }
-
+      //capitulos_espe
       $calificacion = 'No cumple';
       $checked = '';
       if (isset($puntaje_type_concept) && isset($condition['value']) && !empty($puntaje_type_concept) && !empty($condition['value']) && $puntaje_type_concept >= $condition['value']) {
@@ -313,29 +342,38 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           $checked = '';
         }
       }
+      
       $html .= '<td>'.$pub_user_type[$condition['concept']]['acumula'].'</td>';
       $html .= '<td>' . $calificacion . '</td>';
       $html .= '<td><input type="checkbox" name="rq_publiacion_' . $keyg . '_' . $keyc . '_aprobado" ' . $checked . '></td>';
       $html .= '<td> <textarea rows="3" cols="20" name="rq_publiacion_' . $keyg . '_' . $keyc . '_observaciones"></textarea>' . $comments['html'] . ' </td>';
       $html .= "</tr>";
+      
+      /*if ($keyc == 1 && $has_points) {
+        $html .= "<a id='21236' class='pub_dropdown'>Listado de publicaciones</a>";
+        $html .= '<div class="pub_dropdown_21236" style="display:none">'.
+            //views_embed_view('capitulos_espe', 'block', $user_ppi->uid).
+            drupal_render(_block_get_renderable_array(_block_render_blocks(array(block_load('views', 'capitulos_espe', $user_ppi->uid))))).
+          '</div>';
+      }*/
 
       if (isset($pub_user_type[$condition['concept']])) {
-
         switch ($condition['concept']) {
           case '201'://Articulo
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+          case '21236':
+            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
             break;
           default:
-            $sub_html = '<table class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
             break;
         }
-        
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
+
           switch ($condition['concept']) {
             case '201'://Articulo
             case '15317'://Otros Doc
@@ -356,12 +394,28 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         $sub_html .= '</table>';
         $list = ($condition['concept']==211) ? 'Listado de Actividades': 'Listado de publicaciones';
         $html .= '
-        <tr>
-          <td colspan="7">
-            <a id="'.$condition['concept'].'" class="pub_dropdown">'.$list.'</a>
-            <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
-          </td>
-        </tr>';
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">'.$list.'</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+            </td>
+          </tr>';
+      //} elseif($keyc == 1 && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+      } elseif($name == $pub_user_type['20685']['values'][0]['charge'] && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+        $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+        
+        foreach($pub_user_type['20685']['values'] AS $key => $value) {
+          $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+        }
+
+        $sub_html .= '</table>';
+        $html .= '
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+            </td>
+          </tr>';
       }
     }
     $html .= '</table></td></tr>';
@@ -375,7 +429,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   /*Requisitos formación desarrollo y desempeño*/
     if ($perfil_active == 'plan_carrera') {
       $form['rq_publiacion']['html'] = array(
-      '#markup' => $html,
+        '#markup' => $html,
       );
 
       $html = '<table class="requirements__publications">';
@@ -429,7 +483,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
         }
 
         $info_user_count = !empty($files[$group[0]]) ? count($files[$group[0]]) : '';
-
+        
         $html .= '<tr>';
         $html .= '<td>'. $group['operator'] .'</td>';
         $html .= '<td id="'.$group[0].'">'. $name .'</td>';
@@ -523,6 +577,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
   drupal_add_js(drupal_get_path('module', 'banrep_gestion_ppi') . '/gestion_ppi_validate.js');
   return $form;
 }
+
 function banrep_gestion_ppi_form_submit($form,&$form_state){
   global $user;
   $values = $form_state['input'];

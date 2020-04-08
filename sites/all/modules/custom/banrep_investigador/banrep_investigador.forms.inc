@@ -204,7 +204,7 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
     '#default_value' => get_input_value_from_publication($publication, 'description'),
     '#required' => TRUE,
   );
-  $options_date = range(2018, 1950);
+  $options_date = range((int)date('Y'), 1950);
   $form['query']['content']['publication_year'] = array(
     '#type' => 'select',
     '#title' => t('Year'),
@@ -255,7 +255,7 @@ function _activities_add_form_step_1(&$form, &$form_state, &$publication = NULL)
       'file_validate_extensions' => 'pdf',
       '_file_validate_unique' => array($file),
     ),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 }
 
@@ -263,7 +263,7 @@ function _file_validate_unique($file) {
    $errors = array();
    $filename = $file->filename;
    if (file_exists('public://activity/' . $filename)) {
-         $errors[] = t('The file could not be uploaded because a file by that name already exists in the destination directory.');
+      $errors[] = t('The file could not be uploaded because a file by that name already exists in the destination directory.');
    }
    return $errors;
 }
@@ -485,15 +485,19 @@ function _activities_add_form_validate_step_1($form, &$form_state, &$response) {
     $response->is_valid = FALSE;
   }
   // Attach
-  $file = file_load($values['file']);
-  $file->filename = $file->fid . '-' . time();
-  $file->status = FILE_STATUS_PERMANENT;
-  file_save($file);
-  file_usage_add($file, 'banrep_core', 'node', 4);
-  // If the file passed validation:
-  if (!$file) {
-    form_set_error('query[content][file]', t('No file was uploaded.'));
-    $response->is_valid = FALSE;
+  try {
+    $file = file_load($values['file']);
+    $file->filename = $file->fid . '-' . time();
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    file_usage_add($file, 'banrep_core', 'node', 4);
+    // If the file passed validation:
+    if (!$file) {
+      form_set_error('query[content][file]', t('No file was uploaded.'));
+      $response->is_valid = FALSE;
+    }
+  } catch (Exception $e) {
+    drupal_set_message('No se adjuntó ningún archivo');
   }
 
   if ($response->is_valid) {

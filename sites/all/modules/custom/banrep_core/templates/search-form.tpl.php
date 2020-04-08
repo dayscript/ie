@@ -4,23 +4,39 @@
 <div class="form-container">
   <div class="form-item form-type-select form-item-source">
     <select id="test" onchange="myScript()">
-      <?php foreach ($data['options'] as $key => $value) : ?>
-      <option value="<?php echo $key?>"><?php echo t( $value ); ?></option>
-      <?php endforeach; ?>
+      <?php $show_options = ['1', '5', '7', '8']; ?>
+      <?php if(!strpos($_SERVER['REQUEST_URI'], 'caie')): ?>
+        <?php foreach ($data['options'] as $key => $value) : ?>
+          <?php foreach ($show_options AS $option) : ?>
+            <?php if($option == $key): ?>
+              <option value="<?php echo $key?>"><?php echo t( $value ); ?></option>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <?php foreach ($data['options'] as $key => $value) : ?>
+          <option value="<?php echo $key?>"><?php echo t( ($value == 'Búsqueda General') ? 'Escriba el término de búsqueda' : $value ); ?></option>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </select>
     <i class="fa fa-caret-down" aria-hidden="true"></i>
   </div>
   <div class="form-item form-type-textfield form-item-keys">
     <div id="tabs-1" class="tabs-x">
-      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+      <form name="direct" id="direct-search" 
+        action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
+          'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
+          '/busqueda-general/texto-destacado?' ?>" 
+        method="post" <?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank"' : '' ?>
+      >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
         <input type="hidden" name="userid" value="">
         <input type="hidden" name="dbGroup" value="0" checked="">
-        <div class="searchArea">
+        <div class="searchArea" style="min-width:430px">
           <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50" />
-          <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
+          <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
           <div id="guidedFieldSelectors" class="inline-elements">
             <input type="radio" name="category1" value="0" checked="">
             <label class="label" for="guidedField_0"> <?php echo t('Full text'); ?></label>
@@ -30,8 +46,10 @@
             <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
             <input type="radio" name="category1" value="4">
             <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
+            <input type="radio" name="category1" value="5">
+            <label class="label" for="guidedField_2"> <?php echo t('JEL'); ?></label>
           </div>
-         
+          <span id="alert-text" style="color:#860024;font-size:0.9rem;"></span>         
         </div>
         <div id="limiterblock" style="display:none;">
           <div id="limitertitle"><?php echo t('Limit Results'); ?></div>
@@ -55,7 +73,12 @@
       </form>
     </div>
     <div id="tabs-4" class="tabs-x" style="display:none;">
-      <form name="direct" action="http://itms.libsteps.com/BR/" method="post" target="_blank">
+      <form name="direct" id="direct-search" 
+        action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
+          'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
+          '/busqueda-general/texto-destacado?' ?>" 
+        method="post" <?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank"' : '' ?>
+      >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
         <input type="hidden" name="charset" value="utf-8">
@@ -63,7 +86,7 @@
         <input type="hidden" name="dbGroup" value="0"/ checked>
         <div class="searchArea">
           <input class="ebscohostsearchtext" type="text" name="text1" value="" size="50">
-          <button onclick="DirectSearch();" class="submit"><i class="icon-buscar"></i></button>
+          <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
 
           <div id="category1" class="inline-elements">
             <input class="radio" type="radio" name="category1" id="guidedField_0" value="1" checked="checked">

@@ -374,7 +374,12 @@ function banrep_core_dashboard_page() {
 
   $favoritos  = views_embed_view('mis_enlaces_recomendados', 'enlaces_recomendados_privados', $user->uid);
   $training   = views_embed_view('gestionar_formacion_desarrollo', 'block', $user->uid);
-  $redemption = views_embed_view('gestionar_redenciones', 'block', $user->uid);
+  //$redemption = views_embed_view('gestionar_redenciones', 'block', $user->uid);
+  
+  /* Modificación sprint 2 feb 2020 "visualización gestionar redenciones" */
+  $redemption = views_embed_view('beneficios_ppi', 'block', $user->uid);
+  /* Modificación sprint 2 feb 2020 "visualización gestionar redenciones" */
+
   $scalafon   = views_embed_view('ruta_del_investigador', 'block', $user->uid);
 
   $html =

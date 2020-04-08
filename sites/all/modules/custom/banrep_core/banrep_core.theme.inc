@@ -80,7 +80,12 @@ function theme_banrep_user_top_zone($variables) {
      * Opciones Admin GT
      */
     if ( user_has_role(11) ) {
-      $menu_admin_gt = '<li>
+      $menu_admin_gt = '
+                        <li>
+                          <a href="/' . $language->language . '/admin/content/publicaciones-por-usuario">
+                          <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Publicaciones por usuario') .' </a>
+                        </li>
+                        <li>
                           <a href="/' . $language->language . '/admin/content/gestion-actividad">
                           <i class="fa fa-angle-right" aria-hidden="true"></i> Gestionar Actividad
                           </a>
@@ -198,8 +203,13 @@ function theme_banrep_user_top_zone($variables) {
      * Opciones CAIE
      */
      if ( user_has_role(10) ) {
-
-      $menu_caie = '<li>
+//admin/content/publicaciones-por-usuario
+      $menu_caie = '
+                    <li>
+                      <a href="/' . $language->language . '/admin/content/publicaciones-por-usuario">
+                      <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Publicaciones por usuario') .' </a>
+                    </li>
+                    <li>
                        <a href="/' . $language->language . '/admin/content/gestion-actividad">
                        <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Gestionar Actividad') .' </a>
                     </li>
