@@ -12073,7 +12073,8 @@ form .form-textarea {
 .view-busqueda-general #edit-titulo-wrapper,
 .view-busqueda-general #edit-autor-wrapper,
 .view-busqueda-general #edit-jel-wrapper,
-.view-busqueda-general #edit-keyword-wrapper {
+.view-busqueda-general #edit-keyword-wrapper,
+.view-busqueda-general #edit-coautor-wrapper {
     display: none;
 }
 
