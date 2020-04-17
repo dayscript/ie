@@ -81,7 +81,7 @@
                         case '4':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(4); return false;');
                             search_type = 'autor';
-                            $("#direct-search").attr('action', '/busqueda-general/autores?' + ((params.length > 0) ? search_type + params : ''));
+                            $("#direct-search").attr('action', '/busqueda-general/autores?' + ((params.length > 0) ? ('autor' + params + '&coautor' + params) : ''));
                             break;
                         case '5':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(5); return false;');
@@ -94,7 +94,12 @@
                 $('#ebscohostsearchtext').change(function() {
                     var old_attr = $("#direct-search").attr('action');
                     if (params.length <= 0) {
-                        $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
+                        if ($search_type == 'autor') {
+                            $("#direct-search").attr('action', old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val());
+                        } else {
+                            $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
+                        }
+
                     }
                 });
             }
