@@ -94,7 +94,7 @@
                 $('#ebscohostsearchtext').change(function() {
                     var old_attr = $("#direct-search").attr('action');
                     if (params.length <= 0) {
-                        if ($search_type == 'autor') {
+                        if (search_type == 'autor') {
                             $("#direct-search").attr('action', old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val());
                         } else {
                             $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
