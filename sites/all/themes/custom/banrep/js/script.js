@@ -43,7 +43,7 @@
             });
 
             if (path.indexOf('caie') == -1) {
-                var search_type = 'body_value';
+                var search_type = 'general';
                 var params = '';
                 $('#direct-search').on('submit', function(e) {
                     if ($('#ebscohostsearchtext').val().length <= 0) {
@@ -88,14 +88,25 @@
                             search_type = 'jel';
                             $("#direct-search").attr('action', '/busqueda-general/jel?' + ((params.length > 0) ? search_type + params : ''));
                             break;
+                        case '6':
+                            $("#direct-search-button").attr('onclick', 'DirectSearch(6); return false;');
+                            search_type = 'general';
+                            var search_values = 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val();
+                            console.log(search_values);
+                            $("#direct-search").attr('action', '/busqueda-general/general?' + search_values);
+                            break;
                     }
                 });
 
                 $('#ebscohostsearchtext').change(function() {
                     var old_attr = $("#direct-search").attr('action');
+                    console.log(params.length);
                     if (params.length <= 0) {
                         if (search_type == 'autor') {
                             $("#direct-search").attr('action', old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val());
+                        } else if (search_type == 'general') {
+                            var search_values = old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val();
+                            $("#direct-search").attr('action', search_values);
                         } else {
                             $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
                         }

@@ -26,7 +26,7 @@
       <form name="direct" id="direct-search" 
         action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
           'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
-          '/busqueda-general/texto-destacado?' ?>" 
+          '/busqueda-general/general?' ?>" 
         method="post" <?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank"' : '' ?>
       >
         <input type="hidden" name="m" value="direct">
@@ -34,11 +34,15 @@
         <input type="hidden" name="charset" value="utf-8">
         <input type="hidden" name="userid" value="">
         <input type="hidden" name="dbGroup" value="0" checked="">
-        <div class="searchArea" style="min-width:430px">
+        <div class="searchArea" style="min-width:520px">
           <input id="ebscohostsearchtext" class="ebscohostsearchtext" name="text1" type="text" size="50" />
-          <button onclick="DirectSearch(1);" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
+          <button onclick="" class="submit" id="direct-search-button"><i class="icon-buscar"></i></button>
           <div id="guidedFieldSelectors" class="inline-elements">
-            <input type="radio" name="category1" value="0" checked="">
+            <?php if(!strpos($_SERVER['REQUEST_URI'], 'caie')): ?>
+              <input type="radio" name="category1" value="6" checked="">
+              <label class="label" for="guidedField_6"> <?php echo t('General'); ?></label>
+            <?php endif; ?>
+            <input type="radio" name="category1" value="0">
             <label class="label" for="guidedField_0"> <?php echo t('Full text'); ?></label>
             <input type="radio" name="category1" value="2">
             <label class="label" for="guidedField_0"> <?php echo t('Keywords'); ?></label>
@@ -46,8 +50,10 @@
             <label class="label" for="guidedField_1"> <?php echo t('Title'); ?></label>
             <input type="radio" name="category1" value="4">
             <label class="label" for="guidedField_2"> <?php echo t('Author'); ?></label>
-            <input type="radio" name="category1" value="5">
-            <label class="label" for="guidedField_2"> <?php echo t('JEL'); ?></label>
+            <?php if(!strpos($_SERVER['REQUEST_URI'], 'caie')): ?>
+              <input type="radio" name="category1" value="5">
+              <label class="label" for="guidedField_5"> <?php echo t('JEL'); ?></label>
+            <?php endif; ?>
           </div>
           <span id="alert-text" style="color:#860024;font-size:0.9rem;"></span>         
         </div>
