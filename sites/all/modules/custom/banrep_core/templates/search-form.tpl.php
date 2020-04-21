@@ -27,7 +27,7 @@
         action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
           'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
           '/busqueda-general/general?' ?>" 
-        method="post" <?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank"' : '' ?>
+        <?php strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank" method="get"' : print 'method="post"' ?>
       >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
@@ -83,7 +83,7 @@
         action="<?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? 
           'https://s443-itms-libsteps-com.br.lsproxy.net/BR/' : 
           '/busqueda-general/texto-destacado?' ?>" 
-        method="post" <?php echo strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank"' : '' ?>
+        <?php strpos($_SERVER['REQUEST_URI'], 'caie') ? print 'target="_blank" method="get"' : print 'method="post"' ?>
       >
         <input type="hidden" name="m" value="direct">
         <input type="hidden" name="skey" value="1031">
