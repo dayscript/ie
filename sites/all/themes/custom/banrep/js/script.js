@@ -91,7 +91,7 @@
                         case '6':
                             $("#direct-search-button").attr('onclick', 'DirectSearch(6); return false;');
                             search_type = 'general';
-                            var search_values = 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val();
+                            var search_values = 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val() + '&jel=' + $(this).val();
                             console.log(search_values);
                             $("#direct-search").attr('action', '/busqueda-general/general?' + search_values);
                             break;
@@ -105,7 +105,7 @@
                         if (search_type == 'autor') {
                             $("#direct-search").attr('action', old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val());
                         } else if (search_type == 'general') {
-                            var search_values = old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val();
+                            var search_values = old_attr + 'autor' + '=' + $(this).val() + '&coautor=' + $(this).val() + '&body_value=' + $(this).val() + '&keyword=' + $(this).val() + '&titulo=' + $(this).val() + '&jel=' + $(this).val();
                             $("#direct-search").attr('action', search_values);
                         } else {
                             $("#direct-search").attr('action', old_attr + search_type + '=' + $(this).val());
