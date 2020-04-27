@@ -4,7 +4,7 @@
      * Implements hook_cron();
     */
     function banrep_sepi_cron(){
-        $enviroment = 'dev';
+        $enviroment = 'prod';
         $path_in = 'private://'.'sepi-in-'.$enviroment;
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         $files_in_folder = [];
@@ -232,7 +232,7 @@
         $user->save();
 
         $file_name = 'entrega'.$publication['contents']->identificador_sepi.'_'.$user->field_document_number->value().'.json';
-        $enviroment = 'dev';
+        $enviroment = 'prod';
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         file_save_data(json_encode($publication['contents']), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
         return $publication;
