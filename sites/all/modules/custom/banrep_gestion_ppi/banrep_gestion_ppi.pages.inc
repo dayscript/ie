@@ -363,31 +363,83 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
           case '21236':
-            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub">
+              <tr> 
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Tipo Publicación</th>
+                <th>Tipo Concepto</th>
+              </tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub">
+              <tr>
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Aprobado por</th>
+              </tr>';
             break;
           default:
-            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub">
+              <tr>
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Tipo Publicación</th>
+                <th>Tipo Concepto</th>
+                <th>Rol</th>
+              </tr>';
             break;
         }
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
-
           switch ($condition['concept']) {
             case '201'://Articulo
             case '15317'://Otros Doc
-            $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+            $sub_html .= '<tr>
+                <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                <td>'.$value['date'].'</td>
+                <td>'.$value['points'].'</td>
+                <td>'.$value['escalafon'].'</td>
+                <td>'.$value['type'].'-'.$value['type_concept'].'</td>
+                <td>'.$value['type_concept'].'</td>
+              </tr>';
               break;
             case '2951'://Doc trabajo
             
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                </tr>';
               break;
             case '211'://Actividades
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+                </tr>';
               break;
             default:
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+                </tr>';
               break;
           }
         }
