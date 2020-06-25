@@ -315,11 +315,9 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           /* Modificación Consulta puntajes faltantes */
           if(empty($puntaje_type_concept)) {
             if ($condition['concept'] == '21236' || $condition['concept'] == '21237') {
-              foreach($pub_user_type['20685']['values'] AS $kindex => $publicacion) {
-                if ($name == $publicacion['charge']) {
-                  $puntaje_type_concept = $publicacion['points'];
-                  $has_points = true;
-                }
+              if ($name == $pub_user_type['20685']['values'][0]['charge']) {
+                $puntaje_type_concept = $pub_user_type['20685']['values'][0]['points'];
+                $has_points = true;
               }
             }
           }
@@ -365,30 +363,83 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           case '2951'://Doc trabajo
           case '15317'://Otros Doc
           case '21236':
-            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub">
+              <tr> 
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Tipo Publicación</th>
+                <th>Tipo Concepto</th>
+              </tr>';
             break;
           case '211'://Actividades
-            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Aprobado por</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub">
+              <tr>
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Aprobado por</th>
+              </tr>';
             break;
           default:
-            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th><th>Rol</th></tr>';
+            $sub_html = '<table id="table-'.$condition['concept'].'" class="table-list-pub">
+              <tr>
+                <th class="text-left">Título</th>
+                <th>Fecha Aprobación</th>
+                <th>Puntos</th>
+                <th>Cargo empleado</th>
+                <th>Tipo Publicación</th>
+                <th>Tipo Concepto</th>
+                <th>Rol</th>
+              </tr>';
             break;
         }
         foreach ($pub_user_type[$condition['concept']]['values'] as $key => $value) {
           switch ($condition['concept']) {
             case '201'://Articulo
             case '15317'://Otros Doc
-            $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
+            $sub_html .= '<tr>
+                <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                <td>'.$value['date'].'</td>
+                <td>'.$value['points'].'</td>
+                <td>'.$value['escalafon'].'</td>
+                <td>'.$value['type'].'-'.$value['type_concept'].'</td>
+                <td>'.$value['type_concept'].'</td>
+              </tr>';
               break;
             case '2951'://Doc trabajo
             
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                </tr>';
               break;
             case '211'://Actividades
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+                </tr>';
               break;
             default:
-              $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'</td><td>'.$value['charge'].'</td></tr>';
+              $sub_html .= '<tr>
+                  <td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td>
+                  <td>'.$value['date'].'</td>
+                  <td>'.$value['points'].'</td>
+                  <td>'.$value['escalafon'].'</td>
+                  <td>'.$value['type'].'</td>
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+                </tr>';
               break;
           }
         }
@@ -401,27 +452,22 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
               <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
             </td>
           </tr>';
-      } elseif(($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
-        $has_points = false;
+      //} elseif($keyc == 1 && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
+      } elseif($name == $pub_user_type['20685']['values'][0]['charge'] && ($condition['concept'] == '21236' || $condition['concept'] == '21237')) {
         $sub_html = '<table id="table-'.$condition['concept'].'"class="table-list-pub"><tr><th class="text-left">Título</th><th>Fecha Aprobación</th><th>Puntos</th><th>Cargo empleado</th><th>Tipo Publicación</th></tr>';
-        foreach($pub_user_type['20685']['values'] AS $kindex => $publicacion) {
-          if ($name == $publicacion['charge']) { 
-            $has_points = true;   
-            $sub_html .= '<tr><td id="'.$publicacion['nid'].'" class="text-left">'.$publicacion['title'].'</td><td>'.$publicacion['date'].'</td><td>'.$publicacion['points'].'</td><td>'.$publicacion['escalafon'].'</td><td>'.$publicacion['type'].'-'.$publicacion['type_concept'].'</td></tr>';
-          }
+        
+        foreach($pub_user_type['20685']['values'] AS $key => $value) {
+          $sub_html .= '<tr><td id="'.$value['nid'].'" class="text-left">'.$value['title'].'</td><td>'.$value['date'].'</td><td>'.$value['points'].'</td><td>'.$value['escalafon'].'</td><td>'.$value['type'].'-'.$value['type_concept'].'</td></tr>';
         }
 
         $sub_html .= '</table>';
-        
-        if($has_points) {
-          $html .= '
-            <tr>
-              <td colspan="7">
-                <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
-                <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
-              </td>
-            </tr>';
-        }
+        $html .= '
+          <tr>
+            <td colspan="7">
+              <a id="'.$condition['concept'].'" class="pub_dropdown">Listado de publicaciones</a>
+              <div class="pub_dropdown_'.$condition['concept'].'" style="display: none;">'.$sub_html.'</div>
+            </td>
+          </tr>';
       }
     }
     $html .= '</table></td></tr>';
