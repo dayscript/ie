@@ -370,7 +370,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <th>Puntos</th>
                 <th>Cargo empleado</th>
                 <th>Tipo Publicación</th>
-                <th>Tipo Concepto</th>
               </tr>';
             break;
           case '211'://Actividades
@@ -391,7 +390,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <th>Puntos</th>
                 <th>Cargo empleado</th>
                 <th>Tipo Publicación</th>
-                <th>Tipo Concepto</th>
                 <th>Rol</th>
               </tr>';
             break;
@@ -405,8 +403,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <td>'.$value['date'].'</td>
                 <td>'.$value['points'].'</td>
                 <td>'.$value['escalafon'].'</td>
-                <td>'.$value['type'].'-'.$value['type_concept'].'</td>
-                <td>'.$value['type_concept'].'</td>
+                <td>'/*.$value['type'].'-'*/.$value['type_concept'].'</td>
               </tr>';
               break;
             case '2951'://Doc trabajo
@@ -417,7 +414,6 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
                   <td>'.$value['type'].'</td>
-                  <td>'.$value['type_concept'].'</td>
                 </tr>';
               break;
             case '211'://Actividades
@@ -426,8 +422,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['date'].'</td>
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
-                  <td>'.$value['type_concept'].'</td>
-                  <td>'.$value['charge'].'</td>
+                  <td>'/*.$value['charge'].'-'*/.$value['type_concept'].'</td>
                 </tr>';
               break;
             default:
@@ -437,8 +432,7 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
                   <td>'.$value['type'].'</td>
-                  <td>'.$value['type_concept'].'</td>
-                  <td>'.$value['charge'].'</td>
+                  <td>'/*.$value['charge'].'-'*/.$value['type_concept'].'</td>
                 </tr>';
               break;
           }
