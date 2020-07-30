@@ -370,6 +370,10 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <th>Puntos</th>
                 <th>Cargo empleado</th>
                 <th>Tipo Publicación</th>
+<<<<<<< HEAD
+=======
+                <th>Tipo Concepto</th>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
               </tr>';
             break;
           case '211'://Actividades
@@ -390,6 +394,10 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <th>Puntos</th>
                 <th>Cargo empleado</th>
                 <th>Tipo Publicación</th>
+<<<<<<< HEAD
+=======
+                <th>Tipo Concepto</th>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
                 <th>Rol</th>
               </tr>';
             break;
@@ -403,7 +411,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                 <td>'.$value['date'].'</td>
                 <td>'.$value['points'].'</td>
                 <td>'.$value['escalafon'].'</td>
+<<<<<<< HEAD
                 <td>'/*.$value['type'].'-'*/.$value['type_concept'].'</td>
+=======
+                <td>'.$value['type'].'-'.$value['type_concept'].'</td>
+                <td>'.$value['type_concept'].'</td>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
               </tr>';
               break;
             case '2951'://Doc trabajo
@@ -414,6 +427,10 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
                   <td>'.$value['type'].'</td>
+<<<<<<< HEAD
+=======
+                  <td>'.$value['type_concept'].'</td>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
                 </tr>';
               break;
             case '211'://Actividades
@@ -422,7 +439,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['date'].'</td>
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
+<<<<<<< HEAD
                   <td>'/*.$value['charge'].'-'*/.$value['type_concept'].'</td>
+=======
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
                 </tr>';
               break;
             default:
@@ -432,7 +454,12 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
                   <td>'.$value['points'].'</td>
                   <td>'.$value['escalafon'].'</td>
                   <td>'.$value['type'].'</td>
+<<<<<<< HEAD
                   <td>'/*.$value['charge'].'-'*/.$value['type_concept'].'</td>
+=======
+                  <td>'.$value['type_concept'].'</td>
+                  <td>'.$value['charge'].'</td>
+>>>>>>> af44ff40d49d79d2e0b7fa8b9dcb3e5bb6a23031
                 </tr>';
               break;
           }
