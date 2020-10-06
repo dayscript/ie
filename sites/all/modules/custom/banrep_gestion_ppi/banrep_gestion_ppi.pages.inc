@@ -316,13 +316,14 @@ function banrep_gestion_ppi_form($form, &$form_state, $requirements = array(), $
           if(empty($puntaje_type_concept)) {
             if ($condition['concept'] == '21236' || $condition['concept'] == '21237') {
               if ($name == $pub_user_type['20685']['values'][0]['charge']) {
-                $puntaje_type_concept = $pub_user_type['20685']['values'][0]['points'];
+                //var_dump($pub_user_type['20685']['total_points']);
+                $puntaje_type_concept = $pub_user_type['20685']['total_points'];
                 $has_points = true;
               }
             }
           }
           /* Modificación Consulta puntajes faltantes */
-
+          //var_dump($puntaje_type_concept);
           $html .= '<td id="'.$condition['concept'].'">' . $operator . $name . ' (' . $condition['type'] . ')</td>';
           $html .= '<td>' . $condition['value'] . '</td>'; // falta para libros // valor requisito
           $html .= '<td>' . $puntaje_type_concept . '</td>'; // falta para libros //$info_user . $input_value
