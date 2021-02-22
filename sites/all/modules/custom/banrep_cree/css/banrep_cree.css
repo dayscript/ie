@@ -1,0 +1,33 @@
+.cree-circle {
+    /* min-width: 50px;
+    background-color: rgba(0, 0, 0, 0.5); */
+}
+.cree-item i {
+    margin-right:15px;
+}
+
+.cree-item p, .cree-menu-link-container {
+    margin: 10px 0;
+}
+
+.informacion-contacto {
+    background: #f2f2f2;
+    padding: 20px;
+    border-top: 2px solid #860024;
+    margin-bottom: 25px;
+}
+
+.cree-menu {
+    background: #f2f2f2;
+    padding: 20px;
+    border-top: 2px solid #0079c1
+}
+
+.cree-menu a {
+    color: #231f20;
+    text-decoration: none;
+}
+
+.cree-menu i {
+    margin-right:15px;
+}
