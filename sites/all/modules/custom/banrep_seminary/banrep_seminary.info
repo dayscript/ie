@@ -1,0 +1,8 @@
+name = Seminarios nuevo
+description = "Nueva página de seminarios"
+package = Dayscript
+version = "7.x-1.0"
+core = "7.x"
+
+stylesheets[all][] = "css/style.css"
+scripts[] = "js/seminary.js"

@@ -1,0 +1,38 @@
+.medium-9 {
+    width:75%;
+    float: left;
+}
+.medium-3 {
+    width:25%;
+    float:left;
+}
+.form-container #banrep-seminary-register-form {
+    padding: 0 16.66667%;
+}
+#banrep-seminary-register-form .form-item input:not(.form-radio), 
+#banrep-seminary-register-form .form-item select {
+    width:100%;
+}
+#banrep-seminary-register-form .form-container a {
+    color:#000;
+}
+.submit-wrapper {
+    text-align: center;
+}
+.submit-wrapper input {
+    color:#FFF;
+    background-color:#860024;
+}
+#banrep-seminary-register-form .seminary-policy {
+    font-size: 0.8rem;
+}
+#banrep-seminary-register-form label, #banrep-seminary-register-form option{
+    font-size: 13px;
+}
+.red-alert {
+    color:red;
+    font-size:0.7rem;
+}
+.seminary-register-container {
+    padding: 0 1rem;
+}
