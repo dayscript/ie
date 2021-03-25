@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Defines banrep_core module functionality.
@@ -8,18 +7,13 @@
 // Load all Forms of this module.
 require_once 'banrep_core.functions.inc';
 require_once 'banrep_core.form.inc';
-/**
- * Identificador de grupos de investigación.
- */
+
 define('VID_GRUPOS_INVESTIGACION', '2');
-/**
- * Identificador del rol investigador.
- */
+define('RID_ADMINISTRADOR_GRUPO', '7');
+
 define('INVESTIGADOR_RID', '4');
-/**
- * Identificador del rol administrador de grupo.
- */
 define('ADMIN_GRUPO_RID', '7');
+define('SEMINARIO_TID', '191');
 define('SOLUCIONES_CAIE_VID', '12');
 define('RECURSOS_CAIE_VID', '18');
 define('COLABORADORES_CAIE_VID', '19');
@@ -31,20 +25,41 @@ define('PUB_TYPE_ARTICLE', '201');
 define('PUB_TYPE_ARTICLE_TIPO_5', '3016');
 define('PUB_TYPE_BOOK', '206');
 define('PUB_TYPE_BOOK_CHAPTER', '1');
+define('PUB_TYPE_BOOK_CHAPTER_REAL', '21204');
+
 define('PUB_TYPE_WORK_DOCUMENT', '2951');
+define('PUB_TYPE_OTHER_DOCUMENT', '15317');
 define('PUB_TYPE_CONFERENCE_DOCUMENT', '2954');
+define('PUB_TYPE_ESPE_MAGAZINE', '20685');
+define('PUB_TYPE_OTHERS_DOCUMENTS', '15317');
+
 
 define('CONCEPT_TYPE_WORK_DOCUMENT', '2951');
+define('CONCEPT_TYPE_OTHER_DOCUMENT', '15317');
 
 define('ROL_AUTHOR_COMPLETE_TID', '219');
 define('ROL_CHAPTER_AUTHOR_TID', '220');
 define('ROL_BOOK_EDITOR_TID', '221');
 define('ROL_BOOK_COMPILER_TID', '222');
+define('ROL_AUTHOR_BOOK', TRUE);
+
 
 define('PUB_REVIEW_PENDING', 'pendiente');
 define('PUB_REVIEW_REVIEWED', 'revisado');
 
 define('PUB_STATUS_APPROVED', '3');
+
+define('SERVICES_FORM_NID_1', '1928');
+define('SERVICES_FORM_NID_2', '1929');
+define('SERVICES_FORM_NID_3', '1930');
+define('SERVICES_FORM_NID_4', '1931');
+define('SERVICES_FORM_NID_5', '1932');
+define('SERVICES_FORM_NID_6', '1934');
+define('SERVICES_FORM_NID_7', '1933');
+define('SERVICES_FORM_NID_8', '1935');
+define('SERVICES_FORM_NID_9', '1936');
+
+define('BOOK_CHAPTER_CHAPTER_OF_BOOK','21204');
 
 define('REPEC_API_URL', 'http://citec.repec.org/api/plain/');
 
@@ -65,30 +80,34 @@ function core_etc_permission() {
  */
 function banrep_core_menu() {
 
+  // path with autocomplete function for concepts
   $items['concept/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
     'page arguments' => array(2),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_CALLBACK
   );
 
+  // path with autocomplete function for concepts type article
   $items['article/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
     'page arguments' => array(2),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_CALLBACK
   );
 
+  // path with autocomplete function for concepts type book
   $items['book/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
     'page arguments' => array(2),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_CALLBACK
   );
 
+  // path with autocomplete function for concepts type book chapter
   $items['book_chapter/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
@@ -97,12 +116,13 @@ function banrep_core_menu() {
     'type' => MENU_CALLBACK
   );
 
+  // path with autocomplete function for concepts type book
   $items['conference_document/autocomplete/%'] = array(
     'title' => 'Autocomplete for concepts',
     'page callback' => '_concept_autocomplete',
     'access callback' => 'user_is_logged_in',
     'page arguments' => array(2),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_CALLBACK
   );
 
   $items['co_author/autocomplete'] = array(
@@ -123,6 +143,17 @@ function banrep_core_menu() {
     'file path' => drupal_get_path('module', 'system'),
   );
 
+  $items['admin/config/banrep/search'] = array(
+    'title' => 'Buscador',
+    'description' => 'Configuración del buscador del portal',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('banrep_core_search_settings_form'),
+    'access arguments' => array('administer settings'),
+    'file' => 'banrep_core.admin.inc',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   $items['admin/config/banrep/profile'] = array(
     'title' => t('Profile Setting'),
     'page callback' => 'drupal_get_form',
@@ -131,6 +162,42 @@ function banrep_core_menu() {
     'description' => t('Set up private fields for researchers.'),
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['dashboard'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_dashboard_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['publications'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_publications_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['seminarios'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_seminarios_page',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['profile'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_profile_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
   );
 
   $items['save_like_to_user'] = array(
@@ -142,13 +209,23 @@ function banrep_core_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['profile/%'] = array(
+  $items['profile/%user'] = array(
     'title' => '',
     'page callback' => 'banrep_core_profile_page',
     'page arguments' => array(1),
     'access callback' => true,
     'file' => 'banrep_core.pages.inc',
-    'access callback' => TRUE,
+    'access callback' => 'user_is_logged_in',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['profile/%'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_profile_page',
+    'page arguments' => array(1),
+    'access callback' => 'user_is_logged_in',
+    'access callback' => true,
+    'file' => 'banrep_core.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
@@ -188,6 +265,15 @@ function banrep_core_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['profile/group/%'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_group_edit_page',
+    'page arguments' => array(2),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['profile/blogs/add'] = array(
     'title' => '',
     'page callback' => 'banrep_core_blogs_add_page',
@@ -196,6 +282,7 @@ function banrep_core_menu() {
     'file' => 'banrep_core.pages.inc',
     'type' => MENU_CALLBACK,
   );
+
 
   $items['profile/article/add'] = array(
     'title' => '',
@@ -208,10 +295,12 @@ function banrep_core_menu() {
 
   $items['profile/article/%'] = array(
     'title' => '',
-    'page callback' => 'banrep_core_article_edit_page',
+    'page callback' => 'banrep_core_article_edit_page', // passing the nid as the page argument
     'page arguments' => array(2),
     'access callback' => 'user_is_logged_in',
-    'file' => 'banrep_core.pages.inc',
+    // this ensures file field proper functionality on node edit form
+    'file path' => drupal_get_path('module', 'node'),
+    'file' => 'node.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
@@ -220,16 +309,45 @@ function banrep_core_menu() {
     'page callback' => 'banrep_core_blogs_edit_page',
     'page arguments' => array(2),
     'access callback' => 'user_is_logged_in',
+    // this ensures file field proper functionality on node edit form
+    'file path' => drupal_get_path('module', 'node'),
+    'file' => 'node.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['profile/save-order'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_dashboard_save_order_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['publication/promote'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_promote_publication_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    'file' => 'banrep_core.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['research-group/save-order'] = array(
+    'title' => '',
+    'page callback' => 'banrep_core_research_group_save_order_page',
+    'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
     'file' => 'banrep_core.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
   $items['profile/send-mail/%'] = array(
-    'title' => 'Send mail for user locked mail',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('_user_send_mail_custom', 2),
-    'access arguments' => array('access content'),
-    'access callback' => TRUE,
+      'title' => 'Send mail for user locked mail',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('_user_send_mail_custom', 2),
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,
   );
 
   return $items;
@@ -262,29 +380,113 @@ function banrep_core_init() {
   }
 }
 
-/*
- * Implements hook_page_alter().
- */
-function banrep_core_page_alter(&$page) {
-  $term = menu_get_object('taxonomy_term', 2);
-  if(isset($term->vid) && ($term->vid == 2)){
-    unset($page['content']['system_main']['nodes']);
-  }
+/**
+* Implements hook_webform_select_options_info().
+*/
+function banrep_core_webform_select_options_info() {
+  $items = array();
+  $items['soluciones_caie_servicios'] = array(
+    'title' => t('Soluciones CAIE - Servicios'),
+    'options callback' => 'webform_options_soluciones_caie_servicios',
+  );
+  return $items;
+}
 
-  if(drupal_get_path_alias(current_path()) == 'publicaciones' || drupal_get_path_alias(current_path()) == 'publications'){
-    drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publications_page.js');
-    drupal_add_library('system', 'ui.accordion');
+/**
+* Webform options info callback.
+*/
+function webform_options_soluciones_caie_servicios(){
+  $query = db_select('field_data_field_titulo','t')->distinct();
+  $query->condition('t.bundle', 'field_portafolio_servicios');
+  $query->condition('t.entity_type', 'field_collection_item');
+  $query->fields('t', array('field_titulo_value'));
+  $services = $query->execute()->fetchCol();
+  $options = array();
+  if(!empty($services) && is_array($services)){
+    foreach ($services as $key => $service_name) {
+      $machine_name = human_to_machine($service_name);
+      $options[$machine_name] = $service_name;
+    }
   }
+  return $options;
+}
 
-  if( isset($term->vid) && ($term->vid == 12) ){
-    drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/solucion_caie.js');
-    drupal_add_library('system', 'ui.accordion');
-  }
+/**
+* Entrada de Blog edit page
+*/
+function banrep_core_blogs_edit_page($nid){
+    module_load_include('inc', 'node', 'node.pages');
+    global $user;
+    drupal_set_title('Editar Entrada de Blog');
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = '<span>Blog</span>';
+    $breadcrumb[] = '<span>Editar Entrada de Blog</span>';
+    // Set Breadcrumbs
+    drupal_set_breadcrumb($breadcrumb);
+    // initialize output variable
+    // $nid is the nid for the node you want to open in edit form
+    $node = node_load($nid);
+    if(isset($node->uid) && isset($user->uid) && ($node->uid == $user->uid) ){
+        module_load_include('inc', 'node', 'node.pages');
+        $add_form = drupal_get_form('blog_node_form', $node);
+         // render add event form
+        $output .= '<section class="form-edit-blog"><div class="form-wrapper">' . drupal_render($add_form) . '</div></section>';
+        return $output;
+    }else{
+        drupal_access_denied();
+    }
+}
+
+/**
+* Seminarios edit page
+*/
+function banrep_core_article_edit_page($nid){
+    module_load_include('inc', 'node', 'node.pages');
+    global $user;
+    drupal_set_title('Edit New');
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = '<span>'.t('New').'</span>';
+    $breadcrumb[] = '<span>'.t('Edit').'</span>';
+    // Set Breadcrumbs
+    drupal_set_breadcrumb($breadcrumb);
+   // $nid is the nid for the node you want to open in edit form
+    $node = node_load($nid);
+    if(isset($node->uid) && isset($user->uid) && ($node->uid == $user->uid) ){
+        module_load_include('inc', 'node', 'node.pages');
+        $add_form = drupal_get_form('article_node_form', $node);
+         // render add event form
+        $output .= '<section class="form-edit-noticia"><div class="form-wrapper">' . drupal_render($add_form) . '</div></section>';
+        return $output;
+    }else{
+      drupal_access_denied();
+    }
 }
 
 /*
- * Implements hook_path_breadcrumbs_view_alter().
- */
+ * Implements hook_page_alter().
+*/
+function banrep_core_page_alter(&$page) {
+    $term = menu_get_object('taxonomy_term', 2);
+    if(isset($term->vid) && ($term->vid == 2)){
+      unset($page['content']['system_main']['nodes']);
+    }
+
+    if(drupal_get_path_alias(current_path()) == 'publicaciones' || drupal_get_path_alias(current_path()) == 'publications'){
+      drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publications_page.js');
+      drupal_add_library('system', 'ui.accordion');
+    }
+
+    if( isset($term->vid) && ($term->vid == 12) ){
+      drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/solucion_caie.js');
+      drupal_add_library('system', 'ui.accordion');
+    }
+}
+
+/*
+* hook_path_breadcrumbs_view_alter
+*/
 function banrep_core_path_breadcrumbs_view_alter(&$breadcrumb, $path_breadcrumb, $contexts){
   if(is_array($breadcrumb) && !empty($breadcrumb)){
     foreach ($breadcrumb as $key => $item) {
@@ -302,6 +504,18 @@ function banrep_core_theme($existing, $type, $theme, $path) {
       'file' => 'banrep_core.theme.inc',
       'variables' => array('user' => NULL),
     ),
+    'home_dspace_block' => array(
+      'file' => 'banrep_core.theme.inc',
+      'variables' => array('content' => NULL),
+    ),
+    'home_koha_block' => array(
+      'file' => 'banrep_core.theme.inc',
+      'variables' => array('content' => NULL),
+    ),
+    'home_most_views' => array(
+      'file' => 'banrep_core.theme.inc',
+      'variables' => array('content' => NULL),
+    ),
     'banrep_user_login_pass' => array(
       'template' => 'templates/banrep-login-pass',
       'variables' => array(
@@ -309,13 +523,21 @@ function banrep_core_theme($existing, $type, $theme, $path) {
         'pass_form' => NULL,
       ),
     ),
+    'banrep_core_soluciones_caie' => array(
+      'template' => 'templates/soluciones-caie',
+      'variables' => array('soluciones_caie' => NULL,),
+    ),
+    'banrep_core_dashboard' => array(
+      'template' => 'templates/dashboard',
+      'variables' => array('mis_soluciones_caie' => NULL,),
+    ),
     'banrep_core_profile_edit' => array(
       'template' => 'templates/profile-edit',
       'variables' => array('account' => NULL,),
     ),
     'search_form' => array(
       'template' => 'templates/search-form',
-      'variables' => array(),
+      'variables' => array( 'data' => NULL ),
     ),
     'user_info_format' => array(
       'template' => 'templates/user-info-format',
@@ -393,21 +615,33 @@ function banrep_core_theme($existing, $type, $theme, $path) {
       'template' => 'templates/profile-otros-coautores',
       'variables' => array('user_data' => NULL),
     ),
+    'banrep_core_setting_engines_search' => array(
+      'file'      => 'banrep_core.admin.inc',
+      'render element' => 'form',
+    ),
     'caie_solutions_term' => array(
       'template' => 'templates/banrep-core-term',
       'variables' => array( 'items' => NULL, 'current_term' => NULL ),
     ),
     'caie_solutions' => array(
-      'file' => 'banrep_core.theme.inc',
+      'file' => 'banrep_core.pages.inc',
+      'variables' => array('items' => NULL),
+    ),
+    'caie_numbers' => array(
+      'file' => 'banrep_core.pages.inc',
       'variables' => array('items' => NULL),
     ),
     'caie_resources' => array(
-      'file' => 'banrep_core.theme.inc',
+      'file' => 'banrep_core.pages.inc',
       'variables' => array('items' => NULL),
     ),
     'caie_collaborators' => array(
-      'file' => 'banrep_core.theme.inc',
+      'file' => 'banrep_core.pages.inc',
       'variables' => array('items' => NULL),
+    ),
+    'banrep_core_profile_trabajos_en_curso' => array(
+      'template' => 'templates/profile-trabajos-en-curso',
+      'variables' => array('user_data' => NULL),
     ),
   );
 }
@@ -467,9 +701,26 @@ function banrep_core_block_view($delta = '') {
     case 'br_search_form':
       drupal_add_js('https://support.ebscohost.com/eit/scripts/ebscohostsearch.js', 'external');
       drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/ebscohostsearch.js');
+
+      $options = [ 
+        '1' => 'Búsqueda General', 
+        '3' => 'Databases', 
+        '4' => 'Books and Journals',
+        '5' => 'Researchers', 
+        '6' => 'CAIE', 
+        '7' => 'Seminars', 
+        '8' => 'ESPE'
+      ];
+      $search_options = [ '' => 'Palabras Clave', 'TI' => 'Título', 'AU' => 'Autor' ];
+      $data = [ 
+        'options' => $options , 
+        'search_options' => $search_options
+        ];
+
       $block['subject'] = t('');
-      $block['content'] = theme('search_form'); // drupal_get_form('banrep_core_search_block_form');
+      $block['content'] = theme('search_form', array('data' => $data ) ); // drupal_get_form('banrep_core_search_block_form');
       break;
+
     case 'br_user_top_zone':
       global $user;
       $block['subject'] = t('');
@@ -495,7 +746,7 @@ function banrep_core_block_view($delta = '') {
       break;
 
     case 'caie_solutions':
-      $block['subject'] = '';
+      $block['subject'] = ''; // t('Solutions');
       $soluciones_caie = _banrep_core_translate_taxonomy(SOLUCIONES_CAIE_VID);
       $block['content'] = theme('caie_solutions', array('items' => $soluciones_caie));
       break;
@@ -524,8 +775,8 @@ function banrep_core_block_view($delta = '') {
 }
 
 /**
- * Implements Banrep Soluciones Caie.
- */
+* Implements Banrep Soluciones Caie
+*/
 function banrep_soluciones_caie($current_term){
   $soluciones_caie = _banrep_core_translate_taxonomy(SOLUCIONES_CAIE_VID);
   $caie_solutions = theme( 'caie_solutions_term', array('items' => $soluciones_caie, 'current_term' => $current_term) );
@@ -536,7 +787,7 @@ function banrep_soluciones_caie($current_term){
  * Implements hook_user_insert().
  */
 function banrep_core_user_insert(&$edit, $account, $category) {
-  if (in_array('investigador', $account->roles)) {
+  if(in_array('investigador', $account->roles)){
     cache_clear_all($cid = 'glossary_investigadores', 'cache');
   }
 }
@@ -545,18 +796,19 @@ function banrep_core_user_insert(&$edit, $account, $category) {
  * Implements hook_user_update().
  */
 function banrep_core_user_update(&$edit, $account, $category) {
-  if (in_array('investigador', $account->roles)) {
+  if(in_array('investigador', $account->roles)){
     cache_clear_all($cid = 'glossary_investigadores', 'cache');
   }
 }
 
 /**
- * Implements hook_node_presave().
- */
+* Implements hook_node_presave().
+*/
 function banrep_core_node_presave($node) {
   $original_node = isset($node->original)?$node->original:FALSE;
   $new_node = $node;
   if ($node->type == 'publication') {
+    //$node->status = NODE_NOT_PUBLISHED;
     if ($node->is_new) {
       if (!isset($node->field_review[LANGUAGE_NONE][0]['value'])) {
         $node->field_review[LANGUAGE_NONE][0]['value'] = PUB_REVIEW_PENDING;
@@ -577,8 +829,14 @@ function banrep_core_node_presave($node) {
         ': ' .
         $node->title
       ;
-      if (!isset($node->nid)) {
-       user_watchdog($node->uid, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+      if (!isset($node->nid) ) {
+        if(isset($node->uid)){
+          user_watchdog($node->uid, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+        }else{
+          user_watchdog(934, t('Publicación'), $message, $severity = WATCHDOG_NOTICE);
+
+        }
+       
       }
     }
   }
@@ -631,8 +889,15 @@ function banrep_core_node_validate($node, $form, &$form_state) {
 }
 
 /**
- * Asignar puntaje de acuerdo al concepto de la publicación.
- */
+* Get Services Form Nids
+*/
+function _get_services_form_nids(){
+  return variable_get('SERVICES_FORM_NIDS', array(SERVICES_FORM_NID_1, SERVICES_FORM_NID_2, SERVICES_FORM_NID_3, SERVICES_FORM_NID_4, SERVICES_FORM_NID_5, SERVICES_FORM_NID_6, SERVICES_FORM_NID_7, SERVICES_FORM_NID_8, SERVICES_FORM_NID_9));
+}
+
+/**
+*  Asignar puntaje de acuerdo al concepto de la publicación
+*/
 function _assign_score_according_to_publication_concept($uid, $concept_nid, $publication_nid, $publication_title){
   $concept = node_load($concept_nid);
   $user = user_load($uid);
@@ -693,8 +958,8 @@ function _assign_score_according_to_publication_concept($uid, $concept_nid, $pub
 }
 
 /**
- * Asignar Puntaje De Acuerdo Al Rol En La Publicación.
- */
+* Asignar Puntaje De Acuerdo Al Rol En La Publicación
+*/
 function _assign_score_according_to_role_within_publication($uid, $role_within_publication, $publication_nid, $publication_title){
   $user = user_load($uid);
   if($user != FALSE){
@@ -748,10 +1013,10 @@ function _assign_score_according_to_role_within_publication($uid, $role_within_p
   }
 }
 
-/**
- * Genera un mensaje en el log del usuario.
- */
-function user_watchdog($uid = "" , $type = "", $message = "", $severity = WATCHDOG_NOTICE) {
+/*
+* Logs a system user message.
+*/
+function user_watchdog($uid = "" , $type = "", $message = "", $severity = WATCHDOG_NOTICE){
   if(!empty($uid) && is_numeric($uid)){
     $user = user_load($uid);
     if($user != FALSE){
@@ -769,10 +1034,10 @@ function user_watchdog($uid = "" , $type = "", $message = "", $severity = WATCHD
   }
 }
 
-/**
- * Obtiene el label del estado de una publicación.
- */
-function _get_publication_status_label($status_key = "") {
+/*
+* Get Publication Status Label
+*/
+function _get_publication_status_label($status_key = ""){
   $label = "";
   switch ($status_key) {
     case '17':
@@ -795,8 +1060,8 @@ function _get_publication_status_label($status_key = "") {
 }
 
 /**
- * Cambia la revisión de la publicación.
- */
+* Publication Status Has Changed
+*/
 function _publication_review_has_changed($original_node, $new_node){
   if(isset($original_node->field_review[LANGUAGE_NONE][0]['value']) && isset($new_node->field_review[LANGUAGE_NONE][0]['value'])){
     $new_status = $new_node->field_review[LANGUAGE_NONE][0]['value'];
@@ -808,8 +1073,8 @@ function _publication_review_has_changed($original_node, $new_node){
   return FALSE;
 }
 
-/**
-* Cambia el estado de la publicacion.
+/**json
+* Publication Review Has Changed
 */
 function _publication_status_has_changed($original_node, $new_node){
   if(isset($original_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value']) && isset($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'])){
@@ -823,8 +1088,8 @@ function _publication_status_has_changed($original_node, $new_node){
 }
 
 /**
- * Publicación Cambiada de Relacionada a Pendiente de Aprobación.
- */
+* Publicación Camabiada de Relacionada a Pendiente de Aprobación.
+*/
 function _publication_was_changed_to_pending_approval($original_node, $new_node){
   if(_publication_status_has_changed($original_node, $new_node)){
     if( isset($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']) && isset($original_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value']) && ($original_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'] == 17) && ($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'] == 2) ){
@@ -835,8 +1100,8 @@ function _publication_was_changed_to_pending_approval($original_node, $new_node)
 }
 
 /**
- * Se aprueba una Publicación.
- */
+* Publication was approved
+*/
 function _publication_was_approved($original_node, $new_node){
   if(_publication_status_has_changed($original_node, $new_node)){
     if( isset($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']) && ($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'] == 3) ){
@@ -847,8 +1112,8 @@ function _publication_was_approved($original_node, $new_node){
 }
 
 /**
- * No se aprueba una Publicación.
- */
+* Publication was NOT approved
+*/
 function _publication_was_not_approved($original_node, $new_node){
   if(_publication_status_has_changed($original_node, $new_node)){
     if( isset($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid']) && ($new_node->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'] == 4) ){
@@ -859,8 +1124,8 @@ function _publication_was_not_approved($original_node, $new_node){
 }
 
 /**
- * Actualiza review en publicaciones hijas.
- */
+*  Update Review In Child Publications
+*/
 function _update_review_in_child_publications($parent_nid = "", $review_value = ""){
   if(!empty($parent_nid) && !empty($review_value)){
     $query = new EntityFieldQuery();
@@ -883,11 +1148,11 @@ function _update_review_in_child_publications($parent_nid = "", $review_value = 
 }
 
 /**
- * Actualiza review en publicaciones padre.
- */
+*  Update Review In Child Publications
+*/
 function _update_review_in_parent_publications($parent_nid = "", $review_value = ""){
   $publication = node_load($parent_nid);
-  if( $publication->type == 'publication' ) {
+  if( $publication->type == 'publication' ){
     $publication->field_review[LANGUAGE_NONE][0]['value'] = $review_value;
     node_save($publication);
   }
@@ -895,10 +1160,11 @@ function _update_review_in_parent_publications($parent_nid = "", $review_value =
 
 
 /*
- * Implements hook_taxonomy_term_update().
- */
+* Implements hook_taxonomy_term_update().
+*/
 function banrep_core_taxonomy_term_update($term) {
   if( $term->vid ==  VID_GRUPOS_INVESTIGACION){
+    // members.
     $term_tid = $term->tid;
     $clean_research_group_members = clean_research_group_members($term_tid);
     if( isset($term->field_members[LANGUAGE_NONE]) && is_array($term->field_members[LANGUAGE_NONE]) && !empty($term->field_members[LANGUAGE_NONE]) ){
@@ -910,24 +1176,23 @@ function banrep_core_taxonomy_term_update($term) {
   }
 }
 
-/**
- * Obtiene el glosario de recursos.
- */
-function get_glossary_recursos($tid) {
+/*
+* Get glossary recursos
+*/
+function get_glossary_recursos($tid){
     $data = '<div class="abecedario uno"><div class="item-list"><ul class="links inline">';
     $items = array();
 
     $_query_parameters = drupal_get_query_parameters();
     $items[] = '<li>' . l('Todos -', current_path()) . '</li>';
     foreach (range('A', 'Z') as $letter) {
-      $show_letter = get_glossary_recursos_starts_with($letter, $tid);
-      if($show_letter){
-        $_query_parameters['alphabetically'] = strtolower($letter);
-        $items[] = '<li>' . l($letter, current_path(), array('query' => $_query_parameters)) . '</li>';
-      }
-      else{
-        $items[] = '<li><span class="no-click">'.$letter.'</span></li>';
-      }
+        $show_letter = get_glossary_recursos_starts_with($letter, $tid);
+        if($show_letter){
+          $_query_parameters['alphabetically'] = strtolower($letter);
+          $items[] = '<li>' . l($letter, current_path(), array('query' => $_query_parameters)) . '</li>';
+        }else{
+          $items[] = '<li><span class="no-click">'.$letter.'</span></li>';
+        }
     }
 
     if(count($items) > 0){
@@ -937,9 +1202,6 @@ function get_glossary_recursos($tid) {
     return $data;
 }
 
-/**
- * Obtener recursos por letra.
- */
 function get_glossary_recursos_starts_with($letter, $tid = FALSE){
 
   $query = new EntityFieldQuery();
@@ -967,8 +1229,8 @@ function get_glossary_recursos_starts_with($letter, $tid = FALSE){
 }
 
 /*
- * Obtener glosario investigadores.
- */
+* Get glossary investigadores
+*/
 function get_glossary_investigadores(){
   $query = array();
   $get_params['nombre'] = (isset($_GET['nombre'])) ? $_GET['nombre']: NULL;
@@ -1017,8 +1279,8 @@ function get_glossary_investigadores(){
 }
 
 /*
- * Obtener investigadores por letra.
- */
+* Get glossary investigadores
+*/
 function get_glossary_investigadores_starts_with($letter, $uids){
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'user');
@@ -1035,9 +1297,9 @@ function get_glossary_investigadores_starts_with($letter, $uids){
     return FALSE;
 }
 
-/**
- * Obtener todos los investigadores.
- */
+/*
+* Gell all the invetigadores
+*/
 function get_all_investigadores(){
   $query = 'SELECT DISTINCT(ur.uid)
     FROM {users_roles} AS ur
@@ -1048,9 +1310,9 @@ function get_all_investigadores(){
   return $uids;
 }
 
-/**
- * Eliminar un miembro del grupo.
- */
+/*
+* Set Relate User To Research Group
+*/
 function clean_research_group_members($term_tid = ''){
   if(!empty($term_tid) && is_numeric($term_tid) ){
     $num_deleted = db_delete('field_data_field_research_group')->condition('bundle', 'user')->condition('field_research_group_tid', $term_tid)->execute();
@@ -1059,9 +1321,9 @@ function clean_research_group_members($term_tid = ''){
   return FALSE;
 }
 
-/**
- * Establecer la relación del usuario al grupo de investigación.
- */
+/*
+* Set Relate User To Research Group
+*/
 function banrep_core_set_relate_user_to_research_group($uid = '', $term_tid) {
   if (!empty($uid) && !empty($term_tid)) {
     $user_fields = user_load($uid);
@@ -1085,20 +1347,26 @@ function banrep_core_set_relate_user_to_research_group($uid = '', $term_tid) {
   }
 }
 
-/**
- * Implements hook_preprocess_views_view().
- */
+/*
+* Implements hook_preprocess_views_view().
+*/
 function banrep_core_preprocess_views_view(&$vars) {
   $view = &$vars['view'];
+  // Make sure it's the correct view
   if ($view->name == 'revista' && $view->current_display == 'block') {
+    // add needed javascript
     drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/banrep_revistas_recientes.js');
   }
 
+  // Make sure it's the correct view
   if ($view->name == 'publicaciones' && $view->current_display == 'gestionar_publicaciones') {
+    // add needed javascript
     drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publicaciones_gestionar_publicaciones.js');
   }
 
+  // Make sure it's the correct view
   if ($view->name == 'recursos_de_informacion') {
+    // add needed javascript
     drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/masonry.pkgd.min.js');
     drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/page_recursos.js');
   }
@@ -1106,8 +1374,8 @@ function banrep_core_preprocess_views_view(&$vars) {
 }
 
 /**
- * Formulario Agregar autor externo.
- */
+* Add autor externo form
+*/
 function autor_externo_add_form($form, &$form_state) {
     $form['#tree'] = TRUE;
     $form['#attributes']['class'] = 'autor_externo_add_form';
@@ -1183,10 +1451,11 @@ function autor_externo_add_form($form, &$form_state) {
 }
 
 /**
- * Submit Formulario Agregar autor externo.
- */
+* Implements form ajax submit.
+*/
 function autor_externo_add_form_ajax_submit($form, &$form_state){
     global $user;
+    // Get the form values
     $values = isset($form_state['values']) ? $form_state['values'] : FALSE;
     $names = isset($values['names']) ? $values['names'] : '';
     $surnames = isset($values['surnames']) ? $values['surnames'] : '';
@@ -1197,9 +1466,11 @@ function autor_externo_add_form_ajax_submit($form, &$form_state){
     $response->success = FALSE;
     $response->is_valid = FALSE;
     $response->message = $msg;
+    // Validations
     if ($names !== '' && $surnames !== '') {
       $response->is_valid = TRUE;
     }
+    // Save Autor Externo
     if ($response->is_valid) {
       $term = new stdClass();
       $term->name = $surnames . ' ' . $names;
@@ -1232,8 +1503,8 @@ function autor_externo_add_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Formulario Agregar vínculo.
- */
+* Add Vinculo form
+*/
 function vinculo_add_form($form, &$form_state) {
 
     $form['#tree'] = TRUE;
@@ -1274,12 +1545,14 @@ function vinculo_add_form($form, &$form_state) {
     return $form;
 }
 
-/**
- * Obtener conceptos.
- */
-function _get_concepts($concept_category_parent = NULL, $concept_category_child = NULL, $concept_source = NUL, $name = NULL, $format = 'autocomplete', $limit = 4){
-  global $user;
+function _get_concepts($concept_category_parent = NULL, $concept_category_child = NULL, $concept_source = NULL, $name = NULL, $format = 'autocomplete', $limit = 4, $flag = FALSE){
 
+  if( $concept_category_parent == PUB_TYPE_BOOK_CHAPTER ){
+    $concept_category_parent = BOOK_CHAPTER_CHAPTER_OF_BOOK;
+    $concept_category_child = NULL;
+  }
+
+  global $user;
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'concept');
@@ -1308,6 +1581,7 @@ function _get_concepts($concept_category_parent = NULL, $concept_category_child 
   }
 
   $matches = [];
+
   $result = $query->execute();
 
   if (isset($result['node'])) {
@@ -1322,13 +1596,15 @@ function _get_concepts($concept_category_parent = NULL, $concept_category_child 
        }
     }
   }
-
+  
   return $matches;
 }
 
 /**
- * Autocomplete para conceptos.
- */
+* Autocomplete for concepts
+* autocomplete helper
+* $string = string for search
+*/
 function _concept_autocomplete($type_parent, $type_child, $string){
   $matches = [];
   // Conceptos del usuario.
@@ -1336,12 +1612,15 @@ function _concept_autocomplete($type_parent, $type_child, $string){
   // Conceptos del sistema.
   $matches += _get_concepts($type_parent, $type_child, $source = 'sistema', $name = $string);
   // Return the result to the form in json
+  
   drupal_json_output($matches);
 }
 
 /**
- * Autocomplete para capítulos de libro.
- */
+* Autocomplete for concepts
+* autocomplete helper
+* $string = string for search
+*/
 function _book_chapter_concept_autocomplete($type_parent, $string){
   $type_child = NULL;
   $matches = [];
@@ -1354,8 +1633,10 @@ function _book_chapter_concept_autocomplete($type_parent, $string){
 }
 
 /**
- * Autocomplete para coauthor.
- */
+* Autocomplete for Co-Author
+* autocomplete helper
+* $string = string for search
+*/
 function _co_author_autocomplete($string){
   global $user;
   $matches = [];
@@ -1370,14 +1651,15 @@ function _co_author_autocomplete($string){
 }
 
 /**
- * Obtener usuarios por nombre.
- */
+* Get users Sugestion by name
+*/
 function _get_users_suggestion_by_name($name = ''){
   $matches = [];
   if(!empty($name)){
     $query = db_select('users', 'u');
     $query->leftJoin('users_roles', 'ur', 'u.uid = ur.uid');
     $query->leftJoin('field_data_field_full_name', 'n', 'u.uid = n.entity_id');
+    // $query->condition('u.status', 1);
     $query->condition('ur.rid', array(4,5), 'IN'); // Rol Investigador, Técnico
     $query->condition('n.field_full_name_value', '%' . db_like($name) . '%', 'LIKE');
     $query->fields('u');
@@ -1392,8 +1674,8 @@ function _get_users_suggestion_by_name($name = ''){
 }
 
 /**
- * Obtener coauthors por nombre.
- */
+* Get other co author suggestion by name
+*/
 function _get_other_co_author_suggestion_by_name($name = ''){
   $matches = [];
   if(!empty($name)){
@@ -1414,21 +1696,26 @@ function _get_other_co_author_suggestion_by_name($name = ''){
   return $matches;
 }
 
+// ---------------  AJAX CALLBACK  FUNCTIONS FOR FIELDs -----------------
+
 /**
- * Ajax callback author "add-one-more".
+ * Submit handler for the "add-one-more" button.
+ *
+ * Increments the max counter and causes a rebuild.
  */
 function co_author_add_more_callback($form, &$form_state) {
+
+    
     if (!isset($form_state['num_co_author'])) {
         $form_state['num_co_author'] = 0;
         $form_state['num_co_author']++;
     }
+
     $form_state['num_co_author']++;
     $form_state['rebuild'] = TRUE;
+    
 }
 
-/**
- * Ajax callback jel "add-one-more".
- */
 function jel_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_jel'])) {
         $form_state['num_jel'] = 0;
@@ -1438,9 +1725,6 @@ function jel_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback tags "add-one-more".
- */
 function tags_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_tags'])) {
         $form_state['num_tags'] = 0;
@@ -1450,9 +1734,6 @@ function tags_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback rl "add-one-more".
- */
 function rl_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_rl'])) {
         $form_state['num_rl'] = 0;
@@ -1462,9 +1743,6 @@ function rl_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback sn "add-one-more".
- */
 function sn_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_sn'])) {
         $form_state['num_sn'] = 0;
@@ -1474,9 +1752,6 @@ function sn_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback formación "add-one-more".
- */
 function formation_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_formation'])) {
         $form_state['num_formation'] = 0;
@@ -1486,9 +1761,6 @@ function formation_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback acp "add-one-more".
- */
 function acp_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_acp'])) {
         $form_state['num_acp'] = 0;
@@ -1498,9 +1770,6 @@ function acp_add_more_callback($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Ajax callback num_er "add-one-more".
- */
 function er_add_more_callback($form, &$form_state) {
     if (!isset($form_state['num_er'])) {
         $form_state['num_er'] = 0;
@@ -1511,8 +1780,11 @@ function er_add_more_callback($form, &$form_state) {
 }
 
 /**
- * Submit handler coauthor "remove one".
+ * Submit handler for the "remove one" button.
+ *
+ * Decrements the max counter and causes a form rebuild.
  */
+
 function co_author_remove_one_callback($form, &$form_state) {
   if ($form_state['num_co_author'] > 1) {
     $form_state['num_co_author']--;
@@ -1520,9 +1792,6 @@ function co_author_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler jel "remove one".
- */
 function jel_remove_one_callback($form, &$form_state) {
   if ($form_state['num_jel'] > 1) {
     $form_state['num_jel']--;
@@ -1530,9 +1799,6 @@ function jel_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler tags "remove one".
- */
 function tags_remove_one_callback($form, &$form_state) {
   if ($form_state['num_tags'] > 1) {
     $form_state['num_tags']--;
@@ -1540,9 +1806,6 @@ function tags_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler rl "remove one".
- */
 function rl_remove_one_callback($form, &$form_state) {
   if ($form_state['num_rl'] > 1) {
     $form_state['num_rl']--;
@@ -1550,9 +1813,6 @@ function rl_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler sn "remove one".
- */
 function sn_remove_one_callback($form, &$form_state) {
   if ($form_state['num_sn'] > 1) {
     $form_state['num_sn']--;
@@ -1560,9 +1820,6 @@ function sn_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler formación "remove one".
- */
 function formation_remove_one_callback($form, &$form_state) {
   if ($form_state['num_formation'] > 1) {
     $form_state['num_formation']--;
@@ -1570,9 +1827,6 @@ function formation_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler acp "remove one".
- */
 function acp_remove_one_callback($form, &$form_state) {
   if ($form_state['num_acp'] > 1) {
     $form_state['num_acp']--;
@@ -1580,9 +1834,6 @@ function acp_remove_one_callback($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Submit handler er "remove one".
- */
 function er_remove_one_callback($form, &$form_state) {
   if ($form_state['num_er'] > 1) {
     $form_state['num_er']--;
@@ -1591,64 +1842,45 @@ function er_remove_one_callback($form, &$form_state) {
 }
 
 /**
- * Callback author for both ajax-enabled buttons.
+ * Callback for both ajax-enabled buttons.
+ *
+ * Selects and returns the fieldset with the co-author in it.
  */
 function co_author_callback($form, $form_state) {
     return $form['query']['right_column']['co_author_fieldset'];
 }
 
-/**
- * Callback jel for both ajax-enabled buttons.
- */
 function jel_callback($form, $form_state) {
     return $form['query']['left_column']['fieldset_jel'];
 }
 
-/**
- * Callback tags for both ajax-enabled buttons.
- */
 function tags_callback($form, $form_state) {
     return $form['query']['left_column']['fieldset_tags'];
 }
 
-/**
- * Callback rl for both ajax-enabled buttons.
- */
 function rl_callback($form, $form_state) {
     return $form['fieldset_rl'];
 }
 
-/**
- * Callback sn for both ajax-enabled buttons.
- */
 function sn_callback($form, $form_state) {
     return $form['fieldset_sn'];
 }
 
-/**
- * Callback formación for both ajax-enabled buttons.
- */
 function formation_callback($form, $form_state) {
     return $form['fieldset_formation'];
 }
 
-/**
- * Callback acp for both ajax-enabled buttons.
- */
 function acp_callback($form, $form_state) {
     return $form['fieldset_acp'];
 }
 
-/**
- * Callback er for both ajax-enabled buttons.
- */
 function er_callback($form, $form_state) {
     return $form['fieldset_er'];
 }
 
 /**
- * Formulario descripción perfil.
- */
+* Profile Description Form
+*/
 function profile_description_form($form, &$form_state, $account = NULL){
    $form['#tree'] = TRUE;
    $form['#attributes']['class'] = 'profile_description_form';
@@ -1688,10 +1920,12 @@ function profile_description_form($form, &$form_state, $account = NULL){
 }
 
 /**
- * Submit Formulario descripción perfil.
- */
+* Implements form ajax submit.
+*/
 function profile_description_form_ajax_submit($form, &$form_state){
   global $user;
+
+  // Get the form values
   $values = isset($form_state['values']) ? $form_state['values'] : FALSE;
   $field_perfil = isset($values['field_perfil']['value'])?$values['field_perfil']['value']: '';
   $field_perfil_ingles = isset($values['field_perfil_ingles']['value'])?$values['field_perfil_ingles']['value']: '';
@@ -1721,8 +1955,8 @@ function profile_description_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Formulario lineas de investigación perfil.
- */
+* Profile investigation lines Form
+*/
 function profile_investigation_lines_form($form, &$form_state, $account = NULL){
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'profile_investigation_lines_form';
@@ -1811,8 +2045,8 @@ function profile_investigation_lines_form($form, &$form_state, $account = NULL){
 }
 
 /**
- * Submit Formulario líneas perfil.
- */
+* Implements form ajax submit.
+*/
 function profile_investigation_lines_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -1846,8 +2080,8 @@ function profile_investigation_lines_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Formulario redes sociales perfil.
- */
+* Profile social networks Form
+*/
 function profile_social_networks_form($form, &$form_state, $account = NULL){
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'profile_social_networks_form';
@@ -1960,8 +2194,8 @@ function profile_social_networks_form($form, &$form_state, $account = NULL){
 }
 
 /**
- * Submit Formulario redes sociales perfil.
- */
+* Implements form ajax submit.
+*/
 function profile_social_networks_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -2018,8 +2252,8 @@ function profile_social_networks_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Formulario formación perfil.
- */
+* Profile formation Form
+*/
 function profile_formation_form($form, &$form_state, $account = NULL){
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'profile-formation-form';
@@ -2182,27 +2416,18 @@ function profile_formation_form($form, &$form_state, $account = NULL){
   return $form;
 }
 
-/**
- * Elimina título y descripción del campo date popup.
- */
 function banrep_core_date_popup_process($element, $form_state, $complete_form) {
       unset($element['date']['#description']);
       unset($element['date']['#title']);
       return $element;
 }
-
-/**
- * Implements hook_element_info_alter().
- */
 function banrep_core_element_info_alter(&$type) {
   if (isset($type['date_popup'])) {
     $type['date_popup']['#process'][] = 'banrep_core_date_popup_process';
   }
 }
 
-/**
- * Submit Formulario formación perfil.
- */
+
 function profile_formation_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -2276,8 +2501,8 @@ function profile_formation_form_ajax_submit($form, &$form_state){
 
 
 /**
- * Formulario perfiles académicos perfil.
- */
+* Profile academic profiles Form
+*/
 function profile_academic_profiles_form($form, &$form_state, $account = NULL){
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'academic-profiles-form';
@@ -2390,9 +2615,7 @@ function profile_academic_profiles_form($form, &$form_state, $account = NULL){
   return $form;
 }
 
-/**
- * Submit Formulario perfiles académicos perfil.
- */
+
 function profile_academic_profiles_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -2454,8 +2677,8 @@ function profile_academic_profiles_form_ajax_submit($form, &$form_state){
 
 
 /**
- * Formulario datos de acceso perfil.
- */
+* Profile access data Form
+*/
 function profile_access_data_form($form, &$form_state, $account = NULL) {
    $form['#tree'] = TRUE;
    $form['#attributes']['class'] = 'profile_access_data_form';
@@ -2512,8 +2735,8 @@ function profile_access_data_form($form, &$form_state, $account = NULL) {
 }
 
 /**
- * Submit Formulario datos de acceso perfil.
- */
+* Implements form ajax submit.
+*/
 function profile_access_data_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -2565,8 +2788,8 @@ function profile_access_data_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Formulario HV perfil.
- */
+* Profile access data Form
+*/
 function profile_cv_form($form, &$form_state, $account = NULL) {
 
   $form['file'] = array(
@@ -2590,9 +2813,6 @@ function profile_cv_form($form, &$form_state, $account = NULL) {
     return $form;
 }
 
-/**
- * Validación de campo file HV.
- */
 function file_validate_unique($file) {
    $errors = array();
    $filename = $file->filename;
@@ -2602,9 +2822,6 @@ function file_validate_unique($file) {
    return $errors;
 }
 
-/**
- * Submit Formulario HV perfil.
- */
 function profile_cv_form_submit($form, &$form_state) {
   global $user;
 
@@ -2622,8 +2839,8 @@ function profile_cv_form_submit($form, &$form_state) {
 }
 
 /**
- * Obtener orden perfiles académicos.
- */
+* Get Academics Profiles Order
+*/
 function get_academics_profiles_order(){
   $items = array();
   $vocabulary = taxonomy_vocabulary_machine_name_load('academics_profiles');
@@ -2637,75 +2854,237 @@ function get_academics_profiles_order(){
 }
 
 /**
- * Formulario trabajo en curso perfil.
- */
+* Profile Work in progress Form
+*/
 function profile_work_in_progress_form($form, &$form_state, $account = NULL){
-    $form = array();
-    $form['#tree'] = TRUE;
-    $form['#attributes']['class'] = 'profile_work_in_progress_form';
+  $form = array();
+  $form['#tree'] = TRUE;
+  $form['#attributes']['class'] = 'profile_work_in_progress_form';
 
-  $form['work_in_progress'] = array(
-    '#title' => t('Work in progress'),
-    '#type' => 'text_format',
-    '#format' => 'rich_text',
-    '#description' => t(''),
-    '#default_value' => get_input_value_from_account($account, 'field_work_in_progress'),
-  );
+  $form['field_trabajos_en_curso'] = [
+    '#type' => 'container',
+    '#tree' => TRUE,
+    '#prefix' => '<div id="js-ajax-elements-wrapper">', '#suffix' => '</div>',
+  ];
 
-  $ajax = array(
+  $form_state['field_deltas'] = isset($form_state['field_deltas']) ? $form_state['field_deltas'] : $account->field_trabajos_en_curso['und'];
+  $form_state['field_deltas_delete'] = isset($form_state['field_deltas_delete']) ? $form_state['field_deltas_delete'] : [];
+
+  foreach ($form_state['field_deltas']  as $delta => $value) {
+    $form['field_trabajos_en_curso'][$delta] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Work in progress'),
+    );
+
+    $entity_id = $value['value'];
+    $field = entity_load('field_collection_item',  array($entity_id));
+
+    $form['field_trabajos_en_curso'][$delta]['id_trabajos_en_curso'] = [
+      '#type' => 'hidden',
+        '#value' => isset($entity_id) ? $entity_id : 0,
+    ];
+
+    $form['field_trabajos_en_curso'][$delta]['titulo_trabajo'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Título'),
+      '#size' => 60, 
+      '#maxlength' => 254,
+      '#default_value' => isset($field[$entity_id]->field_titulo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_titulo_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    $tags = array();
+    foreach ($field[$entity_id]->field_areas_tematicas['und'] as $item) {
+      $tags[$item['tid']] = isset($item['taxonomy_term']) ? $item['taxonomy_term'] : taxonomy_term_load($item['tid']);
+    }
+
+    $form['field_trabajos_en_curso'][$delta]['areas_tematicas'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Áreas temáticas'),
+      '#autocomplete_path' => 'taxonomy/autocomplete/field_areas_tematicas',
+      '#size' => 60,
+      '#maxlength' => 1024,
+      '#default_value' => taxonomy_implode_tags($tags),
+      '#prefix' => '<div class="group-item col-xs-4">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['identificador_sepi'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Identificador SEPI'),
+      '#size' => 60, 
+      '#maxlength' => 254,
+      '#default_value' => isset($field[$entity_id]->field_identificador_sepi['und'][0]['value']) ? $field[$entity_id]->field_identificador_sepi['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-4">','#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['estado_trabajo'] = array(
+      '#title' => t('Estado'),
+      '#type' => 'select',
+      '#options' => array(
+        "" => t('- Ninguno -'),
+        "publico" => t('Public'),
+        "privado" => t('Privado')
+      ),
+      '#default_value' => isset($field[$entity_id]->field_estado_trabajo['und'][0]['value']) ? $field[$entity_id]->field_estado_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-4">', '#suffix' => '</div>',
+    );
+
+    $form['field_trabajos_en_curso'][$delta]['objetivo_trabajo'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Objetivo'),
+      '#description' => t(''),
+      '#default_value' => isset($field[$entity_id]->field_objetivo_trabajo['und'][0]['value']) ? $field[$entity_id]->field_objetivo_trabajo['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+
+    /*$form['field_trabajos_en_curso'][$delta]['work_in_progress'] = array(
+      '#title' => t('Work in progress'),
+      '#type' => 'text_format',
+      '#format' => 'rich_text',
+      '#description' => t(''),
+      '#default_value' => isset($field[$entity_id]->field_work_in_progress['und'][0]['value']) ? $field[$entity_id]->field_work_in_progress['und'][0]['value'] : '',
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );*/
+
+    $form['field_trabajos_en_curso'][$delta]['remove_name'] = array(
+      '#type' => 'submit',
+      '#value' => t('- Eliminar Trabajo en curso'),
+      '#submit' => ['profile_work_in_progress_form_add_more_ajax_remove'],
+      '#limit_validation_errors' => array(),
+      '#ajax' => array(
+        'callback' => 'profile_work_in_progress_form_add_more_ajax_callback',
+        'wrapper' => 'js-ajax-elements-wrapper',
+      ),
+      '#attributes' => array(
+        'class' => ['button-small'],
+      ),
+      '#name' => 'remove_name_' . $delta,
+      '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+    );
+  }
+
+  $form['field_trabajos_en_curso']['add_name'] = [
+    '#type' => 'submit',
+    '#value' => t('+ Añadir Trabajo en curso'),
+    '#submit' => array('profile_work_in_progress_form_add_more_ajax_add'),
+    '#ajax' => [
+      'callback' => 'profile_work_in_progress_form_add_more_ajax_callback',
+      'wrapper' => 'js-ajax-elements-wrapper',
+    ],
+    '#prefix' => '<div class="group-item col-xs-12">', '#suffix' => '</div>',
+  ];
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#ajax' => array(
       'callback' => 'profile_work_in_progress_form_ajax_submit',
-      'wrapper' => '',
+      'wrapper' => 'js-ajax-elements-wrapper',
       'effect' => 'fade',
       'progress' => array(
           'type' => 'throbber',
           'message' => NULL,
       ),
       'event' => 'click',
-  );
-  // form submit
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-    '#prefix' => '<div class="row"><div class="col-md-12">',
-    '#suffix' => '</div></div>',
-     '#ajax' => $ajax,
+    ),
+    '#prefix' => '<div class="row"><div class="col-md-12">', '#suffix' => '</div></div>',
   );
 
   return $form;
 }
 
-/**
- * Submit Formulario trabajo en curso perfil.
- */
 function profile_work_in_progress_form_ajax_submit($form, &$form_state){
   global $user;
+  foreach ($form_state['field_deltas_delete'] as $key => $work) {
+    $field_collection_item_value = $work['value'];
+    entity_delete_multiple('field_collection_item', array($field_collection_item_value));
+  }
+  
   $values = isset($form_state['values']) ? $form_state['values'] : FALSE;
-  $field_work = isset($values['work_in_progress']['value'])?$values['work_in_progress']['value']: '';
+  foreach ($values['field_trabajos_en_curso'] as $key => $work) {
+     $field_collection_item_value = $work['id_trabajos_en_curso'];
+    if(is_numeric($field_collection_item_value)){
+      if ($field_collection_item_value == 0) {
+        $user = user_load($user->uid);
+        $values['field_name'] = 'field_trabajos_en_curso';
+        $entity = entity_create('field_collection_item', $values);
+        $entity->setHostEntity('user', $user);
+        $entity->field_titulo_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['titulo_trabajo']) ? $work['titulo_trabajo'] : ''; 
+        $entity->field_areas_tematicas[LANGUAGE_NONE] = taxonomy_translate_areas_tematicas($work['areas_tematicas']); 
+        $entity->field_objetivo_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['objetivo_trabajo']) ? $work['objetivo_trabajo'] : '';
+        $entity->field_estado_trabajo[LANGUAGE_NONE][0]['value'] = isset($work['estado_trabajo']) ? $work['estado_trabajo'] : '';
+        //$entity->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($work['work_in_progress']['value']) ? $work['work_in_progress']['value'] : ''; 
+        $entity->save();
+        user_save($user);
+      }else {
+        $field_collection_value = entity_load('field_collection_item', array($field_collection_item_value));
+        $field_collection_value[$field_collection_item_value]->field_titulo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['titulo_trabajo']) ? $work['titulo_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_areas_tematicas[LANGUAGE_NONE] = taxonomy_translate_areas_tematicas($work['areas_tematicas']);
+        $field_collection_value[$field_collection_item_value]->field_objetivo_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['objetivo_trabajo']) ? $work['objetivo_trabajo'] : '';
+        $field_collection_value[$field_collection_item_value]->field_identificador_sepi[LANGUAGE_NONE][0]['value']  = isset($work['identificador_sepi']) ? $work['identificador_sepi'] : '';
+        $field_collection_value[$field_collection_item_value]->field_estado_trabajo[LANGUAGE_NONE][0]['value']  = isset($work['estado_trabajo']) ? $work['estado_trabajo'] : '';
+        //$field_collection_value[$field_collection_item_value]->field_work_in_progress[LANGUAGE_NONE][0]['value'] = isset($work['work_in_progress']['value']) ? $work['work_in_progress']['value'] : '';
+        $field_collection_value[$field_collection_item_value]->save();
+      }
+    }
+  }
+
   $msg = t('Your changes have been successfully saved!');
   $response = new stdClass();
   $response->success = FALSE;
   $response->is_valid = TRUE;
   $response->message = $msg;
-  if($response->is_valid){
-    $user_fields = user_load($user->uid);
-    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['value'] = $field_work;
-    $user_fields->field_work_in_progress[LANGUAGE_NONE][0]['format'] = 'rich_text';
-    user_save($user_fields);
-    $response->success = TRUE;
-  }
 
+  $response->success = TRUE;
   return array(
       '#type' => 'ajax',
       '#commands' => array(
-          array('command' => 'responseRecommendedLinksForm', 'data' => $response, 'msg' =>$msg),
+          array('command' => 'responseWorkInProgressForm', 'data' => $response, 'msg' =>$msg),
       ),
   );
+}
 
+function taxonomy_translate_areas_tematicas($tags) {
+  $areas_ids = array();
+  $termes = taxonomy_vocabulary_get_names();
+  $taxonomy_vid = $termes['areas_tematicas']->vid;
+  $areas = explode(',', str_replace(', ', ',', $tags));
+
+  foreach ($areas as $key => $value) {
+    $areas_tematicas_terms = taxonomy_get_term_by_name($value, 'areas_tematicas');
+      if(isset($areas_tematicas_terms) && !empty($areas_tematicas_terms)) {
+        array_push($areas_ids, array('tid' => key($areas_tematicas_terms)));
+      }else{
+        $term1 = (object) array(
+          'name' => $value,
+          'vid' => $taxonomy_vid,
+        );
+        taxonomy_term_save($term1);
+        array_push($areas_ids, array('tid' => key(taxonomy_get_term_by_name($value, 'areas_tematicas')) ));
+      }
+  }
+  return $areas_ids;
+}
+
+function profile_work_in_progress_form_add_more_ajax_callback($form, $form_state) {
+  return $form['field_trabajos_en_curso'];
+}
+
+function profile_work_in_progress_form_add_more_ajax_add($form, &$form_state) {
+  $form_state['field_deltas'][] = array('value' => 0);
+  $form_state['rebuild'] = TRUE;
+}
+
+function profile_work_in_progress_form_add_more_ajax_remove($form, &$form_state) {
+  $delta_remove = $form_state['triggering_element']['#parents'][1];
+  $form_state['field_deltas_delete'][] = $form_state['field_deltas'][$delta_remove];
+  unset($form_state['field_deltas'][$delta_remove]);
+  $form_state['rebuild'] = TRUE;
 }
 
 /**
- * Formulario enlaces recomendados perfil.
- */
+* Profile recommended links Form
+*/
 function profile_recommended_links_form($form, &$form_state, $account = NULL){
   $form['#tree'] = TRUE;
   $form['#attributes']['class'] = 'profile_recommended_links_form';
@@ -2725,12 +3104,12 @@ function profile_recommended_links_form($form, &$form_state, $account = NULL){
 
   // File er form element starts
   $form['fieldset_er'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Recommended Links'),
-    '#prefix' => '<div id="fieldset-wrapper-er" class="fieldset-wrapper-er margin-fieldset">',
-    '#suffix' => '</div>',
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
+      '#type' => 'fieldset',
+      '#title' => t('Recommended Links'),
+      '#prefix' => '<div id="fieldset-wrapper-er" class="fieldset-wrapper-er margin-fieldset">',
+      '#suffix' => '</div>',
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
   );
 
   for ($i = 0; $i < $count_er; $i++) {
@@ -2785,46 +3164,54 @@ function profile_recommended_links_form($form, &$form_state, $account = NULL){
     '#description' => t('Upload an evidence document in pdf format of your entry'),
     '#upload_location' => 'public://recomendados',
     );
+
+
+
     $form['fieldset_er']['er'][$i] = $container;
 
   }
 
   $form['fieldset_er']['add_er'] = array(
-    '#type' => 'submit',
-    '#value' => '+ ' . t('Add Link'),
-    '#submit' => array('er_add_more_callback'),
-    '#limit_validation_errors' => array(),
-    '#ajax' => array(
-        'callback' => 'er_callback',
-        'wrapper' => 'fieldset-wrapper-er',
-    ),
-  );
-
-  // Remove
-  if ($multiple_er) {
-    $form['fieldset_er']['remove_er'] = array(
       '#type' => 'submit',
-      '#value' => '- ' . t('Remove Link'),
-      '#submit' => array('er_remove_one_callback'),
+      '#value' => '+ ' . t('Add Link'),
+      '#submit' => array('er_add_more_callback'),
+      // Setting #limit_validation_errors to an empty array
+      // ensures that the form fields are not validated when
+      // the back button is used. Otherwise, we will get errors
       '#limit_validation_errors' => array(),
       '#ajax' => array(
           'callback' => 'er_callback',
           'wrapper' => 'fieldset-wrapper-er',
       ),
+  );
+
+
+// catastro saber si van a participar tienda virtual linea 319 9:000 am a 11:00 torre b segundo piso cara 30 25-90 eliezer banegas proceso
+  // Remove
+  if ($multiple_er) {
+    $form['fieldset_er']['remove_er'] = array(
+        '#type' => 'submit',
+        '#value' => '- ' . t('Remove Link'),
+        '#submit' => array('er_remove_one_callback'),
+        '#limit_validation_errors' => array(),
+        '#ajax' => array(
+            'callback' => 'er_callback',
+            'wrapper' => 'fieldset-wrapper-er',
+        ),
     );
   }
 
   $ajax = array(
-    'callback' => 'profile_recommended_links_form_ajax_submit',
-    'wrapper' => '',
-    'effect' => 'fade',
-    'progress' => array(
-        'type' => 'throbber',
-        'message' => NULL,
-    ),
-    'event' => 'click',
+      'callback' => 'profile_recommended_links_form_ajax_submit',
+      'wrapper' => '',
+      'effect' => 'fade',
+      'progress' => array(
+          'type' => 'throbber',
+          'message' => NULL,
+      ),
+      'event' => 'click',
   );
-
+  // form submit
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -2838,8 +3225,8 @@ function profile_recommended_links_form($form, &$form_state, $account = NULL){
 
 
 /**
- * Submit Formulario enlaces recomendados perfil.
- */
+* Implements form ajax submit.
+*/
 function profile_recommended_links_form_ajax_submit($form, &$form_state){
   global $user;
   // Get the form values
@@ -2915,9 +3302,9 @@ function profile_recommended_links_form_ajax_submit($form, &$form_state){
 }
 
 
-/**
- * Obtener valor de un campo del usuario.
- */
+/*
+* Get Input Value From Publication
+*/
 function get_input_value_from_account($account = NULL, $field_name = '', $default_value = ''){
   if(!is_null($account) && !empty($field_name)){
     switch ($field_name) {
@@ -3028,10 +3415,14 @@ function get_input_value_from_account($account = NULL, $field_name = '', $defaul
             if(isset($fields->field_nivel_estudio[LANGUAGE_NONE][0]['value'])){
               $level_study = $fields->field_nivel_estudio[LANGUAGE_NONE][0]['value'];
             }
+
+
             $fecha_inicio = isset($fields->field_fecha_inicio_estudio[LANGUAGE_NONE][0]['value'])?$fields->field_fecha_inicio_estudio[LANGUAGE_NONE][0]['value']:'';
             $fecha_fin    = isset($fields->field_fecha_fin_estudio[LANGUAGE_NONE][0]['value'])?$fields->field_fecha_fin_estudio[LANGUAGE_NONE][0]['value']:'';
             $tipo         = isset($fields->field_tipo_posgrado[LANGUAGE_NONE][0]['value'])?$fields->field_tipo_posgrado[LANGUAGE_NONE][0]['value']:'';
             $lugar        = isset($fields->field_lugar_posgrado[LANGUAGE_NONE][0]['value'])?$fields->field_lugar_posgrado[LANGUAGE_NONE][0]['value']:'';
+
+
             if (!empty($title) || !empty($university) || !empty($year) || !empty($level_study)){
               $default_value[] = array(
                 'title' => $title,
@@ -3079,8 +3470,8 @@ function get_input_value_from_account($account = NULL, $field_name = '', $defaul
 }
 
 /**
- * Obtener nombre de termino a partir de un tid.
- */
+* returns the name of a taxonomy term based on its tid:
+*/
 function get_term($tid) {
   return db_select('taxonomy_term_data', 't')
   ->fields('t', array('name'))
@@ -3090,20 +3481,20 @@ function get_term($tid) {
 }
 
 /**
- * Obtener título del nodo a partir del nid.
- */
+* returns the name of a taxonomy term based on its tid:
+*/
 function get_node_title($nid) {
   return db_select('node', 'n')
   ->fields('n', array('title'))
   ->condition('nid', $nid)
   ->execute()
-  ->fetchField();
+  ->fetchField(); 
 }
 
-/**
- * Obtener valor de un campo de la publicación.
- */
-function get_input_value_from_publication($publication = NULL, $field_name = '', $default_value = ''){
+/*
+* Get Input Value From Publication
+*/
+function get_input_value_from_publication($publication = NULL, $field_name = '', $default_value = '', $index = null){
   if (!is_null($publication) && !empty($field_name)) {
     switch ($field_name) {
       case 'title_en':
@@ -3149,6 +3540,16 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
       case 'attach_doc':
         if (isset($publication->field_re_attach_doc[LANGUAGE_NONE][0]['fid'])) {
           $default_value = $publication->field_re_attach_doc[LANGUAGE_NONE][0]['fid'];
+        }
+        break;
+      case 'mag_name':
+        if (isset($publication->field_mag_name[LANGUAGE_NONE][0]['value'])) {
+          $default_value = $publication->field_mag_name[LANGUAGE_NONE][0]['value'];
+        }
+        break;
+      case 'sepi':
+        if (isset($publication->field_sepi[LANGUAGE_NONE][0]['value'])) {
+          $default_value = $publication->field_sepi[LANGUAGE_NONE][0]['value'];
         }
         break;
       case 'volumen':
@@ -3203,6 +3604,13 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
           $default_value = $concept_node->title . ' (' . $concept_target_id . ')';
         }
         break;
+      case 'concept_formation':
+        $default_value = array();
+        if (isset($publication->field_concept_formation[LANGUAGE_NONE][0]['tid'])) {
+          $concept_formation = taxonomy_term_load($publication->field_concept_formation[LANGUAGE_NONE][0]['tid']);
+        }
+        break;
+
       case 'jels':
         if (isset($publication->field_jel[LANGUAGE_NONE][0])) {
           $default_value = [];
@@ -3214,14 +3622,22 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
         }
         break;
       case 'rol_within_publication':
-        if (isset($publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'])) {
+        if(!is_null($index)){
+           if( isset($publication->field_co_authors[LANGUAGE_NONE][$index]) ){
+              $entity = $publication->field_co_authors[LANGUAGE_NONE][$index]['value'];
+              $default_value = entity_load('field_collection_item', array($entity))[$entity]->field_role_within_publicat[LANGUAGE_NONE][0]['tid'];
+           } 
+        }
+        else if (isset($publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'])) {
           $default_value = $publication->field_role_within_publication[LANGUAGE_NONE][0]['tid'];
         }
         break;
       case 'co_authors_author':
+        
         $default_value = [];
         if (isset($publication->main_author_reference[0]['name'])) {
-          $default_value[] = $publication->main_author_reference[0]['name'] . ' (' . $publication->main_author_reference[0]['tid'] . ')';
+          //$default_value[] = $publication->main_author_reference[0]['name'] . ' (' . $publication->main_author_reference[0]['tid'] . ')';
+          $default_value[] = $publication->main_author_reference[0]['name']['co_authors_author'];
         }
         elseif (isset($publication->nid)) {
           if (isset($publication->field_main_author_reference[LANGUAGE_NONE][0]['tid'])) {
@@ -3242,6 +3658,7 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
             $default_value[] = $term->name . ' (' . $term->tid . ')';
           }
         }
+        
         break;
       case 'tags':
         if (isset($publication->field_publication_tags[LANGUAGE_NONE][0])) {
@@ -3284,8 +3701,8 @@ function get_input_value_from_publication($publication = NULL, $field_name = '',
 }
 
 /**
- * Validar si es usuario registrado por nombre.
- */
+*  is registered user by name
+*/
 function _is_registered_user_by_name($name = ''){
   if(!empty($name)){
     $match = [];
@@ -3299,8 +3716,8 @@ function _is_registered_user_by_name($name = ''){
 }
 
 /**
- * Obtener las opciones de redes sociales.
- */
+* Get Social Networks type options
+*/
 function get_social_network_type_options($add_none = TRUE){
   $voc = taxonomy_vocabulary_machine_name_load('social_networks');
   $categorias_de_conceptos = taxonomy_get_tree($voc->vid, $parent = 0, $max_depth = 1);
@@ -3315,8 +3732,8 @@ function get_social_network_type_options($add_none = TRUE){
 }
 
 /**
- * Obtener las opciones de perfiles académicos.
- */
+* Get academic profiles type options
+*/
 function get_academic_profiles_type_options($add_none = TRUE){
   $voc = taxonomy_vocabulary_machine_name_load('academics_profiles');
   $academic_profiles_categories = taxonomy_get_tree($voc->vid, $parent = 0, $max_depth = 1);
@@ -3330,9 +3747,9 @@ function get_academic_profiles_type_options($add_none = TRUE){
   return $options;
 }
 
-/**
- * Validar si es un tipo concepto válido.
- */
+/*
+*  Check if is one valid concept type
+*/
 function is_valid_concept_type($concept_type = FALSE){
   if($concept_type != FALSE){
     $concepts_type = get_concepts_type_options($add_none = FALSE);
@@ -3345,9 +3762,9 @@ function is_valid_concept_type($concept_type = FALSE){
   return FALSE;
 }
 
-/**
- * Validar si es un concepto válido.
- */
+/*
+*  Check if is one valid concept
+*/
 function is_valid_concept($concept_name = FALSE){
   if($concept_name != FALSE){
     global $user;
@@ -3366,8 +3783,8 @@ function is_valid_concept($concept_name = FALSE){
 }
 
 /**
- * Obtener scoring concepto por nombre.
- */
+* Get Scoring Concept by Name
+*/
 function _get_scoring_concept_by_name($concept_name = FALSE){
   if($concept_name != FALSE){
     $match = [];
@@ -3399,9 +3816,9 @@ function _get_scoring_concept_by_name($concept_name = FALSE){
   return FALSE;
 }
 
-/**
- * Validar si es un rol válido.
- */
+/*
+*  Check if is one valid rol within publication
+*/
 function is_valid_rol_within_publication($rol = FALSE){
   if(($rol != FALSE) && ($rol != '-1'))  {
     $roles = get_roles_within_publication();
@@ -3410,13 +3827,13 @@ function is_valid_rol_within_publication($rol = FALSE){
         return TRUE;
       }
     }
+    return TRUE; # Valida que sea rol de tipo ROL_AUTHOR_BOOK
   }
   return FALSE;
 }
-
-/**
- * Validar si es un coauthor válido.
- */
+/*
+*  Check if is valid co_author
+*/
 function is_valid_co_author($co_author = FALSE){
   if($co_author != FALSE) {
     $query = db_select('users', 'u');
@@ -3437,8 +3854,8 @@ function is_valid_co_author($co_author = FALSE){
 
 
 /**
- * Obtener coauthor tid por nombre.
- */
+* _get co author tid by name
+*/
 function _get_co_author_tid_by_name($name = FALSE){
   if ($name != FALSE) {
     $match = [];
@@ -3452,20 +3869,25 @@ function _get_co_author_tid_by_name($name = FALSE){
 }
 
 /**
- * Obtener uid coauthor por nombre.
- */
+* _get co author uid by name
+*/
 function _get_co_author_uid_by_name($name = FALSE){
   $response = array();
   if ($name != FALSE) {
     $match = [];
     preg_match_all('#\((.*?)\)#', $name, $match , PREG_SET_ORDER);
     $match = end($match);
+    
+    $match[1] = ( is_string($match[1]) ) ? (int)$match[1] : $match[1];
+    
     if (isset($match[1]) && is_numeric($match[1])) {
       $response['tid'] = $match[1];
       $response['uid'] = NULL;
+      
       if($uid = _banrep_core_get_user_by_author_term($match[1])){
         $response['uid'] = $uid;
       }
+      
       return $response;
     }
     else {
@@ -3476,8 +3898,8 @@ function _get_co_author_uid_by_name($name = FALSE){
 }
 
 /**
- * Obtener linea de investigación por nombre.
- */
+*  _get investigation line tid by name
+*/
 function _get_investigation_line_tid_by_name($name = FALSE){
   if($name != FALSE) {
     $terms = taxonomy_get_term_by_name($name);
@@ -3491,8 +3913,8 @@ function _get_investigation_line_tid_by_name($name = FALSE){
 
 
 /**
- * Obtener otro coauthor tid por nombre.
- */
+*  _get other co author tid by name
+*/
 function _get_other_co_author_tid_by_name($name = FALSE){
   if ($name != FALSE) {
     $terms = taxonomy_get_term_by_name($name);
@@ -3505,9 +3927,9 @@ function _get_other_co_author_tid_by_name($name = FALSE){
 }
 
 
-/**
- * Obtener JEL tid por nombre.
- */
+/*
+* _get jel by name
+*/
 function _get_jel_by_name($name = FALSE){
   if($name != FALSE) {
     $terms = taxonomy_get_term_by_name($name);
@@ -3519,9 +3941,9 @@ function _get_jel_by_name($name = FALSE){
   return FALSE;
 }
 
-/**
- * Obtener TAG tid por nombre.
- */
+/*
+* _get tag by name
+*/
 function _get_tag_by_name($name = FALSE){
   if($name != FALSE) {
     $terms = taxonomy_get_term_by_name($name);
@@ -3542,9 +3964,9 @@ function _get_tag_by_name($name = FALSE){
   return FALSE;
 }
 
-/**
- * Validar si es un arreglo de coauthores válido.
- */
+/*
+*  Check if is valid array of co_authors
+*/
 function is_valid_co_authors($co_authors = array(), $concept_type = FALSE){
   if(count($co_authors) > 0) {
     $is_book = ($concept_type == '206');
@@ -3567,8 +3989,8 @@ function is_valid_co_authors($co_authors = array(), $concept_type = FALSE){
 }
 
 /**
- * Submit formulario agregar publicación.
- */
+* Implements form ajax submit.
+*/
 function publications_add_form_ajax_submit($form, &$form_state){
 
     // Get the form values
@@ -3740,8 +4162,8 @@ function publications_add_form_ajax_submit($form, &$form_state){
 }
 
 /**
- * Obtener roles en la publicación.
- */
+* Get concepts type options
+*/
 function get_roles_within_publication(){
   $voc = taxonomy_vocabulary_machine_name_load('rol_dentro_de_la_publicacion');
   $categorias_de_conceptos = taxonomy_get_tree($voc->vid, $parent = 0, $max_depth = 1);
@@ -3754,8 +4176,8 @@ function get_roles_within_publication(){
 }
 
 /**
- * Obtener opciones de conceptos.
- */
+* Get concepts type options
+*/
 function get_concepts_type_options($add_none = TRUE){
   $voc = taxonomy_vocabulary_machine_name_load('categorias_de_conceptos');
   $categorias_de_conceptos = taxonomy_get_tree($voc->vid, $parent = 0, $max_depth = 1);
@@ -3769,9 +4191,6 @@ function get_concepts_type_options($add_none = TRUE){
   return $options;
 }
 
-/**
- * Formulario de configuración de perfil.
- */
 function banrep_core_profile_setting_form($form, &$form_state) {
   // Build Breadcrumbs
   $breadcrumb = array();
@@ -3810,10 +4229,13 @@ function banrep_core_profile_setting_form($form, &$form_state) {
     'field_perfil' => t('Perfil'),
     'field_academics_profiles' => t('Perfiles académicos'),
     'field_studies_carried_out' => t('Estudios Realizados'),
+     //'field_co_authors' => t('Coautores'),
     'field_cv_file' => t('Hoja de vida'),
     'field_social_networks' => t('Redes sociales'),
     'field_score' => t('Puntaje'),
     'field_likes' => t('Likes'),
+    //'field_notification_alter' => t('Notificaciones al modificar'),
+    //'field_pr_visibility' => t('Visibilidad del perfil'),
   );
   $table = '<table class="sticky-enabled table-select-processed tableheader-processed sticky-table">
                <thead>
@@ -3874,7 +4296,10 @@ function banrep_core_profile_setting_form($form, &$form_state) {
 }
 
 /**
- * Submit Formulario de configuración de perfil.
+ * Add a submit handler/function to the form.
+ *
+ * This will add a completion message to the screen when the
+ * form successfully processes
  */
 function banrep_core_profile_setting_form_submit($form, &$form_state) {
     $values = $form_state['values'];
@@ -3896,9 +4321,7 @@ function banrep_core_profile_setting_form_submit($form, &$form_state) {
     drupal_set_message(t('Los cambios han sido guardados.'));
 }
 
-/**
- * Formulario de buscador.
- */
+// Custom functions
 function banrep_core_search_block_form($form, &$form_state) {
 
   $engines = variable_get('banrep_core_engines', array());
@@ -3942,15 +4365,18 @@ function banrep_core_search_block_form($form, &$form_state) {
 }
 
 /**
- * Permitir o deshabilitar campo privado para todos los usuarios
- * con el rol: Investigador.
+ * Allow or disAllow private field for all the user witht the role: Investigador
  */
 function _banrep_core_profile_setting_set_private_field($field_name, $field_id, $private){
+  // Fetch an instance info array.
   $instance_info = field_info_instance($entity_type = 'user', $field_name, $bundle_name = 'user');
+  // Change a single property in the instance definition.
   $instance_info['settings']['user_field_privacy'] = $private;
+  // Write the changed definition back.
   field_update_instance($instance_info);
 
   if($private == 0){
+    // Get all the uid of the investigadores
     $role_ids =  array(1, 2, 3, 4, 5, 6, 7, 8);
     $query = 'SELECT DISTINCT(ur.uid)
       FROM {users_roles} AS ur
@@ -3958,6 +4384,7 @@ function _banrep_core_profile_setting_set_private_field($field_name, $field_id, 
     $result = db_query($query, array(':rids' => $role_ids));
     $uids = $result->fetchCol();
     $uids[] = 1;
+    // Deleting
     $num_deleted = db_delete('user_field_privacy_value')
         ->condition('uid', $uids, 'IN')
         ->condition('fid', $field_id)
@@ -3966,14 +4393,14 @@ function _banrep_core_profile_setting_set_private_field($field_name, $field_id, 
 }
 
 /**
- * Permitir campo privado para todos los usuarios Investigador.
+ * Allow private field for all the user witht the role: Investigador
  */
 function _banrep_core_profile_setting_allow_private_field($field_name, $field_id){
   _banrep_core_profile_setting_set_private_field($field_name, $field_id, $private = 1);
 }
 
 /**
- * No permitir campo privado para todos los usuarios Investigador.
+ * Disallow private field for all the user witht the role: Investigador
  */
 function _banrep_core_profile_setting_disallow_private_field($field_name, $field_id){
   _banrep_core_profile_setting_set_private_field($field_name, $field_id, $private = 0);
@@ -3983,6 +4410,8 @@ function _banrep_core_profile_setting_disallow_private_field($field_name, $field
  * Implements hook_form_alter().
  */
 function banrep_core_form_alter(&$form, &$form_state, $form_id) {
+
+
   switch ($form_id) {
     case 'taxonomy_form_term':
        $form['#validate'][] = 'profile_group_validate_img';
@@ -4037,8 +4466,9 @@ function banrep_core_form_alter(&$form, &$form_state, $form_id) {
       foreach ($diabled as $field_name) {
         $form[$field_name]['#disabled'] = TRUE;
       }
-      $form['additional_settings']['#access'] = FALSE;
-      break;
+	  $form['additional_settings']['#access'] = TRUE;
+
+    break;
     case 'blog_node_form':
       global $user;
       if( arg(0) == 'profile' && arg(1) == 'blogs' ){
@@ -4112,15 +4542,12 @@ function banrep_core_form_alter(&$form, &$form_state, $form_id) {
 
 }
 
-/**
- * Obtiene el valor del título escrito en el formulario.
- */
 function _view_recursos_alter_filter_body_value($form, &$form_state) {
   $form_state['values']['bv'] = $form_state['values']['title'];
 }
 
 /**
-* Obtener PDF Urls de String.
+* get Pdf url Form String
 */
 function getPdfUrlsFormString($string = "") {
  $items = array();
@@ -4137,7 +4564,7 @@ function getPdfUrlsFormString($string = "") {
 }
 
 /**
-* Obtener Urls de String.
+* get Urls Form String
 */
 function getUrlsFormString($string = "") {
  if(!empty($string)){
@@ -4151,15 +4578,22 @@ function getUrlsFormString($string = "") {
 }
 
 /**
-* Redirigir guardar artículo.
+* Redirect On Post Blog Save
 */
 function _callback_on_post_article_save($form, &$form_state){
   $tid = $form['field_research_group']['und']['#default_value'];
   $form_state['redirect'] = 'taxonomy/term/' . $tid;
 }
 
+// /**
+// * Redirect On Post Blog Save
+// */
+// function _callback_on_post_article_save($form, &$form_state){
+//   $form_state['redirect'] = 'profile/articles';
+// }
+
 /**
-* Redirigir guardar blog.
+* Redirect On Post Blog Save
 */
 function _callback_on_post_blog_save($form, &$form_state){
   $tid = $form['field_research_group']['und']['#default_value'];
@@ -4167,7 +4601,7 @@ function _callback_on_post_blog_save($form, &$form_state){
 }
 
 /**
-* Consultar form nodo blog de Admin Grupo.
+* Check Admin Grupo Blog Node Form
 */
 function _check_admin_grupo_blog_node_form($form, &$form_state){
   if(user_has_role(ADMIN_GRUPO_RID)){
@@ -4181,7 +4615,10 @@ function _check_admin_grupo_blog_node_form($form, &$form_state){
 
 
 /**
- * General Callback for form_alter.
+ * General Callback for form_alter
+ *
+ * @param type $form
+ * @param type $form_state
  */
 function _callback_on_post_publication_save($form, &$form_state){
   $nid = $form_state['values']['nid'];
@@ -4201,7 +4638,7 @@ function _callback_on_post_publication_save($form, &$form_state){
 }
 
 /**
-* Verificación y estado de publicación.
+* Check Review And Status Of Publication
 */
 function _check_review_and_status_of_publication($form, &$form_state) {
   if( isset($form_state['values']['field_review'][LANGUAGE_NONE][0]['value']) && isset($form_state['values']['field_estado_publicaci_n'][LANGUAGE_NONE][0]['workflow']['workflow_sid']) ){
@@ -4214,7 +4651,7 @@ function _check_review_and_status_of_publication($form, &$form_state) {
 }
 
 /**
- * Implements hook_user_login().
+ * Implements hook_user_login
  */
 function banrep_core_user_login(&$edit, $account) {
   if(isset($account->roles) && (count($account->roles)>0)){
@@ -4227,23 +4664,17 @@ function banrep_core_user_login(&$edit, $account) {
 }
 
 /**
- * Redirecciones al perfil después de enviar.
+ * Redirects To Profile After Submit
  */
 function banrep_core_submit($form, &$form_state)  {
   $form_state['redirect'] = 'profile';
 }
 
-/**
- * Obtiene la imágen por defecto del perfil.
- */
 function get_default_profile_image(){
   global $base_url;
   return $base_url.base_path().drupal_get_path('theme', 'banrep').'/images/user-profile.png';
 }
 
-/**
- * Obtiene toda la información del usuario.
- */
 function user_info_format_full($uid = '', $format = '', $color = ''){
   $user = user_load($uid);
   if($user){
@@ -4252,9 +4683,6 @@ function user_info_format_full($uid = '', $format = '', $color = ''){
   return '';
 }
 
-/**
- * Obtiene información parcial del usuario.
- */
 function get_user_info_format($uid = ''){
   $user = user_load($uid);
   if($user){
@@ -4263,22 +4691,41 @@ function get_user_info_format($uid = ''){
   return '';
 }
 
-/**
- * Devuelve la vista referencia_especializada.
- */
-function render_specialized_reference_block() {
+function render_resources_block(){
+  $bean = bean_load($bid = 1);
+  $bean_view = bean_view($bean , $view_mode = 'default', $langcode = NULL);
+  print render($bean_view);
+}
+
+function render_resource_editorial_block(){
+  $bean = bean_load($bid = 2);
+  $bean_view = bean_view($bean , $view_mode = 'default', $langcode = NULL);
+  print render($bean_view);
+}
+
+function render_support_documents_block(){
+  $bean = bean_load($bid = 3);
+  $bean_view = bean_view($bean , $view_mode = 'default', $langcode = NULL);
+  print render($bean_view);
+}
+
+function render_specialized_reference_block(){
   print views_embed_view('referencia_especializada', 'block');
 }
 
+function render_forums_block(){
+  return '';
+}
+
 /**
- * Devuelve si un valor de campo debe mantenerse privado.
+ * Returns if a field value should be kept private.
  *
  * @param $fid
  *   Field Name.
  * @param $uid
  *   User ID.
  * @return bool
- *   VERDADERO si el valor del campo debe mantenerse privado.
+ *   TRUE if the field value should be kept private.
  */
 function __maybe_show_the_field($field_name, $uid) {
   global $user;
@@ -4292,16 +4739,13 @@ function __maybe_show_the_field($field_name, $uid) {
   if(user_is_logged_in() && ($fid != FALSE)){
     if($user->uid == $uid){
       return TRUE;
-    }
-    else{
+    }else{
       return !_user_field_privacy_value($fid, $uid);
     }
-  }
-  else{
+  }else{
     if(field_can_be_private($field_name) == FALSE){
       return TRUE;
-    }
-    else{
+    }else{
       // Puede ser privado.
       $check_if_field_is_private = check_if_field_is_private($field_name, $uid);
       return !$check_if_field_is_private;
@@ -4309,9 +4753,6 @@ function __maybe_show_the_field($field_name, $uid) {
   }
 }
 
-/**
- * Valida si el campo es privado.
- */
 function check_if_field_is_private($field_name = "", $owner_user_uid = ""){
   $private = FALSE;
   $instance_info = field_info_instance($entity_type = 'user', $field_name, $bundle_name = 'user');
@@ -4335,9 +4776,11 @@ function check_if_field_is_private($field_name = "", $owner_user_uid = ""){
   return $private;
 }
 
-/**
- * Imprime el color del grupo de investigación.
- */
+function field_can_be_private($field_name){
+   $name = 'profile_setting_'.$field_name;
+   return ((bool) variable_get($name, FALSE));
+}
+
 function print_group_color($uid = ""){
   $color = '';
   if (!empty($uid)) {
@@ -4369,7 +4812,7 @@ function print_group_color($uid = ""){
 }
 
 /*
- * Obtiene las opciones de documentos de conferencia.
+ * Get Conference documents Type options
  */
 function get_conference_documents_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
@@ -4385,7 +4828,7 @@ function get_conference_documents_type_options(){
 }
 
 /*
- * Obtiene las opciones de artículos.
+ * Get Articles Type options
  */
 function get_articles_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
@@ -4403,23 +4846,96 @@ function get_articles_type_options(){
 }
 
 /*
- * Obtiene las opciones de libro.
+ * Get Books Type options
  */
 function get_books_type_options(){
   $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
   $parent_tid = PUB_TYPE_BOOK;
   $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
-  $options = [];
+  $options = ['' => '-- Seleccione --'];
   if(!empty($terms)){
     foreach ($terms as $key => $term){
-      $options[$term->tid] = $term->name;
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
     }
   }
   return $options;
 }
 
 /*
- * Obtiene las opciones de documentos de trabajo.
+ * Get Espe Magazine Type options
+ */
+function get_espe_magazine_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_ESPE_MAGAZINE;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = ['' => '-- Seleccione --'];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Books Type options
+ */
+function get_others_documents_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_OTHERS_DOCUMENTS;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = ['' => '-- Seleccione --'];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Books Chapters Type options
+ */
+function get_books_chapters_type_options(){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $parent_tid = PUB_TYPE_BOOK_CHAPTER_REAL;
+  $terms = taxonomy_get_tree($vid = $categorias_de_conceptos_vid, $parent = $parent_tid);
+  $options = [];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get Books Role options
+ */
+function get_books_role_options($tid){
+  $categorias_de_conceptos_vid = CATEGORIAS_DE_CONCEPTOS_VID;
+  $terms = taxonomy_get_children($tid = $tid, $vid = $categorias_de_conceptos_vid);
+  $options = [];
+  if(!empty($terms)){
+    foreach ($terms as $key => $term){
+      if( !$term->depth ){
+        $options[$term->tid] = $term->name;
+      }
+    }
+  }
+  return $options;
+}
+
+/*
+ * Get work document Type options
  */
 function get_work_document_type_options(){
   $matches = [];
@@ -4429,10 +4945,21 @@ function get_work_document_type_options(){
   $matches += _get_concepts(CONCEPT_TYPE_WORK_DOCUMENT, NULL, $source = 'sistema', NULL, $format = 'select', $limit = -1);
   return $matches;
 }
+/*
+ * Get work document Type options
+ */
+function get_other_document_type_options(){
+  $matches = [];
+  // Conceptos del usuario.
+  $matches += _get_concepts(CONCEPT_TYPE_OTHER_DOCUMENT, NULL, $source = 'externo', NULL, $format = 'select', $limit = -1, TRUE);
+  // Conceptos del sistema.
+  $matches += _get_concepts(CONCEPT_TYPE_OTHER_DOCUMENT, NULL, $source = 'sistema', NULL, $format = 'select', $limit = -1, TRUE);
+  return $matches;
+}
 
 /**
- * Obtiene nombre de termino por tid.
- */
+* Get Term Name By Tid
+*/
 function get_term_name_by_tid($tid) {
   return db_select('taxonomy_term_data', 't')
   ->fields('t', array('name'))
@@ -4442,8 +4969,8 @@ function get_term_name_by_tid($tid) {
 }
 
 /**
- * Obtener Webform Component data.
- */
+* Get Webform Component data
+*/
 function get_webform_component_data($nid, $form_key = '') {
   $allowed_values = array();
   $item =  db_select('webform_component', 'wc')
@@ -4464,8 +4991,8 @@ function get_webform_component_data($nid, $form_key = '') {
 
 
 /**
- * Obtener Webform Submission Ultimo mensaje.
- */
+* get Webform Submission Last Message
+*/
 function get_webform_submission_last_message($nid, $sid, $wsid) {
   $item =  db_select('webform_workflow_transition', 'wt')
   ->fields('wt', array('message'))
@@ -4481,9 +5008,7 @@ function get_webform_submission_last_message($nid, $sid, $wsid) {
   return $result;
 }
 
-/**
- * Formulario web de envio de email.
- */
+
 function _user_send_mail_custom($form, &$form_state, $send_mail){
     $form['contact_information'] = array(
       '#markup' =>  t('<h3>Form contact</h3>'),
@@ -4517,9 +5042,6 @@ function _user_send_mail_custom($form, &$form_state, $send_mail){
     return $form;
 }
 
-/**
- * Validador Formulario web de envio de email.
- */
 function _user_send_mail_custom_validate($form, &$form_state) {
   $valid_email = $form_state['values']['email'];
   if (!valid_email_address($valid_email)) {
@@ -4527,9 +5049,6 @@ function _user_send_mail_custom_validate($form, &$form_state) {
   }
 }
 
-/**
- * Cabezeras Formulario web de envio de email.
- */
 function _user_send_mail_custom_mail($key, &$message, $params) {
 
   $headers = array(
@@ -4547,9 +5066,7 @@ function _user_send_mail_custom_mail($key, &$message, $params) {
   $message['body'] = $params['body'];
 }
 
-/**
- * Submit Formulario web de envio de email.
- */
+
 function _user_send_mail_custom_submit($form, &$form_state) {
 
     $values = $form_state['values'];
@@ -4605,7 +5122,7 @@ function banrep_core_mail($key, &$message, $params) {
 
 
 /**
- * Implements of hook_form_FORM_ID_alter().
+ * Implementation of hook_form_FORM_ID_alter().
  */
 function banrep_core_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
   if((arg(0) == "investigadores" ||  arg(0) == "researchers") && $form_id == 'views_exposed_form') {
@@ -4630,9 +5147,61 @@ function banrep_core_form_views_exposed_form_alter(&$form, &$form_state, $form_i
   }
 }
 
-/**
- * Función de ayuda para quitar tildes.
- */
+/*
+* Path to Search Embed()
+*/
+function path_to_search_embed(){
+  return file_create_url(path_to_theme().'/search.html');
+}
+
+/*
+* Get Promotes publications
+*/
+function drupal_get_promotes_publications() {
+  $promotes = drupal_set_promotes_publications();
+
+  // During a bootstrap, menu.inc is not included and thus we cannot provide a title.
+  if (!isset($promotes) && function_exists('build_promotes_publications')) {
+    $promotes = drupal_set_promotes_publications(build_promotes_publications());
+  }
+
+  return $promotes;
+}
+
+/*
+* Set Promotes publications
+*/
+function drupal_set_promotes_publications($promotes = NULL) {
+  $stored_promotes = &drupal_static(__FUNCTION__);
+
+  if (isset($promotes)) {
+    $stored_promotes = $promotes;
+  }
+
+  return $stored_promotes;
+}
+
+/*
+* Build Promotes publications
+*/
+function build_promotes_publications(){
+  $view_object = views_get_view("publicaciones");
+  $view_object->set_display("promotes_publications");
+  $view_object->pre_execute();
+  $view_object->execute();
+  $results = $view_object->result;
+  $promotes = array();
+  if(!empty($results) && is_array($results)){
+    foreach ($results as $key => $result) {
+      $promotes[] = $result->nid;
+    }
+  }
+  return $promotes;
+}
+
+/*
+* Helper function to remove accent mark.
+*/
 function quitar_tildes($cadena) {
   $originales= array ("á","é","í","ó","ú","Á","É","Í","Ó","Ú","ñ","Ñ");
   $modificadas= array ("a","e","i","o","u","A","E","I","O","U","n","N");
@@ -4641,9 +5210,94 @@ function quitar_tildes($cadena) {
   return utf8_encode($cadena);
 }
 
+/*
+* SCOPUS Author Profile by the unique Author ID.
+*/
+function get_scopus_author_profile($field_scopus_author_author_id = FALSE){
+
+  if($field_scopus_author_author_id != FALSE){
+
+    // $live_api_key = '933e9e90b2adcb997611146810dbbeb0';
+    $developer_api_key = 'b3a71de2bde04544495881ed9d2f9c5b';
+    $apikey = variable_get( 'scopus_api_key', $developer_api_key );
+
+    $options = array(
+      'method' => 'GET',
+      'timeout' => 15,
+      'headers' => array(
+        'Content-Type' => 'application/json',
+        'X-ELS-APIKey' => "{$apikey}",
+       ),
+    );
+
+    $data = array(
+      'apiKey' => "{$apikey}",
+      'author_id' => "{$field_scopus_author_author_id}",
+      'view' => 'COMPLETE',
+    );
+
+    $url = "https://api.elsevier.com/content/author/author_id/{$field_scopus_author_author_id}";
+    /* Example Uri */
+    $uri = 'public://ejemplo-scopus.xml';
+    $url = file_create_url($uri);
+    $full_url = url($url, array( 'query' => $data));
+    $result = drupal_http_request($full_url, $options);
+
+    if( isset($result->code) && ($result->code = '200') && isset($result->data) && !empty($result->data) ){
+      $xmlString = $result->data;
+      $xml = new SimpleXMLElement($xmlString);
+    }
+
+  }
+  return "";
+}
+
 /**
- * Obtener mis enlaces recomendados.
- */
+*  Get Repec Author Profile
+*/
+function get_repec_author_profile($field_repec_id = FALSE){
+
+  $cites = "";
+  $citedBy = "";
+  $result = array();
+
+  if( !empty($field_repec_id) && ($field_repec_id != FALSE) ){
+    $request_url = REPEC_API_URL . $field_repec_id;
+    $options = array(
+      'method' => 'GET',
+      'timeout' => 15,
+      'headers' => array(
+        'Content-Type' => 'text/xml',
+       ),
+    );
+    $data = array();
+    if(!empty($data)){
+      $full_url = url($request_url, array( 'query' => $data ));
+    }else{
+      $full_url = $request_url;
+    }
+    $result = drupal_http_request($full_url, $options);
+    if( isset($result->code) && ($result->code = '200') && isset($result->data) && !empty($result->data) ){
+      $xmlString = $result->data;
+      $xml = new SimpleXMLElement($xmlString);
+
+      $cites = (string) $xml->cites;
+      $citedBy = (string) $xml->citedBy;
+
+      $result = array(
+        'cites' => $cites,
+        'citedBy' => $citedBy,
+      );
+    }
+  }
+
+  return $result;
+
+}
+
+/**
+* Get mis enlaces recomendados
+*/
 function get_mis_enlaces_recomendados($uid, $status = ''){
   $query = db_select('field_data_field_enlaces_recomendados', 'er');
   $query->leftJoin('field_data_field_url_recomendado', 'ur', 'er.field_enlaces_recomendados_value = ur.entity_id');
@@ -4668,10 +5322,10 @@ function get_mis_enlaces_recomendados($uid, $status = ''){
   return FALSE;
 }
 
-/**
- * Obtener eventos por grupo de investigación.
- */
-function _get_events_by_investigation_group($tid) {
+/*
+* Get Events by grupos de investigacion
+*/
+function _get_events_by_investigation_group($tid){
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', ' event')
@@ -4687,7 +5341,7 @@ function _get_events_by_investigation_group($tid) {
 }
 
 /**
-* Obtener lineas de investigación que no estén vacías.
+* Get not empty research lines
 */
 function _get_not_empty_research_lines($id){
   global $language;
@@ -4732,16 +5386,13 @@ function _get_not_empty_research_lines($id){
 }
 
 /**
- * Obtener nombre de usuario a partir de un uid.
- */
+* Get username by uid
+*/
 function _get_username_by_uid($uid){
   $username = db_query("SELECT u.name FROM {users} u WHERE u.uid =  :uid", array(':uid' => $uid))->fetchField();
   return $username;
 }
 
-/**
- * Obtener nombre completo a partir de un uid.
- */
 function _get_fullname_by_uid($uid) {
   $query = db_select('field_data_field_full_name','name');
   $query->condition('name.entity_id', $uid);
@@ -4752,9 +5403,6 @@ function _get_fullname_by_uid($uid) {
   return $fullname;
 }
 
-/**
- * Obtener coautores en un array.
- */
 function _get_co_authors($coauthors){
   $names = array();
   foreach ($coauthors as $key => $item) {
@@ -4764,9 +5412,6 @@ function _get_co_authors($coauthors){
   return implode(',', $names);
 }
 
-/**
- * Obtener un coautor a partir de un field collection id.
- */
 function _get_coauthor($field_collection_id) {
 
   $query = db_select('field_data_field_co_author','t1');
@@ -4780,9 +5425,28 @@ function _get_coauthor($field_collection_id) {
 }
 
 /**
+ * Helper that generates a machine name using a provided human readable name.
+ *
+ * @param string $human_name
+ *   Human readable name.
+ *
+ * @return string
+ *   Machine name cleaned-up of any special chars.
+ */
+function human_to_machine($human_name) {
+  return strtolower(preg_replace(array(
+    '/[^a-zA-Z0-9]+/',
+    '/-+/',
+    '/^-+/',
+    '/-+$/',
+  ), array('-', '-', '', ''), $human_name));
+}
+
+/**
  * Restringe numero de palabras().
  */
 function _banrep_recorte_palabras($ad, $words_number = 200) {
+  $ad = strip_tags($ad);
   if (strlen($ad) < $words_number) {
     $ad = $ad;
   }
@@ -4799,9 +5463,23 @@ function _banrep_recorte_palabras($ad, $words_number = 200) {
 
 
 /**
- * Funcion para crear coautores a una publicacion.
+ * Funcion para crear coautores a
+ * una publicacion
  */
 function _publication_create_co_authors_banco($source_nid, $co_authors, $approved = FALSE){
+  
+  # verified the $co_authors param have the property tid and uid
+  // foreach($co_authors as $key => $co_author){
+  //   if(is_numeric($key)){
+  //     if(!in_array('tid',$co_author) || !in_array('rid', $co_author) || !in_array('uid',$co_author)){
+  //       $tid_and_uid = _get_co_author_uid_by_name($co_author['co_authors_author']);
+  //       $co_authors[$key]['tid'] = $tid_and_uid['tid'];
+  //       $co_authors[$key]['uid'] = $tid_and_uid['uid'];
+  //       $co_authors[$key]['rid'] = $co_author['rol_within_publication'];
+  //     }
+  //   }
+  // }
+
   $source_pub = node_load($source_nid);
   $query = new EntityFieldQuery();
   $pub_user_nids_to_be_deleted =
@@ -4814,9 +5492,11 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
   if (!empty($pub_user_nids_to_be_deleted)) {
     $pub_user_nids_to_be_deleted = $pub_user_nids_to_be_deleted['node'];
   }
+  
   foreach ($co_authors as $key => $co_author) {
     if (isset($co_author['uid']) && isset($co_author['rid'])) {
       $user = user_load($co_author['uid']);
+      
       $user_full_name = field_get_items('user', $user, 'field_full_name');
       $user_research_group =
         field_get_items('user', $user, 'field_research_group')
@@ -4830,7 +5510,8 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
         ->fieldCondition('field_user_reference', 'target_id', $co_author['uid'])
         ->execute()
       ;
-      if (empty($pub_user)) {
+
+      if ( empty($pub_user) ) {
         $pub_user_base = new stdClass();  // Create a new node object
         $pub_user_base->type = 'pub_user';  // Content type
         $pub_user_base->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
@@ -4863,7 +5544,7 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
       $pub_user_base->status = 1;
       $pub_user_base->promote = 0;
       $pub_user_base->sticky = 0;
-      $pub_user_base->comment = 0;
+      $pub_user_base->comment = 0; 
       if ($approved) {
         $pub_user_base->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'] = 3;
         $pub_user_base->field_estado_publicaci_n[LANGUAGE_NONE][0]['workflow']['workflow_sid'] = 3;
@@ -4876,9 +5557,6 @@ function _publication_create_co_authors_banco($source_nid, $co_authors, $approve
   }
 }
 
-/**
- * Alteración de formulario de grupo de investigación.
- */
 function banrep_core_form_taxonomy_form_term_alter(&$form, &$form_state, $form_id) {
   if($form_id == 'taxonomy_form_term' && arg(1) == 'group'){
     $form['field_color']['#access'] = FALSE;
@@ -4886,18 +5564,47 @@ function banrep_core_form_taxonomy_form_term_alter(&$form, &$form_state, $form_i
   }
 }
 
-/**
- * Validación de imágen en perfil del grupo.
- */
 function profile_group_validate_img($form, &$form_state) {
   $image = $form_state['values']['field_image'];
   if (!isset($image['und'][0]['fid']) ||
-      (isset($image['und'][0]['fid']) && $image['und'][0]['fid'] == 0)) {
-    unset ($form_state['values']['field_image']);
-    unset ($form_state['input']['field_image']);
-    unset ($form_state['input']['field']['field_image']);
-    unset ($form_state['term']->field_image);
+      (isset($image['und'][0]['fid']) && $image['und'][0]['fid'] == 0)){
+      unset ($form_state['values']['field_image']);
+      unset ($form_state['input']['field_image']);
+      unset ($form_state['input']['field']['field_image']);
+      unset ($form_state['term']->field_image);
   }
 }
 
 
+function _banrep_obtener_lineas_codigo($codigos){
+  global $language;
+  $nombres = array();
+  foreach ($codigos as $key => $codigo) {
+    if($language->language == 'es'){
+      $query = db_select('field_data_field_title_es', 't');
+      $query->fields('t', array('field_title_es_value'));
+    }
+    else {
+      $query = db_select('field_data_field_title_en', 't');
+      $query->fields('t', array('field_title_en_value'));
+    }
+    $query->join('taxonomy_term_data', 'td', 't.entity_id = td.tid');
+    $query->condition('td.name', '%'.db_like($codigo), 'LIKE')->range(0,1);
+    $nombres[] = $query->execute()->fetchField();
+  }
+
+  return $nombres;
+}
+
+function _banrep_obtener_lineas_tid($codigos){
+  global $language;
+  $nombres = array();
+  foreach ($codigos as $key => $codigo) {
+    $query = db_select('taxonomy_term_data', 't');
+    $query->fields('t', array('tid'));
+    $query->condition('t.name', '%'.db_like($codigo), 'LIKE')->range(0,1);
+    $nombres[] = $query->execute()->fetchField();
+  }
+
+  return $nombres;
+}

@@ -1,13 +1,46 @@
 <?php
 
 /**
- * @file
- * Funciones de ayuda del módulo banrep core.
+ * @file(banrep_core.functions.inc)
+ * Used for functions conection services user
  */
 
-/**
- * Obtiene una matriz renderizable para un solo valor de campo.
- */
+/*
+* Get Seminario most recent to be done!.
+*/
+function get_seminario(){
+  $node_id = FALSE;
+	$query = new EntityFieldQuery;
+	$result = $query->entityCondition('entity_type', 'node')
+		->entityCondition('bundle', 'event')
+		->propertyCondition('status', NODE_PUBLISHED) // Getting published nodes only.
+		->fieldCondition('field_event_date', 'value', time(), '>=') // end date before today
+		->fieldOrderBy('field_event_date', 'value', 'ASC')
+		->range(0, 1)
+		->execute();
+	if (isset($result['node'])) {
+		$nodes = array_keys($result['node']);
+		$node_id = reset($nodes);
+	} else {
+    $query = db_select('node', 'n');
+    $query->join('field_data_field_serie_de_evento', 's', 'n.nid = s.entity_id');
+    $query->join('field_data_field_tipo_de_evento', 't', 'n.nid = t.entity_id');
+    $query->condition('n.type', 'event');
+    $query->condition('n.status', NODE_PUBLISHED);
+    $query->condition('s.field_serie_de_evento_target_id', 54, '=');
+    $query->condition('t.field_tipo_de_evento_tid', 191, '=');
+    $query->fields('n', array('nid'));
+    $query->orderBy('n.created', 'desc');
+    $node_id = $query->execute()->fetchField();
+  }
+
+	return $node_id;
+}
+
+/*
+* Returns a renderable array for a single field value.
+*/
+
 function get_user_field_value($entity, $field_name){
   $value = FALSE;
   $entity_type = 'user';
@@ -39,11 +72,10 @@ function get_user_field_value($entity, $field_name){
   }
   return $value;
 }
+/*
+* Returns a renderable array for a single field collections value.
+*/
 
-/**
- * Obtiene una matriz renderizable para un valor de campo
- * de una colección de campos.
- */
 function get_user_field_collections_fields_values($field_collection_id, $fields){
 	$entity_type = 'field_collection_item';
 	$entity = field_collection_item_load($field_collection_id['value']);
@@ -57,10 +89,10 @@ function get_user_field_collections_fields_values($field_collection_id, $fields)
 	}
 	return $value;
 }
+/*
+* Returns a renderable array for a single field collections value.
+*/
 
-/**
- * Obtiene colección de campos del usuario.
- */
 function get_user_field_collections_value($entity, $field_name, $fields){
 	$value = FALSE;
 	$entity_type = 'user';
@@ -76,15 +108,13 @@ function get_user_field_collections_value($entity, $field_name, $fields){
 	return $value;
 }
 
-/**
- * Obtiene valores de campos de usuarios.
- */
 function get_user_fields_values($fields_name, $entity){
 	$user_data = array();
 	$field_collections = array(
 		'field_social_networks' => array('field_social_network', 'field_url'),
 		'field_academics_profiles' => array('field_academic_profile', 'field_url'),
 		'field_studies_carried_out' => array('field_titulo', 'field_university', 'field_year'),
+    'field_trabajos_en_curso' => array('field_titulo_trabajo', 'field_areas_tematicas', 'field_objetivo_trabajo', 'field_estado_trabajo'),
 	);
 	$field_collections_keys = array_keys($field_collections);
 	foreach ($fields_name as $key => $field_name) {
@@ -99,7 +129,7 @@ function get_user_fields_values($fields_name, $entity){
 }
 
 /**
- * Obtiene info del usuario a partir del uid.
+ * Function for get current user data for dashboard page
  */
 function get_current_user_data($uid = ''){
 
@@ -132,6 +162,7 @@ function get_current_user_data($uid = ''){
 		'field_studies_carried_out',
 		'field_scopus_author_author_id',
 		'field_repec_id',
+    'field_trabajos_en_curso'
 	);
 	$user_data = get_user_fields_values($fields, $user_fields);
 	$user_data['uid'] = $user_fields->uid;
@@ -145,9 +176,6 @@ function get_current_user_data($uid = ''){
 	return $user_data;
 }
 
-/**
- * Obtiene coauthores por usuario.
- */
 function get_co_authors_for_user($uid) {
   $co_authors = array(
     'internal' => array(),
@@ -225,7 +253,7 @@ function get_co_authors_for_user($uid) {
 }
 
 /**
- * Obtiene otros coauthores relacionados al usuario.
+ * Function get user otros coautores
  */
 function get_user_otros_coautores($uid = ''){
 
@@ -253,7 +281,7 @@ function get_user_otros_coautores($uid = ''){
 }
 
 /**
- * Obtiene otras publicaciones.
+ * Function get user coautores
  */
 function get_other_publications($uid = ''){
   $query = db_select('node', 'n');
@@ -277,7 +305,7 @@ function get_other_publications($uid = ''){
 }
 
 /**
- * Obtiene user coautores.
+ * Function get user coautores
  */
 function get_user_coautores($uid = ''){
 	$query = db_select('field_data_field_co_author', 'co_author');
@@ -304,9 +332,6 @@ function get_user_coautores($uid = ''){
 	return FALSE;
 }
 
-/**
- * Obtener UID.
- */
 function get_uid($username){
   $uid = db_select('users', 'u')
   ->fields('u',array('uid'))
@@ -322,9 +347,6 @@ function get_uid($username){
   }
 }
 
-/**
- * Obtener nombre co autor.
- */
 function get_other_co_author_name($tid){
 	$term = taxonomy_term_load($tid);
 	if(isset($term->name)){
@@ -333,9 +355,6 @@ function get_other_co_author_name($tid){
 	return FALSE;
 }
 
-/**
- * Obtener nombre de usuario.
- */
 function get_username($uid){
   $name = db_select('users', 'u')
   ->fields('u',array('name'))
@@ -351,9 +370,6 @@ function get_username($uid){
   }
 }
 
-/**
- * Abrir un archivo JSON.
- */
 function _banrep_open_json($file) {
    if(file_exists($file)) {
      $str_data = file_get_contents($file);
@@ -364,9 +380,6 @@ function _banrep_open_json($file) {
    return FALSE;
 }
 
-/**
- * Valida coauthores externos de un nodo.
- */
 function _banrep_core_validate_external_authors($node) {
   $co_authors = array();
   if (!empty($node->field_main_author_reference[LANGUAGE_NONE])) {
@@ -408,9 +421,6 @@ function _banrep_core_validate_external_authors($node) {
   }
 }
 
-/**
- * Actualizar taxonomia JEL.
- */
 function _banrep_core_update_taxonomy_jel($vid){
 	//load all the tids under the vocabulary specified as an argument
 	$terms = entity_load('taxonomy_term', FALSE, array('vid' => $vid));
@@ -443,9 +453,6 @@ function _banrep_core_update_taxonomy_jel($vid){
 	return $output;
 }
 
-/**
- * Traduce taxonomia soluciones caie.
- */
 function _banrep_core_translate_taxonomy($vid)
 {
 	global $language;
@@ -471,7 +478,7 @@ function _banrep_core_translate_taxonomy($vid)
 
 
 /**
- * Obtiene codigos jel en uso.
+ * Function codigos jel en uso
  */
 function _banrep_obtener_codigos_jel_en_uso($idioma){
 
@@ -510,9 +517,6 @@ function _banrep_obtener_codigos_jel_en_uso($idioma){
 
 }
 
-/**
- * Obtiene nombre tipo de solicitud.
- */
 function _banrep_get_name_tipo_solicitud($token_data){
   $nid = $token_data['node']->nid;
   $submission = $token_data['webform-submission'];
@@ -597,7 +601,9 @@ $array = array(
 /**
  * Cambia el nombre de todos los términos de un vocabulario de manera que sólo
  * la primera letra sea mayúscula y el resto minúscula
- * ejemplo: Prueba UNO -> Prueba uno.
+ * Ejemplo: Prueba UNO -> Prueba uno
+ * @param $vocabulary_name string indicando el nombre del vocabulario cuyos
+ *        términos serán afectados
  */
 function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
   $terms = entity_load(
@@ -616,35 +622,46 @@ function _banrep_core_normalize_terms_name_by_vocabulary($vocabulary_name) {
   }
 }
 
-/**
- * Obtener concept type.
- */
-function _banrep_core_get_concept_type($nid){
+/*
+* Get concept type.
+*/
+function _banrep_core_get_concept_type($nid, $term = NUll){
+  
   $query = db_select('field_data_field_concept_category', 'c');
   $query->condition('c.entity_id', $nid);
   $query->fields('c', array('field_concept_category_tid'));
   $query->orderBy('c.field_concept_category_tid', 'DESC');
+ 
+
+  if(!is_null($term)){
+    $concept_type = $query->execute()->fetchAll();
+    foreach ($concept_type as $key => $concept) {
+      if($concept->field_concept_category_tid == $term){
+        return $concept->field_concept_category_tid;
+      }
+    }
+    return;
+  }
+
   $query->range(0,1);
   $concept_type = $query->execute()->fetchField();
-
   return $concept_type;
 }
 
-/**
- * Obtener usuario desde un nid.
- */
+/*
+* Get user by autor term.
+*/
 function _banrep_core_get_user_by_author_term($nid){
+  // dpm($nid);
   $query = db_select('field_data_field_user_reference', 'u');
   $query->condition('u.entity_id', $nid);
+  $query->condition('u.entity_type', 'taxonomy_term');
   $query->fields('u', array('field_user_reference_target_id'));
   $query->range(0,1);
   $user_id = $query->execute()->fetchField();
   return $user_id;
 }
 
-/**
- * Obtener username por UID.
- */
 function _banrep_core_get_username_by_uid($uid){
   $name = db_select('users', 'u')
   ->fields('u',array('name'))
@@ -659,11 +676,143 @@ function _banrep_core_get_username_by_uid($uid){
     return NULL;
   }
 }
-
 /**
- * Vaida si es privado.
+ * Function to generate file.json for sepi
  */
-function field_can_be_private($field_name){
-   $name = 'profile_setting_'.$field_name;
-   return ((bool) variable_get($name, FALSE));
+
+function _generate_response_sepi($pub_user){
+
+  $user_publication = entity_metadata_wrapper('node', $pub_user);  
+  $publication      = entity_metadata_wrapper('node', $user_publication->field_publicacion->value());
+  $user             =  entity_metadata_wrapper('user', $user_publication->field_user_reference->value()); 
+
+  if ( !empty($publication->field_sepi->value()) ) {
+    $sepi = $publication->field_sepi->value() ;
+  }
+
+  $file_name = 'entrega'.$sepi.'_'.$user->field_document_number->value().'.json';
+  $enviroment = 'prod';
+  $path_out = 'private://'.'sepi-out-'.$enviroment;
+  $jel_code = '';
+  $tags = '';
+  
+  if( !empty( $publication->field_jel->value() ) ){
+    $tid_name = [];
+    foreach( $publication->field_jel->value() as $key => $taxonomy ){
+      $tid_name[] = $taxonomy->name;
+    }
+    $jel_code = implode(',',$tid_name);
+  }
+
+  if( !empty($publication->field_publication_tags->value()) ){
+    $tid_name = [];
+    foreach($publication->field_publication_tags->value() as $key => $taxonomy ){
+      $tid_name[] = $taxonomy->name;
+    }
+    $tags = implode(',',$tid_name);
+  }
+
+  
+  if( is_array( $publication->field_co_authors->value() ) ){
+    foreach($publication->field_co_authors->value() as $key => $author){
+      if( isset( $author->item_id ) ){  
+        $author_tax = entity_metadata_wrapper('field_collection_item', $author->item_id );
+        if ( $author_tax->field_co_autor->value()->field_user_reference['und'][0]['target_id'] == $user->uid->value()) { 
+          $author_rol = $author_tax->field_role_within_publicat->value()->name;
+        }
+      }
+    }
+  }
+
+  $types = array(
+    '1'     => 'Capitulo de libro',
+    '201'   => 'Artículo' ,
+    '206'   => 'Libro',
+    '2951'  => 'Documento de trabajo',
+    '20662' => 'Revista ESPE' ,
+    '20754' => 'Documento en conferencia',
+    '15317' => 'Otros Documentos',
+    '20685' => 'Revista ESPE'
+  );
+  
+  //$publication_type = taxonomy_term_load( $publication->field_pub_type->value() );
+
+  
+
+  $save_data = [ 
+    "keywords"      => ( isset($tags) && !empty($tags) ) ? $tags : '',
+    "cod_jel"       => ( isset($jel_code ) && !empty($jel_code ) ) ? $jel_code : '',
+    "titulo"        => ( !empty($publication->title->value() ) ) ? $publication->title->value() : '',
+    "tipopub"       => ( isset($types[$publication->field_pub_type->value()]) ) ? $types[$publication->field_pub_type->value()] : '',
+    "clasificacion" => ( !empty($publication->field_concept_type->value() ) ) ? $publication->field_concept_type->value()[0]->name : '',
+    "concepto"      => ( !empty($publication->field_concept->value() ) ) ? $publication->field_concept->value()->title : '',
+    "categoria"     => ( isset($publication->field_concept_type->value()[0]->name) ) ? $publication->field_concept_type->value()[0]->name:"",
+    "isbn"          => ( !empty($publication->field_isbn->value() ) ) ? $publication->field_isbn->value() : '',
+    "autor"         => [ 
+          'nombre'  => ( !empty($user->field_full_name->value() ) ) ? $user->field_full_name->value(): '',
+          'correo'  => ( !empty($user->name->value() ) ) ? $user->name->value() : '', 
+          'id'      => ( !empty($user->field_document_number->value() ) ) ? $user->field_document_number->value() : '',
+          'rol'     => ( isset($author_rol) && !empty($author_rol) ) ? $author_rol : '',
+          'puntaje' => ( !empty($user_publication->field_puntaje->value() ) ) ? (string)$user_publication->field_puntaje->value() : "0",
+    ],
+    "url"                => ( !empty( $publication->field_url->value() ) ) ? $publication->field_url->value()['url'] : '',
+    "doi"                => ( !empty($publication->field_doi->value()) ) ? $publication->field_doi->value()['url'] : '',
+    "editorial"          => ( !empty($publication->field_editorial->value()) ) ? $publication->field_editorial->value() : '',
+    "ciudad"             => ( !empty($publication->field_pub_city->value()) ) ? $publication->field_pub_city->value() : '',
+    "volumen"            => ( !empty($publication->field_volumen->value()) ) ? $publication->field_volumen->value() : '',
+    "numero"             => ( !empty($publication->field_number->value()) ) ? $publication->field_number->value() : '',
+    "paginas"            => ( !empty($publication->field_page->value()) ) ? $publication->field_page->value() : '',
+    "anopublicacion"     => ( !empty($publication->field_publication_year->value()) ) ? $publication->field_publication_year->value() : '',
+    "fecha_publicacion"  => ( !empty($publication->field_date->value()) ) ? date('Y-m-d', $publication->field_date->value()) : '',
+    "fecha_aceptacion"   => ( !empty($publication->field_act_date_start->value()) ) ? date('Y-m-d', $publication->field_act_date_start->value()) : '',
+    "titulo_otroidioma"  => ( !empty($publication->field_title_en->value()) ) ? $publication->field_title_en->value() : '',
+    "identificador_sepi" => ( !empty($publication->field_sepi->value()) ) ? $publication->field_sepi->value() : '',
+    "archivo_aprobacion" => ( !empty($publication->field_archivo_de_aprobacion->value()) ) ? $publication->field_archivo_de_aprobacion->value() : ''
+  ];
+
+  
+  file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
 }
+
+
+function _generate_response_sepi_activity($pub_user){
+  
+  // $pub_user = entity_metadata_wrapper('node', $pub_user->nid);
+  // $user     = entity_metadata_wrapper('user', $pub_user->author->value()->uid);
+
+
+  // $user_document = $user->field_document_number->value();
+  // $file_name = 'entrega'.$sepi.'_'.$user_document.'.json';
+  // $enviroment = 'dev';
+  // $path_out = 'private://'.'sepi-out-'.$enviroment;
+
+  // foreach($pub_user->field_concept_category->value() as $key => $term){
+  //   $tax[]= taxonomy_term_load($term['tid'])->name;
+  // }
+
+  // $save_data = [
+  //   "titulo" => $pub_user->title->value(),
+  //   "tipopub" => 'Actividad',
+  //   "clasificacion" => $tax[0],
+  //   "concepto" => $tax[1],
+  //   "autor_principal" => 
+  //     [ 
+  //       "nombre" => $user->field_names->value().' '.$user->field_surnames->value() ,
+  //       "correo" => $user->name->value(), 
+  //       "id" => "", 
+  //       "rol" => "", 
+  //       "puntaje" => $pub_user->field_puntaje->value(), 
+  //     ],
+  //   "descripcion" => $pub_user->body->value(),
+  //   "annio" => $pub_user->field_year->value(),
+  //   "fecha_inicio" => $pub_user->field_act_date_start->value(),
+  //   "fecha_cierre" => $pub_user->field_act_date_end->value(),
+  //   "identificador_sepi" => $pub_user->field_identificador_sepi->value(),
+  //   "Aprobadopor" => user_load( $pub_user->field_usuario->value() )->name,
+  //   "archivo_aprobacion" => $pub_user->field_archivo_de_aprobacion->value()
+  // ];
+
+  // file_save_data(json_encode($save_data), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
+
+}
+

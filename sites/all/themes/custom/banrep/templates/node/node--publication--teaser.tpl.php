@@ -102,6 +102,7 @@ hide($content['links']);
 $concepts_articulos = array(201,202,203,204,205);
 $concepts_libros = array(206,207,208,209);
 $concepts_workpapers = array(2951);
+$concepts_revista_espe =  array(20662);
 $concept_type = $node->field_pub_type['und'][0]['value'];
 $concept_name = NULL;
 if(isset($node->field_concept['und'][0]['target_id'])){
@@ -124,20 +125,21 @@ if ($node->field_main_author_reference['und']) {
     $co_authors[$main_author['tid']]['name_format'] = banrep_investigador_authors_to_apa($full_name);
   }
 }
-if ($node->field_other_co_authors['und'] && $tid_role_edition) {
-  foreach ($node->field_other_co_authors['und'] as $key_other => $co_author) {
-    $full_name = array(
-      array(
-        'names' => _banrep_core_obtener_nombres_autor($co_author['tid']),
-        'surnames' => _banrep_core_obtener_apellidos_autor($co_author['tid']),
-      )
-    );
-    $co_authors[$co_author['tid']]['full_name'] = $full_name;
-    $co_authors[$co_author['tid']]['name_format'] = banrep_investigador_authors_with_role_editor_to_apa($full_name, $tid_role_edition);
+if ( isset($node->field_other_co_authors['und']) ) {
+  // if ($node->field_other_co_authors['und'] && $tid_role_edition) {
+  if ($node->field_other_co_authors['und']) {
+    foreach ($node->field_other_co_authors['und'] as $key_other => $co_author) {
+      $full_name = array(
+        array(
+          'names' => _banrep_core_obtener_nombres_autor($co_author['tid']),
+          'surnames' => _banrep_core_obtener_apellidos_autor($co_author['tid']),
+        )
+      );
+      $co_authors[$co_author['tid']]['full_name'] = $full_name;
+      $co_authors[$co_author['tid']]['name_format'] = banrep_investigador_authors_with_role_editor_to_apa($full_name, $tid_role_edition);
+    }
   }
 }
-
-
 
 ?>
 <article
@@ -148,9 +150,14 @@ if ($node->field_other_co_authors['und'] && $tid_role_edition) {
 
   $limit = 3;
   $visible_authors = '';
-  foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
+  // foreach (array_slice($co_authors, 0, $limit) as $key_vis => $info_autor_vis) {
+  //   $visible_authors .= $info_autor_vis['name_format'] . ', ';
+  // }
+  
+  foreach ($co_authors as $key_vis => $info_autor_vis) {
     $visible_authors .= $info_autor_vis['name_format'] . ', ';
   }
+
   $hidden_authors = '';
   if (count($co_authors) > $limit) {
     foreach (array_slice($co_authors, $limit) as $key_hidd => $info_autor_hidd) {
@@ -207,6 +214,13 @@ if ($node->field_other_co_authors['und'] && $tid_role_edition) {
         '</span>'
       ;
     }
+  }
+  if (in_array($concept_type, $concepts_revista_espe) || $concept_type == 20662) {
+      $concepto =
+        '<span class="concepto">' .
+          '<em>' . t('Espe Magazine', array(), array('langcode' => 'es')) . '</em>' .
+        '</span>'
+      ;
   }
 
   $ciudad = '';

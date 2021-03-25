@@ -3,7 +3,3 @@ description = "Funcionalidades específicas del CAIE Banrep"
 package = E SINERGIA
 version = "7.x-1.0"
 core = "7.x"
-
-; All of the class files used within the module.
-files[] = banrep_caie.functions.inc
-files[] = banrep_caie.pages.inc

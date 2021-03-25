@@ -1,0 +1,247 @@
+<?php
+
+function banrep_seminary_register_menu() {
+    $items = array();
+
+    $items['registro-seminario'] = array(
+        'title' => t('Inscripción a Seminarios'),
+        'page callback' => 'banrep_seminary_register_page',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+function banrep_seminary_register_theme() {
+    return array(
+        'seminary_register' => array(
+        'variables' => array(
+            'seminary' => NULL,
+            'date' => NULL,
+            'image' => NULL,
+        ),
+        'template' => 'templates/banrep_seminary_register',
+        ),
+    );
+}
+
+function banrep_seminary_register_page() {
+    $nid = drupal_get_query_parameters();
+    $node = node_load($nid['nid']);
+    
+    return theme(
+        'seminary_register',
+        [
+            'seminary' => $node->title,
+            'date' => format_date($node->field_event_date['und'][0]['value'], 'standard_pubs'),
+            'image' => $node->field_image['und'][0]['uri'],
+            'image_alt' => $node->field_image['und'][0]['alt']
+        ]
+    );
+    }
+
+function banrep_seminary_register_form($form, &$form_state) {
+    $form['id_type'] = array(
+        '#type' => 'select',
+        '#title' => 'Tipo de Identificación',
+        "#empty_option"=> '- Seleccione -',
+        '#options' => array(
+            'cc' => 'Cédula de ciudadanía',
+            'ce' => 'Cédula de extranjería',
+            'pp' => 'Pasaporte',
+            'nip' => 'Número de Identificación personal',
+        ),
+        '#required' => true,
+    );
+    
+    $form['id_number'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Número de Identificación',
+        '#required' => true,
+    );
+
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Nombres',
+        '#required' => true,
+    );
+
+    $form['last_name'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Apellidos',
+        '#required' => true,
+    );
+
+    $form['phone'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Teléfono',
+        '#required' => true,
+    );
+
+    $form['correo'] = array(
+        '#type' => 'emailfield',
+        '#title' => 'Correo electrónico',
+        '#required' => true,
+    );
+
+    $form['confirm_correo'] = array(
+        '#type' => 'emailfield',
+        '#title' => 'Confirme el correo electrónico',
+        '#required' => true,
+    );
+
+    $form['profession'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Profesión',
+        //'#required' => true,
+    );
+
+    $form['entity'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Entidad en la que labora',
+        '#attributes' => array(
+        ),
+    );
+
+    $form['activity'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Actividad de la empresa',
+        '#attributes' => array(
+        ),
+    );
+
+    $form['subscribe'] = array(
+        '#type' => 'radios',
+        '#title' => '¿Desea recibir información sobre nuestros próximos seminarios?',
+        '#options' => array(
+            '1' => 'Si',
+            '0' => 'No'
+        ),
+        '#required' => true,
+        '#attributes' => array(
+            'required' => 'required',
+        ),
+    );
+
+    $form['question'] = array(
+        '#type' => 'select',
+        '#title' => '¿Cómo se enteró del seminario?',
+        "#empty_option"=> '- Seleccione -',
+        '#options' => array(
+            'periodico' => 'Periódico',
+            'pagina-banco' => 'Página web del Banco',
+            'pagina-investiga' => 'Página web Investigaciones',
+            'redes' => 'Redes Sociales',
+            'publicidad' => 'Publicidad Impresa',
+            'personal' => 'Personal',
+            'otros' => 'Otros',
+        ),
+    );
+
+    $form['policy'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="seminary-policy">
+          <p>
+            <b>IMPORTANTE - Autorización de tratamiento de datos personales:</b> Mediante el diligenciamiento y registro de sus datos 
+            personales usted autoriza al BANCO DE LA REPÚBLICA el tratamiento (recolección, almacenamiento, uso, circulación o 
+            supresión) de todos los datos que nos suministra en el presente formato con la finalidad de adelantar la postulación 
+            de su trabajo para ser evaluado, llevar registro de su postulación, así como para la construcción de indicadores y 
+            estadísticas para el seguimiento y control del la inscripción de trabajos; y, en todo caso, dentro de sus funciones 
+            constitucionales y legales.
+    
+            Para tal efecto, el BANCO DE LA REPÚBLICA informa que:
+          </p>
+          <ol>
+            <li>
+              El tratamiento de los datos personales se realizará de acuerdo con las políticas o lineamientos generales; 
+              así como las políticas de seguridad de la información, disponibles en la sección 
+              <a href="http://www.banrep.gov.co/proteccion-datos-personales" target="_blank">"Protección de Datos Personales - Habeas Data"</a>, 
+              disponibles desde el 18 de junio de 2013.
+            </li>
+            <li>
+              El titular de los datos personales podrá acceder, conocer, actualizar y rectificar dichos datos; ser informado 
+              del uso dado a los mismos; presentar consultas y reclamos sobre el manejo de dichos datos; revocar esta 
+              autorización o solicitar la supresión de los datos, en los casos en que sea procedente, y los demás derechos 
+              que le confiere la Ley.
+            </li>
+            <li>
+              Para ejercer tales derechos, podrá contactarse a través del 
+              <a href="http://www.banrep.gov.co/es/atencion-ciudadano" target="_blank">Sistema de Atención al Ciudadano (SAC)</a>.
+            </li>
+          </ol>
+        </div>'
+      );
+
+    $form['submit_button'] = array(
+        '#type' => 'submit',
+        '#value' => 'Guardar',
+        '#attributes' => array(
+            'class' => array(''),
+        ),
+        '#prefix' => '<div class="submit-wrapper">',
+        '#suffix' => '</div>'
+    );
+
+    return $form;
+}
+
+function banrep_seminary_register_form_submit($form, &$form_state) {
+    $nid = drupal_get_query_parameters();
+    $user_info = $form_state['values'];
+    $values = array(
+        'type' => 'inscritos_seminarios',
+        'uid' => 0,
+        'status' => 1,
+    );
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'inscritos_seminarios')
+        ->fieldCondition('field_numero_identificacion', 'value', $user_info['id_number'])
+        ->fieldCondition('field_seminario', 'target_id', intval($nid['nid']));
+
+    $result = $query->execute();
+    
+    $exists = array_keys($result['node']);
+    
+    if(empty($exists)) {
+        $entity = entity_create('node', $values);
+        $wrapper = entity_metadata_wrapper('node', $entity);
+        $wrapper->title->set($user_info['name']. ' ' .$user_info['last_name']. '-' .$nid['nid']);
+        $wrapper->field_seminario->set(intval($nid['nid']));
+        $wrapper->field_tipo_identificacion->set($user_info['id_type']);
+        $wrapper->field_numero_identificacion->set($user_info['id_number']);
+        $wrapper->field_nombres->set($user_info['name']);
+        $wrapper->field_apellidos->set($user_info['last_name']);
+        $wrapper->field_telefono->set($user_info['phone']);
+        $wrapper->field_correo_electronico->set($user_info['correo']);
+        $wrapper->field_profesion->set($user_info['profession']);
+        $wrapper->field_entidad_en_la_que_labora->set($user_info['entity']);
+        $wrapper->field_actividad_de_la_empresa->set($user_info['activity']);
+        $wrapper->field_inscrito->set($user_info['subscribe']);
+        $wrapper->field_referencia->set($user_info['question']);
+        $wrapper->save();
+        drupal_set_message('Su registro fue exitoso.');
+    } else {
+        drupal_set_message('Usted ya se encuentra registrado en este seminario', 'error');
+    }
+    $form_state['rebuild'] = TRUE;
+}
+
+/*function banrep_seminary_register_preprocess(&$variables) {
+    $variables['register_form'] = drupal_get_form('register_form');
+    $texts = array();
+    $images = array();
+    $events = array();
+    $cities = getCities();
+    $texts['text-a'] = $term->field_texto_a->value();
+    $texts['text-b'] = $term->field_texto_b->value();
+    $images['first'] = $term->field_imagen_uno->value();
+    $images['second'] = $term->field_imagen_dos->value();
+    $variables['texts'] = $texts;
+    $variables['images'] = $images;
+    $variables['name'] = $name;
+    $variables['email'] = $term->field_correo_ciudad->value();
+    drupal_set_title("Seminarios en $name", CHECK_PLAIN);
+    $variables['contact_form'] = drupal_get_form('contact_form',  ['email' => $term->field_correo_ciudad->value()]);
+}*/

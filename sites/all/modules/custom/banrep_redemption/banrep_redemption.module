@@ -1,0 +1,232 @@
+<?php
+
+module_load_include('inc', 'banrep_redemption', 'banrep_functions');
+
+/**
+ * Implements hook_menu().
+ */
+function banrep_redemption_menu()
+{
+
+  // $items['profile/redemption/add'] = array(
+  //   'title' => t('Create redemption'),
+  //   'page callback' => 'drupal_get_form',
+  //   'page arguments' => array('banrep_redemption_add_form',1),
+  //   //'access arguments' => array('publicar contenido investigador'),
+  //   'access callback' => TRUE,
+  //   'type' => MENU_CALLBACK,
+  // );
+  // $items['profile/training/add'] = array(
+  //   'title' => t('Create Traning'),
+  //   'page callback' => 'drupal_get_form',
+  //   'page arguments' => array('banrep_redemption_add_form', 1),
+  //   //'access arguments' => array('publicar contenido investigador'),
+  //   'access callback' => TRUE,
+  //   'type' => MENU_CALLBACK,
+  // );
+
+
+  $items['proceso/update-state'] = array(
+    'title' => 'Update State',
+    'page callback' => 'banrep_redemption_update_state',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_node_update().
+ */
+
+function banrep_redemption_entity_update($entity, $type){
+  switch ($type) {
+    case 'entityform':
+      switch ($entity->type) {
+        case 'user_training':
+          $user = user_load($entity->uid);
+          $field_collection_id = $entity->original->field_studies_carried_out[LANGUAGE_NONE][0]['value'];
+          // $user_field_index = _get_index_field_collecion_user($user,'field_studies_carried_out', $field_collection_id);
+          $field_collection = entity_load('field_collection_item', array($field_collection_id))[$field_collection_id];
+          if( $field_collection->field_aprobado[LANGUAGE_NONE][0]['value'] == 1 ){
+            $values['field_name'] = 'field_studies_carried_out';
+            $entity = entity_create('field_collection_item', $values);
+            $entity->setHostEntity('user', $user);
+            $entity->field_req_formacion_desempeno = $field_collection->field_req_formacion_desempeno;
+            $entity->field_titulo = $field_collection->field_titulo; 
+            $entity->field_university = $field_collection->field_university; 
+            $entity->field_fecha_inicio_estudio = $field_collection->field_fecha_inicio_estudio; 
+            $entity->field_fecha_fin_estudio = $field_collection->field_fecha_fin_estudio; 
+            $entity->field_year = $field_collection->field_year; 
+            $entity->field_tipo_posgrado = $field_collection->field_tipo_posgrado; 
+            $entity->field_nivel_estudio = $field_collection->field_nivel_estudio; 
+            $entity->field_lugar_posgrado = $field_collection->field_lugar_posgrado; 
+            $entity->field_support_file = $field_collection->field_support_file; 
+            $entity->field_pr_visibility = $field_collection->field_pr_visibility; 
+            $entity->field_aprobado = $field_collection->field_aprobado; 
+            $entity->save();
+            user_save($user);
+            drupal_set_message('Estudio académico asignado correctamente','status');
+          }
+          break;
+        
+          case 'user_redemption':
+          case 'user_discount':
+            if ($entity->field_aprobado[LANGUAGE_NONE][0]['value'] == 1) {
+              $points = array(
+                'field_descuento_puntos_academico' => $entity->field_descuento_puntos_academico[LANGUAGE_NONE][0]['value'],
+                'field_descuento_puntos_br' => $entity->field_descuento_puntos_br[LANGUAGE_NONE][0]['value'],
+                'field_descuento_puntos_general' => $entity->field_descuento_puntos_general[LANGUAGE_NONE][0]['value']
+              );
+              $result = discount_points($entity, $type, $points);
+              drupal_set_message($result['msj'], $result['type']);
+            }
+            break;
+      }
+      break;
+  }
+}
+
+
+
+
+/**
+ * Implements hook_form_alter();
+ */
+
+function banrep_redemption_form_user_redemption_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  
+  global $user;
+  $user = user_load($user->uid);
+  $readonly = 'readonly';
+  $readonly_fields = [
+    'field_puntaje',
+    'field_puntaje_br',
+    'field_puntaje_acumulado',
+  ];
+
+  $readonly_fields_for_investigador = [
+    'field_descuento_puntos_br',
+    'field_descuento_puntos_academico',
+    'field_descuento_puntos_general',
+  ];
+  
+  $select_field_beneficios_options = [];
+  foreach($form['field_beneficios'][LANGUAGE_NONE]['#options'] as $key => $tid){
+    if( $key != '_none'){
+      $select_field_beneficios_options[$key] = taxonomy_term_load($key);
+    }
+  };
+   
+
+
+  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/beneficios_form.js';
+  drupal_add_js(array('banrep_redemption' => ['beneficios' => $select_field_beneficios_options]), 'setting');
+  
+
+  if($form['#entity']->is_new){
+
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_acumulado_general[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_br[LANGUAGE_NONE][0]['value'];
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'];
+    
+    foreach($readonly_fields_for_investigador as $key => $field){
+      $form[$field][LANGUAGE_NONE][0]['value']['#attributes'][$readonly] = $readonly;
+    }
+    
+  }
+
+  foreach($readonly_fields as $key => $field){
+    $form[$field][LANGUAGE_NONE][0]['value']['#attributes'][$readonly] = $readonly;
+  }
+  
+  
+  $form['#validate'][] = '_banrep_redemption_form_user_redemption_entityform_edit_form_validate_max';
+  
+}
+
+/**
+ * Implements validation form function
+ */
+function _banrep_redemption_form_user_redemption_entityform_edit_form_validate_max($form, &$form_state){
+    global $user;  
+    $user = user_load($user->uid);
+
+    $fields = [
+      'field_descuento_puntos_br'        => 'field_puntaje_br',
+      'field_descuento_puntos_academico' => 'field_puntaje_acumulado',
+      'field_descuento_puntos_general'   => 'field_puntaje',
+    ];
+
+    foreach($fields as $key => $field){
+      if( $form_state['values'][$key][LANGUAGE_NONE][0]['value'] > $form_state['values'][$field][LANGUAGE_NONE][0]['value']  ){
+        form_set_error($key, 'No se puede crear la solicitud debido a que no cumple con los requisitos de puntaje');
+        return;
+      } 
+    }
+
+    $espe_coordinador = $form_state['values']['field_espe_req_coordinador'][LANGUAGE_NONE][0]['value'];
+    $espe_contribuyente = $form_state['values']['field_espe_req_contribuyente'][LANGUAGE_NONE][0]['value'];
+    $user_rute = $user->field_ruta['und'][0]['target_id'];
+
+    if( $espe_coordinador == 0 && $espe_contribuyente == 0 && $user_rute != 21239 && isset($form['#entity']->is_new) ){
+        form_set_error('field_espe_req_coordinador', 'No se puede crear la solicitud debido a que no cumple con los requisitos de revista espe');
+       }
+  }
+
+/**
+ * Implemets hook_form_alter();
+ * 
+ */
+
+function banrep_redemption_form_user_discount_entityform_edit_form_alter(&$form, &$form_state, $form_id){
+  
+  
+  $form['#attached']['js'][] = drupal_get_path('module', 'banrep_redemption') . '/js/discount_form.js';
+  drupal_add_js(array('banrep_discount' => ['discount' => $_GET["id"]]), 'setting');
+
+  if(isset($_GET["id"])) {
+    $user = entity_metadata_wrapper('user', $_GET['id']);    
+
+ 
+    $form['field_usuario'][LANGUAGE_NONE][0]['target_id']['#default_value'] = array($user->name->value().' ('.$user->uid->value().')');
+    $form['field_puntaje'][LANGUAGE_NONE][0]['value']['#default_value']     = !empty( $user->field_acumulado_general->value() ) ? $user->field_acumulado_general->value() : 0;
+    $form['field_puntaje_br'][LANGUAGE_NONE][0]['value']['#default_value']  = !empty( $user->field_puntaje_br->value() ) ? $user->field_puntaje_br->value() : 0;
+    $form['field_puntaje_acumulado'][LANGUAGE_NONE][0]['value']['#default_value'] = !empty( $user->field_puntaje_acumulado->value() ) ? $user->field_puntaje_acumulado->value() : 0;
+
+    $form['field_fecha_ing_inves'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves->value() ; 
+    $form['field_fecha_ing_inves_junior'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves_junior->value();
+    $form['field_fecha_ing_inves_principal'][LANGUAGE_NONE][0]['#default_value']['value']  = $user->field_fecha_ing_inves_principal->value();
+  }
+}
+
+/**
+ * Implemets function Discount points
+ * 
+ */
+
+function discount_points($entity, $type, $points){
+  try {
+    switch ($entity->type) {
+      case 'user_redemption':
+        $user = user_load($entity->uid);
+        $message = array('msj' => 'Redención actualizada correctamente', 'type' => 'status');
+        $user->field_last_redemption_date[LANGUAGE_NONE][0]['value'] = time();
+        break;
+      case 'user_discount':
+        $user = user_load($entity->field_usuario[LANGUAGE_NONE][0]['target_id']);
+        $message = array('msj' => 'Descuento realizado correctamente', 'type' => 'status');
+        break;
+    }
+
+    $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_acumulado[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_academico'] : 0;
+    $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] -= $user->field_puntaje_br[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_br'] : 0;
+    $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] -=  $user->field_acumulado_general[LANGUAGE_NONE][0]['value'] > 0 ? $points['field_descuento_puntos_general'] : 0;
+    user_save($user);
+    return $message;
+  } catch (Exception $e) {
+    return array('msj' => 'Descuento no realizado' . ' ' . $e->getMessage(), 'type' => 'error');
+  } 
+}

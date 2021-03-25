@@ -1,0 +1,172 @@
+.cities {
+    height: 33px;
+    width: 20%;
+    margin: 0 auto;
+}
+.cities select {
+    padding: 4px 20px 0;
+    margin: 0;
+    border-radius: 4px;
+    background: #860024;
+    border: 0;
+    outline: 0;
+    display: inline-block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+.cities i {
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    font-size: 21px;
+    color: white;
+    z-index: 2;
+}
+.form-item-cities label {
+    visibility: hidden;
+}
+.columns {
+    float:left;
+    padding:25px;
+}
+
+.medium-8 {
+    width:66.666%;
+}
+.medium-9 {
+    width:75%;
+}
+.medium-3 {
+    width: 25%;
+}
+
+.medium-9.text-container {
+    padding: 75px 25px;
+}
+
+.medium-4 {
+    width: 33.333%;
+}
+
+.view-display-id-page_2 .view-filters {
+    display: block !important;
+    background-color: transparent;
+    color: #000;
+}
+
+.view-display-id-page_2 .view-filters #edit-date-filter-1-wrapper {
+    display: none;
+}
+
+#edit-field-ciudad-tid-wrapper {
+    visibility: hidden !important;
+    width:.1px;
+    padding:0;
+}
+
+.eventos-seminarios th, .eventos-seminarios td {
+    max-width: 200px;
+}
+
+.seminary-policy {
+    font-size: 0.6rem;
+    line-height: 1.5;
+}
+
+.seminary-policy a, .seminary-policy a:visited {
+    color:#FFF;
+    font-weight:bold;
+}
+.new-seminary .views-field-field-image {
+    width:30%;
+}
+.new-seminary .views-field-nothing-1 {
+    width:30%;
+}
+.new-seminary .views-field-nothing {
+    width:40%;
+}
+
+#card-event {
+    margin-bottom: 25px;
+    position: relative;
+    background-color: #EEEEEE;
+    padding:10px;
+    font-size: 0.9rem;
+}
+
+#card-event .date-mini-card {
+    max-width:95px;
+    float:right;
+}
+#card-event .red-background {
+    background-color: #9E0821;
+    color: #FFF;
+    padding: 5px 20px;
+    text-align:center;
+}
+#card-event .black-background {
+    background-color: #4F4E5C;
+    color: #FFF;
+    padding: 5px 20px;
+    text-align:center;
+    text-transform: uppercase;
+}
+#card-event .date-day {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#card-event + .field-name-field-inscripcion {
+    margin: 0 25%;
+}
+
+#card-event + .field-name-field-enlace-evento {
+    margin: 0 20%;
+}
+
+.field-name-field-introduccion {
+    padding-left: 25px;
+    border-left: 5px solid #5b5b5b;
+}
+
+.field-name-field-programa, .seminario-resumen {
+    margin-left: 50px;
+    margin-top: 25px;
+}
+
+#card-event + .field-name-field-inscripcion a, #card-event + .field-name-field-inscripcion a:visited,
+#card-event + .field-name-field-enlace-evento a, #card-event + .field-name-field-enlace-evento a:visited,
+.group-right .field-name-field-enlace-evento a, .group-right .field-name-field-enlace-evento a:visited {
+    color: #FFF !important;
+    text-decoration: none;
+}
+.group-right .field-name-field-enlace-evento {
+    margin-left: 15%;
+}
+main {
+    padding-bottom:50px;
+}
+#edit-field-event-date-value-wrapper, #edit-title-wrapper {
+    width:40%;
+    float: left;
+}
+#edit-field-event-date-value-min-wrapper, #edit-field-event-date-value-max-wrapper {
+    width:49%;
+    float:left;
+}
+#edit-field-event-date-value-wrapper .views-widget input {
+    width:100%;
+}
+
+#form-add-event .form-field-name-field-serie-de-evento, #form-add-event #edit-field-descripcion-expositores,
+#form-add-event #edit-field-serie-de-evento, #form-add-event #edit-field-research-group, 
+#form-add-event #edit-field-place, #form-add-event #edit-field-inscripcion, #form-add-event #edit-field-link-de-acceso, 
+#form-add-event #edit-field-enlace-evento, #form-add-event #edit-field-url-archivo-historial {
+    display:none;
+}

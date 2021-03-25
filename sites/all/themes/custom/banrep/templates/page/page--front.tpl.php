@@ -74,30 +74,39 @@
             <div class="col-lg-10 navbar__menu">
               <?php if ($main_menu): ?>
                 <nav class="main-menu" role="navigation">
-                  <?php
-                  print theme('links__system_main_menu', array(
-                    'links' => $main_menu,
-                    'attributes' => array(
-                      'class' => array('navbar', 'clearfix'),
-                    ),
-                    'heading' => array(
-                      'text' => t('Main menu'),
-                      'level' => 'h2',
-                      'class' => array('visually-hidden'),
-                    ),
-                  )); ?>
+                  <?php 
+                  $block = block_load('superfish', 1);
+                  $output = render(_block_get_renderable_array(_block_render_blocks(array($block))));
+                  print $output;
+                //   print theme('links__system_main_menu', array(
+                //     'links' => $main_menu,
+                //     'attributes' => array(
+                //       'class' => array('navbar', 'clearfix'),
+                //     ),
+                //     'heading' => array(
+                //       'text' => t('Main menu'),
+                //       'level' => 'h2',
+                //       'class' => array('visually-hidden'),
+                //     ),
+                //   )); 
+                  ?>
                 </nav>
               <?php endif; ?>
             </div>
             <div class="col-lg-2 navbar__search_link">
-              <a href="#" title=""><?php echo t('Search'); ?></a>
+              <a href="#buscador" title=""><?php echo t('Search'); ?></a>
+            </div>
+            <div class="row header__navbar" id="buscador">
+            <div class="navbar__search_form col-lg-12">
+              <?php print render($page['navigation']); ?>
             </div>
           </div>
-          <div class="row">
+          </div>
+          <!-- <div class="row">
             <div class="navbar__search_form col-lg-12">
                 <?php print render($page['navigation']); ?>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </header>

@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Installation functions for core Fields list module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function banrep_fields_field_schema($field) {
+  $schema = array(
+    'columns' => array(
+      'field_name' => array(
+        'type' => 'varchar',
+        'not null' => FALSE,
+        'length' => 60,
+      ),
+    ),
+  );
+
+  return $schema;
+}

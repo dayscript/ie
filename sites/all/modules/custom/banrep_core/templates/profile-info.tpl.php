@@ -4,7 +4,7 @@ $show_the_field_dependency = __maybe_show_the_field('field_dependency', $user_da
 $show_the_field_email_corporate = __maybe_show_the_field('field_email_corporate', $user_data['uid']);
 $show_the_field_email_personal = __maybe_show_the_field('field_email_personal', $user_data['uid']);
 $show_the_field_research_lines = __maybe_show_the_field('field_research_lines', $user_data['uid']);
-$show_contact_button = 0;
+$show_contact_button = 1;
 
 $show_the_field_academics_profiles = __maybe_show_the_field('field_academics_profiles', $user_data['uid']);
 $show_the_field_social_networks = __maybe_show_the_field('field_social_networks', $user_data['uid']);
@@ -248,6 +248,7 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
                     );
                   }
                   ksort($perfiles);
+
                   $ver_mas = NULL;
                   foreach ($perfiles as $key => $val) {
                     if ($key > 6) {
@@ -360,4 +361,58 @@ $show_the_field_cv_file = __maybe_show_the_field('field_cv_file', $user_data['ui
       <p><?php echo decode_entities($user_data['field_perfil_ingles']); ?></p>
     <?php endif; ?>
   </div>
+
+  <?php
+    if(arg(2) == 'carrera' || arg(1) == 'gestion-ppi'):
+  ?>
+    <div class="col-lg-12 user-rgister-data">
+            <?php $user_load = user_load($user_data['uid']); ?>
+            <div class="col-lg-3">Puntaje Acumulado General: 
+              <span class="text-red">
+                <?php echo $user_load->field_acumulado_general['und'][0]['value'] ?> 
+              </span>
+            </div>
+            <div class="col-lg-3">Puntaje Académico: 
+              <span class="text-red">
+                <?php echo $user_load->field_puntaje_acumulado['und'][0]['value'] ?> 
+              </span>
+            </div>
+            <div class="col-lg-3">Puntaje BR: 
+              <span class="text-red">
+                <?php echo $user_load->field_puntaje_br[LANGUAGE_NONE][0]['value'] ?> 
+              </span>
+            </div>
+            <div class="col-lg-3">Escalafón Actual: 
+              <span class="text-red">
+                <?php echo taxonomy_term_load($user_load->field_usr_escalafon['und'][0]['tid'])->name ?> 
+              </span>
+            </div>
+
+            <div class="col-lg-3">Fecha de Ingreso al Banco: 
+              <br>
+              <span class="text-red"> 
+                <?php echo str_replace('- 0:00','',format_date($user_load->field_date_admission['und'][0]['value'], 'profile_investigator')) ?> 
+              </span>
+            </div>
+            <div class="col-lg-3">Fecha Último Puntaje: 
+              <br>
+              <span class="text-red"> 
+                <?php echo str_replace('- 0:00','',format_date($user_load->field_date_last_score['und'][0]['value'],'profile_investigator')) ?> 
+              </span>
+            </div>
+            <div class="col-lg-3">Fecha Penúltimo Puntaje
+              <br>
+              <span class="text-red"> 
+                <?php echo str_replace('- 0:00','',format_date($user_load->field_fecha_penultimo_puntaje['und'][0]['value'],'profile_investigator')) ?> 
+              </span>
+            </div>
+    </div>
+  <?php
+    endif;
+  ?>
+  <?php if(arg(1) == 'gestion-ppi'):?>
+   <div class="col-lg-12">
+    <?php print views_embed_view('beneficios_ppi', 'block', $user_data['uid']); ?>
+  </div>
+  <?php endif; ?>
 </div>

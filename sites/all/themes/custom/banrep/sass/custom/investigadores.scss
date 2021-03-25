@@ -115,3 +115,223 @@
     border-bottom: none;
   }
 }
+
+
+#user-training-entityform-edit-form{
+  table{ 
+    tr{
+      background-color: #fff !important;
+    }
+  }
+  .group-header,.group-left,.group-right,.group-footer {
+    display: inline-block;
+    margin: 20px 0px;
+  }
+  
+  .group-header > div{
+    min-width: 100%;
+    margin: 10px 0px; 
+  }
+  .group-footer > div {
+    max-width: 330px;
+    display: inline-block;
+    margin: 17px 50px; 
+  }
+
+  #edit-field-studies-carried-out-und-0-field-fecha-inicio-estudio-und-0-value label{
+    display: none;
+  }
+  #edit-field-studies-carried-out-und-0-field-fecha-fin-estudio-und-0-value label{
+    display: none;
+  }
+
+  
+}
+
+.view-ruta-del-investigador{
+  li {
+    div{
+      .field-content{
+        color:#860024;
+        a{
+          color:#860024;
+        }
+      }
+    }
+  }
+}
+
+
+
+#block-superfish-1{
+  .block__title{
+    display: none;
+  }
+  ul{
+    li{
+      background-color: #163e6b;
+      font-size: 0.6875rem;
+      line-height: 1.5rem;
+      text-transform: uppercase;
+      border-right: 1px solid #0079c1;
+      margin: 0;
+      padding: 0;
+      a{
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 18px;
+        margin: 0;
+        display: block;
+        text-transform: uppercase;
+        font-size: 12px;
+        .sf-sub-indicator{
+          position: initial;
+          display: inline-block;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  .sf-menu li:hover > ul, .sf-menu li.sfHover > ul{
+    top: 4.3em;
+  } 
+}
+
+.group-autores-destacado {
+  .field-collection-view{
+    display: inline-block;
+    margin: 0 10px 0 0;
+    padding: 0!important;
+    border-bottom: none !important;
+    .view-mode-nombre_apellidos{
+      float: left;
+    }
+  }
+}
+
+
+
+.field-collection-view.clearfix.view-mode-author-field-collection {
+  background: #fff;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  // box-shadow: 1px 1px 2px #555;
+  overflow: hidden;
+  margin-bottom: 0.5em;
+}
+
+
+.view-id-ruta_del_investigador {
+  
+  .view-content .views-row-1 {
+    background: #fff!important;
+  }
+
+  span.views-label {
+    display:  inline-block!important;
+  }
+
+}
+
+.view-display-id-block {
+
+  span.views-label{
+    display: none;
+  }
+  .views-row-1{
+    background: #818284; 
+  }
+  
+  .field-content {
+
+    div.field-collection-view{
+      margin: 0 0 10px 0px;
+      border-bottom: none!important;
+      padding:0;
+    
+
+      // & > div{
+      //   margin:0;
+
+      // }
+      .view-mode-profile_resume{
+        padding:0;
+      }
+      .field-name-field-co-autor{
+        padding:0;
+      }
+      .group-left{
+        padding:0;
+        width: auto;
+        margin-right: 10px;
+      }
+      .group-right{
+        padding:0;
+        width:66.666%
+      }
+
+      .field-type-image img{
+        display: block;
+      }
+      
+      .field-name-title a{
+        font-weight: bold;
+        color: #3079c1;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 1.1em;
+        line-height: 1.4em;
+      }
+      .field-name-field-city {
+        color: #d3656b;
+        font-size: 1.1em;
+        line-height: 1.4em;
+      }
+      .field-name-field-position {
+        color: #8e9295;
+        font-size: 1.1em;
+      line-height: 1.4em;
+
+      }
+    }
+  }
+}
+.view-id-ruta_del_investigador{
+  .view-content{
+    li.views-row.views-row-1.views-row-odd.views-row-first.views-row-last.col-lg-12.col-md-12 {
+      background-color: white!important;
+    }
+
+    .view-display-id-block span.views-label {
+      display: inline-block!important;
+    }
+  }
+}
+
+.view-id-lista_de_publicaciones {
+  ol{
+    padding: 0!important;
+    li{
+      list-style: none;
+      .field{
+        display: inline-block;
+        float: left;
+        margin: 0 10px 0 0;
+      }
+    }
+  }
+ 
+  // .field-items {
+  //   .field-items {
+  //     margin: 0px 10px;
+  //     float: left;
+  //   }
+  //   .vocabulary-autores-externos{
+  //     float: left;
+  //     .field{
+  //       display: inline-block;
+  //     }
+  //   }
+  // }
+}

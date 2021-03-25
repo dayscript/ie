@@ -1,0 +1,22 @@
+.requirements__publications textarea, .requirements__time textarea {
+	border: 1px solid lightgray;
+}
+.table-list-pub th {
+    background: #003E6C;
+    color: #fff;
+    font-size: 13px;
+    text-align: center;
+}
+.table-list-pub td {
+    font-size: 13px;
+    text-align: center;
+}
+.text-center {
+	text-align: center!important;
+}
+.text-right {
+	text-align: right!important;
+}
+.text-left {
+	text-align: left!important;
+}

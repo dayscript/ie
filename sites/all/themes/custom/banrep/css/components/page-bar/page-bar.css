@@ -40,8 +40,8 @@
 
 .breadcrumb {
   padding: 0px;
-  border-top: 2px dotted #e6e6e6;
-  border-bottom: 2px dotted #e6e6e6;
+  /*border-top: 2px dotted #e6e6e6;
+    border-bottom: 2px dotted #e6e6e6;*/
   margin-bottom: 25px;
   border-radius: 0px;
   margin-top: 25px;

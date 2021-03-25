@@ -2,11 +2,12 @@
 module_load_include('inc', 'banrep_investigador', 'banrep_investigador.functions');
 $pubs = $variables['pubs'];
 $coauthors = $year = $serie = $page = $editorial = NULL;
+dpm($pubs);
 foreach ($pubs as $pub) {
   if ($pub->co_authors) {
     $coauthors =
       '<span class="coauthors">' .
-        banrep_investigador_authors_to_apa($pub->co_authors) .
+        banrep_investigador_authors_to_apa($pub ->co_authors) .'asdfghj'.
       '</span>, '
     ;
   }

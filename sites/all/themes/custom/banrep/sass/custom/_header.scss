@@ -1,6 +1,6 @@
 .header__top {
   background-color: color(grey-light);
-  border-bottom: 2px solid color(naranja-brc);
+  border-bottom: 2px solid color(red);
 }
 
 .header__brand {
@@ -174,7 +174,7 @@
     }
     margin: 0 auto;
     [type='submit'], button.submit{
-      background-color: #e57b1c;
+      background-color: color(red);
       color: #ffffff;
       font-family: 'icobanrep' !important;
       speak: none;
@@ -224,7 +224,7 @@
       -webkit-border-radius: 4px;
       -moz-border-radius: 4px;
       border-radius: 4px;
-      background: color(naranja-brc);
+      background: color(red);
       padding-bottom: 5px;
       padding-top: 1px;
       height: 33px;
@@ -264,7 +264,7 @@
       -webkit-border-radius: 4px;
       -moz-border-radius: 4px;
       border-radius: 4px;
-      background: color('naranja-brc');
+      background: color(red);
       border: 0;
       outline: 0;
       display: inline-block;
@@ -322,7 +322,7 @@
 }
 
 .user-zone {
-  background-color: color(naranja-brc);
+  background-color: color(red);
 
   .btn-login {
     @include type-layout(xs, .5);
@@ -342,7 +342,7 @@
   @include type-layout(s, 1);
   @include padding-top(1, s);
   @include padding-bottom(1, s);
-  background-color: color(naranja-brc);
+  background-color: color(red);
   color: white;
 
   h3 {
@@ -378,7 +378,11 @@
       border: 0;
       height: 34px;
       padding-top: 2px;
+      &:hover {
+        background-color: color(azul-claro-brc);
+      }
     }
+
   }
 
   .link {

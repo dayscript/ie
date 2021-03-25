@@ -635,7 +635,7 @@ function hs_taxonomy_hierarchical_select_root_level($params) {
   }
 
   // If the Term Permissions module is installed, honor its settings.
-  if (function_exists('term_permissions_allowed')) {
+  if (module_exists('term_permissions')) {
     global $user;
     foreach ($terms as $key => $term) {
       if (!term_permissions_allowed($term->tid, $user) ) {
@@ -644,6 +644,18 @@ function hs_taxonomy_hierarchical_select_root_level($params) {
     }
   }
 
+  // //custom condition implements in hook
+  // if( $params['vid'] == 24){
+  //   if( isset( $params['field_show_default'] ) ){
+  //     foreach($terms as $key => $term){
+  //       if(taxonomy_term_load($term->tid)->field_show_default[LANGUAGE_NONE][0]['value'] == $params['field_show_default']){
+  //         unset($terms[$key]);
+  //       }
+  //     }
+  //   }
+  // }
+
+  
   return _hs_taxonomy_hierarchical_select_terms_to_options($terms);
 }
 
@@ -651,11 +663,11 @@ function hs_taxonomy_hierarchical_select_root_level($params) {
  * Implementation of hook_hierarchical_select_children().
  */
 function hs_taxonomy_hierarchical_select_children($parent, $params) {
-  if (isset($params['root_term']) && $params['root_term'] && $parent == 0) {
+  if (( isset($params['root_term']) && $params['root_term'] && $parent == 0 ) || !is_numeric($parent) ) {
     return array();
   }
 
-  $terms = taxonomy_get_children($parent, $params['vid']);
+  $terms = taxonomy_get_tree($params['vid'], $parent, 1);
 
   // Unset the term that's being excluded, if it is among the children.
   if (isset($params['exclude_tid'])) {
@@ -663,7 +675,7 @@ function hs_taxonomy_hierarchical_select_children($parent, $params) {
   }
 
   // If the Term Permissions module is installed, honor its settings.
-  if (function_exists('term_permissions_allowed')) {
+  if (module_exists('term_permissions')) {
     global $user;
     foreach ($terms as $key => $term) {
       if (!term_permissions_allowed($term->tid, $user) ) {
@@ -671,6 +683,27 @@ function hs_taxonomy_hierarchical_select_children($parent, $params) {
       }
     }
   }
+
+    //custom condition implements in hook
+    if( $params['vid'] == 24){
+      if( isset( $params['field_show_default'] ) ){
+        foreach($terms as $key => $term){
+          if(taxonomy_term_load($term->tid)->field_show_default[LANGUAGE_NONE][0]['value'] == $params['field_show_default']){
+            unset($terms[$key]);
+          }
+        }
+      }
+
+      if( isset($params['tids_hidden']) ){
+        foreach($terms as $key => $term){
+          if(in_array( $term->tid, $params['tids_hidden'] )){
+            unset($terms[$key]);
+          } 
+        }
+      }
+    }
+  
+  
 
   return _hs_taxonomy_hierarchical_select_terms_to_options($terms);
 }
@@ -728,7 +761,7 @@ function hs_taxonomy_hierarchical_select_valid_item($item, $params) {
   }
 
   // If the Term Permissions module is installed, honor its settings.
-  if (function_exists('term_permissions_allowed')) {
+  if (module_exists('term_permissions')) {
     global $user;
     if (!term_permissions_allowed($term->tid, $user)) {
       return FALSE;

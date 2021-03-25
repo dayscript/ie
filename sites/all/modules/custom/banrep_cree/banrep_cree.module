@@ -1,0 +1,136 @@
+<?php
+
+function banrep_cree_menu() {
+    $items = array();
+
+    $items['organizacion'] = array(
+        'title' => t('Organización'),
+        'page callback' => 'banrep_cree_page',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+
+    /*$items['organizacion/%'] = array(
+        'title' => t('Crear nuevo evento'),
+        //'page callback' => 'drupal_get_form', 
+        'page callback' => 'event_page', 
+        //'page arguments' => array('event_form'), 
+        //'access callback' => 'user_access',
+        'access callback' => TRUE,
+        //'access arguments' => array('access create_event_content'),
+    );*/
+
+    return $items;
+}
+
+function banrep_cree_form($form, &$form_state) {
+  /*$vocabulary = taxonomy_vocabulary_machine_name_load('serie_de_eventos');
+  $terms = entity_load('taxonomy_term', FALSE, array('vid' => $vocabulary->vid));
+  $series = array();
+  
+  foreach($terms AS $term) {
+    if($term->language !== 'en') {
+      $series += [$term->tid => $term->name];
+    }
+  }*/
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'cree')
+    ->propertyCondition('status', 1);
+  
+  $centros = $query->execute();
+  $centers = array();
+
+  foreach($centros['node'] AS $index => $centro) {
+    $node = node_load($centro->nid);
+    $centers[$centro->nid] = $node->title;
+  }
+
+  $form['centros'] = array(
+      '#title' => t('Dependencias'),
+      '#type' => 'select',
+      '#options' => $centers,
+      '#empty_option' => '- Seleccione -',
+      /* '#prefix' => '<div class="columns medium-4">',
+      '#suffix' => '</div>' */
+  );
+
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Buscar',
+      '#attributes' => array('class' => ''),
+      /* '#prefix' => '<div class="columns medium-4 submit-button-container">',
+      '#suffix' => '</div>' */
+  );
+
+  return $form;
+}
+
+function banrep_cree_form_submit($form, &$form_state) {
+  $form_state['response'] = '';
+  if(empty($form_state['response'])) {
+    drupal_set_message('Lo sentimos, la búsqueda realizada no produjo resultados.', 'warning');
+  }
+  /*$params = session_get_cookie_params();
+  setcookie('serial', $form_state['input']['serie'], $expire, $params['path'], $params['domain'], $params['secure'], FALSE);
+  setcookie('serial', $form_state['input']['keywords'], $expire, $params['path'], $params['domain'], $params['secure'], FALSE);*/
+  $form_state['cache'] = TRUE;
+  //$form_state['rebuild'] = TRUE;
+}
+
+function banrep_cree_theme() {
+  return array(
+    'cree' => array(
+      'variables' => array(
+        'centers' => NULL,
+        'coords' => NULL,
+        'form' => NULL,
+      ),
+      'template' => 'templates/banrep_cree',
+    ),
+  );
+}
+
+function banrep_cree_page() {
+  $centers = '';
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'cree')
+    ->propertyCondition('status', 1);
+  
+  $centros = $query->execute();
+  $centers = array();
+  $coords = array(
+    'Cartagena' => '218,140',
+    'Bucaramanga' => '349,314',
+    'Medellín' => '222,371',
+    'Manizales' => '223,425',
+    'Ibagué' => '232,463',
+    'Cali' => '172,515',
+    'Villavicencio' => '324,485',
+    'Bogotá' => '292,458',
+    'Tunja' => '361,397',
+  );
+  
+  $options = array('absolute' => TRUE);
+
+  foreach($centros['node'] AS $index => $centro) {
+    $node = node_load($centro->nid);
+    $tid = $node->field_city['und'][0]['tid'];
+    $term = taxonomy_term_load($tid);
+    if(!empty($coords[$term->name])) {
+      $radius = count($node->field_members['und']) + 10;
+      $coords[$term->name] .= ",$radius";
+      $centers[$term->name] = url('node/' . $centro->nid, $options);
+    }
+  }
+
+  return theme(
+    'cree',
+    [
+      'centers' => $centers,
+      'coords' => $coords,
+      'form' => drupal_get_form('banrep_cree_form'),
+    ]
+  );
+}

@@ -1,0 +1,5 @@
+name = Integracion Promoted
+description = "Realiza una verificacion periodica de los investigadores que cumplen ya con los requisitos y envia una notificacion"
+package = Dayscript
+version = "7.x-1.0"
+core = "7.x"

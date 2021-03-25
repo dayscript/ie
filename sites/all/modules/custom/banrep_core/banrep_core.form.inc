@@ -1,13 +1,16 @@
 <?php
 
-/**
+/** 
  * @file
- * Formularios web del módulo banrep core.
+ * Form module functionality for the banrep_core module.
  */
 
+
+
 /**
- * Formulario de agregar publicación.
+ *  Form builder; the publication form.
  */
+
 function publications_add_form($form, &$form_state) {
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/publications_node_form.js', array('scope'=>'footer'));
   $form_state['step'] = isset($form_state['step']) ? $form_state['step'] : 1;
@@ -60,6 +63,8 @@ function publications_add_form($form, &$form_state) {
     'ROL_AUTHOR_COMPLETE_TID' => ROL_AUTHOR_COMPLETE_TID,
     'ROL_BOOK_COMPILER_TID' => ROL_BOOK_COMPILER_TID,
     'ROL_BOOK_EDITOR_TID' => ROL_BOOK_EDITOR_TID,
+    'PUB_TYPE_ESPE_MAGAZINE' => PUB_TYPE_ESPE_MAGAZINE,
+    'PUB_TYPE_OTHER_DOCUMENT' => PUB_TYPE_OTHER_DOCUMENT,
   )), 'setting');
   if ($storage_publication != FALSE) {
     $form['storage_publication'] = [
@@ -116,12 +121,15 @@ function publications_add_form($form, &$form_state) {
       ];
     }
   }
+  
+
   return $form;
 }
 
 /**
- * Formulario paso 1 de agregar publicación.
+ * Render form elements for step #1
  */
+
 function _publications_add_form_step_1(&$form, &$form_state, &$publication = NULL) {
   // Add Custom Concept:
   $custom_concept_add_form = drupal_get_form('custom_concept_add_form');
@@ -190,8 +198,9 @@ function _publications_add_form_step_1(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario paso 1 izquierda de agregar publicación.
+ * Render form elements for step #1 Left content
  */
+
 function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publication = NULL) {
   $form['query']['left_column']['title'] = [
     '#type' => 'textfield',
@@ -207,7 +216,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'url'),
     '#size' => 60,
     '#maxlength' => 256,
-    '#description' => t('Source link'),
+    // '#description' => t('Source link'),
   ];
 
   $form['query']['left_column']['doi'] = [
@@ -216,10 +225,19 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'doi'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('DOI link'),
+    // '#description' => t('DOI link'),
   ];
 
-  $options = range(2018, 1990);
+  $form['query']['left_column']['sepi'] = [
+    '#type' => 'textfield',
+    '#title' => t('Identificador SEPI'),
+    '#default_value' => get_input_value_from_publication($publication, 'sepi'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    // '#description' => t('DOI link'),
+  ];
+
+  $options = range((int)date('Y'), 1990);
   $form['query']['left_column']['publication_year'] = [
     '#type' => 'select',
     '#title' => t('Publication year'),
@@ -230,17 +248,35 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#suffix' => '',
   ];
 
+   $form['query']['left_column']['mag_name'] = [
+    '#type' => 'textfield',
+    '#title' => t('Nombre de la revista'),
+    '#default_value' => get_input_value_from_publication($publication, 'mag_name'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    // '#description' => t('Volumen'),
+    '#states' => array(
+      'visible' => array(
+        array(
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
+        ),
+      ),
+    ),
+  ];
+
   $form['query']['left_column']['volumen'] = [
     '#type' => 'textfield',
     '#title' => t('Volumen'),
     '#default_value' => get_input_value_from_publication($publication, 'volumen'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Volumen'),
+    // '#description' => t('Volumen'),
     '#states' => array(
       'visible' => array(
         array(
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
         ),
       ),
     ),
@@ -252,13 +288,17 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'number'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Number'),
+    // '#description' => t('Number'),
     '#states' => array(
       'visible' => array(
         array(
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
           'or',
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_WORK_DOCUMENT)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
+          // 'or',
+          // array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_OTHER_DOCUMENT)),
         ),
       ),
     ),
@@ -270,7 +310,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'page'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Pages'),
+    // '#description' => t('Pages'),
     '#states' => array(
       'visible' => array(
         array(
@@ -288,7 +328,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'pub_city'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('City'),
+    // '#description' => t('City'),
     '#states' => array(
       'visible' => array(
         array(
@@ -304,7 +344,7 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#default_value' => get_input_value_from_publication($publication, 'editorial'),
     '#size' => 60,
     '#maxlength' => 128,
-    '#description' => t('Editorial'),
+    // '#description' => t('Editorial'),
     '#states' => array(
       'visible' => array(
         array(
@@ -321,8 +361,11 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#prefix' => '<div id="fieldset-wrapper-tags" class="fieldset-wrapper-tags margin-fieldset">',
     '#suffix' => '</div>',
     '#collapsible' => FALSE,
+
     '#collapsed' => FALSE,
   ];
+
+  
 
   $form['query']['left_column']['evidence']['approved_date'] = [
     '#title' => t('Approved date'),
@@ -332,6 +375,17 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
     '#datepicker_options' => array('maxDate' => 0),
     '#type' => 'date_popup',
     '#default_value'=> get_input_value_from_publication($publication, 'start_date'),
+    // '#states' => array(
+    //   'required' => array(
+    //     array(
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK_CHAPTER)),
+    //     ),
+    //   ),
+    // ),
   ];
 
   $form['query']['left_column']['evidence']['file'] = array(
@@ -344,6 +398,17 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
       'file_validate_extensions' => array('pdf'),
       '_file_validate_unique_pub' => array(),
     ),
+    // '#states' => array(
+    //   'required' => array(
+    //     array(
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ARTICLE)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK)),
+    //       'or',
+    //       array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK_CHAPTER)),
+    //     ),
+    //   ),
+    // ),
   );
 
   // File jel form element starts
@@ -364,6 +429,8 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK)),
           'or',
           array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_BOOK_CHAPTER)),
+          'or',
+          array('select[name="query[right_column][pub_type]"]' => array('value' => PUB_TYPE_ESPE_MAGAZINE)),
         ),
       ),
     ),
@@ -433,9 +500,6 @@ function _publications_add_form_step_1_left_column(&$form, &$form_state, &$publi
 
 }
 
-/**
- * Validación campo file .
- */
 function _file_validate_unique_pub($file) {
   $errors = array();
   $filename = $file->filename;
@@ -446,13 +510,13 @@ function _file_validate_unique_pub($file) {
 }
 
 /**
- * Formulario paso 1 derecha de agregar publicación.
+ * Render form elements for step #1 Right content
  */
 function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publication = NULL) {
 
   // Tipo de publicación *
   $field_pub_type = field_info_field('field_pub_type');
-
+  
   $options = [];
   $options[''] = t('- Select -');
   if (isset($field_pub_type['settings']['allowed_values'])) {
@@ -463,6 +527,7 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
     }
   }
 
+ 
   $form['query']['right_column']['pub_type'] = [
     '#type' => 'select',
     '#title' => t('Publication type'),
@@ -472,6 +537,12 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
     '#prefix' => '',
     '#required' => TRUE,
     '#suffix' => '',
+    '#ajax' => [
+      'wrapper' => 'co-author-fieldset-wrapper-author-complete-book',
+      // We pass in the wrapper we created at the start of the form
+      'callback' => '_ajax_multistep_form_publications_change_concept_type_callback',
+      // We pass a callback function we will use later to render the form for the user
+    ],
   ];
 
   // Box Para Articulo
@@ -482,31 +553,14 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
   _get_fieldset_publication_book_chapter($form, $form_state, $publication);
   // Box Para Documento de trabajo
   _get_fieldset_publication_work_document($form, $form_state, $publication);
+  // Box Para Documento de trabajo
+  // _get_fieldset_publication_other_document($form, $form_state, $publication);
   // Box Para Documento en conferencia
   _get_fieldset_publication_conference_document($form, $form_state, $publication);
-
-  $form['query']['right_column']['rol_within_publication'] = [
-    '#id' => 'rol-within-publication',
-    '#type' => 'select',
-    '#title' => t('Rol dentro de la Publicación'),
-    '#options' => [
-      '-1' => t('— Seleccionar'),
-      ROL_AUTHOR_COMPLETE_TID => t('Autor libro completo'),
-      ROL_BOOK_COMPILER_TID => t('Compilador de libro'),
-      ROL_BOOK_EDITOR_TID => t('Editor de Libro'),
-    ],
-    '#default_value' => get_input_value_from_publication($publication, 'rol_within_publication', $default_value = ROL_AUTHOR_COMPLETE_TID),
-    '#description' => t(''),
-    '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication">',
-    '#suffix' => '</div></div></div>',
-    '#states' => [
-      'visible' => [
-        'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK
-        ],
-      ],
-    ],
-  ];
+  // Box Para espe
+  // _get_fieldset_publication_espe_magazine($form, $form_state, $publication);
+  // Box Para otros documentos
+  _get_fieldset_publication_others_documents($form, $form_state, $publication);
 
   // Box Otros Autores
   _get_fieldset_other_co_author($form, $form_state, $publication);
@@ -522,11 +576,12 @@ function _publications_add_form_step_1_right_column(&$form, &$form_state, &$publ
 }
 
 /**
- * Formulario paso 2 de agregar publicación.
+ * Render form elements for step #2
  */
 function _publications_add_form_step_2(&$form, &$form_state, &$publication = NULL) {
+  
   $node = (object) drupal_json_decode($form_state['storage_publication']);
-  // dpm($node);
+  
   $header = [t('Information'), t('Value')];
   $rows = [];
 
@@ -549,6 +604,14 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
       t('DOI'),
       $node->field_doi[LANGUAGE_NONE][0]['url'],
     ];
+  }
+  // Sepi
+  $sepi = '';
+  if (isset($node->field_sepi[LANGUAGE_NONE][0]['value'])) {
+    $sepi = $node->field_sepi[LANGUAGE_NONE][0]['value'];
+  }
+  if (!empty($sepi)) {
+    $rows[] = [t('Identificador SEPI'), $sepi];
   }
   // Tipo de publicación
   $field_pub_type = field_info_field('field_pub_type');
@@ -585,6 +648,15 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
   if (!empty($publication_year)) {
     $rows[] = [t('Year'), $publication_year];
+  }
+
+  // Nombre de la revista
+  $mag_name = '';
+  if (isset($node->field_mag_name[LANGUAGE_NONE][0]['value'])) {
+    $mag_name = $node->field_mag_name[LANGUAGE_NONE][0]['value'];
+  }
+  if (!empty($mag_name)) {
+    $rows[] = [t('Nombre de la revista'), $mag_name];
   }
 
   // Volumen
@@ -668,7 +740,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
 
   // Rol dentro de la Publicación
-  $role_within_publication = '';
+  $role_within_publication = null;
   $roles = get_roles_within_publication();
   $role_within_publication_tid = '';
   if(isset($node->field_role_within_publication['und'][0]['tid'])){
@@ -680,6 +752,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
     $rows[] = array(t('Publication Role'), $role_within_publication);
   }
 
+    
   // Coautores Banco.
   $co_authors = [];
   $label = t('Book author');
@@ -699,16 +772,17 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
         break;
     }
   }
-  $_main_author_reference = $node->main_author_reference[0]['name'];
+  
+  $_main_author_reference = $node->main_author_reference[0]['name']['co_authors_author'];
   $_authors = [];
   if (isset($node->co_authors) && is_array($node->co_authors) && !empty($node->co_authors)) {
     foreach ($node->co_authors as $key => $co_author) {
       if (isset($co_author['name'])) {
         if (!$_main_author_reference) {
-          $_main_author_reference = $co_author['name'];
+          $_main_author_reference = $co_author['name']['co_authors_author'];
         }
         else{
-          $_authors[] =  $co_author['name'];
+          $_authors[] =  $co_author['name']['co_authors_author'];
         }
       }
     }
@@ -719,9 +793,22 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
   }
 
   // Otros Coautores
+
+  // $other_co_authors = [];
+  // if (isset($node->other_co_authors) && is_array($node->other_co_authors) && !empty($node->other_co_authors)) {
+  //   $other_co_authors = $node->other_co_authors;
+  // }
+  // if (!empty($other_co_authors)) {
+  //   $rows[] = [t('Other Co-authors (externals)'), implode(' <br/> ', $other_co_authors)];
+  // }
+
   $other_co_authors = [];
-  if (isset($node->other_co_authors) && is_array($node->other_co_authors) && !empty($node->other_co_authors)) {
-    $other_co_authors = $node->other_co_authors;
+  if (isset($node->co_authors) && is_array($node->co_authors) && !empty($node->co_authors)) {
+    foreach($node->co_authors as $key => $co_author_value){
+      if(is_numeric($key) && $key > 0){
+        array_push($other_co_authors, $co_author_value['co_authors_author']);
+      }
+    }
   }
   if (!empty($other_co_authors)) {
     $rows[] = [t('Other Co-authors (externals)'), implode(' <br/> ', $other_co_authors)];
@@ -764,7 +851,7 @@ function _publications_add_form_step_2(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario paso 3 de agregar publicación.
+ * Render form elements for step #3
  */
 function _publications_add_form_step_3(&$form, &$form_state, &$publication = NULL) {
   $node = (object) drupal_json_decode($form_state['storage_publication']);
@@ -790,12 +877,16 @@ function _publications_add_form_step_3(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Ajax callback función que definimos en todos nuestros botones (atrás,
- * adelante y enviar). devuelve el formulario completo cada vez que se
- * llama a la función. Esta permite nuestros múltiples pasos.
+ * #ajax callback function that we defined on all of our buttons (back, forward
+ * and submit). returns the entire form each time the function is called. This
+ * allows for our mulitple steps.
  */
 function _ajax_multistep_form_publications_submit_callback($form, &$form_state) {
   return $form;
+}
+
+function _ajax_multistep_form_publications_change_concept_type_callback($form, &$form_state){
+  return $form['query']['right_column']['co_author_fieldset'];
 }
 
 /**
@@ -808,25 +899,39 @@ function _ajax_multistep_form_publications_submit_callback($form, &$form_state) 
  */
 function _ajax_multistep_form_publications_back_submit($form, &$form_state) {
   $form_state['step']--;
+  // Because this is a multi-step form, we always need to rebuild the form
+  // on every step, even after submission. This allows our form to be completely
+  // Ajaxified without ever requiring a page load.
   $form_state['rebuild'] = TRUE;
 }
 
 /**
- * Submit formulario de agregar publicación
+ * Add publication form submit
  */
 function publications_add_form_submit($form, &$form_state) {
+  // First we determine which step we are on, and save the
+  // submitted values to $form_state['storage']. This will
+  // allow our submitted values to persist.
   $step = $form_state['step'];
+  // Check to see if the next/forward button was clicked
   if (isset($form_state['values']['buttons']['forward']) && $form_state['values']['op'] == $form_state['values']['buttons']['forward']) {
+    // Increase the step by one, to move on to the next step
     $form_state['step'] = $step + 1;
   }
-  elseif (isset($form_state['values']['buttons']['submit']) && $form_state['values']['op'] == $form_state['values']['buttons']['submit']) {
+  elseif (isset($form_state['values']['buttons']['submit']) && $form_state['values']['op'] == $form_state['values']['buttons']['submit']) { // Check to see if the final step has been submitted
+
+    // The form has been completed, so we want to return the user to step 1
+    // as well as clear any saved values.
     $form_state['step'] = 3;
   }
+  // $form_state['rebuild'] to TRUE, in able to ensure that our
+  // our form is rebuilt, allowing for the multi-step process
   $form_state['rebuild'] = TRUE;
+  
 }
 
 /**
- * Validador formulario de agregar publicación
+ * Add publication form submit validate
  */
 function publications_add_form_validate($form, &$form_state) {
   // First we set up a switch for each of our three steps
@@ -834,6 +939,7 @@ function publications_add_form_validate($form, &$form_state) {
   $response->success = FALSE;
   $response->is_valid = TRUE;
   $response->msg = '';
+  
   switch ($form_state['step']) {
     case 1:
       publications_add_form_validate_step_1($form, $form_state, $response);
@@ -845,15 +951,15 @@ function publications_add_form_validate($form, &$form_state) {
 }
 
 /**
- * Validador paso 1 formulario de agregar publicación
+ * Add publication form step 1 validations
  */
 function publications_add_form_validate_step_1($form, &$form_state, &$response) {
-
+  
   // Get the form values
   $values_left_column = isset($form_state['values']['query']["left_column"]) ? $form_state['values']['query']["left_column"] : [];
   $values_right_column = isset($form_state['values']['query']["right_column"]) ? $form_state['values']['query']["right_column"] : [];
   $values = array_merge($values_left_column, $values_right_column);
-
+  
   // Title
   $title = isset($values['title']) ? $values['title'] : FALSE;
   if ($title == FALSE) {
@@ -877,6 +983,9 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
   }
   // Fecha aceptación
   $start_date = isset($values['evidence']['approved_date']) ? $values['evidence']['approved_date'] : FALSE;
+  // if ($start_date == FALSE) {
+  //   form_set_error('query[evidence][approved_date]', t('Approved date is required'));
+  // }
   // Soporte pdf
   if($values['evidence']['file']){
     $file = file_load($values['evidence']['file']);
@@ -886,8 +995,11 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     file_usage_add($file, 'banrep_investigador', 'node', 4);
   }
   else {
+    // form_set_error('query[evidence][file]', t('PDF Evidence is required'));
   }
 
+  // Nombre de la revista
+  $mag_name = isset($values['mag_name']) ? $values['mag_name'] : FALSE;
   // Volumen
   $volumen = isset($values['volumen']) ? $values['volumen'] : FALSE;
   // Number
@@ -915,6 +1027,8 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     form_set_error('query[left_column][url]', t('URL is required'));
     $response->is_valid = FALSE;
   }
+  // SEPI
+  $sepi = isset($values['sepi']) ? $values['sepi'] : FALSE;
   // DOI
   $doi = isset($values['doi']) ? $values['doi'] : FALSE;
   // Ingresar tipo de publicación.
@@ -959,6 +1073,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
         $values['fieldset_publication_books']['concept_type'] :
         $concept_type
       );
+      $rol_within_publication = ROL_AUTHOR_COMPLETE_TID; # confirmar cuales son los permisos adecuados.
       break;
     case PUB_TYPE_BOOK_CHAPTER:
       $concept_type = (
@@ -989,6 +1104,17 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       $concept_name = get_node_title($concept_target_id);
       $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
       break;
+      case PUB_TYPE_OTHER_DOCUMENT:
+        $concept_target_id = (
+          isset($values['fieldset_publication_other_documents']["work_document"]) ?
+          $values['fieldset_publication_other_documents']["work_document"] :
+          FALSE
+        );
+        $concept_type = 15317;
+        $concept_name = get_node_title($concept_target_id);
+        $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
+        break;
+    
     case PUB_TYPE_CONFERENCE_DOCUMENT:
       $concept_type = (
         isset($values['fieldset_publication_conference_documents']['concept_type']) ?
@@ -1006,7 +1132,29 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
           $concept_name
         );
       }
-      $rol_within_publication = ROL_AUTHOR_COMPLETE_TID;
+      $rol_within_publication = ROL_AUTHOR_COMPLETE_TID; 
+      break;
+    case PUB_TYPE_ESPE_MAGAZINE:
+      // $concept_type = (
+      //   isset($values['fieldset_publication_espe_magazine']['concept_type']) ?
+      //   $values['fieldset_publication_espe_magazine']['concept_type'] :
+      //   $concept_type
+      // );
+      $concept_type = PUB_TYPE_ESPE_MAGAZINE;
+      $rol_within_publication = ROL_AUTHOR_BOOK; # confirmar cuales son los permisos adecuados.
+      break;
+      case PUB_TYPE_OTHERS_DOCUMENTS:
+        $concept_type = (
+          isset($values['fieldset_publication_others_documents']['concept_type']) ?
+          $values['fieldset_publication_others_documents']['concept_type'] :
+          $concept_type
+        );
+        $rol_within_publication = ROL_AUTHOR_COMPLETE_TID; # confirmar cuales son los permisos adecuados.
+        foreach($values['co_author_fieldset'] as $key => $value){
+            if(is_numeric($key)){
+              $values['co_author_fieldset'][$key]['rol_within_publication'] = $concept_type;
+            } 
+        }
       break;
   }
 
@@ -1042,21 +1190,43 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     }
   }
 
+  
   // Autores
-  $co_authors_author = (
-    isset($values['co_author_fieldset']['co_authors_author']) ?
-    $values['co_author_fieldset']['co_authors_author'] :
-    []
-  );
+  $co_authors_author = [];
+  // $co_authors_author = (
+  //   isset($values['co_author_fieldset']['co_authors_author']) ?
+  //   $values['co_author_fieldset']['co_authors_author'] :
+  //   []
+  // );
+  
+  if ( isset( $values['co_author_fieldset']['co_authors_author'] ) ){
+    $co_authors_author = $values['co_author_fieldset']['co_authors_author'];
+  }
+  elseif ( isset( $values['co_author_fieldset']) && is_array( $values['co_author_fieldset'] ) ) {
+    $co_authors_author = $values['co_author_fieldset'];
+  }
+  else{
+    $co_authors_author = [];
+  }
 
+  
   $co_authors = [];
   $main_author_reference = NULL;
   $other_co_authors = [];
   $main_author = TRUE;
+  
   foreach ($co_authors_author as $key => $name) {
-    if (!empty($name)) {
+    
+    if ( is_numeric($key) ) { # evita agregar al arreglo los campos de agregar mas
       // if (_is_registered_user_by_name($name)) {
-        $target_uid = _get_co_author_uid_by_name($name);
+        //$name = ( is_array($name) ? $name['co_authors_author']: $name );
+        
+        
+        $target_uid = _get_co_author_uid_by_name($name['co_authors_author']);
+        
+        $rol_within_publication = ( is_bool($rol_within_publication) ) ? $name['rol_within_publication'] : $rol_within_publication;
+        
+
         if (count($target_uid) > 0) {
           if ($main_author) {
             $main_author_arr[] = [
@@ -1069,6 +1239,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
             $main_author_reference = get_term_name_by_tid($target_uid['tid']) . '(' . $target_uid['tid'] . ')';
             $main_author_reference_tid = $target_uid['tid'];
           } else {
+            
             $co_authors[] = [
               'tid' => $target_uid['tid'],
               'uid' => $target_uid['uid'],
@@ -1077,27 +1248,37 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
               'rid' => $rol_within_publication
             ];
           }
+
+          
         }
       // }
       $main_author = FALSE;
+    }else{
+      continue;
     }
   }
 
-
+  
   // Validations
   if ((!is_valid_rol_within_publication($rol_within_publication))) {
+    
     $response->msg = t('Rol Publication is not valid');
     $response->is_valid = FALSE;
     form_set_error(NULL, $response->msg);
   }
+  
+  
 
   if ($response->is_valid) {
     global $user;
     // Storage Publicación
     $node = NULL;
+    
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
+    
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
+      
     }
     if (is_null($node)) {
       $node = new stdClass();  // Create a new node object
@@ -1112,6 +1293,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
         $node->nid = $form_state['nid'];
       }
     }
+    
     $node->uid = $user->uid;
     $node->title = $title;
 
@@ -1125,6 +1307,8 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_url[LANGUAGE_NONE][0]['url'] = $url;
     $node->field_doi[LANGUAGE_NONE][0]['url'] = $doi;
     $node->field_publication_year[LANGUAGE_NONE][0]['value'] = $publication_year;
+    $node->field_sepi[LANGUAGE_NONE][0]['value'] = $sepi;
+    $node->field_mag_name[LANGUAGE_NONE][0]['value'] = $mag_name;
     $node->field_volumen[LANGUAGE_NONE][0]['value'] = $volumen;
     $node->field_number[LANGUAGE_NONE][0]['value'] = $number;
     $node->field_page[LANGUAGE_NONE][0]['value'] = (
@@ -1157,6 +1341,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_order[LANGUAGE_NONE][0]['value'] = 0;
     $node->field_jel[LANGUAGE_NONE] = $jel_tids;
     $node->field_publication_tags[LANGUAGE_NONE] = $tag_tids;
+    
     if ($rol_within_publication != FALSE && $rol_within_publication != '-1') {
       $node->field_role_within_publication[LANGUAGE_NONE][0]['tid'] =
         $rol_within_publication
@@ -1166,6 +1351,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     $node->field_date[LANGUAGE_NONE][0]['value'] = time();
     //$node->field_estado_publicaci_n[LANGUAGE_NONE][0]['value'] = 2; // Pendiente Aprobación
     if ($main_author_reference !== NULL) {
+      
       $node->field_main_author_reference[LANGUAGE_NONE][0]['tid'] = $main_author_arr[0]['tid'];
       if (empty($node->field_main_author_reference[LANGUAGE_NONE][0]['tid'])) {
         $response->is_valid = FALSE;
@@ -1185,6 +1371,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
     }
     // Autores
     $field_other_co_authors = [];
+    
     foreach ($co_authors as $key => $other_co_author) {
       if($main_author_arr[0]['tid'] != $other_co_author['tid']){
         $other_co_author_tid = $other_co_author['tid'];
@@ -1194,7 +1381,7 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
           form_set_error(
             '',
             t(
-              'Author "@author" doesn\'t exist',
+              'Co-Author "@author" doesn\'t exist',
               array(
                 '@author' => $other_co_author
               )
@@ -1219,39 +1406,53 @@ function publications_add_form_validate_step_1($form, &$form_state, &$response) 
       $node->field_review[LANGUAGE_NONE][0]['value'] = PUB_REVIEW_PENDING; // Pendiente revisión
     }
 
+    
     // BEGIN Additional Info.
     $node->jels = $jels;
     $node->tags = $tags;
+    
     $node->co_authors = $co_authors;
+    
     $node->main_author_reference = $main_author_arr;
     // $node->other_co_authors = $other_co_authors;
     $node->concept_target_id = $concept_target_id;
     $node->concept_name = $concept_name;
     $node->concept_type = $concept_type;
     $node->alternate_language = $alternate_language;
+    // $node->co_authors = $co_authors_author;
+ 
     // END Additional Info.
+    
     $publication = drupal_json_encode($node);
+    
     $form_state['storage_publication'] = $publication;
   }
 }
 
 /**
- * Validador paso 2 formulario de agregar publicación.
+ * Add publication form step 2 validations
  */
 function publications_add_form_validate_step_2($form, &$form_state, &$response) {
+  
   $is_back = FALSE;
   if (isset($form_state['values']['buttons']['back']) && $form_state['values']['op'] == $form_state['values']['buttons']['back']) {
     $is_back = TRUE;
-  }
+  } 
   if (!$is_back) {
     // Get the form values | Storage Publicación
     $storage_publication = isset($form_state['storage_publication']) ? $form_state['storage_publication'] : FALSE;
+    
     if ($storage_publication != FALSE) {
       $node = (object) drupal_json_decode($storage_publication);
       // Save Publication
+      //
       $main_author_ref = isset($node->main_author_reference) ? $node->main_author_reference : [];
       $co_authors = isset($node->co_authors) ? $node->co_authors : [];
-      unset($node->co_authors);
+      
+      $co_authors = array_merge($main_author_ref, $co_authors);  
+      
+      
+      // unset($node->co_authors);
       unset($node->alternate_language);
       unset($node->jels);
       unset($node->tags);
@@ -1260,12 +1461,72 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
       unset($node->concept_target_id);
       unset($node->concept_name);
       unset($node->concept_type);
-      if (isset($node->nid) && !isset($node->vid)) {
-        $node->vid = $node->nid;
+
+
+      if(!isset($node->nid)){
+        node_save($node);
       }
-      node_save($node);
+
+
+      if (isset($node->nid) && !isset($node->vid)) {
+        // $node->vid = $node->nid;
+      }
+      
+      if(isset($node->nid)){
+          $node_entity = node_load($node->nid);
+          if(isset($node_entity->field_co_authors[LANGUAGE_NONE])){
+            foreach ($node_entity->field_co_authors[LANGUAGE_NONE] as $key => $value) {
+              $items_id[] = $value['value']; 
+            }
+            $result = entity_delete_multiple('field_collection_item', $items_id);
+            unset($node_entity->field_co_authors);
+            node_save($node_entity);
+          }
+      }
+      
       if (isset($node->nid)) {
+        
+        if(count($co_authors) > 0){
+          
+          foreach($co_authors as $key => $item){  
+            if( is_numeric($key) ){
+              
+              // $collections = field_get_items('node', $node, 'field_co_authors');
+              // if(!is_null($collections)){
+              //     foreach($collections as $key => $collection){ 
+              //         $item_collection = field_collection_field_get_entity($collection);
+              //         if($item_collection){
+              //           $item_collection->delete();
+              //         }
+                      
+              //     }
+              // }
+
+              $values = array();
+              $values['field_name'] = 'field_co_authors';
+              
+              $entity = entity_create('field_collection_item', $values);
+              $entity->setHostEntity('node', $node);
+              $collection_wrapper = entity_metadata_wrapper('field_collection_item', $entity);
+
+              $collection_wrapper->field_co_autor = (int) filter_var(str_replace('-','', $item['name']['co_authors_author']), FILTER_SANITIZE_NUMBER_INT);
+              if( $item['name']['rol_within_publication'] != '-1' && !empty($item['name']['rol_within_publication']) ){
+                $collection_wrapper->field_role_within_publicat = $item['name']['rol_within_publication']; 
+              }
+              elseif( $item['name']['rol_within_publication'] == '-1' ){
+                
+              }
+              
+              $collection_wrapper->save(true);
+              //$collections[] = ['value' =>  $entity->item_id, 'revision_id' => $entity->revision_id];
+            }
+          }
+          
+          //$node->field_co_authors[LANGUAGE_NONE] = $collections;
+          
+        }
         $co_authors = array_merge($main_author_ref, $co_authors);
+        node_save($node);
         _publication_create_co_authors_banco($node->nid, $co_authors);
       }
       $form_state['storage_publication'] = drupal_json_encode($node);
@@ -1278,7 +1539,7 @@ function publications_add_form_validate_step_2($form, &$form_state, &$response) 
 }
 
 /**
- * Obtener fieldset tags.
+ * Get fieldset tags
  */
 function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
 
@@ -1318,6 +1579,9 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
     '#type' => 'submit',
     '#value' => t('Add tag'),
     '#submit' => ['tags_add_more_callback'],
+    // Setting #limit_validation_errors to an empty array
+    // ensures that the form fields are not validated when
+    // the back button is used. Otherwise, we will get errors
     '#limit_validation_errors' => [],
     '#ajax' => [
       'callback' => 'tags_callback',
@@ -1331,6 +1595,9 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
       '#type' => 'submit',
       '#value' => t('Eliminar Etiqueta'),
       '#submit' => ['tags_remove_one_callback'],
+      // Setting #limit_validation_errors to an empty array
+      // ensures that the form fields are not validated when
+      // the back button is used. Otherwise, we will get errors
       '#limit_validation_errors' => [],
       '#ajax' => [
         'callback' => 'tags_callback',
@@ -1341,7 +1608,7 @@ function _get_fieldset_tags(&$form, &$form_state, &$publication = NULL) {
 }
 
 /**
- * Obtener fieldset publicación artículo.
+ * Get fieldset Publicaciones tipo Articulo
  */
 function _get_fieldset_publication_article(&$form, &$form_state, &$publication = NULL) {
   // Field article form element starts
@@ -1364,10 +1631,12 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
         ],
       ],
     ],
-    '#prefix' => '',
+    '#prefix' => '', 
     '#suffix' => '',
   ];
-  $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id']);
+  //$concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
+  $concept_type = _banrep_core_get_concept_type($publication->field_concept[LANGUAGE_NONE][0]['target_id'],$publication->field_concept_type['und'][0]['tid']);
+  // $concept_type = isset($publication->field_concept[LANGUAGE_NONE][0]['target_id']) ?  $publication->field_concept[LANGUAGE_NONE][0]['target_id']:null;
   $_articles_type_options = get_articles_type_options();
   $form['query']['right_column']['fieldset_publication_articulos']['concept_type'] = [
     '#type' => 'select',
@@ -1459,7 +1728,7 @@ function _get_fieldset_publication_article(&$form, &$form_state, &$publication =
 }
 
 /**
- * Obtener fieldset Publicaciones tipo Libro.
+ * Get fieldset Publicaciones tipo Libro
  */
 function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NULL) {
   // Field book form element starts
@@ -1478,13 +1747,16 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
     '#states' => [
       'visible' => [
         'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK
+          ['value' => PUB_TYPE_BOOK],
+          // ['value' => PUB_TYPE_ESPE_MAGAZINE],
+          // ['value' => PUB_TYPE_OTHERS_DOCUMENTS]
         ],
       ],
     ],
     '#prefix' => '',
     '#suffix' => '',
   ];
+
   $form['query']['right_column']['fieldset_publication_books']['concept_type'] = [
     '#type' => 'select',
     '#title' => t(''),
@@ -1494,6 +1766,12 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
     '#attributes' => [],
     '#prefix' => '',
     '#suffix' => '',
+    '#ajax' => [
+      'wrapper' => 'co-author-fieldset-wrapper-author-complete-book',
+      // We pass in the wrapper we created at the start of the form
+      'callback' => '_ajax_multistep_form_publications_change_concept_type_callback',
+      // We pass a callback function we will use later to render the form for the user
+    ],
   ];
   $help =
     '<small>' .
@@ -1519,19 +1797,200 @@ function _get_fieldset_publication_book(&$form, &$form_state, &$publication = NU
   $form['query']['right_column']['fieldset_publication_books']['close_book'] = [
     '#markup' =>
       $help .
+      // '<a' .
+      // ' href="javascript:void(0);"' .
+      // ' data-remodal-target="modal-concept"' .
+      // ' class="add-dialog references-dialog-activate"' .
+      // '>' .
+      //   ' + ' .
+      //   t('Añadir una Libro') .
+      //   '.' .
+      // '</a>' .
       ''
     ,
   ];
 }
 
+
 /**
- * Obtener fieldset Publicaciones tipo Compilador de libro.
+ * Get fieldset Publicaciones tipo Libro
+ */
+function _get_fieldset_publication_espe_magazine(&$form, &$form_state, &$publication = NULL) {
+  // Field book form element starts
+  $form['query']['right_column']['fieldset_publication_espe_magazine'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Tipo de acumulado'),
+    '#prefix' =>
+      '<div' .
+      ' id="fieldset-wrapper-book"' .
+      ' class="fieldset-wrapper-fieldset-publication-books margin-fieldset"' .
+      '>'
+    ,
+    '#suffix' => '</div>',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#states' => [
+      'visible' => [
+        'select[name="query[right_column][pub_type]"]' => [
+          // ['value' => PUB_TYPE_BOOK],
+          ['value' => PUB_TYPE_ESPE_MAGAZINE],
+          // ['value' => PUB_TYPE_OTHERS_DOCUMENTS]
+        ],
+      ],
+    ],
+    '#prefix' => '',
+    '#suffix' => '',
+  ];
+
+  $form['query']['right_column']['fieldset_publication_espe_magazine']['concept_type'] = [
+    '#type' => 'select',
+    '#title' => t(''),
+    '#options' => get_espe_magazine_type_options(),
+    '#default_value' => get_input_value_from_publication($publication, 'concept_type', -1),
+    '#description' => t(''),
+    '#attributes' => [],
+    '#prefix' => '',
+    '#suffix' => '',
+    '#ajax' => [
+      'wrapper' => 'co-author-fieldset-wrapper-author-complete-book',
+      // We pass in the wrapper we created at the start of the form
+      'callback' => '_ajax_multistep_form_publications_change_concept_type_callback',
+      // We pass a callback function we will use later to render the form for the user
+    ],
+  ];
+  $help =
+    '<small>' .
+      '<ul>' .
+        '<li>' .
+          '<strong>Tipo A</strong>:'.
+          ' Publicados en el extranjero con editoriales que en el momento de su publicación' .
+          ' figuren en el Book Citation Index, en el SPI, Ranking General (Índice ICEE del' .
+          ' Consejo Superior de Publicaciones Científicas).' .
+        '</li>' .
+        '<li>' .
+          '<strong>Tipo B</strong>:'.
+          ' Publicados con organismos multilaterales, bancos centrales diferentes al Banco de' .
+          ' la República, y libros de la agenda de investigación de la Gerencia Técnica del BR.' .
+        '</li>' .
+        '<li>' .
+          '<strong>Tipo C</strong>:' .
+          ' Otros' .
+        '</li>
+      </ul>' .
+    '</small>'
+  ;
+  $form['query']['right_column']['fieldset_publication_espe_magazine']['close_book'] = [
+    '#markup' =>
+      $help .
+      // '<a' .
+      // ' href="javascript:void(0);"' .
+      // ' data-remodal-target="modal-concept"' .
+      // ' class="add-dialog references-dialog-activate"' .
+      // '>' .
+      //   ' + ' .
+      //   t('Añadir una Libro') .
+      //   '.' .
+      // '</a>' .
+      ''
+    ,
+  ];
+}
+
+
+/**
+ * Get fieldset Publicaciones tipo Libro
+ */
+function _get_fieldset_publication_others_documents(&$form, &$form_state, &$publication = NULL) {
+  // Field book form element starts
+  $form['query']['right_column']['fieldset_publication_others_documents'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Tipo de acumulado'),
+    '#prefix' =>
+      '<div' .
+      ' id="fieldset-wrapper-book"' .
+      ' class="fieldset-wrapper-fieldset-publication-books margin-fieldset"' .
+      '>'
+    ,
+    '#suffix' => '</div>',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#states' => [
+      'visible' => [
+        'select[name="query[right_column][pub_type]"]' => [
+          ['value' => PUB_TYPE_OTHERS_DOCUMENTS]
+        ],
+      ],
+    ],
+    '#prefix' => '',
+    '#suffix' => '',
+  ];
+
+  $form['query']['right_column']['fieldset_publication_others_documents']['concept_type'] = [
+    '#type' => 'select',
+    '#title' => t(''),
+    '#options' => get_others_documents_type_options(),
+    '#default_value' => get_input_value_from_publication($publication, 'concept_type', -1),
+    '#description' => t(''),
+    '#attributes' => [],
+    '#prefix' => '',
+    '#suffix' => '',
+    '#ajax' => [
+      'wrapper' => 'co-author-fieldset-wrapper-author-complete-book',
+      // We pass in the wrapper we created at the start of the form
+      'callback' => '_ajax_multistep_form_publications_change_concept_type_callback',
+      // We pass a callback function we will use later to render the form for the user
+    ],
+  ];
+  $help =
+    '<small>' .
+      // '<ul>' .
+      //   '<li>' .
+      //     '<strong>Tipo A</strong>:'.
+      //     ' Publicados en el extranjero con editoriales que en el momento de su publicación' .
+      //     ' figuren en el Book Citation Index, en el SPI, Ranking General (Índice ICEE del' .
+      //     ' Consejo Superior de Publicaciones Científicas).' .
+      //   '</li>' .
+      //   '<li>' .
+      //     '<strong>Tipo B</strong>:'.
+      //     ' Publicados con organismos multilaterales, bancos centrales diferentes al Banco de' .
+      //     ' la República, y libros de la agenda de investigación de la Gerencia Técnica del BR.' .
+      //   '</li>' .
+      //   '<li>' .
+      //     '<strong>Tipo C</strong>:' .
+      //     ' Otros' .
+      //   '</li>
+      // </ul>' .
+    '</small>'
+  ;
+  $form['query']['right_column']['fieldset_publication_others_documents']['close_book'] = [
+    '#markup' =>
+      $help .
+      // '<a' .
+      // ' href="javascript:void(0);"' .
+      // ' data-remodal-target="modal-concept"' .
+      // ' class="add-dialog references-dialog-activate"' .
+      // '>' .
+      //   ' + ' .
+      //   t('Añadir una Libro') .
+      //   '.' .
+      // '</a>' .
+      ''
+    ,
+  ];
+}
+
+
+
+
+/**
+ * Get fieldset Publicaciones tipo Compilador de libro
  */
 function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publication = NULL) {
+
   // Field book_chapter form element starts
   $form['query']['right_column']['fieldset_publication_book_chapters'] = [
     '#type' => 'fieldset',
-    '#title' => t('Tipo de acumulado'),
+    '#title' => t('Tipo de acumulados'),
     '#prefix' =>
       '<div' .
       ' id="fieldset-wrapper-book_chapter"' .
@@ -1544,7 +2003,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
     '#states' => [
       'visible' => [
         'select[name="query[right_column][pub_type]"]' => [
-          'value' => PUB_TYPE_BOOK_CHAPTER
+          ['value' => PUB_TYPE_BOOK_CHAPTER],
         ],
       ],
     ],
@@ -1552,7 +2011,8 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
     '#suffix' => '',
   ];
   $concept_type = get_input_value_from_publication($publication, 'concept_type', -1);
-  $_books_type_options = get_books_type_options();
+  $_books_type_options = get_books_chapters_type_options();
+
   $form['query']['right_column']['fieldset_publication_book_chapters']['concept_type'] = [
     '#type' => 'select',
     '#title' => t(''),
@@ -1597,7 +2057,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
         ''
       ),
       '#description' => t(''),
-      '#autocomplete_path' => 'book_chapter/autocomplete/' . PUB_TYPE_BOOK . '/' . $key,
+      '#autocomplete_path' => 'book_chapter/autocomplete/' . PUB_TYPE_BOOK_CHAPTER . '/' . $key,
       '#size' => 46,
       '#maxlength' => 300,
       '#prefix' => '',
@@ -1640,7 +2100,7 @@ function _get_fieldset_publication_book_chapter(&$form, &$form_state, &$publicat
 }
 
 /**
- * Obtener fieldset Publicaciones tipo Documento de trabajo.
+ * Get fieldset Publicaciones tipo Documento de trabajo
  */
 function _get_fieldset_publication_work_document(&$form, &$form_state, &$publication = NULL) {
   // Field work_document form element starts
@@ -1712,9 +2172,82 @@ function _get_fieldset_publication_work_document(&$form, &$form_state, &$publica
     ,
   ];
 }
+/**
+ * Get fieldset Publicaciones tipo Documento de trabajo
+ */
+function _get_fieldset_publication_other_document(&$form, &$form_state, &$publication = NULL) {
+  // Field work_document form element starts
+  $form['query']['right_column']['fieldset_publication_other_documents'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Tipo de acumulado'),
+    '#prefix' =>
+      '<div' .
+      ' id="fieldset-wrapper-other_document"' .
+      ' class="fieldset-wrapper-fieldset-publication-work_documents margin-fieldset"' .
+      '>'
+    ,
+    '#suffix' => '</div>',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#states' => [
+      'visible' => [
+        'select[name="query[right_column][pub_type]"]' => [
+          'value' => PUB_TYPE_OTHER_DOCUMENT
+        ],
+      ],
+    ],
+  ];
+  $form['query']['right_column']['fieldset_publication_other_documents']['work_document'] = [
+    '#type' => 'select',
+    '#title' => t(''),
+    '#default_value' => get_input_value_from_publication($publication, 'concept_target_id'),
+    '#description' => t(''),
+    '#options' => get_other_document_type_options(),
+    '#prefix' =>
+      '<div class="work_document-wrapper">' .
+        '<ul class="list-inline">' .
+          '<li class="item-title">' .
+            '<label for="edit-work_document_type">' .
+              t('Name of the series of other papers') .
+              ' ' .
+              '<span class="form-required" title="Este campo es obligatorio.">' .
+                '*' .
+              '</span>' .
+            '</label>' .
+          '</li>' .
+          '<li id="work_document_name">'
+    ,
+    '#suffix' =>
+          '</li>' .
+        '</ul>' .
+      '</div>'
+    ,
+    '#attributes' => [
+      'class' => [ 'query-work-document-name' ],
+    ],
+  ];
+  $help = '';
+  if (!empty($last_key)) {
+    $form['query']['right_column']['fieldset_publication_other_documents']['work_document']['#suffix'] =
+      $help
+    ;
+  }
+  $form['query']['right_column']['fieldset_publication_other_documents']['close_work_document'] = [
+    '#markup' =>
+      '<a' .
+      ' href="javascript:void(0);"' .
+      ' data-remodal-target="modal-concept"' .
+      ' class="add-dialog references-dialog-activate"' .
+      '>' .
+        ' + ' .
+        t('Add work documents series') .
+      '</a>'
+    ,
+  ];
+}
 
 /**
- * Obtener fieldset Publicaciones tipo Documento en conferencia.
+ * Get fieldset Publicaciones tipo Documento en conferencia
  */
 function _get_fieldset_publication_conference_document(&$form, &$form_state, &$publication = NULL) {
 
@@ -1784,10 +2317,14 @@ function _get_fieldset_publication_conference_document(&$form, &$form_state, &$p
 
 
 /**
- * Obtener fieldset otros coauthores.
- */
+* Otros Autores
+*/
 function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NULL){
-  if (empty($form_state['num_co_author'])) {
+
+
+  $access_rol_within_publication = [PUB_TYPE_ARTICLE,PUB_TYPE_WORK_DOCUMENT,PUB_TYPE_OTHER_DOCUMENT,PUB_TYPE_CONFERENCE_DOCUMENT,PUB_TYPE_BOOK_CHAPTER,PUB_TYPE_OTHERS_DOCUMENTS];
+
+  if ( empty($form_state['num_co_author'] ) ) {
     $form_state['num_co_author'] = 1;
   }
   // File co_author form element starts
@@ -1804,8 +2341,12 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
           ['value' => PUB_TYPE_ARTICLE],
           ['value' => PUB_TYPE_BOOK],
           ['value' => PUB_TYPE_WORK_DOCUMENT],
+          ['value' => PUB_TYPE_OTHER_DOCUMENT],
           ['value' => PUB_TYPE_CONFERENCE_DOCUMENT],
           ['value' => PUB_TYPE_BOOK_CHAPTER],
+          ['value' => PUB_TYPE_ESPE_MAGAZINE],
+          ['value' => PUB_TYPE_OTHERS_DOCUMENTS],
+
         ],
       ],
     ],
@@ -1813,15 +2354,74 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
       'class' => [ 'other-co-author-fieldset-wrapper' ],
     ],
   );
+  
   $co_authors = get_input_value_from_publication($publication, 'co_authors_author', array());
+  
+
   if (isset($publication->update_co_authors)) {
     unset($publication->update_co_authors);
     $form_state['num_co_author'] = count($co_authors);
   }
+
   $count_co_author = $form_state['num_co_author'];
   $multiple_co_author = ($count_co_author > 1);
-  for ($i = 0; $i < $count_co_author; $i++) {
-    $form['query']['right_column']['co_author_fieldset']['co_authors_author'][$i] = array(
+
+  // if($form['query']['right_column']['pub_type']['#default_value']){
+    
+  //   $form_state['select_concept_type'] = $form['query']['right_column']['pub_type']['#default_value'];
+  // }
+
+  if( isset($form_state['input']['query']['right_column']['pub_type']) && $form_state['input']['query']['right_column']['pub_type'] != PUB_TYPE_ESPE_MAGAZINE ) {
+
+    $form_state['select_concept_type'] = $form_state['input']['query']['right_column']['fieldset_publication_books']['concept_type'];
+    
+  }elseif( isset($form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value']) && $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'] != -1 ){
+    
+    $form_state['select_concept_type'] = $form['query']['right_column']['fieldset_publication_books']['concept_type']['#default_value'];
+  }
+  else{
+    $form_state['select_concept_type'] = ($form_state['input']['query']['right_column']['pub_type']) ? 
+    $form_state['input']['query']['right_column']['pub_type']:$form['query']['right_column']['pub_type']['#default_value'];
+  }
+
+
+  if($form_state['select_concept_type'] == PUB_TYPE_ESPE_MAGAZINE || 
+     $form_state['input']['query']['right_column']['pub_type'] == PUB_TYPE_BOOK ||
+     $form['query']['right_column']['pub_type']['#default_value'] == PUB_TYPE_BOOK){
+    $access = true;
+    }else{
+    $access = false;
+  }
+
+  
+  // $items = [
+  //   20662  => 'fieldset_publication_espe_magazine',
+  //   206    => 'fieldset_publication_books',
+  //   1      => 'fieldset_publication_book_chapters',
+  //   15317  => 'fieldset_publication_other_documents',
+  //   // 24533  => '', 
+  //   // 201    => 'fieldset_publication_articulos',
+  //   // 2951   => 'fieldset_publication_work_documents',
+    
+    
+  // ];
+  // $pub_type_select = $form_state['values']['query']['right_column']['pub_type'];
+  // $form_state['select_concept_type'] = $form_state['values']['query']['right_column'][$items[$pub_type_select]]['concept_type'];
+
+
+  
+  
+  $options = get_books_role_options($form_state['select_concept_type']);
+  $options['-1'] = '-- seleccione --';
+  
+  for ($i = 0; $i < $count_co_author; $i++) { 
+    
+    $co_authors_role = $publication->co_authors[$i]['rol_within_publication'] ? 
+                           $publication->co_authors[$i]['rol_within_publication'] : 
+                           get_input_value_from_publication($publication, 'rol_within_publication', $default_value = '-1', $index = $i);
+    
+
+    $form['query']['right_column']['co_author_fieldset'][$i]['co_authors_author'] = array(
       '#type' => 'textfield',
       '#title' => ($i===0?t('Autor principal'):t('Co-Autor')),
       '#size' => 30,
@@ -1838,6 +2438,30 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
         '</div>'
       ,
     );
+    
+    
+    $form['query']['right_column']['co_author_fieldset'][$i]['rol_within_publication'] = [
+      '#id' => 'rol-within-publication-no-name-change',
+      '#type' => 'select',
+      '#title' => t('Rol dentro de la Publicación'),
+      '#options' => $options,
+      '#default_value' => (isset($co_authors_role) ? $co_authors_role : ''),
+      // '#required' => true,
+      '#description' => t(''),
+      '#prefix' => '<div class="row"><div class="col-md-12"><div class="roles-within-publication-no-name-change">',
+      '#suffix' => '</div></div></div>',
+      '#states' => [
+        'visible' => [
+          'select[name="query[right_column][pub_type]"]' => [
+            ['value' => PUB_TYPE_BOOK],
+            ['value' => PUB_TYPE_ESPE_MAGAZINE],
+          ],
+        ],
+      ],
+      '#access' => $access//in_array($form_state['input']['query']['right_column']['pub_type'],$access_rol_within_publication),
+    ];
+
+    
   }
   $form['query']['right_column']['co_author_fieldset']['add_co_author_complete_book'] = array(
     '#type' => 'submit',
@@ -1878,8 +2502,8 @@ function _get_fieldset_other_co_author(&$form, &$form_state, &$publication = NUL
 }
 
 /**
- * Formulario agregar concepto.
- */
+* Add concept form
+*/
 function custom_concept_add_form($form, &$form_state) {
 
     $form['#attributes']['class'] = 'custom_concept_add_form';
@@ -2000,8 +2624,8 @@ function custom_concept_add_form($form, &$form_state) {
 }
 
 /**
- * Submit Formulario agregar concepto.
- */
+* Implements form ajax submit.
+*/
 function custom_concept_add_form_ajax_submit($form, &$form_state){
     global $user;
     // Get the form values

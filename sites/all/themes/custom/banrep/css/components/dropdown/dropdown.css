@@ -21,7 +21,7 @@
   text-align: left;
   background-color: #ffffff;
   border: 1px solid #cccccc;
-  border: 1px solid #e57b1c;
+  border: 1px solid color(red);
   border-radius: 4px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
@@ -159,7 +159,7 @@
 }
 
 .dropdown-user .dropdown-menu {
-  background-color: #e57b1c;
+  background-color: color(red);
   border-radius: 0px;
 }
 
@@ -169,9 +169,9 @@
   right: 9px;
   display: inline-block !important;
   border-right: 7px solid transparent;
-  border-bottom: 7px solid #e57b1c;
+  border-bottom: 7px solid color(red);
   border-left: 7px solid transparent;
-  border-bottom-color: #e57b1c;
+  border-bottom-color: color(red);
   content: '';
 }
 
@@ -198,7 +198,7 @@
 }
 
 .dropdown-user .dropdown-menu li a:hover {
-  background-color: #e06c04;
+  background-color: color(rojo-claro);
 }
 
 .dropdown-user a.dropdown-toggle {

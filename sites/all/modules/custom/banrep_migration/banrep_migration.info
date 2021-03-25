@@ -6,14 +6,11 @@ package = E SINERGIA
 dependencies[] = migrate
 dependencies[] = migrate_ui
 files[] = adc_migration.migrate.inc
-files[] = banrep_migration_helper.inc
-;files[] = migration/jel.inc
-;files[] = migration/externos.inc
-
-;files[] = adc_migration_helper.inc
+files[] = adc_migration_helper.inc
 ;files[] = migration/jel.inc
 ;files[] = migration/externos.inc
 files[] = migration/seminario.inc
 ;files[] = migration/concepto.inc
 ;files[] = migration/publicaciones.inc
-files[] = migration/users.inc
+;files[] = migration/users.inc
+

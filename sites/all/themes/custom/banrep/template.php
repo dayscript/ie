@@ -80,6 +80,9 @@ function banrep_preprocess_search_api_page_results(&$vars){
  */
 function banrep_preprocess_page(&$variables, $hook) {
 
+  drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/masonry.pkgd.min.js');
+  drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/seminars-and-caie-services.js');
+
   // Agregar JS por sección.
   if(arg(0) == 'seminarios'){
     if(arg(1) == 'resultados-busqueda' || arg(1) == 'historial') {
@@ -135,6 +138,15 @@ function banrep_preprocess_page(&$variables, $hook) {
     if($node->type == 'event'){
       $variables['show_title'] = FALSE;
     }
+  }
+
+  global $language;
+  $lang=$language->language;  
+  if($lang=="es") {
+    //$variables['logo']=base_path().path_to_theme()."/img/logo-banco-de-la-republica.png";
+    $variables['logo']='/sites/all/themes/custom/banrep/logo.png';
+  } else {
+    $variables['logo']='/sites/all/themes/custom/banrep/logo-en.png';
   }
 
 
@@ -298,3 +310,5 @@ function banrep_html_head_alter(&$head_elements){
 
 
 }
+
+

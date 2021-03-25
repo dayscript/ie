@@ -1,0 +1,25 @@
+.table-list-pub th {
+    background: #003E6C;
+    color: #fff;
+    font-size: 13px;
+    text-align: center;
+}
+.table-list-pub td {
+    font-size: 13px;
+    text-align: center;
+}
+.text-center {
+	text-align: center!important;
+}
+.text-right {
+	text-align: right!important;
+}
+.text-left {
+	text-align: left!important;
+}
+.text-msn {
+    text-align: center!important;
+    font-size: 13px;
+    background: #003E6C;
+    color: #fff;
+}

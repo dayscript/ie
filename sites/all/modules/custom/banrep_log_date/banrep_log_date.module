@@ -1,0 +1,126 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function banrep_log_date_menu() {
+  $items['log_date'] = array(
+    'title' => 'Edición de fechas en log',
+    'page callback' => 'drupal_get_form', 
+    'page arguments' => array('banrep_log_date_form'), 
+    'access arguments' => array('administer site configuration'),
+    'access callback' => 'user_is_logged_in',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'management',
+    'title' => 'Cambiar fechas de log',
+    //'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function banrep_log_date_form($form, &$form_state) {
+  $template = file_create_url("public://plantilla_fecha.csv");
+  $form['file-template'] = array(
+    '#type' => 'item',
+    '#markup' => "<a href='$template' class='' target='_blank'>Plantilla archivo</a>"
+  );
+  $form['data-source'] = array(
+    '#type' => 'file',
+    '#title' => 'Archivo excel',
+    '#description' => 'Extensiones permitidas: .csv',
+    '#attributes' => array(
+      'required' => 'required',
+      'aria-required' => 'true',
+      'accept' => '.csv',
+    ),
+  );
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send'),
+  );
+  return $form;
+
+}
+
+function banrep_log_date_form_validate($form, &$form_state) {
+  $validators = array('file_validate_extensions' => array('csv'));
+  try {
+    $file = file_save_upload('data-source', $validators);
+
+    if (isset($file)) {
+      if ($file) {
+        $form_state['values']['data-source'] = $file;
+      }
+      else {
+        form_set_error('data-source', t('The file could not be uploaded.'));
+      }
+    }
+  } catch(Exception $e) {
+    form_set_error('data-source', t('No se pudo leer el archivo '.$e));
+  }
+  
+}
+
+function banrep_log_date_form_submit($form, &$form_state) {
+  $file = $form_state['values']['data-source'];
+  $file->status = FILE_STATUS_TEMPORARY;
+  $file->filename = str_replace(' ', '_', $file->filename);
+  file_save($file);
+
+  $csv_file = file_load($file->fid);
+  $file = fopen($csv_file->uri, "r");
+  $counter = 0;
+  $total_lines = file($csv_file->uri, FILE_SKIP_EMPTY_LINES);
+  $total_lines = count($total_lines) - 1;
+  set_time_limit(0);
+  while ($line = fgetcsv($file, 4096)) {
+    if($counter == 0) {
+      $counter += 1;
+      continue;
+    }
+    
+    try {
+      if($node = node_load($line[0])) {
+        $node_entity = entity_metadata_wrapper('node', $node);
+        $log_value = $node_entity->field_log_puntaje->value();
+        if(is_array($log_value)) {
+          foreach($log_value AS $record) {
+            if(strlen($record) > 0) {
+              $log = $line[1]. substr($record, 10);
+              db_update('field_data_field_log_puntaje')
+                ->fields(array(
+                  'field_log_puntaje_value' => $log,
+                ))
+                ->condition('entity_id', $line[0], '=')
+                ->execute();
+            }
+          }
+        } else {
+          if(strlen($log_value) > 0) {
+            $log = $line[1]. substr($log_value, 10);
+            db_update('field_data_field_log_puntaje')
+              ->fields(array(
+                'field_log_puntaje_value' => $log,
+              ))
+              ->condition('entity_id', $line[0], '=')
+              ->execute();
+          }
+        }
+        $counter += 1;
+      } else {
+        continue;
+      }
+    } catch(Exception $e) {
+      fclose($file);
+      drupal_set_message('Error procesando el archivo: '.$e, 'error');
+    }
+  }
+  fclose($file);
+  cache_clear_all();
+  $counter -= 1;
+  drupal_set_message("Cambio de fechas realizado correctamente, se procesaron $counter de $total_lines nodos");
+  drupal_goto("log_date", array('query' => array('st' => 'success')));
+  
+  $form_state['response'] = "";
+  $form_state['rebuild'] = TRUE;
+}
