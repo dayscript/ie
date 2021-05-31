@@ -320,6 +320,10 @@ function theme_banrep_user_top_zone($variables) {
                        <i class="fa fa-user" aria-hidden="true"></i> '. t('Profile') .' </a>
                     </li>
                     <li>
+                       <a href="http://wdeppc1d:8080/sgee-proyectos/">
+            		       <i class="fa fa-plus" aria-hidden="true"></i> '. t('Project Management') .' </a>
+            		    </li>
+                    <li>
                        <a href="/' . $language->language . '/profile/publications/add">
                        <i class="fa fa-plus" aria-hidden="true"></i> '. t('Add Publication') .' </a>
                     </li>
