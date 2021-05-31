@@ -19,6 +19,5 @@ function theme_sem_hm_list($variables){
     $output .= '</div></div></div>';
   }
   $output .= '</div>';
-
   return $output;
 }

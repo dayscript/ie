@@ -10,6 +10,7 @@
   7:  adminitrador de grupo
   10: caie
   11: Admin GT
+  12: Administrador seminario
 
  */
 function theme_banrep_user_top_zone($variables) {
@@ -21,6 +22,7 @@ function theme_banrep_user_top_zone($variables) {
 
   $menu_investigador = "";
   $menu_admin_gt;
+  $menu_seminarios = "";
 
   
   if($user->uid > 0) {
@@ -255,7 +257,27 @@ function theme_banrep_user_top_zone($variables) {
                     </li>';
     }
 
-
+    if(user_has_role(12)) {
+      $user_data = user_load($user->uid);
+      $city = $user_data->field_ciudad_seminario['und'][0]['tid'];
+      $menu_seminarios = '
+        <li>
+          <a href="/' . $language->language . '/taxonomy/term/'.$city.'/edit">
+            <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Editar información de la ciudad') .' 
+          </a>
+        </li>
+        <li>
+          <a href="/' . $language->language . '/crear-evento">
+            <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Agregar evento') .' 
+          </a>
+        </li>
+        <li>
+          <a href="/' . $language->language . '/inscritos-seminarios/'.$city.'">
+            <i class="fa fa-angle-right" aria-hidden="true"></i> '. t('Listado de inscritos a seminarios') .' 
+          </a>
+        </li>
+      ';
+    }
 
     /**
      * Construcción de las opciones del menú
@@ -269,9 +291,10 @@ function theme_banrep_user_top_zone($variables) {
                  </a>
                  <ul class="dropdown-menu dropdown-menu-default">';
 
-    $output .= $menu_investigador;
-    $output .= $menu_admin_gt;
-    $output .= $menu_caie;
+    $output .= !empty($menu_investigador) ? $menu_investigador : '';
+    $output .= !empty($menu_admin_gt) ? $menu_admin_gt : '';
+    $output .= !empty($menu_caie) ? $menu_caie : '';
+    $output .= !empty($menu_seminarios) ? $menu_seminarios : '';
 
     $output .=  '<li>
                    <a href="/' . $language->language . '/user/logout">

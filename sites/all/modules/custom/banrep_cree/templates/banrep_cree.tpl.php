@@ -3,7 +3,6 @@
 
     <map name="image-map">
         <!-- Para class medium-12
-
             <area class="cree-circle" id="villavicencio" target="_blank" alt="CREE-Suroriente - Villavicencio" title="CREE-Suroriente - Villavicencio" href="CREE-Suroriente - Villavicencio" coords="466,694,29" shape="circle">
             <area class="cree-circle" id="ibague" target="_blank" alt="CREE-Centro - Ibagué" title="CREE-Centro - Ibagué" href="CREE-Centro - Ibagué" coords="335,657,17" shape="circle">
             <area class="cree-circle" id="cartagena" target="_blank" alt="CREE-Costa Caribe - Cartagena" title="CREE-Costa Caribe - Cartagena" href="CREE-Costa Caribe - Cartagena" coords="318,189,18" shape="circle">

@@ -115,6 +115,9 @@ hide($content['webform']);
               </div>
           </div>
           <?php endif; ?>
+          <div class="field field-name-field-link-de-acceso col-lg-12 field-type-link-field field-label-hidden">
+            <?php print render($content['field_link_de_acceso']); ?>
+          </div>
         </div>
 
           <?php print render($content['body']); ?>

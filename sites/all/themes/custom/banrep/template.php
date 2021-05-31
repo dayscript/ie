@@ -6,8 +6,6 @@
  * Complete documentation for this file is available online.
  * @see https://drupal.org/node/1728096
  */
-
-
 /**
  * Override or insert variables into the maintenance page template.
  *
@@ -25,7 +23,6 @@ function banrep_preprocess_maintenance_page(&$variables, $hook) {
   banrep_preprocess_page($variables, $hook);
 }
 // */
-
 /**
  * Override or insert variables into the html templates.
  *
@@ -45,7 +42,6 @@ function banrep_preprocess_html(&$variables, $hook) {
   );
 }
 // */
-
 function banrep_preprocess_html(&$vars) {
   drupal_add_css('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700', array('group' => CSS_THEME));
   if(arg(0) == "investigadores" || arg(0) == "researchers") {
@@ -59,17 +55,14 @@ function banrep_preprocess_html(&$vars) {
     drupal_add_js(drupal_get_path('module', 'banrep_seminarios') . '/js/seminarios.js');
   }
 }
-
-function banrep_preprocess_search_api_page_full_page(&$vars){
+function banrep_preprocess_search_api_page_full_page(&$citation_doi){
     //dpm($vars);
     hide($vars['form']);
     unset($vars['form']);
 }
-
 function banrep_preprocess_search_api_page_results(&$vars){
     hide($vars['form']);
 }
-
 /**
  * Override or insert variables into the page templates.
  *
@@ -79,7 +72,6 @@ function banrep_preprocess_search_api_page_results(&$vars){
  *   The name of the template being rendered ("page" in this case.)
  */
 function banrep_preprocess_page(&$variables, $hook) {
-
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/masonry.pkgd.min.js');
   drupal_add_js(drupal_get_path('module', 'banrep_core') . '/js/seminars-and-caie-services.js');
 
@@ -104,7 +96,6 @@ function banrep_preprocess_page(&$variables, $hook) {
       default:
         break;
     }
-
   }
   elseif(arg(0) == 'investigadores' || arg(0) == 'researchers') {
     drupal_add_js('//d39af2mgp1pqhg.cloudfront.net/widget-group.js', 'external');
@@ -113,7 +104,6 @@ function banrep_preprocess_page(&$variables, $hook) {
   elseif(arg(0) == 'grupos-de-investigacion' || arg(0) == 'research-groups') {
     drupal_add_js('//d39af2mgp1pqhg.cloudfront.net/widget-group.js', 'external');
   }
-
   // Home.
   if (isset($variables['is_front'])){
     drupal_add_js(drupal_get_path('module', 'banrep_core').'/js/banrep_revistas_recientes.js');
@@ -122,13 +112,12 @@ function banrep_preprocess_page(&$variables, $hook) {
   if(isset($variables['page']['content']['system_main']['no_content'])) {
     unset($variables['page']['content']['system_main']['no_content']);
   }
-
   // Sugerencia template.
   if (isset($variables['node']->type)) {
     $nodetype = $variables['node']->type;
     $variables['theme_hook_suggestions'][] = 'page__' . $nodetype;
   }
-
+  
   // Ocultar titulo.
   if(arg(0) == 'seminarios') {
    $variables['show_title'] = FALSE;
@@ -139,7 +128,6 @@ function banrep_preprocess_page(&$variables, $hook) {
       $variables['show_title'] = FALSE;
     }
   }
-
   global $language;
   $lang=$language->language;  
   if($lang=="es") {
@@ -148,10 +136,7 @@ function banrep_preprocess_page(&$variables, $hook) {
   } else {
     $variables['logo']='/sites/all/themes/custom/banrep/logo-en.png';
   }
-
-
 }
-
 /**
 * Implements HOOK_preprocess_user_profile()
 * Adds theme suggestions for the user view mode teaser
@@ -162,9 +147,7 @@ function banrep_preprocess_user_profile(&$vars) {
   if (isset($vars['elements']['#view_mode'])) {
     $vars['theme_hook_suggestions'][] = 'user_profile__'.$vars['elements']['#view_mode'];
   }
-
 }
-
 /**
  * Override or insert variables into the node templates.
  *
@@ -174,7 +157,6 @@ function banrep_preprocess_user_profile(&$vars) {
  *   The name of the template being rendered ("node" in this case.)
  */
 function banrep_preprocess_node(&$variables, $hook) {
-
   if ($variables['view_mode'] == 'teaser') {
     $variables['theme_hook_suggestions'][] = 'node__'.$variables['node']->type .'__teaser';
   }
@@ -197,7 +179,7 @@ function banrep_preprocess_node(&$variables, $hook) {
       $is_semiario = TRUE;
     }
     if($is_semiario){
-        $variables['theme_hook_suggestions'][] = 'node__seminario__'.$variables['view_mode'];
+        //$variables['theme_hook_suggestions'][] = 'node__seminario__'.$variables['view_mode'];
     }
   }
 
@@ -211,8 +193,19 @@ function banrep_preprocess_node(&$variables, $hook) {
   if (function_exists($function)) {
     $function($variables, $hook);
   }
+  
+  if($variables['node']->type == 'publication'){
+    $metatag_description = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'citation_doi',
+        'content' => $variables['field_doi'][0]['url'],
+      )
+    );
+    drupal_add_html_head($metatag_description, 'citation_doi');
+  }
 }
-
 function banrep_preprocess_field(&$vars, $hook){
   if ($vars['element']['#field_name'] == 'field_resource') {
     $vars['theme_hook_suggestions'][] = 'field__resources_collected';
@@ -227,7 +220,6 @@ function banrep_preprocess_field(&$vars, $hook){
     rows_from_field_collection($vars, 'field_editorial_resource', $field_array);
   }
 }
-
 /**
  * Creates a simple text rows array from a field collections, to be used in a
  * field_preprocess function.
@@ -241,7 +233,6 @@ function banrep_preprocess_field(&$vars, $hook){
  * @param $field_array
  *   Array of fields to be turned into rows in the field collection.
  */
-
 function rows_from_field_collection(&$vars, $field_name, $field_array) {
   $vars['rows'] = array();
   foreach($vars['element']['#items'] as $key => $item) {
@@ -255,7 +246,6 @@ function rows_from_field_collection(&$vars, $field_name, $field_array) {
     $vars['rows'][] = $row;
   }
 }
-
 /**
  * Override or insert variables into the comment templates.
  *
@@ -269,9 +259,7 @@ function banrep_preprocess_comment(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 }
 // */
-
 function banrep_html_head_alter(&$head_elements){
-
    /* si no pertence a rol investigador se  adiciona tags para que google no indexe la pagina */
   $url_parts = explode('/', request_uri()); // se captura la url y se divide por /
   // se verifica que sea /profile/4646
@@ -293,8 +281,7 @@ function banrep_html_head_alter(&$head_elements){
         if (isset($head_elements['metatag_robots_0']['#value'])){
           // se cambia el valor del robot generico para que no indexe la pagina
            $head_elements['metatag_robots_0']['#value'] = 'noindex';
-        }
-        else {
+        } else {
           // si no existe el tag del robot generico se crea dicho tacg
           $head_elements['metatag_robots_0'] = array (
             '#type' => 'html_tag',
@@ -307,8 +294,4 @@ function banrep_html_head_alter(&$head_elements){
         }
       }
   }
-
-
 }
-
-

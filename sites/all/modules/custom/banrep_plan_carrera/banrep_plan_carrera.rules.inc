@@ -237,26 +237,27 @@ function validate_change_state($uid){
     $response = FALSE;
     
     $entity_user = user_load($uid);
-    if(isset($entity_user->field_usr_escalafon['und'])){
+    if(!empty($entity_user->field_usr_escalafon['und'])){
         // Obtener el escalofon al que pertenece
         $escalafonUser = $entity_user->field_usr_escalafon['und'][0]['tid'];
         // Obtener el plan de carrera 
-        $planUser = $entity_user->field_ruta['und'][0]['target_id'];
+        $planUser = !empty($entity_user->field_ruta) ? $entity_user->field_ruta['und'][0]['target_id'] : null;
         //Buscar ese esfalafon en Requisitos
         $serchTo = getRequirements($escalafonUser, $planUser);
-        
-        foreach ($serchTo[key($serchTo)] as $key => $value) {
-            //Obtener el eslafon inicial de la busqueda realizada
-            
-            //foreach ($value as $k => $val) {
-            if($key == 'field_escalafon_final'){
-                if (isset($val['und'])) {
-                    $response = homologo_requirements($uid, $value['und'][0]['tid']);
-                    break;
+        if(!empty($serchTo)) {
+            foreach ($serchTo[key($serchTo)] as $key => $value) {
+                //Obtener el eslafon inicial de la busqueda realizada
+                
+                //foreach ($value as $k => $val) {
+                if($key == 'field_escalafon_final'){
+                    if (isset($val['und'])) {
+                        $response = homologo_requirements($uid, $value['und'][0]['tid']);
+                        break;
+                    }
                 }
-            }
-            //}
+                //}
 
+            }
         }
         // Evaluar respuesta positiva 
         if($response){
@@ -280,10 +281,12 @@ function getRequirements($idScal, $idPlan){
     
 
     $result = $query->execute();
-    $nids = array_keys($result['node']);
-    $data = node_load_multiple($nids);
+    if(!empty($result)) {
+        $nids = array_keys($result['node']);
+        $data = node_load_multiple($nids);
 
-    return $data;
+        return $data;
+    }
 }
 
 function homologo_requirements($uid, $idScal){

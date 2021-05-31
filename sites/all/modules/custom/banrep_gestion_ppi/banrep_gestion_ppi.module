@@ -50,8 +50,6 @@ function banrep_gestion_ppi_mail($key, &$message, $params) {
  */
 function banrep_gestion_ppi_form_alter(&$form, &$form_state, $form_id)
 {
-  
-
   switch ($form_id)
   {
     case 'pub_user_node_form':
@@ -359,7 +357,7 @@ function _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($publicacion, $
         ->fieldCondition('field_escalafon_actual', 'tid', $escalafon_id);
 
   $result_query = $query->execute();
-
+  
   if (!empty($result_query['node'])){
     $nid = key($result_query['node']);
     $node_requisito = node_load($nid);
@@ -385,8 +383,8 @@ function _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($publicacion, $
       }
       
     }
-
-    if($fecha_publicacion >= $fecha_comparacion){
+    //validar formato de fecha para publicaciones faltantes en espe
+    if($fecha_publicacion > $fecha_comparacion){
       $comparacion = true;
     }
   }
@@ -398,7 +396,6 @@ function _banrep_gestion_ppi_comprobar_fecha_puntacion_requisito($publicacion, $
  * Implements hook_views_pre_render().
  */ 
 function banrep_gestion_ppi_views_pre_render(&$view) {
-    // dpm($view);
   if ($view->name == 'gestionar_publicaciones' && $view->current_display == 'page') {
     $results = &$view->result;
 
@@ -445,8 +442,8 @@ function banrep_gestion_ppi_views_pre_render(&$view) {
             }
             
           }
-
-          if($fecha_publicacion >= $fecha_comparacion){
+          
+          if($fecha_publicacion > $fecha_comparacion){
             $aplica = 'Si';
           }
         }

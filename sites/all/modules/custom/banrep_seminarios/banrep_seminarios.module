@@ -103,7 +103,6 @@ function banrep_seminarios_block_view($delta = '') {
          $value2 = strtotime($a2['date']);
          return $value2 - $value1;
       });
-
       $block['subject'] = t('');
       $block['content'] = theme('sem_hm_list', array('events' => $items));
 

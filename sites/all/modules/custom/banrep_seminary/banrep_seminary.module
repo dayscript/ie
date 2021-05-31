@@ -4,23 +4,73 @@ function banrep_seminary_menu() {
     $items = array();
 
     $items['seminarios-new'] = array(
-        'title' => t('Seminarios'),
-        'page callback' => 'banrep_seminary_page',
-        'access callback' => TRUE,
-        'type' => MENU_CALLBACK,
+      'title' => t('Seminarios'),
+      'page callback' => 'banrep_seminary_page',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
     );
 
-    $items['crear-evento'] = array(
-      'title' => t('Crear nuevo evento'),
-      //'page callback' => 'drupal_get_form', 
-      'page callback' => 'event_page', 
-      //'page arguments' => array('event_form'), 
-      //'access callback' => 'user_access',
-      'access callback' => TRUE,
-      //'access arguments' => array('access create_event_content'),
+  $items['crear-evento'] = array(
+    'title' => t('Crear nuevo evento'),
+    //'page callback' => 'drupal_get_form', 
+    'page callback' => 'event_page', 
+    //'page arguments' => array('event_form'), 
+    //'access callback' => 'user_access',
+    'access callback' => TRUE,
+    //'access arguments' => array('access create_event_content'),
   );
 
-    return $items;
+  $items['admin/modules/seminary'] = array(
+    'title' => 'Configuración sección de seminarios',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('banrep_seminary_admin'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function banrep_seminary_admin() {
+  $form = array();
+
+  $form['custom_text_a'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Texto predeterminado A'),
+    '#default_value' => variable_get('custom_text_a', false),
+    '#required' => TRUE,
+  );
+
+  $form['custom_text_b'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Texto predeterminado B'),
+    '#default_value' => variable_get('custom_text_b', false),
+    '#required' => TRUE,
+  );
+
+  $form['custom_image_a'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Imagen predeterminada A'),
+    '#default_value' => variable_get('custom_image_a', ''),
+    '#required' => TRUE,
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+    ),
+    '#upload_location' => 'public://'
+  );
+  $form['custom_image_b'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Imagen predeterminada B'),
+    '#default_value' => variable_get('custom_image_b', ''),
+    '#required' => TRUE,
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+    ),
+    '#upload_location' => 'public://'
+  );
+  //$form['#submit'][] = 'banrep_seminary_admin_settings_submit';
+  
+  return system_settings_form($form);
 }
 
 function banrep_seminary_theme() {
@@ -133,8 +183,8 @@ function contact_form($form, &$form_state, $vars) {
   $form['file'] = array(
       '#type' => 'file',
       '#title' => 'Adjuntar documento',
-      //'#description' => 'Extensiones permitidas: pdf, doc, docx, zip, rar',
-      '#attributes' => array(),
+      '#description' => 'Extensiones permitidas: pdf, doc, docx',
+      '#attributes' => array('accept' => '.pdf,.doc,.docx'),
   );
   
   $form['policy'] = array(
@@ -186,17 +236,58 @@ function contact_form($form, &$form_state, $vars) {
     '#suffix' => '</div>',
   );
   
+  $form["#validate"][] = 'contact_form_validate';
+
   return $form;
 }
 
+function contact_form_validate($form, &$form_state) {
+  $validated_forms = &drupal_static(__FUNCTION__, array());
+
+  if (isset($validated_forms[$form_id]) && empty($form_state['must_validate'])) {
+    return;
+  }
+
+  $file = file_save_upload('file', array(
+    // Validate extensions.
+    'file_validate_extensions' => array(
+      'pdf doc docx',
+    ),
+  ));
+
+  // If the file passed validation:
+  if ($file) {
+    // Move the file into the Drupal file system.
+    if ($file = file_move($file, 'public://')) {
+      // Save the file for use in the submit handler.
+      $form_state['storage']['file'] = $file;
+    } else {
+      form_set_error('file', t("Failed to write the uploaded file to the site's file folder."));
+    }
+  } else {
+    form_set_error('file', t('No file was uploaded. Or the file extension is not allowed'));
+  }
+}
+
 function contact_form_submit_callback($form, &$form_state) {
+  $nombre = $form_state['values']['nombre'];
+  $afiliacion = $form_state['values']['afiliacion'];
+  $correo = $form_state['values']['correo'];
+  $tema = $form_state['values']['tema'];
+
   $body = array("
-    Gracias por contactarse con nosotros
+    Usted ha recibido una solicitud de postulación a través del portal de investigaones econ�micas, los datos  son:
 
-    Su solicitud será evaluada y pronto recibirá una respuesta.
-
-    Banco de la república.
-  ");
+    Nombre: $nombre
+    
+    Afiliación: $afiliacion
+    
+    Correo: $correo
+    
+    Titulo ó Tema de la presentación: $tema
+    
+    "
+  );
   $from = "pvillate@dayscript.com";
   $to = $form_state['values']['correo_seminario'];
   //$to = 'pvillate@dayscript.com';
@@ -230,8 +321,8 @@ function contact_form_submit_callback($form, &$form_state) {
   } else {
     drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
   }
-  /*$form_state['rebuild'] = TRUE;
-  $element = $form['box-container'];
+  $form_state['rebuild'] = TRUE;
+  /*$element = $form['box-container'];
   $element['#markup'] = 'Formulario enviado';
   return $element;*/
 }
@@ -268,6 +359,34 @@ function banrep_seminary_mail($key, &$message, $params){
 function banrep_seminary_preprocess(&$variables) {
   $variables['city_form'] = drupal_get_form('city_form');
   try {
+    if($variables['view']->name === 'eventos') {
+      
+    }
+
+    if($variables['node']->type === 'event') {
+      $modalidad = $variables['node']->field_modalidad['und'][0]['value'];
+      $settings = array(
+        'inscripcion' => array(
+          'is_visible' => (!empty($variables['node']->field_inscripcion['und'][0]['url']) AND $modalidad === '') 
+            ? true : false,
+        ),
+        'enlace_evento' => array(
+          'is_visible' => (!empty($variables['node']->field_enlace_evento['und'][0]['url']) AND $modalidad === '') 
+            ? true : false,
+        ),
+        'link_de_acceso' => array(
+          'is_visible' => (!empty($variables['node']->field_link_de_acceso['und'][0]['url']) AND $modalidad === '') 
+            ? true : false,
+        ),
+        'modalidad' => array(
+          'value' => $modalidad
+        ),
+        'node' => array(
+          'type' => $variables['node']->type
+        ),
+      );
+      drupal_add_js($settings, 'setting');
+    }
     $tid = $variables['city_form']['cities']['#value'];
     if(!empty($tid)) {
       $term = entity_metadata_wrapper('taxonomy_term', $tid);
@@ -294,7 +413,7 @@ function banrep_seminary_preprocess(&$variables) {
 }
 
 function banrep_seminary_node_view($node, $view_mode = 'full', $langcode = NULL) {
-  if($view_mode == 'full'){
+  if($view_mode == 'full' AND $node->type === 'event'){
     $node->content['field_inscripcion'] = array(
         '#markup' => '<div class="field field-name-field-inscripcion">
             <a href="/registro-seminario?nid='.$node->nid.'" class="btn btn-warning">Inscripciones</a>

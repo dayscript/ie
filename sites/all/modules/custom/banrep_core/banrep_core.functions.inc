@@ -25,6 +25,7 @@ function get_seminario(){
     $query = db_select('node', 'n');
     $query->join('field_data_field_serie_de_evento', 's', 'n.nid = s.entity_id');
     $query->join('field_data_field_tipo_de_evento', 't', 'n.nid = t.entity_id');
+    $query->join('field_data_field_link_de_acceso', 'link', 'n.nid = link.entity_id');
     $query->condition('n.type', 'event');
     $query->condition('n.status', NODE_PUBLISHED);
     $query->condition('s.field_serie_de_evento_target_id', 54, '=');
@@ -691,7 +692,7 @@ function _generate_response_sepi($pub_user){
   }
 
   $file_name = 'entrega'.$sepi.'_'.$user->field_document_number->value().'.json';
-  $enviroment = 'prod';
+  $enviroment = 'dev';
   $path_out = 'private://'.'sepi-out-'.$enviroment;
   $jel_code = '';
   $tags = '';

@@ -15,19 +15,19 @@ function get_requirements_ppi($scale, $route, $uid, $type = '') {
   $query->condition('r.field_ruta_plan_carrera_tid', $route, '=');
   $query->condition('s.field_escalafon_actual_tid', $scale, '=');
   $result = $query->execute()->fetchObject();
-  if (isset($result->nid) && is_numeric($result->nid) && $result->nid > 0) {
-    $node                         = node_load($result->nid);
-    $requirements                 = array();
+  
+  if (isset($result->nid) AND is_numeric($result->nid) AND $result->nid > 0) {
+    $node = node_load($result->nid);
+    $requirements = array();
     if (empty($type)) {
-      $requirements['nid']          = $result->nid;
-      $requirements['general']      = get_general_requirements_ppi($node);
+      $requirements['nid'] = $result->nid;
+      $requirements['general'] = get_general_requirements_ppi($node);
       $requirements['publications'] = get_publications_requirements_ppi($node->field_requisitos_publicaciones['und']);
-      $requirements['time']         = get_time_requirements_ppi($node->field_requisitos_tiempo['und']);
-      $requirements['training']     = get_training_requirements_ppi($node->field_req_formacion_desempeno['und']);
-      $requirements['accumulated']     = get_accumulated_requirements_ppi($node, $uid);
+      $requirements['time'] = get_time_requirements_ppi($node->field_requisitos_tiempo['und']);
+      $requirements['training'] = get_training_requirements_ppi($node->field_req_formacion_desempeno['und']);
+      $requirements['accumulated'] = get_accumulated_requirements_ppi($node, $uid);
       $requirements['publications_req'] = $node->field_date_start_pub['und'][0]['value'];
-    }
-    else {
+    } else {
       switch ($type) {
         case 'general':
         $requirements = get_general_requirements_ppi($node);
@@ -46,9 +46,9 @@ function get_requirements_ppi($scale, $route, $uid, $type = '') {
           break;
       }
     }
+    
     return $requirements;
-  }
-  else {
+  } else {
     return FALSE;
   }
 }

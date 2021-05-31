@@ -4,7 +4,7 @@
      * Implements hook_cron();
     */
     function banrep_sepi_cron(){
-        $enviroment = 'prod';
+        $enviroment = 'dev';
         $path_in = 'private://'.'sepi-in-'.$enviroment;
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         $files_in_folder = [];
@@ -140,9 +140,9 @@
     function _create_activity($publication){
         $query = new EntityFieldQuery();
         $query->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle', 'activity')
-        //->fieldCondition('field_sepi', 'value', 0000, '=');
-        ->fieldCondition('field_identificador_sepi', 'value', $publication['contents']->identificador_sepi, '=');
+            ->entityCondition('bundle', 'activity')
+            //->fieldCondition('field_sepi', 'value', 0000, '=');
+            ->fieldCondition('field_identificador_sepi', 'value', $publication['contents']->identificador_sepi, '=');
         $result = $query->execute();
         $nid =  _get_nid($result);
         $entity_type = 'node';
@@ -159,7 +159,8 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
         
         }
-
+        /*validación temporal*/
+        //if($publication['contents']->titulo != $node_wrapper->title) {
         $node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
         $node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
 
@@ -168,7 +169,7 @@
         if( !is_null($author_tid) ){ 
             $node_wrapper->field_usuario = $author_tid;
         }   
-          
+        
         $node_wrapper->body->set(['value' => $publication['contents']->descripcion ]);
 
         if( !empty($publication['contents']->fecha_inicio) ){
@@ -181,7 +182,7 @@
 
         $node_wrapper->field_year = (!empty($publication['contents']->annio) ? $publication['contents']->annio:null);
 
-             
+            
         
         if( !empty( $publication['contents']->clasificacion ) ){
             $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->clasificacion, 'categorias_de_conceptos')); 
@@ -192,7 +193,7 @@
 
     
         if( isset($category_concept) ) {
-           $node_wrapper->field_concept_category =  $category_concept;
+            $node_wrapper->field_concept_category =  $category_concept;
         } 
 
         if( $publication['contents']->Aprobadopor ){
@@ -200,7 +201,7 @@
             if( isset($aproved_tid->field_user_reference['und'][0]['target_id']) ){
                 $node_wrapper->field_usuario = $aproved_tid->field_user_reference['und'][0]['target_id'];
             }
-         }
+        }
 
         if( !empty($publication['contents']->autor_principal) ){
             $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id ));
@@ -213,7 +214,7 @@
 
         if( isset($publication['contents']->archivo_aprobacion) && !empty($publication['contents']->archivo_aprobacion)){
             $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
-         }
+        }
         
         
         
@@ -232,11 +233,11 @@
         $user->save();
 
         $file_name = 'entrega'.$publication['contents']->identificador_sepi.'_'.$user->field_document_number->value().'.json';
-        $enviroment = 'prod';
+        $enviroment = 'dev';
         $path_out = 'private://'.'sepi-out-'.$enviroment;
         file_save_data(json_encode($publication['contents']), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
         return $publication;
-
+        //}
 
     }
 
@@ -667,7 +668,7 @@
 function _depure_sepi_in($file) {
         $files = [];
         $msj = '';
-
+        $enviroment = 'dev';
         $contents_file = file_get_contents($file->uri);
         $contents_file = encodeToIso($contents_file);
         /*field archivo_aprobacion*/
@@ -689,7 +690,17 @@ function _depure_sepi_in($file) {
             
                 try {
                     $files[$file->name]['result'] = _create_node_publication($files[$file->name]);
-                    $msj = 'Procesamiento completo';
+                    $origin = drupal_realpath($file->uri);
+                    $name_origin = str_replace('(', '\(', $origin);
+                    $name_origin = str_replace(')', '\)', $name_origin);
+
+                    $name_end = str_replace('(', '\(', $file->name);
+                    $name_end = str_replace(')', '\)', $name_end);
+                    
+                    $end = drupal_realpath("private://sepi-in-$enviroment").'/processed/'.$name_end.'.json';
+                    //rename(drupal_realpath($file->uri), drupal_realpath('private://processed/').$file->name);
+                    exec("mv $name_origin $end");
+                    $msj = "Procesamiento completo - $origin";
                 } catch (Exception $e) {
                     $msj = 'Se ha presentado un error en el procesamiento: '.$e->getMessage();
                 }

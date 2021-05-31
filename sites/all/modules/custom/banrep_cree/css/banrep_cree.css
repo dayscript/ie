@@ -31,3 +31,6 @@
 .cree-menu i {
     margin-right:15px;
 }
+#banrep-cree-form #edit-submit {
+    visibility: hidden;
+}

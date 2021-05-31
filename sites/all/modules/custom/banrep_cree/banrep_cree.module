@@ -34,16 +34,28 @@ function banrep_cree_form($form, &$form_state) {
     }
   }*/
   $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'taxonomy_term')
+    ->entityCondition('bundle', array('research_groups'));
+  
+  $centros = $query->execute();
+  $centers = array();
+  foreach($centros['taxonomy_term'] AS $index => $centro) {
+    $taxonomy = taxonomy_term_load($centro->tid);
+    $link = url(drupal_get_path_alias('taxonomy/term/'.$centro->tid), array('absolute' => TRUE));
+    $centers[$link] = $taxonomy->name;
+  }
+  
+  $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'cree')
     ->propertyCondition('status', 1);
   
   $centros = $query->execute();
-  $centers = array();
-
+  
   foreach($centros['node'] AS $index => $centro) {
     $node = node_load($centro->nid);
-    $centers[$centro->nid] = $node->title;
+    $link = url(drupal_get_path_alias('node/'.$centro->nid), array('absolute' => TRUE));
+    $centers[$link] = $node->title;
   }
 
   $form['centros'] = array(

@@ -147,7 +147,7 @@
       <div class="cree-item"><p><i class="fa fa-map-marker"></i><?= $node->field_address['und'][0]['value'] ?></p></div>
       <div class="cree-item"><p><i class="fa fa-phone"></i><?= $node->field_phone['und'][0]['value'] ?></p></div>
       <div class="cree-item"><p><i class="fa fa-envelope"></i><?= $node->field_email['und'][0]['value'] ?></p></div>
-      <div class="cree-item"><p><?= $node->field_city['und'][0]['taxonomy_term']->name ?></p></div>
+      <div class="cree-item"><p><?= !empty($node->field_city) ? $node->field_city['und'][0]['taxonomy_term']->name : null ?></p></div>
       <div class="cree-item">
       <!--<?php 
         $likes = (!empty($node->field_likes['und'][0]['value'])) ? $node->field_likes['und'][0]['value'] : '0';

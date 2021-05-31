@@ -10,6 +10,12 @@ jQuery(document).ready(function($) {
       itemsTablet: [600,4], //4 items between 600 and 0
       itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
   });
+
+  jQuery('#block-views-autor-investigacion-block').find('a').each(function () {
+    if(jQuery(this).attr('href') === '/es/profile') {
+      jQuery(this).contents().unwrap();
+    }
+  });
 });
 
 

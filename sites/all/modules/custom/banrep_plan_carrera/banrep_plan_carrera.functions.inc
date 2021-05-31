@@ -917,8 +917,6 @@ function update_fields(&$user, $value_data, $field_name) {
     // user_save($user);
     field_attach_update('user', $user);
   }
-  
-
 }
 
 function get_id_user_x_term($tid){
