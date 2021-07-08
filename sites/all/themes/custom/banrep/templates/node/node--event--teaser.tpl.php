@@ -33,9 +33,9 @@ if(isset($content['field_event_date']['#items'][0]['value'])){
   	<div class="info-right">
 		<?php if ($title): ?>
 			 <h3<?php print $title_attributes; ?>>
-			 <?php if (!empty($url)): ?><a href="<?php print $url; ?>" target="_blank"><?php endif; ?>
-			 <?php print $title; ?>
-			 <?php if (!empty($url)): ?></a><?php endif; ?>
+			 <a href="<?php print $url; ?>" target="_blank">
+			  <?php print $title; ?>
+			 </a>
 			 </h3>
 		<?php endif; ?>
     </div>

@@ -19,7 +19,7 @@ function banrep_seminary_page() {
     $html = $node_view;
 
     if ($language->language == 'es') {
-      drupal_set_title('Seminario: ' . $node->title);
+//      drupal_set_title('Seminario: ' . $node->title);
     }
     else {
       drupal_set_title('Seminary: ' . $node->title);
