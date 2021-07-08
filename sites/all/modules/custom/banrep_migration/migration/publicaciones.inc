@@ -13,8 +13,6 @@ class PublicacionesNodeMigration extends Migration {
       'editorial' => 'Editorial',
       'palabras_clave' => 'field_palabras_clave',
       'jel' => 'JEL',
-      'titulo_destacado_ingles' =>'Título destacado (inglés)',
-      'texto_destacado' => 'Texto destacado',
       'page' => 'Páginas',
       'descripcion' => 'Descripción',
       'dia' => 'Día',

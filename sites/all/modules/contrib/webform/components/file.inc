@@ -177,6 +177,18 @@ function _webform_edit_file($component) {
     '#access' => webform_variable_get('webform_token_access'),
   );
 
+  $form['extra']['upload'] = array(
+    '#type' => 'radios',
+    '#title' => t('Upload Button Display'),
+    '#options' => array(
+      'show' => t('Show'),
+      'hide' => t('Hide'),
+    ),
+    '#default_value' => !empty($component['extra']['upload']) ? $component['extra']['upload'] : 'show',
+    '#description' => t('Determines whether you want to hide upload button or not.'),
+    '#weight' => 7,
+  );
+
   $form['display']['progress_indicator'] = array(
     '#type' => 'radios',
     '#title' => t('Progress indicator'),
@@ -399,6 +411,10 @@ function theme_webform_managed_file($variables) {
     $attributes['class'] = (array) $element['#attributes']['class'];
   }
   $attributes['class'][] = 'form-managed-file';
+
+  if($element['#webform_component']['extra']['upload'] == 'hide') {
+    $element['upload_button']['#access'] = FALSE;
+  }
 
   // This wrapper is required to apply JS behaviors and CSS styling.
   $output = '';

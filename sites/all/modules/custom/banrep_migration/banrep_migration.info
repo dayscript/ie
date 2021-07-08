@@ -13,4 +13,3 @@ files[] = migration/seminario.inc
 ;files[] = migration/concepto.inc
 ;files[] = migration/publicaciones.inc
 ;files[] = migration/users.inc
-

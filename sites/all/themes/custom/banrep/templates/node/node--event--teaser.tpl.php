@@ -33,8 +33,8 @@ if(isset($content['field_event_date']['#items'][0]['value'])){
   	<div class="info-right">
 		<?php if ($title): ?>
 			 <h3<?php print $title_attributes; ?>>
-			 <a href="<?php print $url; ?>" target="_blank">
-			  <?php print $title; ?>
+			 <a href="/node/<?php print $node->nid; ?>" target="_blank">
+			 	<?php print $title; ?>
 			 </a>
 			 </h3>
 		<?php endif; ?>

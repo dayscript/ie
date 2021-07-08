@@ -159,83 +159,85 @@
             $node_wrapper = entity_metadata_wrapper($entity_type, $entity);
         
         }
+	/*validacion temporal titulo*/
+	if($publication['contents']->titulo != $node_wrapper->title) {
+		$node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
+		$node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
 
-        $node_wrapper->title                    = (!empty($publication['contents']->titulo)) ? $publication['contents']->titulo: NULL;
-        $node_wrapper->field_identificador_sepi = (!empty($publication['contents']->identificador_sepi )) ? $publication['contents']->identificador_sepi: NULL;
+		$author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id );
+		
+		if( !is_null($author_tid) ){ 
+		    $node_wrapper->field_usuario = $author_tid;
+		}   
+		  
+		$node_wrapper->body->set(['value' => $publication['contents']->descripcion ]);
 
-        $author_tid = _get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id );
-        
-        if( !is_null($author_tid) ){ 
-            $node_wrapper->field_usuario = $author_tid;
-        }   
-          
-        $node_wrapper->body->set(['value' => $publication['contents']->descripcion ]);
+		if( !empty($publication['contents']->fecha_inicio) ){
+		    $node_wrapper->field_act_date_start   =  strtotime($publication['contents']->fecha_inicio);
+		}
 
-        if( !empty($publication['contents']->fecha_inicio) ){
-            $node_wrapper->field_act_date_start   =  strtotime($publication['contents']->fecha_inicio);
-        }
+		if( !empty($publication['contents']->fecha_cierre) ){
+		    $node_wrapper->field_act_date_end   =  strtotime($publication['contents']->fecha_cierre);
+		}
 
-        if( !empty($publication['contents']->fecha_cierre) ){
-            $node_wrapper->field_act_date_end   =  strtotime($publication['contents']->fecha_cierre);
-        }
+		$node_wrapper->field_year = (!empty($publication['contents']->annio) ? $publication['contents']->annio:null);
 
-        $node_wrapper->field_year = (!empty($publication['contents']->annio) ? $publication['contents']->annio:null);
+		     
+		
+		if( !empty( $publication['contents']->clasificacion ) ){
+		    $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->clasificacion, 'categorias_de_conceptos')); 
+		}
+		if( !empty( $publication['contents']->concepto ) ){
+		    $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->concepto, 'categorias_de_conceptos')); 
+		}
 
-             
-        
-        if( !empty( $publication['contents']->clasificacion ) ){
-            $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->clasificacion, 'categorias_de_conceptos')); 
-        }
-        if( !empty( $publication['contents']->concepto ) ){
-            $category_concept[]['tid'] = key(taxonomy_get_term_by_name($publication['contents']->concepto, 'categorias_de_conceptos')); 
-        }
+	    
+		if( isset($category_concept) ) {
+		   $node_wrapper->field_concept_category =  $category_concept;
+		} 
 
-    
-        if( isset($category_concept) ) {
-           $node_wrapper->field_concept_category =  $category_concept;
-        } 
+		if( $publication['contents']->Aprobadopor ){
+		    $aproved_tid =taxonomy_term_load(_get_autor_for_mail( $publication['contents']->Aprobadopor ));
+		    if( isset($aproved_tid->field_user_reference['und'][0]['target_id']) ){
+			$node_wrapper->field_usuario = $aproved_tid->field_user_reference['und'][0]['target_id'];
+		    }
+		 }
 
-        if( $publication['contents']->Aprobadopor ){
-            $aproved_tid =taxonomy_term_load(_get_autor_for_mail( $publication['contents']->Aprobadopor ));
-            if( isset($aproved_tid->field_user_reference['und'][0]['target_id']) ){
-                $node_wrapper->field_usuario = $aproved_tid->field_user_reference['und'][0]['target_id'];
-            }
-         }
+		if( !empty($publication['contents']->autor_principal) ){
+		    $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id ));
+		    if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
+			$node_wrapper->author = $author_tid->field_user_reference['und'][0]['target_id'];
+			$node_wrapper->field_puntaje = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null ;
 
-        if( !empty($publication['contents']->autor_principal) ){
-            $author_tid = taxonomy_term_load(_get_autor_for_mail( $publication['contents']->autor_principal->correo, $publication['contents']->autor_principal->id ));
-            if( isset($author_tid->field_user_reference['und'][0]['target_id']) ){
-                $node_wrapper->author = $author_tid->field_user_reference['und'][0]['target_id'];
-                $node_wrapper->field_puntaje = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null ;
+		    }
+		}
 
-            }
-        }
+		if( isset($publication['contents']->archivo_aprobacion) && !empty($publication['contents']->archivo_aprobacion)){
+		    $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
+		 }
+		
+		
+		
+		$pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
+		$node_wrapper->field_log_puntaje->set( [banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20)] );
+		
+		$node_wrapper->save();
+		$node = node_load($node_wrapper->nid->value());
+		$transition = new WorkflowTransition();
+		$transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
+		workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
+		
+		$user = entity_metadata_wrapper('user', $node->uid);
 
-        if( isset($publication['contents']->archivo_aprobacion) && !empty($publication['contents']->archivo_aprobacion)){
-            $node_wrapper->field_archivo_de_aprobacion =  $publication['contents']->archivo_aprobacion;
-         }
-        
-        
-        
-        $pjnew = (!empty($publication['contents']->autor_principal->puntaje) ) ? $publication['contents']->autor_principal->puntaje:null;
-        $node_wrapper->field_log_puntaje->set( [banrep_plan_carrera_log_points(user_load(934), 'activity', 0, $pjnew, 19, 20)] );
-        
-        $node_wrapper->save();
-        $node = node_load($node_wrapper->nid->value());
-        $transition = new WorkflowTransition();
-        $transition->setValues('node', $node, 'field_act_wf_status', 19, 20, 934, REQUEST_TIME, 'Aprobado desde sepi');
-        workflow_execute_transition('node', $node, 'field_act_wf_status', $transition, $force = TRUE);
-        
-        $user = entity_metadata_wrapper('user', $node->uid);
+		$user->field_puntaje_br = $user->field_puntaje_br->value() + $pjnew;
+		$user->save();
 
-        $user->field_puntaje_br = $user->field_puntaje_br->value() + $pjnew;
-        $user->save();
-
-        $file_name = 'entrega'.$publication['contents']->identificador_sepi.'_'.$user->field_document_number->value().'.json';
-        $enviroment = 'prod';
-        $path_out = 'private://'.'sepi-out-'.$enviroment;
-        file_save_data(json_encode($publication['contents']), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
-        return $publication;
+		$file_name = 'entrega'.$publication['contents']->identificador_sepi.'_'.$user->field_document_number->value().'.json';
+		$enviroment = 'prod';
+		$path_out = 'private://'.'sepi-out-'.$enviroment;
+		file_save_data(json_encode($publication['contents']), $destination = $path_out.'/'.$file_name, $replace = FILE_EXISTS_REPLACE );
+		return $publication;
+	}
 
 
     }
