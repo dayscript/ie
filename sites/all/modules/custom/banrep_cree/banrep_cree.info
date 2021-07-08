@@ -1,8 +1,0 @@
-name = CREE
-description = "Acceso a mapa y micrositios CREE"
-package = Dayscript
-version = "7.x-1.0"
-core = "7.x"
-
-stylesheets[all][] = "css/banrep_cree.css"
-scripts[] = "js/banrep_cree.js"

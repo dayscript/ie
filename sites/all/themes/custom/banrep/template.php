@@ -56,7 +56,7 @@ function banrep_preprocess_html(&$vars) {
   }
   if(arg(0) == "seminarios") {
     drupal_add_library('system', 'ui.tooltip');
-    drupal_add_js(drupal_get_path('module', 'banrep_seminarios') . '/js/seminarios.js');
+    //drupal_add_js(drupal_get_path('module', 'banrep_seminarios') . '/js/seminarios.js');
   }
 }
 
@@ -210,6 +210,18 @@ function banrep_preprocess_node(&$variables, $hook) {
   $function = __FUNCTION__ . '_' . $variables['node']->type;
   if (function_exists($function)) {
     $function($variables, $hook);
+  }
+
+  if($variables['node']->type == 'publication'){
+    $metatag_description = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+            'name' => 'citation_doi',
+            'content' => $variables['field_doi'][0]['url'],
+        )
+    );
+    drupal_add_html_head($metatag_description, 'citation_doi');
   }
 }
 

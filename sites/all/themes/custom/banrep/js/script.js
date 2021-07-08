@@ -278,6 +278,11 @@ jQuery(document).ready(function() {
 
     }
 
+    jQuery('#block-views-autor-investigacion-block').find('a').each(function () {
+        if(jQuery(this).attr('href') === '/es/profile/') {
+            jQuery(this).contents().unwrap();
+        }
+    });
 
 
 

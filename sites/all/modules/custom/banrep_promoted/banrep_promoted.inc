@@ -281,10 +281,11 @@ function _calc_results_of_condition($user_entity,$item_condition){
         
         case 'PUNTAJE':
             foreach($user_pubs as $key => $nid){
-                $query = db_query( 'SELECT * FROM 
-                                    { field_data_field_concept_type } concept 
-                                    where concept.entity_id = :nid 
-                                    and field_concept_type_tid = :tid', array(':nid' => $nid, ':tid' => $item_condition->field_concept_type->value()[0]->tid ));
+                $query = db_query('SELECT * FROM field_data_field_concept_type concept 
+                    where concept.entity_id = :nid 
+                    and field_concept_type_tid = :tid', 
+                    array(':nid' => $nid, ':tid' => $item_condition->field_concept_type->value()[0]->tid)
+                );
                   
                 if( $query->fetchObject() ) {
                     $pub_user_requiremnt = entity_metadata_wrapper('node', $nid );

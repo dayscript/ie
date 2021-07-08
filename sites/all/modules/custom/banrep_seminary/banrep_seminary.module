@@ -192,8 +192,7 @@ function contact_form($form, &$form_state, $vars) {
       '#type' => 'file',
       '#title' => 'Adjuntar documento',
       '#description' => 'Extensiones permitidas: pdf, doc, docx',
-      '#attributes' => array('accept' => '.pdf,.doc,.docx',  'required' => 'required',),
-     '#required' => true
+      '#attributes' => array('accept' => '.pdf,.doc,.docx'),
   );
 
   $form['policy'] = array(
@@ -437,7 +436,7 @@ function banrep_seminary_node_view($node, $view_mode = 'full', $langcode = NULL)
 
 function getThemes($for_select = false) {
   $themes = array();
-  $vocabulary = taxonomy_vocabulary_machine_name_load('tematicas_seminarios');
+  $vocabulary = taxonomy_vocabulary_machine_name_load('ciudades_seminarios');
   $vtree = taxonomy_get_tree($vocabulary->vid);
 
   if($for_select) {
