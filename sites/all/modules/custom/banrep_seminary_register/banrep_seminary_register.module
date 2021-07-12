@@ -10,6 +10,14 @@ function banrep_seminary_register_menu() {
         'type' => MENU_CALLBACK,
     );
 
+    $items['admin/config/email-seminarios'] = array(
+      'title' => t('Configuracion Seminarios'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('banrep_seminary_settings_email_form'),
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_CALLBACK,
+    );
+
     return $items;
 }
 
@@ -26,10 +34,35 @@ function banrep_seminary_register_theme() {
     );
 }
 
+/**
+ * @return mixed|string
+ * @throws Exception
+ */
+function banrep_seminary_settings_email_form(){
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Email',
+    '#required' => true,
+    '#default_value' => variable_get('config_email_seminary', ''),
+  );
+
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => 'Guardar',
+  );
+  banrep_seminary_register_event();
+  return $form;
+}
+
+function banrep_seminary_settings_email_form_submit($form, &$form_state) {
+  $email = $form_state['values']['email'];
+  variable_set('config_email_seminary', $email);
+}
+
 function banrep_seminary_register_page() {
     $nid = drupal_get_query_parameters();
     $node = node_load($nid['nid']);
-    
+
     return theme(
         'seminary_register',
         [
@@ -54,7 +87,7 @@ function banrep_seminary_register_form($form, &$form_state) {
         ),
         '#required' => true,
     );
-    
+
     $form['id_number'] = array(
         '#type' => 'textfield',
         '#title' => 'Número de Identificación',
@@ -143,30 +176,30 @@ function banrep_seminary_register_form($form, &$form_state) {
         '#type' => 'markup',
         '#markup' => '<div class="seminary-policy">
           <p>
-            <b>IMPORTANTE - Autorización de tratamiento de datos personales:</b> Mediante el diligenciamiento y registro de sus datos 
-            personales usted autoriza al BANCO DE LA REPÚBLICA el tratamiento (recolección, almacenamiento, uso, circulación o 
-            supresión) de todos los datos que nos suministra en el presente formato con la finalidad de adelantar la postulación 
-            de su trabajo para ser evaluado, llevar registro de su postulación, así como para la construcción de indicadores y 
-            estadísticas para el seguimiento y control del la inscripción de trabajos; y, en todo caso, dentro de sus funciones 
+            <b>IMPORTANTE - Autorización de tratamiento de datos personales:</b> Mediante el diligenciamiento y registro de sus datos
+            personales usted autoriza al BANCO DE LA REPÚBLICA el tratamiento (recolección, almacenamiento, uso, circulación o
+            supresión) de todos los datos que nos suministra en el presente formato con la finalidad de adelantar la postulación
+            de su trabajo para ser evaluado, llevar registro de su postulación, así como para la construcción de indicadores y
+            estadísticas para el seguimiento y control del la inscripción de trabajos; y, en todo caso, dentro de sus funciones
             constitucionales y legales.
-    
+
             Para tal efecto, el BANCO DE LA REPÚBLICA informa que:
           </p>
           <ol>
             <li>
-              El tratamiento de los datos personales se realizará de acuerdo con las políticas o lineamientos generales; 
-              así como las políticas de seguridad de la información, disponibles en la sección 
-              <a href="http://www.banrep.gov.co/proteccion-datos-personales" target="_blank">"Protección de Datos Personales - Habeas Data"</a>, 
+              El tratamiento de los datos personales se realizará de acuerdo con las políticas o lineamientos generales;
+              así como las políticas de seguridad de la información, disponibles en la sección
+              <a href="http://www.banrep.gov.co/proteccion-datos-personales" target="_blank">"Protección de Datos Personales - Habeas Data"</a>,
               disponibles desde el 18 de junio de 2013.
             </li>
             <li>
-              El titular de los datos personales podrá acceder, conocer, actualizar y rectificar dichos datos; ser informado 
-              del uso dado a los mismos; presentar consultas y reclamos sobre el manejo de dichos datos; revocar esta 
-              autorización o solicitar la supresión de los datos, en los casos en que sea procedente, y los demás derechos 
+              El titular de los datos personales podrá acceder, conocer, actualizar y rectificar dichos datos; ser informado
+              del uso dado a los mismos; presentar consultas y reclamos sobre el manejo de dichos datos; revocar esta
+              autorización o solicitar la supresión de los datos, en los casos en que sea procedente, y los demás derechos
               que le confiere la Ley.
             </li>
             <li>
-              Para ejercer tales derechos, podrá contactarse a través del 
+              Para ejercer tales derechos, podrá contactarse a través del
               <a href="http://www.banrep.gov.co/es/atencion-ciudadano" target="_blank">Sistema de Atención al Ciudadano (SAC)</a>.
             </li>
           </ol>
@@ -201,9 +234,9 @@ function banrep_seminary_register_form_submit($form, &$form_state) {
         ->fieldCondition('field_seminario', 'target_id', intval($nid['nid']));
 
     $result = $query->execute();
-    
+
     $exists = array_keys($result['node']);
-    
+
     if(empty($exists)) {
         $entity = entity_create('node', $values);
         $wrapper = entity_metadata_wrapper('node', $entity);
@@ -228,20 +261,37 @@ function banrep_seminary_register_form_submit($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
 
-/*function banrep_seminary_register_preprocess(&$variables) {
-    $variables['register_form'] = drupal_get_form('register_form');
-    $texts = array();
-    $images = array();
-    $events = array();
-    $cities = getCities();
-    $texts['text-a'] = $term->field_texto_a->value();
-    $texts['text-b'] = $term->field_texto_b->value();
-    $images['first'] = $term->field_imagen_uno->value();
-    $images['second'] = $term->field_imagen_dos->value();
-    $variables['texts'] = $texts;
-    $variables['images'] = $images;
-    $variables['name'] = $name;
-    $variables['email'] = $term->field_correo_ciudad->value();
-    drupal_set_title("Seminarios en $name", CHECK_PLAIN);
-    $variables['contact_form'] = drupal_get_form('contact_form',  ['email' => $term->field_correo_ciudad->value()]);
-}*/
+
+/**
+ * Implementation hook_cron()
+ */
+function banrep_seminary_register_cron() {
+  $params = array(
+    'body' => banrep_seminary_register_event(),
+    'subject' => 'Eventos de investigacviones',
+
+  );
+  drupal_mail('banrep_seminary', 'contact', variable_get('config_email_seminary', 'jmedina@dayscript.com'), 'es', $params, 'josmera01@gmail.com');
+}
+
+/**
+ * Get future events
+ * @return array
+ */
+function banrep_seminary_register_event() {
+  $output = array('<h3>Lo eventos que estan son los siguientes:</h3>');
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'event')
+    ->propertyCondition('status', 1)
+    ->fieldCondition('field_tipo_de_evento', 'tid', 191)
+    ->fieldCondition('field_event_date', 'value', time(), '>');
+  $result = $query->execute();
+
+  $exists = array_keys($result['node']);
+  foreach ($exists as $value) {
+    $node = node_load($value);
+    $output[] = l($node->title, 'node/' . $value);
+  }
+  return $output;
+}
